@@ -1,0 +1,9 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <f:entry title="Emma XML report"
+           description="
+           Specify the path to the Emma's XML report file, relative to
+           &lt;a href='ws/'>the workspace root&lt;/a>.
+           ">
+    <f:textbox name="emma.includes" value="${instance.includes}"/>
+  </f:entry>
+</j:jelly>
