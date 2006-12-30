@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public abstract class AbstractReport<
     PARENT extends AggregatedReport<?,PARENT,?>,
-    SELF> extends CoverageObject<SELF> implements ModelObject {
+    SELF extends CoverageObject<SELF>> extends CoverageObject<SELF> implements ModelObject {
 
     private String name;
 
