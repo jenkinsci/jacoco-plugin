@@ -21,7 +21,15 @@ final class Ratio implements Serializable {
      * Gets "x/y" representation.
      */
     public String toString() {
-        return numerator+"/"+denominator;
+        return print(numerator)+"/"+print(denominator);
+    }
+
+    private String print(float f) {
+        int i = (int) f;
+        if(i==f)
+            return String.valueOf(i);
+        else
+            return String.valueOf(f);
     }
 
     /**
