@@ -66,9 +66,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     /**
      * Used in the view to print out four table columns with the coverage info.
      */
-    public final String printFourCoverageColumns() {
+    public String printFourCoverageColumns() {
         StringBuilder buf = new StringBuilder();
-        printColumn(clazz,buf);
+        if(clazz==null)
+            buf.append("<td></td>");
+        else
+            printColumn(clazz,buf);
         printColumn(method,buf);
         printColumn(block,buf);
         printColumn(line,buf);
