@@ -1,21 +1,21 @@
 package hudson.plugins.emma;
 
+import hudson.model.Build;
 import hudson.model.ModelObject;
 
 import java.io.IOException;
 
 /**
- * Base class of all the coverage report.
+ * Base class of the coverage report tree,
+ * which maintains the details of the coverage report.
  *
  * @author Kohsuke Kawaguchi
  */
 public abstract class AbstractReport<
     PARENT extends AggregatedReport<?,PARENT,?>,
-    SELF> implements ModelObject {
+    SELF> extends CoverageObject<SELF> implements ModelObject {
 
     private String name;
-
-    /*package*/ Ratio clazz,method,block,line;
 
     private PARENT parent;
 
@@ -35,22 +35,6 @@ public abstract class AbstractReport<
         return name;
     }
 
-    public Ratio getClassCoverage() {
-        return clazz;
-    }
-
-    public Ratio getMethodCoverage() {
-        return method;
-    }
-
-    public Ratio getBlockCoverage() {
-        return block;
-    }
-
-    public Ratio getLineCoverage() {
-        return line;
-    }
-
     /**
      * Called at the last stage of the tree construction,
      * to set the back pointer.
@@ -66,13 +50,7 @@ public abstract class AbstractReport<
         return parent;
     }
 
-    /**
-     * Gets the corresponding coverage report object in the previous
-     * run that has the record.
-     *
-     * @return
-     *      null if no earlier record was found.
-     */
+    @Override
     public SELF getPreviousResult() {
         PARENT p = parent;
         while(true) {
@@ -83,5 +61,10 @@ public abstract class AbstractReport<
             if(prev!=null)
                 return prev;
         }
+    }
+
+    @Override
+    public Build getBuild() {
+        return parent.getBuild();
     }
 }

@@ -20,39 +20,21 @@ import java.util.logging.Logger;
 /**
  * Build view extension by Emma plugin.
  *
+ * As {@link CoverageObject}, it retains the overall coverage report.
+ *
  * @author Kohsuke Kawaguchi
  */
-public final class EmmaBuildAction implements Action, StaplerProxy {
+public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> implements Action, StaplerProxy {
     public final Build owner;
-
-    /**
-     * Total class coverage.
-     */
-    public final Ratio classCoverage;
-
-    /**
-     * Total method coverage.
-     */
-    public final Ratio methodCoverage;
-
-    /**
-     * Total block coverage.
-     */
-    public final Ratio blockCoverage;
-
-    /**
-     * Total line coverage.
-     */
-    public final Ratio lineCoverage;
 
     private transient WeakReference<CoverageReport> report;
 
     public EmmaBuildAction(Build owner, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage) {
         this.owner = owner;
-        this.classCoverage = classCoverage;
-        this.methodCoverage = methodCoverage;
-        this.blockCoverage = blockCoverage;
-        this.lineCoverage = lineCoverage;
+        this.clazz = classCoverage;
+        this.method = methodCoverage;
+        this.block = blockCoverage;
+        this.line = lineCoverage;
     }
 
     public String getDisplayName() {
@@ -69,6 +51,11 @@ public final class EmmaBuildAction implements Action, StaplerProxy {
 
     public Object getTarget() {
         return getResult();
+    }
+
+    @Override
+    public Build getBuild() {
+        return owner;
     }
 
     /**
@@ -91,7 +78,8 @@ public final class EmmaBuildAction implements Action, StaplerProxy {
         }
     }
 
-    /*package*/ EmmaBuildAction getPreviousResult() {
+    @Override
+    public EmmaBuildAction getPreviousResult() {
         return getPreviousResult(owner);
     }
 

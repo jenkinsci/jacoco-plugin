@@ -1,17 +1,17 @@
 package hudson.plugins.emma;
 
-import hudson.Launcher;
 import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.Action;
 import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
-import hudson.model.Action;
 import hudson.model.Project;
 import hudson.tasks.Publisher;
 import org.kohsuke.stapler.StaplerRequest;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * {@link Publisher} that captures Emma coverage reports.
