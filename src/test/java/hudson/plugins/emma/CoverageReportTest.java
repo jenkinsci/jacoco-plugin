@@ -1,13 +1,12 @@
 package hudson.plugins.emma;
 
-import junit.framework.TestCase;
-
 /**
  * @author Kohsuke Kawaguchi
  */
-public class CoverageReportTest extends TestCase {
+public class CoverageReportTest extends AbstractEmmaTestBase {
     public void testLoad() throws Exception {
         CoverageReport r = new CoverageReport(getClass().getResourceAsStream("coverage.xml"));
-        System.out.println(r);
+        PackageReport pkg = r.getChildren().get("com.sun.tools.javac.v8.resources");
+        assertRatio(pkg.getLineCoverage(),3,12);
     }
 }

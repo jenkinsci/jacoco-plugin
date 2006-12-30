@@ -1,15 +1,9 @@
 package hudson.plugins.emma;
 
-import junit.framework.TestCase;
-
 /**
  * @author Kohsuke Kawaguchi
  */
-public class EmmaBuildActionTest extends TestCase {
-    private void assertRatio(Ratio r, float numerator, float denominator) {
-        assertEquals(numerator, r.numerator);
-        assertEquals(denominator, r.denominator);
-    }
+public class EmmaBuildActionTest extends AbstractEmmaTestBase {
     public void testLoad() throws Exception {
         EmmaBuildAction r = EmmaBuildAction.load(getClass().getResourceAsStream("coverage.xml"));
         assertEquals(r.classCoverage.getPercentage(),100);
