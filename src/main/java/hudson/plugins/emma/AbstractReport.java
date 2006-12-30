@@ -57,7 +57,7 @@ public abstract class AbstractReport<
             p = p.getPreviousResult();
             if(p==null)
                 return null;
-            SELF prev = (SELF)parent.getChildren().get(name);
+            SELF prev = (SELF)p.getChildren().get(name);
             if(prev!=null)
                 return prev;
         }
