@@ -2,9 +2,12 @@
   <l:layout>
     <st:include it="${it.project}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>Emma Report</h1>
+      <h1>Emma Coverage Trend</h1>
 
-      blah!
+      <!-- TODO: how do I make this clickable? -->
+      <div>
+        <img src="./graph?width=640&amp;height=480" width="640" height="480" /> 
+      </div>
     </l:main-panel>
   </l:layout>
 </j:jelly>
