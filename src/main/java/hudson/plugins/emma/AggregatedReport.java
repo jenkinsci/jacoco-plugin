@@ -8,15 +8,24 @@ import java.util.TreeMap;
  *
  * @author Kohsuke Kawaguchi
  */
-public class AggregatedReport<SELF,C extends AbstractReport<C>> extends AbstractReport<SELF> {
+public abstract class AggregatedReport<
+    PARENT extends AggregatedReport<?,PARENT,?>,
+    SELF extends AggregatedReport<PARENT,SELF,CHILD>,
+    CHILD extends AbstractReport<SELF,CHILD>> extends AbstractReport<PARENT,SELF> {
 
-    private final Map<String,C> children = new TreeMap<String,C>();
+    private final Map<String, CHILD> children = new TreeMap<String, CHILD>();
 
-    public void add(C child) {
+    public void add(CHILD child) {
         children.put(child.getName(),child);
     }
 
-    public Map<String,C> getChildren() {
+    public Map<String, CHILD> getChildren() {
         return children;
+    }
+
+    protected void setParent(PARENT p) {
+        super.setParent(p);
+        for (CHILD c : children.values())
+            c.setParent((SELF)this);
     }
 }

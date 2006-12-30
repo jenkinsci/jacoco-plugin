@@ -9,24 +9,44 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
+ * Root object of the coverage report.
+ * 
  * @author Kohsuke Kawaguchi
  */
-public final class CoverageReport extends AggregatedReport<CoverageReport,PackageReport> {
-    public CoverageReport(InputStream xmlReport) throws IOException {
+public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy*/,CoverageReport,PackageReport> {
+    private final EmmaBuildAction action;
+
+    public CoverageReport(EmmaBuildAction action, InputStream xmlReport) throws IOException {
+        this.action = action;
         try {
             createDigester().parse(xmlReport);
         } catch (SAXException e) {
             throw new IOException2("Failed to parse XML",e);
         }
+        setParent(null);
     }
-    public CoverageReport(File xmlReport) throws IOException {
+    public CoverageReport(EmmaBuildAction action, File xmlReport) throws IOException {
+        this.action = action;
         try {
             createDigester().parse(xmlReport);
         } catch (SAXException e) {
             throw new IOException2("Failed to parse "+xmlReport,e);
         }
+        setParent(null);
     }
 
+    @Override
+    public CoverageReport getPreviousResult() {
+        EmmaBuildAction prev = action.getPreviousResult();
+        if(prev!=null)
+            return prev.getResult();
+        else
+            return null;
+    }
+
+    /**
+     * Creates a configured {@link Digester} instance for parsing report XML.
+     */
     private Digester createDigester() {
         Digester digester = new Digester();
         digester.setClassLoader(getClass().getClassLoader());

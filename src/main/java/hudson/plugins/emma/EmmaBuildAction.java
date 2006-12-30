@@ -82,7 +82,7 @@ public final class EmmaBuildAction implements Action, StaplerProxy {
 
         File reportFile = EmmaPublisher.getEmmaReport(owner);
         try {
-            CoverageReport r = new CoverageReport(reportFile);
+            CoverageReport r = new CoverageReport(this,reportFile);
             report = new WeakReference<CoverageReport>(r);
             return r;
         } catch (IOException e) {
