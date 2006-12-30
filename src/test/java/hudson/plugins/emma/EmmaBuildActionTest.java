@@ -12,6 +12,8 @@ public class EmmaBuildActionTest extends TestCase {
     }
     public void testLoad() throws Exception {
         EmmaBuildAction r = EmmaBuildAction.load(getClass().getResourceAsStream("coverage.xml"));
+        assertEquals(r.classCoverage.getPercentage(),100);
+        assertEquals(r.lineCoverage.getPercentage(),64);
         assertRatio(r.classCoverage, 185,185);
         assertRatio(r.methodCoverage, 1345,2061);
         assertRatio(r.blockCoverage, 44997,74846);

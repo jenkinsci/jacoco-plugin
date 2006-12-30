@@ -1,5 +1,6 @@
 package hudson.plugins.emma;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -16,8 +17,18 @@ final class Ratio implements Serializable {
         this.denominator = denominator;
     }
 
+    /**
+     * Gets "x/y" representation.
+     */
     public String toString() {
         return numerator+"/"+denominator;
+    }
+
+    /**
+     * Gets the percentage in integer.
+     */
+    public int getPercentage() {
+        return Math.round(100*numerator/denominator);
     }
 
     public boolean equals(Object o) {
@@ -26,10 +37,9 @@ final class Ratio implements Serializable {
 
         Ratio ratio = (Ratio) o;
 
-        if (Float.compare(ratio.denominator, denominator) != 0) return false;
-        if (Float.compare(ratio.numerator, numerator) != 0) return false;
+        return Float.compare(ratio.denominator, denominator)==0
+            && Float.compare(ratio.numerator, numerator)==0;
 
-        return true;
     }
 
     public int hashCode() {
@@ -37,6 +47,23 @@ final class Ratio implements Serializable {
         result = numerator != +0.0f ? Float.floatToIntBits(numerator) : 0;
         result = 31 * result + denominator != +0.0f ? Float.floatToIntBits(denominator) : 0;
         return result;
+    }
+
+    /**
+     * Parses the value attribute format of EMMA "52% (52/100)".
+     */
+    static Ratio parseValue(String v) throws IOException {
+        // if only I could use java.util.Scanner...
+
+        // only leave "a/b" in "N% (a/b)"
+        int idx = v.indexOf('(');
+        v = v.substring(idx+1,v.length()-1);
+
+        idx = v.indexOf('/');
+
+        return new Ratio(
+           Float.parseFloat(v.substring(0,idx)),
+           Float.parseFloat(v.substring(idx+1)));
     }
 
     private static final long serialVersionUID = 1L;

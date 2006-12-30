@@ -89,17 +89,7 @@ public class EmmaBuildAction implements Action {
 
     private static Ratio readCoverageTag(XmlPullParser parser) throws IOException, XmlPullParserException {
         String v = parser.getAttributeValue("", "value");
-        // if only I could use java.util.Scanner...
-
-        // only leave "a/b" in "N% (a/b)"
-        int idx = v.indexOf('(');
-        v = v.substring(idx+1,v.length()-1);
-
-        idx = v.indexOf('/');
-
-        Ratio r = new Ratio(
-           Float.parseFloat(v.substring(0,idx)),
-           Float.parseFloat(v.substring(idx+1)));
+        Ratio r = Ratio.parseValue(v);
 
         // move to the next coverage tag.
         parser.nextTag();
