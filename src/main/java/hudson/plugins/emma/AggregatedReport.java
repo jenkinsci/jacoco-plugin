@@ -8,7 +8,7 @@ import java.util.TreeMap;
  *
  * @author Kohsuke Kawaguchi
  */
-public class AggregatedReport<C extends AbstractReport> extends AbstractReport {
+public class AggregatedReport<SELF,C extends AbstractReport<C>> extends AbstractReport<SELF> {
 
     private final Map<String,C> children = new TreeMap<String,C>();
 

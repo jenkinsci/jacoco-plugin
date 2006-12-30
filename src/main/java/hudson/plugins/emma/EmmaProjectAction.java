@@ -9,6 +9,8 @@ import hudson.util.ShiftedCategoryAxis;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
@@ -16,10 +18,12 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleInsets;
+import org.jfree.ui.RectangleEdge;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import java.awt.Color;
+import java.awt.BasicStroke;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -88,10 +92,8 @@ public final class EmmaProjectAction implements Action {
 
         // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
-        // set the background color for the chart...
-
-//        final StandardLegend legend = (StandardLegend) chart.getLegend();
-//        legend.setAnchor(StandardLegend.SOUTH);
+        final LegendTitle legend = chart.getLegend();
+        legend.setPosition(RectangleEdge.RIGHT);
 
         chart.setBackgroundPaint(Color.white);
 
@@ -100,9 +102,6 @@ public final class EmmaProjectAction implements Action {
         // plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlinePaint(null);
-        plot.setForegroundAlpha(0.8f);
-//        plot.setDomainGridlinesVisible(true);
-//        plot.setDomainGridlinePaint(Color.white);
         plot.setRangeGridlinesVisible(true);
         plot.setRangeGridlinePaint(Color.black);
 
@@ -117,6 +116,9 @@ public final class EmmaProjectAction implements Action {
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         rangeAxis.setUpperBound(100);
         rangeAxis.setLowerBound(0);
+
+        final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+        renderer.setStroke(new BasicStroke(4.0f));
 
         // crop extra space around the graph
         plot.setInsets(new RectangleInsets(5.0,0,0,5.0));

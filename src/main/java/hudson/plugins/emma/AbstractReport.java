@@ -9,7 +9,7 @@ import java.io.IOException;
  *
  * @author Kohsuke Kawaguchi
  */
-public abstract class AbstractReport implements ModelObject {
+public abstract class AbstractReport<SELF> implements ModelObject {
 
     private String name;
 
