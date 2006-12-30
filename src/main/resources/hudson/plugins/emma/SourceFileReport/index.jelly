@@ -3,6 +3,7 @@
     <st:include it="${it.build}" page="sidepanel.jelly" />
     <l:main-panel>
       <h1>Source File ${it.name}</h1>
+      <e:floatingTrendGraph/>
 
       <h2>Coverage Summary</h2>
       <e:summaryTable title="${it.name}"/>
