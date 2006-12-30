@@ -12,7 +12,7 @@ final class Ratio implements Serializable {
     public final float numerator;
     public final float denominator;
 
-    public Ratio(float numerator, float denominator) {
+    private Ratio(float numerator, float denominator) {
         this.numerator = numerator;
         this.denominator = denominator;
     }
@@ -69,10 +69,36 @@ final class Ratio implements Serializable {
 
         idx = v.indexOf('/');
 
-        return new Ratio(
+        return Ratio.create(
            Float.parseFloat(v.substring(0,idx)),
            Float.parseFloat(v.substring(idx+1)));
     }
 
     private static final long serialVersionUID = 1L;
+
+//
+// fly-weight patterns for common Ratio instances (x/y) where x<y
+// and x,y are integers.
+//
+    private static final Ratio[] COMMON_INSTANCES = new Ratio[256];
+
+    /**
+     * Creates a new instance of {@link Ratio}.
+     */
+    public static Ratio create(float x, float y) {
+        int xx= (int) x;
+        int yy= (int) y;
+
+        if(xx==x && yy==y) {
+            int idx = yy * (yy + 1) / 2 + xx;
+            if(0<=idx && idx<COMMON_INSTANCES.length) {
+                Ratio r = COMMON_INSTANCES[idx];
+                if(r==null)
+                    COMMON_INSTANCES[idx] = r = new Ratio(x,y);
+                return r;
+            }
+        }
+
+        return new Ratio(x,y);
+    }
 }
