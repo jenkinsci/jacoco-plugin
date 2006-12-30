@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
+ * Reports that have children.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class AggregatedReport<C extends AbstractReport> extends AbstractReport {
@@ -12,5 +14,9 @@ public class AggregatedReport<C extends AbstractReport> extends AbstractReport {
 
     public void add(C child) {
         children.put(child.getName(),child);
+    }
+
+    public Map<String,C> getChildren() {
+        return children;
     }
 }
