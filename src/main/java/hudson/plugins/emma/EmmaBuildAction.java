@@ -2,6 +2,7 @@ package hudson.plugins.emma;
 
 import hudson.model.Action;
 import hudson.model.Build;
+import hudson.model.Result;
 import hudson.util.IOException2;
 import org.kohsuke.stapler.StaplerProxy;
 import org.xmlpull.v1.XmlPullParser;
@@ -21,7 +22,7 @@ import java.util.logging.Logger;
  *
  * @author Kohsuke Kawaguchi
  */
-public class EmmaBuildAction implements Action, StaplerProxy {
+public final class EmmaBuildAction implements Action, StaplerProxy {
     public final Build owner;
 
     /**
@@ -87,6 +88,27 @@ public class EmmaBuildAction implements Action, StaplerProxy {
         } catch (IOException e) {
             logger.log(Level.WARNING, "Failed to load "+reportFile,e);
             return null;
+        }
+    }
+
+    /*package*/ EmmaBuildAction getPreviousResult() {
+        return getPreviousResult(owner);
+    }
+
+    /**
+     * Gets the previous {@link EmmaBuildAction} of the given build.
+     */
+    /*package*/ static EmmaBuildAction getPreviousResult(Build start) {
+        Build b = start;
+        while(true) {
+            b = b.getPreviousBuild();
+            if(b==null)
+                return null;
+            if(b.getResult()== Result.FAILURE)
+                continue;
+            EmmaBuildAction r = b.getAction(EmmaBuildAction.class);
+            if(r!=null)
+                return r;
         }
     }
 

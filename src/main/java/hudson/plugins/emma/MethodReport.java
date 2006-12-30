@@ -3,5 +3,5 @@ package hudson.plugins.emma;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class MethodReport extends AbstractReport {
+public final class MethodReport extends AbstractReport {
 }

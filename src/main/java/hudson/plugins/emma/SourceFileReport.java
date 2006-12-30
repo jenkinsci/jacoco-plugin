@@ -3,5 +3,5 @@ package hudson.plugins.emma;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class SourceFileReport extends AggregatedReport<ClassReport> {
+public final class SourceFileReport extends AggregatedReport<ClassReport> {
 }

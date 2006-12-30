@@ -11,7 +11,7 @@ import java.io.InputStream;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class CoverageReport extends AggregatedReport<PackageReport> {
+public final class CoverageReport extends AggregatedReport<PackageReport> {
     public CoverageReport(InputStream xmlReport) throws IOException {
         try {
             createDigester().parse(xmlReport);

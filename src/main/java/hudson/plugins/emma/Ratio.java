@@ -36,7 +36,14 @@ final class Ratio implements Serializable {
      * Gets the percentage in integer.
      */
     public int getPercentage() {
-        return Math.round(100*numerator/denominator);
+        return Math.round(getPercentageFloat());
+    }
+
+    /**
+     * Gets the percentage in float.
+     */
+    public float getPercentageFloat() {
+        return 100*numerator/denominator;
     }
 
     public boolean equals(Object o) {
