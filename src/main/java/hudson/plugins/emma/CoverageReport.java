@@ -17,8 +17,13 @@ import java.io.InputStream;
 public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy*/,CoverageReport,PackageReport> {
     private final EmmaBuildAction action;
 
-    public CoverageReport(EmmaBuildAction action, InputStream xmlReport) throws IOException {
+    private CoverageReport(EmmaBuildAction action) {
         this.action = action;
+        setName("EmmaBuildAction action");
+    }
+
+    public CoverageReport(EmmaBuildAction action, InputStream xmlReport) throws IOException {
+        this(action);
         try {
             createDigester().parse(xmlReport);
         } catch (SAXException e) {
@@ -26,8 +31,9 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         }
         setParent(null);
     }
+
     public CoverageReport(EmmaBuildAction action, File xmlReport) throws IOException {
-        this.action = action;
+        this(action);
         try {
             createDigester().parse(xmlReport);
         } catch (SAXException e) {

@@ -1,5 +1,9 @@
 package hudson.plugins.emma;
 
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -19,7 +23,7 @@ public abstract class AggregatedReport<
         children.put(child.getName(),child);
     }
 
-    public Map<String, CHILD> getChildren() {
+    public Map<String,CHILD> getChildren() {
         return children;
     }
 
@@ -27,5 +31,9 @@ public abstract class AggregatedReport<
         super.setParent(p);
         for (CHILD c : children.values())
             c.setParent((SELF)this);
+    }
+
+    public CHILD getDynamic(String token, StaplerRequest req, StaplerResponse rsp ) throws IOException {
+        return getChildren().get(token);
     }
 }

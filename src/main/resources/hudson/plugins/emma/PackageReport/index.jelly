@@ -1,0 +1,14 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <l:layout xmlns:e="/hudson/plugins/emma/tags">
+    <st:include it="${it.build}" page="sidepanel.jelly" />
+    <l:main-panel>
+      <h1>Package ${it.name}</h1>
+
+      <h2>Coverage Summary</h2>
+      <e:summaryTable title="${it.name}"/>
+
+      <h2>Coverage Breakdown by Source File</h2>
+      <e:breakdownTable />
+    </l:main-panel>
+  </l:layout>
+</j:jelly>

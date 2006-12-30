@@ -1,0 +1,9 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:e="/hudson/plugins/emma/tags">
+  <table>
+    <e:captionLine />
+    <tr>
+      <td>${title}</td>
+      ${it.printFourCoverageColumns()}
+    </tr>
+  </table>
+</j:jelly>

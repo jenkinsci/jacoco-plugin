@@ -1,0 +1,7 @@
+<tr>
+  <th>name</th>
+  <th>class, %</th>
+  <th>method, %</th>
+  <th>block, %</th>
+  <th>line, %</th>
+</tr>
