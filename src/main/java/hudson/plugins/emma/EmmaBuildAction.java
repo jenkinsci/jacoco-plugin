@@ -3,6 +3,7 @@ package hudson.plugins.emma;
 import hudson.model.Action;
 import hudson.model.Build;
 import hudson.util.IOException2;
+import org.kohsuke.stapler.StaplerProxy;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -11,12 +12,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public class EmmaBuildAction implements Action {
-    /*package*/ Build owner;
+public class EmmaBuildAction implements Action, StaplerProxy {
+    public final Build owner;
 
     /**
      * Total class coverage.
@@ -38,11 +42,50 @@ public class EmmaBuildAction implements Action {
      */
     public final Ratio lineCoverage;
 
-    public EmmaBuildAction(Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage) {
+    private transient WeakReference<CoverageReport> report;
+
+    public EmmaBuildAction(Build owner, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage) {
+        this.owner = owner;
         this.classCoverage = classCoverage;
         this.methodCoverage = methodCoverage;
         this.blockCoverage = blockCoverage;
         this.lineCoverage = lineCoverage;
+    }
+
+    public String getDisplayName() {
+        return "Coverage Report";
+    }
+
+    public String getIconFileName() {
+        return "graph.gif";
+    }
+
+    public String getUrlName() {
+        return "emma";
+    }
+
+    public Object getTarget() {
+        return getResult();
+    }
+
+    /**
+     * Obtains the detailed {@link CoverageReport} instance.
+     */
+    public synchronized CoverageReport getResult() {
+        if(report!=null) {
+            CoverageReport r = report.get();
+            if(r!=null)     return r;
+        }
+
+        File reportFile = EmmaPublisher.getEmmaReport(owner);
+        try {
+            CoverageReport r = new CoverageReport(reportFile);
+            report = new WeakReference<CoverageReport>(r);
+            return r;
+        } catch (IOException e) {
+            logger.log(Level.WARNING, "Failed to load "+reportFile,e);
+            return null;
+        }
     }
 
     /**
@@ -52,18 +95,18 @@ public class EmmaBuildAction implements Action {
      * @throws IOException
      *      if failed to parse the file.
      */
-    public static EmmaBuildAction load(File f) throws IOException {
+    public static EmmaBuildAction load(Build owner, File f) throws IOException {
         FileInputStream in = new FileInputStream(f);
         try {
-            return load(in);
+            return load(owner,in);
         } catch (XmlPullParserException e) {
             throw new IOException2("Failed to parse "+f,e);
         } finally {
             in.close();
         }
     }
-    
-    public static EmmaBuildAction load(InputStream in) throws IOException, XmlPullParserException {
+
+    public static EmmaBuildAction load(Build owner, InputStream in) throws IOException, XmlPullParserException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser parser = factory.newPullParser();
@@ -84,7 +127,7 @@ public class EmmaBuildAction implements Action {
             r[i] = readCoverageTag(parser);
         }
 
-        return new EmmaBuildAction(r[0],r[1],r[2],r[3]);
+        return new EmmaBuildAction(owner,r[0],r[1],r[2],r[3]);
     }
 
     private static Ratio readCoverageTag(XmlPullParser parser) throws IOException, XmlPullParserException {
@@ -98,19 +141,5 @@ public class EmmaBuildAction implements Action {
         return r;
     }
 
-    public Build getOwner() {
-        return owner;
-    }
-
-    public String getDisplayName() {
-        return "Coverage Report";
-    }
-
-    public String getIconFileName() {
-        return "graph.gif";
-    }
-
-    public String getUrlName() {
-        return "emma";
-    }
+    private static final Logger logger = Logger.getLogger(EmmaBuildAction.class.getName());
 }
