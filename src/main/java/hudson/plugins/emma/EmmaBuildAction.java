@@ -17,6 +17,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Build view extension by Emma plugin.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class EmmaBuildAction implements Action, StaplerProxy {

@@ -5,6 +5,8 @@ import hudson.FilePath;
 import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
+import hudson.model.Action;
+import hudson.model.Project;
 import hudson.tasks.Publisher;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -28,9 +30,13 @@ public class EmmaPublisher extends Publisher {
         File localReport = getEmmaReport(build);
         src.copyTo(new FilePath(localReport));
 
-        // TODO: load report into DOM
-        
+        build.getActions().add(EmmaBuildAction.load(build,localReport));
+
         return true;
+    }
+
+    public Action getProjectAction(Project project) {
+        return new EmmaProjectAction(project);
     }
 
     /**
