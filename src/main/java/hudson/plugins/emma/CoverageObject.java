@@ -30,7 +30,7 @@ import java.util.Calendar;
  *
  * @author Kohsuke Kawaguchi
  */
-abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
+public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     /*package*/ Ratio clazz,method,block,line;
 
     public Ratio getClassCoverage() {
@@ -62,6 +62,29 @@ abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
      *      null if no earlier record was found.
      */
     public abstract SELF getPreviousResult();
+
+    /**
+     * Used in the view to print out four table columns with the coverage info.
+     */
+    public final String printFourCoverageColumns() {
+        StringBuilder buf = new StringBuilder();
+        printColumn(clazz,buf);
+        printColumn(method,buf);
+        printColumn(block,buf);
+        printColumn(line,buf);
+        return buf.toString();
+    }
+
+    private void printColumn(Ratio ratio, StringBuilder buf) {
+        buf.append("<td data='>").append(ratio.getPercentageFloat()).append("'>");
+
+        String p = String.valueOf(ratio.getPercentage());
+        for(int i=p.length();i<3;i++)
+            buf.append("&nbsp;");    // padding
+        buf.append(p).append("% (").append(ratio.toString()).append(')');
+
+        buf.append("</td>");
+    }
 
     /**
      * Generates the graph that shows the coverage trend up to this report.
