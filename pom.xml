@@ -1,4 +1,4 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.jvnet.hudson.plugins</groupId>
@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>emma</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
   
@@ -27,4 +27,8 @@
       <version>2.0.5312</version>
     </dependency>
   </dependencies-->
+
+  <scm>
+    <tag>emma-1_0</tag>
+  </scm>
 </project>
