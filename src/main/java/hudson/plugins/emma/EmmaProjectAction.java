@@ -37,10 +37,7 @@ public final class EmmaProjectAction implements Action {
      * Gets the most recent {@link EmmaBuildAction} object.
      */
     public EmmaBuildAction getLastResult() {
-        Build b = project.getLastBuild();
-        while(true) {
-            if(b==null)
-                return null;
+        for( Build b = project.getLastBuild(); b!=null; b=b.getPreviousBuild()) {
             if(b.getResult()== Result.FAILURE)
                 continue;
             EmmaBuildAction r = b.getAction(EmmaBuildAction.class);
@@ -48,6 +45,7 @@ public final class EmmaProjectAction implements Action {
                 return r;
             b = b.getPreviousBuild();
         }
+        return null;
     }
 
     public void doGraph(StaplerRequest req, StaplerResponse rsp) throws IOException {
