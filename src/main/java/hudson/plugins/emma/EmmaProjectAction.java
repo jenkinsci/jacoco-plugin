@@ -43,7 +43,6 @@ public final class EmmaProjectAction implements Action {
             EmmaBuildAction r = b.getAction(EmmaBuildAction.class);
             if(r!=null)
                 return r;
-            b = b.getPreviousBuild();
         }
         return null;
     }

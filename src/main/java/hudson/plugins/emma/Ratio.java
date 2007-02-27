@@ -77,9 +77,21 @@ final class Ratio implements Serializable {
         idx = v.indexOf('/');
 
         return Ratio.create(
-           Float.parseFloat(v.substring(0,idx)),
-           Float.parseFloat(v.substring(idx+1)));
+           parseFloat(v.substring(0,idx)),
+           parseFloat(v.substring(idx+1)));
     }
+
+     /**
+      * Parses the float value stored in a string. Uses simple heuristics to
+      * handle comma or dot as a decimal point.
+      */
+     private static float parseFloat(String v) {
+         int idx = v.indexOf(',');
+         if (idx >= 0) {
+             v = v.substring(0, idx) + "." + v.substring(idx+1);
+         }
+         return Float.parseFloat(v);
+     }
 
     private static final long serialVersionUID = 1L;
 
