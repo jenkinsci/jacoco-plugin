@@ -1,7 +1,11 @@
-<tr>
-  <th>name</th>
-  <th>class, %</th>
-  <th>method, %</th>
-  <th>block, %</th>
-  <th>line, %</th>
-</tr>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:e="/hudson/plugins/emma/tags">
+  <tr>
+    <th>name</th>
+    <th>class, %</th>
+    <th>method, %</th>
+    <th>block, %</th>
+    <j:if test="${it.hasLineCoverage()}">
+      <th>line, %</th>
+    </j:if>
+  </tr>
+</j:jelly>

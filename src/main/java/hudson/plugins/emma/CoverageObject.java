@@ -45,6 +45,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         return block;
     }
 
+    /**
+     * Line converage. Can be null if this information is not collected.
+     */
     public Ratio getLineCoverage() {
         return line;
     }
@@ -79,6 +82,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     }
 
     private void printColumn(Ratio ratio, StringBuilder buf) {
+        if(ratio==null)     return; // not recorded
+
         buf.append("<td data='>").append(ratio.getPercentageFloat()).append("'>");
 
         String p = String.valueOf(ratio.getPercentage());
@@ -112,7 +117,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
             dsb.add( a.clazz.getPercentageFloat(), "class", label);
             dsb.add( a.block.getPercentageFloat(), "block", label);
             dsb.add( a.method.getPercentageFloat(), "method", label);
-            dsb.add( a.line.getPercentageFloat(), "line", label);
+            if(a.line!=null)
+                dsb.add( a.line.getPercentageFloat(), "line", label);
         }
 
         ChartUtil.generateGraph(req,rsp,createChart(dsb.build()),400,200);

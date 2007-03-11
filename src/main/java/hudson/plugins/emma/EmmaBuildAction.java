@@ -135,6 +135,8 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
         // head for the first <coverage> tag.
         Ratio[] r = new Ratio[4];
         for( int i=0; i<r.length; i++ ) {
+            if(!parser.getName().equals("coverage"))
+                break;  // line coverage is optional
             parser.require(XmlPullParser.START_TAG,"","coverage");
             r[i] = readCoverageTag(parser);
         }
