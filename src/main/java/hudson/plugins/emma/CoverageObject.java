@@ -81,6 +81,10 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         return buf.toString();
     }
 
+    public boolean hasLineCoverage() {
+        return line!=null;
+    }
+
     private void printColumn(Ratio ratio, StringBuilder buf) {
         if(ratio==null)     return; // not recorded
 
