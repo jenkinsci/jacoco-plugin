@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>emma</artifactId>
-  <version>1.5</version>
+  <version>1.6-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
   
@@ -27,8 +27,4 @@
       <version>2.0.5312</version>
     </dependency>
   </dependencies-->
-
-  <scm>
-    <tag>emma-1_5</tag>
-  </scm>
 </project>
