@@ -32,6 +32,20 @@ import java.util.Calendar;
  */
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     /*package*/ Ratio clazz,method,block,line;
+    
+    private volatile boolean failed = false;
+
+    public boolean isFailed() {
+        return failed;
+    }
+
+    /**
+     * Marks this coverage object as failed.
+     * @see Rule
+     */
+    public void setFailed() {
+        failed = true;
+    }
 
     public Ratio getClassCoverage() {
         return clazz;
@@ -88,7 +102,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     private void printColumn(Ratio ratio, StringBuilder buf) {
         if(ratio==null)     return; // not recorded
 
-        buf.append("<td data='>").append(ratio.getPercentageFloat()).append("'>");
+       if (isFailed())
+          buf.append("<td bgcolor=red");
+       else
+          buf.append("<td");
+
+        buf.append(" data='>").append(ratio.getPercentageFloat()).append("'>");
 
         String p = String.valueOf(ratio.getPercentage());
         for(int i=p.length();i<3;i++)

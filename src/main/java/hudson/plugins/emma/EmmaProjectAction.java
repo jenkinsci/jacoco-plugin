@@ -48,6 +48,7 @@ public final class EmmaProjectAction implements Action {
     }
 
     public void doGraph(StaplerRequest req, StaplerResponse rsp) throws IOException {
-        getLastResult().doGraph(req,rsp);
+       if (getLastResult() != null)
+          getLastResult().doGraph(req,rsp);
     }
 }

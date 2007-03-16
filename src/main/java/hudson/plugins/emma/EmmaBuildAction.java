@@ -4,6 +4,8 @@ import hudson.model.Action;
 import hudson.model.Build;
 import hudson.model.Result;
 import hudson.util.IOException2;
+import hudson.util.StreamTaskListener;
+import hudson.util.NullStream;
 import org.kohsuke.stapler.StaplerProxy;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -29,8 +31,14 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
 
     private transient WeakReference<CoverageReport> report;
 
-    public EmmaBuildAction(Build owner, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage) {
+    /**
+     * Non-null if the coverage has pass/fail rules.
+     */
+    private final Rule rule;
+
+    public EmmaBuildAction(Build owner, Rule rule, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage) {
         this.owner = owner;
+        this.rule = rule;
         this.clazz = classCoverage;
         this.method = methodCoverage;
         this.block = blockCoverage;
@@ -70,6 +78,13 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
         File reportFile = EmmaPublisher.getEmmaReport(owner);
         try {
             CoverageReport r = new CoverageReport(this,reportFile);
+
+            if(rule!=null) {
+                // we change the report so that the FAILED flag is set correctly
+                logger.info("calculating failed packages based on " + rule);
+                rule.enforce(r,new StreamTaskListener(new NullStream()));
+            }
+
             report = new WeakReference<CoverageReport>(r);
             return r;
         } catch (IOException e) {
@@ -107,10 +122,10 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      * @throws IOException
      *      if failed to parse the file.
      */
-    public static EmmaBuildAction load(Build owner, File f) throws IOException {
+    public static EmmaBuildAction load(Build owner, Rule rule, File f) throws IOException {
         FileInputStream in = new FileInputStream(f);
         try {
-            return load(owner,in);
+            return load(owner,rule,in);
         } catch (XmlPullParserException e) {
             throw new IOException2("Failed to parse "+f,e);
         } finally {
@@ -118,7 +133,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
         }
     }
 
-    public static EmmaBuildAction load(Build owner, InputStream in) throws IOException, XmlPullParserException {
+    public static EmmaBuildAction load(Build owner, Rule rule, InputStream in) throws IOException, XmlPullParserException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser parser = factory.newPullParser();
@@ -141,7 +156,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
             r[i] = readCoverageTag(parser);
         }
 
-        return new EmmaBuildAction(owner,r[0],r[1],r[2],r[3]);
+        return new EmmaBuildAction(owner,rule,r[0],r[1],r[2],r[3]);
     }
 
     private static Ratio readCoverageTag(XmlPullParser parser) throws IOException, XmlPullParserException {

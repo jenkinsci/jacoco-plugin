@@ -8,7 +8,7 @@ import java.io.Serializable;
  * 
  * @author Kohsuke Kawaguchi
  */
-final class Ratio implements Serializable {
+final public class Ratio implements Serializable {
     public final float numerator;
     public final float denominator;
 

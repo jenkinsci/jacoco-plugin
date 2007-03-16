@@ -36,4 +36,12 @@ public abstract class AggregatedReport<
     public CHILD getDynamic(String token, StaplerRequest req, StaplerResponse rsp ) throws IOException {
         return getChildren().get(token);
     }
+    
+    @Override
+    public void setFailed() {
+        super.setFailed();
+
+        if (getParent() != null)
+            getParent().setFailed();
+    }
 }

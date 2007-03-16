@@ -6,4 +6,10 @@
            ">
     <f:textbox name="emma.includes" value="${instance.includes}"/>
   </f:entry>
+  <!--
+  <f:entry title="MinLine Coverage %"
+           description="% min line coverage (between 0 and 100) - 0 is as if you disable MinLineCoverage-Enforcer.">
+    <f:textbox name="emma.minLineCoveragePerSource" value="${instance.minLineCoveragePerSource}"/>
+  </f:entry>
+  -->
 </j:jelly>
