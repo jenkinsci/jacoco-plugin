@@ -39,6 +39,17 @@ public class EmmaPublisher extends Publisher {
         logger.println("Recording Emma reports " + includes);
 
         final FilePath src = build.getProject().getWorkspace().child(includes);
+
+        if(!src.exists()) {
+            if(build.getResult().isWorseThan(Result.UNSTABLE))
+                // build has failed, so that's probably why this was not generated.
+                // so don't report an error
+                return true;
+            logger.println("Coverage file "+src+" not found. Has the report generated?");
+            build.setResult(Result.FAILURE);
+            return true;
+        }
+
         final File localReport = getEmmaReport(build);
         src.copyTo(new FilePath(localReport));
 
