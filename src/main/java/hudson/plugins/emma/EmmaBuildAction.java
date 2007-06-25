@@ -102,7 +102,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      * Gets the previous {@link EmmaBuildAction} of the given build.
      */
     /*package*/ static EmmaBuildAction getPreviousResult(Build start) {
-        Build b = start;
+        Build<?,?> b = start;
         while(true) {
             b = b.getPreviousBuild();
             if(b==null)

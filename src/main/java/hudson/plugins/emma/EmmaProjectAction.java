@@ -15,7 +15,7 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 public final class EmmaProjectAction implements Action {
-    public final Project project;
+    public final Project<?,?> project;
 
     public EmmaProjectAction(Project project) {
         this.project = project;
@@ -37,7 +37,7 @@ public final class EmmaProjectAction implements Action {
      * Gets the most recent {@link EmmaBuildAction} object.
      */
     public EmmaBuildAction getLastResult() {
-        for( Build b = project.getLastBuild(); b!=null; b=b.getPreviousBuild()) {
+        for( Build<?,?> b = project.getLastBuild(); b!=null; b=b.getPreviousBuild()) {
             if(b.getResult()== Result.FAILURE)
                 continue;
             EmmaBuildAction r = b.getAction(EmmaBuildAction.class);
