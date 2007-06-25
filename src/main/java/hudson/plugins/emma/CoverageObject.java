@@ -5,6 +5,7 @@ import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.DataSetBuilder;
 import hudson.util.ShiftedCategoryAxis;
+import hudson.util.ColorPalette;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -189,6 +190,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
         final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
         renderer.setStroke(new BasicStroke(4.0f));
+        ColorPalette.apply(renderer);
 
         // crop extra space around the graph
         plot.setInsets(new RectangleInsets(5.0,0,0,5.0));
