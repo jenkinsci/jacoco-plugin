@@ -5,7 +5,7 @@ package hudson.plugins.emma;
  */
 public class EmmaBuildActionTest extends AbstractEmmaTestBase {
     public void testLoad() throws Exception {
-        EmmaBuildAction r = EmmaBuildAction.load(null,null,getClass().getResourceAsStream("coverage.xml"));
+        EmmaBuildAction r = EmmaBuildAction.load(null,null,null,getClass().getResourceAsStream("coverage.xml"));
         assertEquals(r.clazz.getPercentage(),100);
         assertEquals(r.line.getPercentage(),64);
         assertRatio(r.clazz, 185,185);
