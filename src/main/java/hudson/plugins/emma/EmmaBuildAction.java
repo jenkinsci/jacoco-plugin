@@ -1,8 +1,9 @@
 package hudson.plugins.emma;
 
-import hudson.model.Action;
 import hudson.model.Build;
 import hudson.model.Result;
+import hudson.model.HealthReportingAction;
+import hudson.model.HealthReport;
 import hudson.util.IOException2;
 import hudson.util.StreamTaskListener;
 import hudson.util.NullStream;
@@ -26,7 +27,7 @@ import java.util.logging.Logger;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> implements Action, StaplerProxy {
+public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> implements HealthReportingAction, StaplerProxy {
     public final Build owner;
 
     private transient WeakReference<CoverageReport> report;
@@ -36,13 +37,20 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      */
     private final Rule rule;
 
-    public EmmaBuildAction(Build owner, Rule rule, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage) {
+    /**
+     * The thresholds that applied when this build was built.
+     * @TODO add ability to trend thresholds on the graph
+     */
+    private final EmmaHealthReportThresholds thresholds;
+
+    public EmmaBuildAction(Build owner, Rule rule, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage, EmmaHealthReportThresholds thresholds) {
         this.owner = owner;
         this.rule = rule;
         this.clazz = classCoverage;
         this.method = methodCoverage;
         this.block = blockCoverage;
         this.line = lineCoverage;
+        this.thresholds = thresholds;
     }
 
     public String getDisplayName() {
@@ -55,6 +63,72 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
 
     public String getUrlName() {
         return "emma";
+    }
+
+    /**
+     * Get the coverage {@link hudson.model.HealthReport}.
+     *
+     * @return The health report or <code>null</code> if health reporting is disabled.
+     * @since 1.7
+     */
+    public HealthReport getBuildHealth() {
+        if (thresholds == null) {
+            // no thresholds => no report
+            return null;
+        }
+        thresholds.ensureValid();
+        int score = 100;
+        StringBuilder description = new StringBuilder("Coverage: ");
+        if (clazz != null && thresholds.getMaxClass() > 0) {
+            score = updateHealthReport(score, "Classes",
+                            thresholds.getMinClass(),
+                            clazz,
+                            thresholds.getMaxClass(),
+                            description);
+        }
+        if (method != null && thresholds.getMaxMethod() > 0) {
+            score = updateHealthReport(score, "Methods",
+                            thresholds.getMinMethod(),
+                            method,
+                            thresholds.getMaxMethod(),
+                            description);
+        }
+        if (block != null && thresholds.getMaxBlock() > 0) {
+            score = updateHealthReport(score, "Blocks",
+                            thresholds.getMinBlock(),
+                            block,
+                            thresholds.getMaxBlock(),
+                            description);
+        }
+        if (line != null && thresholds.getMaxLine() > 0) {
+            score = updateHealthReport(score, "Lines",
+                            thresholds.getMinLine(),
+                            line,
+                            thresholds.getMaxLine(),
+                            description);
+        }
+        if (score == 100) {
+            description.append("All coverage targets have been met.");
+        }
+        return new HealthReport(score, description.toString());
+    }
+
+    private int updateHealthReport(int score, String name, int min, Ratio coverage, int max, StringBuilder title) {
+        final int value = coverage.getPercentage();
+        if (value < max) {
+            title.append(name);
+            title.append(' ');
+            title.append(coverage);
+            title.append(" (");
+            title.append(value);
+            title.append("%). ");
+        }
+        if (value >= max) return score;
+        if (value <= min) return 0;
+        assert max != min;
+        final int scaled = (int) (100.0 * ((float) value - min) / (max - min));
+        if (scaled < score) return scaled;
+        return score;
     }
 
     public Object getTarget() {
@@ -122,10 +196,10 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      * @throws IOException
      *      if failed to parse the file.
      */
-    public static EmmaBuildAction load(Build owner, Rule rule, File f) throws IOException {
+    public static EmmaBuildAction load(Build owner, Rule rule, EmmaHealthReportThresholds thresholds, File f) throws IOException {
         FileInputStream in = new FileInputStream(f);
         try {
-            return load(owner,rule,in);
+            return load(owner,rule,thresholds,in);
         } catch (XmlPullParserException e) {
             throw new IOException2("Failed to parse "+f,e);
         } finally {
@@ -133,7 +207,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
         }
     }
 
-    public static EmmaBuildAction load(Build owner, Rule rule, InputStream in) throws IOException, XmlPullParserException {
+    public static EmmaBuildAction load(Build owner, Rule rule, EmmaHealthReportThresholds thresholds, InputStream in) throws IOException, XmlPullParserException {
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser parser = factory.newPullParser();
@@ -156,7 +230,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
             r[i] = readCoverageTag(parser);
         }
 
-        return new EmmaBuildAction(owner,rule,r[0],r[1],r[2],r[3]);
+        return new EmmaBuildAction(owner,rule,r[0],r[1],r[2],r[3],thresholds);
     }
 
     private static Ratio readCoverageTag(XmlPullParser parser) throws IOException, XmlPullParserException {

@@ -17,7 +17,7 @@ import java.io.PrintStream;
 
 /**
  * {@link Publisher} that captures Emma coverage reports.
- * 
+ *
  * @author Kohsuke Kawaguchi
  */
 public class EmmaPublisher extends Publisher {
@@ -32,6 +32,11 @@ public class EmmaPublisher extends Publisher {
      * TODO: define a configuration mechanism.
      */
     public Rule rule;
+
+    /**
+     * {@link hudson.model.HealthReport} thresholds to apply.
+     */
+    public EmmaHealthReportThresholds healthReports = new EmmaHealthReportThresholds();
 
     public boolean perform(Build build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
@@ -53,7 +58,7 @@ public class EmmaPublisher extends Publisher {
         final File localReport = getEmmaReport(build);
         src.copyTo(new FilePath(localReport));
 
-        final EmmaBuildAction action = EmmaBuildAction.load(build,rule,localReport);
+        final EmmaBuildAction action = EmmaBuildAction.load(build,rule,healthReports,localReport);
 
         build.getActions().add(action);
 
@@ -98,6 +103,27 @@ public class EmmaPublisher extends Publisher {
         public Publisher newInstance(StaplerRequest req) throws FormException {
             EmmaPublisher pub = new EmmaPublisher();
             req.bindParameters(pub, "emma.");
+            req.bindParameters(pub.healthReports, "emmaHealthReports.");
+            // start ugly hack
+            //@TODO remove ugly hack
+            // the default converter for integer values used by req.bindParameters
+            // defaults an empty value to 0. This happens even if the type is Integer
+            // and not int.  We want to change the default values, so we use this hack.
+            //
+            // If you know a better way, please fix.
+            if ("".equals(req.getParameter("emmaHealthReports.maxClass"))) {
+                pub.healthReports.setMaxClass(100);
+            }
+            if ("".equals(req.getParameter("emmaHealthReports.maxMethod"))) {
+                pub.healthReports.setMaxMethod(70);
+            }
+            if ("".equals(req.getParameter("emmaHealthReports.maxBlock"))) {
+                pub.healthReports.setMaxBlock(80);
+            }
+            if ("".equals(req.getParameter("emmaHealthReports.maxLine"))) {
+                pub.healthReports.setMaxLine(80);
+            }
+            // end ugly hack
             return pub;
         }
     }

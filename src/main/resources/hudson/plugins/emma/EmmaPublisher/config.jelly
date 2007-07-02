@@ -12,4 +12,64 @@
     <f:textbox name="emma.minLineCoveragePerSource" value="${instance.minLineCoveragePerSource}"/>
   </f:entry>
   -->
+    <f:entry title="Health reporting"
+             description="
+             Configure health reporting thresholds. &lt;br/&gt;
+             For the &lt;img src='/images/16x16/health-80plus.gif' alt='100%'&gt;
+             row, leave blank to use the default values (i.e. 100, 70, 80, and 80 for class, method, block
+             and line respectively). &lt;br/&gt;
+             For the &lt;img src='/images/16x16/health-00to19.gif' alt='0%'&gt; row, leave blank to
+             use the default values (i.e. 0).
+    ">
+        <table>
+            <thead>
+                <tr>
+                    <td width="20%"></td>
+                    <td width="20%">% Class</td>
+                    <td width="20%">% Method</td>
+                    <td width="20%">% Block</td>
+                    <td width="20%">% Line</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>
+                        <img src="/images/16x16/health-80plus.gif" alt="100%"
+                             title="Report health as 100% when coverage is greater than"/>
+                    </th>
+                    <td>
+                        <f:textbox name="emmaHealthReports.maxClass" value="${instance.healthReports.maxClass}" />
+                    </td>
+                    <td>
+                        <f:textbox name="emmaHealthReports.maxMethod" value="${instance.healthReports.maxMethod}" />
+                    </td>
+                    <td>
+                        <f:textbox name="emmaHealthReports.maxBlock" value="${instance.healthReports.maxBlock}" />
+                    </td>
+                    <td>
+                        <f:textbox name="emmaHealthReports.maxLine" value="${instance.healthReports.maxLine}" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <img src="/images/16x16/health-00to19.gif" alt="0%"
+                             title="Report health as 0% when coverage is less than"/>
+                    </th>
+                    <td>
+                        <f:textbox name="emmaHealthReports.minClass" value="${instance.healthReports.minClass}" />
+                    </td>
+                    <td>
+                        <f:textbox name="emmaHealthReports.minMethod" value="${instance.healthReports.minMethod}" />
+                    </td>
+                    <td>
+                        <f:textbox name="emmaHealthReports.minBlock" value="${instance.healthReports.minBlock}" />
+                    </td>
+                    <td>
+                        <f:textbox name="emmaHealthReports.minLine" value="${instance.healthReports.minLine}" />
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+    </f:entry>
 </j:jelly>
