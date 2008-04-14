@@ -7,7 +7,6 @@ import hudson.tasks.Publisher;
  * Entry point of the plugin.
  *
  * @author Kohsuke Kawaguchi
- * @plugin
  */
 public class PluginImpl extends Plugin {
     @Override
