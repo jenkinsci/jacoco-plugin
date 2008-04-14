@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import net.sf.json.JSONObject;
+
 /**
  * {@link Publisher} that captures Emma coverage reports.
  *
@@ -106,7 +108,7 @@ public class EmmaPublisher extends Publisher {
             return true;
         }
 
-        public Publisher newInstance(StaplerRequest req) throws FormException {
+        public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
             EmmaPublisher pub = new EmmaPublisher();
             req.bindParameters(pub, "emma.");
             req.bindParameters(pub.healthReports, "emmaHealthReports.");
