@@ -1,11 +1,11 @@
 package hudson.plugins.emma;
 
-import hudson.model.Build;
+import hudson.model.AbstractBuild;
 import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
+import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
 import hudson.util.ShiftedCategoryAxis;
-import hudson.util.ColorPalette;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -21,8 +21,7 @@ import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
+import java.awt.*;
 import java.io.IOException;
 import java.util.Calendar;
 
@@ -70,7 +69,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     /**
      * Gets the build object that owns the whole coverage report tree.
      */
-    public abstract Build getBuild();
+    public abstract AbstractBuild getBuild();
 
     /**
      * Gets the corresponding coverage report object in the previous
@@ -128,7 +127,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
             return;
         }
 
-        Build build = getBuild();
+        AbstractBuild build = getBuild();
         Calendar t = build.getTimestamp();
 
         if(req.checkIfModified(t,rsp))

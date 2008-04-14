@@ -1,6 +1,6 @@
 package hudson.plugins.emma;
 
-import hudson.model.Build;
+import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
 
 import java.io.IOException;
@@ -64,7 +64,7 @@ public abstract class AbstractReport<
     }
 
     @Override
-    public Build getBuild() {
+    public AbstractBuild getBuild() {
         return parent.getBuild();
     }
 }

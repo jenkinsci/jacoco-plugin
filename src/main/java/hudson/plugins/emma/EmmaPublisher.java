@@ -2,12 +2,14 @@ package hudson.plugins.emma;
 
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.model.Build;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor;
 import hudson.model.Project;
 import hudson.model.Result;
+import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -38,7 +40,7 @@ public class EmmaPublisher extends Publisher {
      */
     public EmmaHealthReportThresholds healthReports = new EmmaHealthReportThresholds();
 
-    public boolean perform(Build build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         final PrintStream logger = listener.getLogger();
 
         logger.println("Recording Emma reports " + includes);
@@ -77,7 +79,7 @@ public class EmmaPublisher extends Publisher {
     /**
      * Gets the directory to store report files
      */
-    static File getEmmaReport(Build build) {
+    static File getEmmaReport(AbstractBuild build) {
         return new File(build.getRootDir(), "emma.xml");
     }
 
@@ -87,7 +89,7 @@ public class EmmaPublisher extends Publisher {
 
     public static final Descriptor<Publisher> DESCRIPTOR = new DescriptorImpl();
 
-    public static class DescriptorImpl extends Descriptor<Publisher> {
+    public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
             super(EmmaPublisher.class);
         }
@@ -98,6 +100,10 @@ public class EmmaPublisher extends Publisher {
 
         public String getHelpFile() {
             return "/plugin/emma/help.html";
+        }
+
+        public boolean isApplicable(Class<? extends AbstractProject> aClass) {
+            return true;
         }
 
         public Publisher newInstance(StaplerRequest req) throws FormException {
