@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>emma</artifactId>
-  <version>1.9-SNAPSHOT</version>
+  <version>1.9</version>
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
   <url>http://hudson.gotdns.com/wiki/display/HUDSON/Emma+Plugin</url>
@@ -20,4 +20,10 @@
       <version>2.0.5312</version>
     </dependency>
   </dependencies-->
+
+  <scm>
+    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/emma-1.9</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/emma-1.9</developerConnection>
+    <url>https://hudson.dev.java.net/source/browse/hudson/hudson/plugins/emma/tags/emma-1.9</url>
+  </scm>
 </project>
