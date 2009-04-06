@@ -1,8 +1,8 @@
 package hudson.plugins.emma;
 
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
 import hudson.model.Action;
-import hudson.model.Build;
-import hudson.model.Project;
 import hudson.model.Result;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -15,9 +15,9 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 public final class EmmaProjectAction implements Action {
-    public final Project<?,?> project;
+    public final AbstractProject<?,?> project;
 
-    public EmmaProjectAction(Project project) {
+    public EmmaProjectAction(AbstractProject project) {
         this.project = project;
     }
 
@@ -37,7 +37,7 @@ public final class EmmaProjectAction implements Action {
      * Gets the most recent {@link EmmaBuildAction} object.
      */
     public EmmaBuildAction getLastResult() {
-        for( Build<?,?> b = project.getLastBuild(); b!=null; b=b.getPreviousBuild()) {
+        for( AbstractBuild<?,?> b = project.getLastBuild(); b!=null; b=b.getPreviousBuild()) {
             if(b.getResult()== Result.FAILURE)
                 continue;
             EmmaBuildAction r = b.getAction(EmmaBuildAction.class);

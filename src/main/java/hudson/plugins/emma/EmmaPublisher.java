@@ -11,6 +11,8 @@ import hudson.model.Project;
 import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Publisher;
+import hudson.tasks.Recorder;
+
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
@@ -24,7 +26,7 @@ import net.sf.json.JSONObject;
  *
  * @author Kohsuke Kawaguchi
  */
-public class EmmaPublisher extends Publisher {
+public class EmmaPublisher extends Recorder {
     /**
      * Relative path to the Emma XML file inside the workspace.
      */
@@ -74,7 +76,7 @@ public class EmmaPublisher extends Publisher {
         return true;
     }
 
-    public Action getProjectAction(Project project) {
+    public Action getProjectAction(AbstractProject<?, ?> project) {
         return new EmmaProjectAction(project);
     }
 
@@ -85,11 +87,11 @@ public class EmmaPublisher extends Publisher {
         return new File(build.getRootDir(), "emma.xml");
     }
 
-    public Descriptor<Publisher> getDescriptor() {
+    public BuildStepDescriptor<Publisher> getDescriptor() {
         return DESCRIPTOR;
     }
 
-    public static final Descriptor<Publisher> DESCRIPTOR = new DescriptorImpl();
+    public static final BuildStepDescriptor<Publisher> DESCRIPTOR = new DescriptorImpl();
 
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
