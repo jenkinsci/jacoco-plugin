@@ -11,7 +11,7 @@
   <version>1.10-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
-  <url>http://hudson.gotdns.com/wiki/display/HUDSON/Emma+Plugin</url>
+  <url>http://wiki.hudson-ci.org/display/HUDSON/Emma+Plugin</url>
   
   <!--dependencies>
     <dependency>
