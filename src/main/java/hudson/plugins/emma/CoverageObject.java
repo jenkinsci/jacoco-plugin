@@ -1,6 +1,7 @@
 package hudson.plugins.emma;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Api;
 import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.ColorPalette;
@@ -20,6 +21,8 @@ import org.jfree.ui.RectangleEdge;
 import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
 
 import java.awt.*;
 import java.io.IOException;
@@ -30,6 +33,7 @@ import java.util.Calendar;
  *
  * @author Kohsuke Kawaguchi
  */
+@ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     /*package*/ Ratio clazz,method,block,line;
     
@@ -47,14 +51,17 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         failed = true;
     }
 
+    @Exported(inline=true)
     public Ratio getClassCoverage() {
         return clazz;
     }
 
+    @Exported(inline=true)
     public Ratio getMethodCoverage() {
         return method;
     }
 
+    @Exported(inline=true)
     public Ratio getBlockCoverage() {
         return block;
     }
@@ -62,6 +69,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     /**
      * Line converage. Can be null if this information is not collected.
      */
+    @Exported(inline=true)
     public Ratio getLineCoverage() {
         return line;
     }
@@ -78,6 +86,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
      * @return
      *      null if no earlier record was found.
      */
+    @Exported
     public abstract SELF getPreviousResult();
 
     /**
@@ -145,6 +154,10 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         }
 
         ChartUtil.generateGraph(req,rsp,createChart(dsb.build()),400,200);
+    }
+    
+    public Api getApi() {
+    	return new Api(this);
     }
 
     private JFreeChart createChart(CategoryDataset dataset) {

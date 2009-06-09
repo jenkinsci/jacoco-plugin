@@ -3,11 +3,15 @@ package hudson.plugins.emma;
 import java.io.IOException;
 import java.io.Serializable;
 
+import org.kohsuke.stapler.export.Exported;
+import org.kohsuke.stapler.export.ExportedBean;
+
 /**
  * Represents <tt>x/y</tt> where x={@link #numerator} and y={@link #denominator}.
  * 
  * @author Kohsuke Kawaguchi
  */
+@ExportedBean
 final public class Ratio implements Serializable {
     public final float numerator;
     public final float denominator;
@@ -35,6 +39,7 @@ final public class Ratio implements Serializable {
     /**
      * Gets the percentage in integer.
      */
+    @Exported
     public int getPercentage() {
         return Math.round(getPercentageFloat());
     }
@@ -42,6 +47,7 @@ final public class Ratio implements Serializable {
     /**
      * Gets the percentage in float.
      */
+    @Exported
     public float getPercentageFloat() {
         return 100*numerator/denominator;
     }
