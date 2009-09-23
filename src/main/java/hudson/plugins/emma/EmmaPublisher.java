@@ -1,15 +1,15 @@
 package hudson.plugins.emma;
 
+import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
-import hudson.model.Descriptor;
-import hudson.model.Project;
 import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 
@@ -49,7 +49,7 @@ public class EmmaPublisher extends Recorder {
 
         logger.println("Recording Emma reports " + includes);
 
-        final FilePath src = build.getProject().getWorkspace().child(includes);
+        final FilePath src = build.getWorkspace().child(includes);
 
         if(!src.exists()) {
             if(build.getResult().isWorseThan(Result.UNSTABLE))
@@ -76,8 +76,13 @@ public class EmmaPublisher extends Recorder {
         return true;
     }
 
+    @Override
     public Action getProjectAction(AbstractProject<?, ?> project) {
         return new EmmaProjectAction(project);
+    }
+
+    public BuildStepMonitor getRequiredMonitorService() {
+        return BuildStepMonitor.BUILD;
     }
 
     /**
@@ -87,10 +92,12 @@ public class EmmaPublisher extends Recorder {
         return new File(build.getRootDir(), "emma.xml");
     }
 
+    @Override
     public BuildStepDescriptor<Publisher> getDescriptor() {
         return DESCRIPTOR;
     }
 
+    @Extension
     public static final BuildStepDescriptor<Publisher> DESCRIPTOR = new DescriptorImpl();
 
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
@@ -102,6 +109,7 @@ public class EmmaPublisher extends Recorder {
             return "Record Emma coverage report";
         }
 
+        @Override
         public String getHelpFile() {
             return "/plugin/emma/help.html";
         }
@@ -110,6 +118,7 @@ public class EmmaPublisher extends Recorder {
             return true;
         }
 
+        @Override
         public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
             EmmaPublisher pub = new EmmaPublisher();
             req.bindParameters(pub, "emma.");

@@ -17,8 +17,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.jvnet.localizer.Localizable;
 
 /**
  * Build view extension by Emma plugin.
@@ -77,52 +79,51 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
             return null;
         }
         thresholds.ensureValid();
-        int score = 100;
-        StringBuilder description = new StringBuilder("Coverage: ");
+        int score = 100, percent;
+        ArrayList<Localizable> reports = new ArrayList<Localizable>(5);
         if (clazz != null && thresholds.getMaxClass() > 0) {
-            score = updateHealthReport(score, "Classes",
-                            thresholds.getMinClass(),
-                            clazz,
-                            thresholds.getMaxClass(),
-                            description);
+            percent = clazz.getPercentage();
+            if (percent < thresholds.getMaxClass()) {
+                reports.add(Messages._BuildAction_Classes(clazz, percent));
+            }
+            score = updateHealthScore(score, thresholds.getMinClass(),
+                                      percent, thresholds.getMaxClass());
         }
         if (method != null && thresholds.getMaxMethod() > 0) {
-            score = updateHealthReport(score, "Methods",
-                            thresholds.getMinMethod(),
-                            method,
-                            thresholds.getMaxMethod(),
-                            description);
+            percent = method.getPercentage();
+            if (percent < thresholds.getMaxMethod()) {
+                reports.add(Messages._BuildAction_Methods(method, percent));
+            }
+            score = updateHealthScore(score, thresholds.getMinMethod(),
+                                      percent, thresholds.getMaxMethod());
         }
         if (block != null && thresholds.getMaxBlock() > 0) {
-            score = updateHealthReport(score, "Blocks",
-                            thresholds.getMinBlock(),
-                            block,
-                            thresholds.getMaxBlock(),
-                            description);
+            percent = block.getPercentage();
+            if (percent < thresholds.getMaxBlock()) {
+                reports.add(Messages._BuildAction_Blocks(block, percent));
+            }
+            score = updateHealthScore(score, thresholds.getMinBlock(),
+                                      percent, thresholds.getMaxBlock());
         }
         if (line != null && thresholds.getMaxLine() > 0) {
-            score = updateHealthReport(score, "Lines",
-                            thresholds.getMinLine(),
-                            line,
-                            thresholds.getMaxLine(),
-                            description);
+            percent = line.getPercentage();
+            if (percent < thresholds.getMaxLine()) {
+                reports.add(Messages._BuildAction_Lines(line, percent));
+            }
+            score = updateHealthScore(score, thresholds.getMinLine(),
+                                      percent, thresholds.getMaxLine());
         }
         if (score == 100) {
-            description.append("All coverage targets have been met.");
+            reports.add(Messages._BuildAction_Perfect());
         }
-        return new HealthReport(score, description.toString());
+        // Collect params and replace nulls with empty string
+        Object[] args = reports.toArray(new Object[5]);
+        for (int i = 4; i >= 0; i--) if (args[i]==null) args[i] = ""; else break;
+        return new HealthReport(score, Messages._BuildAction_Description(
+                args[0], args[1], args[2], args[3], args[4]));
     }
 
-    private int updateHealthReport(int score, String name, int min, Ratio coverage, int max, StringBuilder title) {
-        final int value = coverage.getPercentage();
-        if (value < max) {
-            title.append(name);
-            title.append(' ');
-            title.append(coverage);
-            title.append(" (");
-            title.append(value);
-            title.append("%). ");
-        }
+    private static int updateHealthScore(int score, int min, int value, int max) {
         if (value >= max) return score;
         if (value <= min) return 0;
         assert max != min;
