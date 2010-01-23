@@ -25,5 +25,9 @@ public class RatioTest extends AbstractEmmaTestBase {
         } catch (NumberFormatException e) {
             // OK, we are expecting this.
         }
+        Ratio r = Ratio.parseValue("X% (1,3/2)");
+        assertRatio(r, 1.3f, 2.0f);
+        r.addValue("X% (1,3/2)");
+        assertRatio(r, 2.6f, 4.0f);
     }
 }

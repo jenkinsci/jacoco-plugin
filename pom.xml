@@ -12,12 +12,19 @@
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Emma+Plugin</url>
-  
-  <!--dependencies>
-    <dependency>
-      <groupId>emma</groupId>
-      <artifactId>emma</artifactId>
-      <version>2.0.5312</version>
-    </dependency>
-  </dependencies-->
+  <developers>
+          <developer>
+            <id>kohsuke</id>
+            <name>Kohsuke Kawaguchi</name>
+          </developer>
+          <developer>
+            <id>mindless</id>
+            <name>Alan Harder</name>
+          </developer>
+          <developer>
+            <id>manuel_carrasco</id>
+            <name>Manuel Carrasco Monino</name>
+            <email>manolo@apache.org</email>
+          </developer>
+  </developers>
 </project>

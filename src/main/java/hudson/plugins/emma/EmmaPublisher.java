@@ -13,13 +13,15 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 
+import net.sf.json.JSONObject;
+
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-
-import net.sf.json.JSONObject;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * {@link Publisher} that captures Emma coverage reports.
@@ -43,33 +45,97 @@ public class EmmaPublisher extends Recorder {
      * {@link hudson.model.HealthReport} thresholds to apply.
      */
     public EmmaHealthReportThresholds healthReports = new EmmaHealthReportThresholds();
+    
+    
+    /**
+     * look for emma reports recursively in a folder
+     */
+    protected static FilePath[] locateCoverageReports (FilePath workspace) throws IOException, InterruptedException {
+		ArrayList<FilePath> files = new ArrayList<FilePath>();
+		if (workspace.exists() && workspace.isDirectory()) {
+			files.addAll(Arrays.asList(workspace.list("coverage*.xml")));
+			for (FilePath dir: workspace.listDirectories()) {
+				try {
+					files.addAll(Arrays.asList(locateCoverageReports(dir)));
+                } catch (Exception e) {
+                }
+			}
+		}
+		return files.toArray(new FilePath[files.size()]); 
+    }
 
-    public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    /**
+     * look for emma reports based in the configured parameter includes.
+     * 'includes' is a list of files and folders separated by the characters ;:,    
+     */
+    protected static FilePath[] locateCoverageReports(FilePath workspace, String includes) throws IOException, InterruptedException {
+		ArrayList<FilePath> files = new ArrayList<FilePath>();
+		String parts[] = includes.split("\\s*[;:,]+\\s*");
+		for (String path : parts) {
+			FilePath src = workspace.child(path);
+			if (src.exists()) {
+				if (src.isDirectory()) {
+					files.addAll(Arrays.asList(locateCoverageReports(src)));
+				} else {
+					files.add(src);
+				}
+			}
+		}
+		return files.toArray(new FilePath[files.size()]);
+	}
+	
+    /**
+     * save emma reports from the workspace to build folder  
+     */
+	protected static void saveCoverageReports(FilePath folder, FilePath[] files) throws IOException, InterruptedException {
+		folder.mkdirs();
+		for (int i = 0; i < files.length; i++) {
+			String name = "coverage" + (i > 0 ? i : "") + ".xml";
+			FilePath src = files[i];
+			FilePath dst = folder.child(name);
+			src.copyTo(dst);
+		}
+	}
+
+    public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    	
         final PrintStream logger = listener.getLogger();
 
-        logger.println("Recording Emma reports " + includes);
-
-        final FilePath src = build.getWorkspace().child(includes);
-
-        if(!src.exists()) {
+        FilePath[] reports;
+        if (includes == null || includes.trim().isEmpty()) {
+            logger.println("Emma: looking for coverage reports in the entire workspace: " + build.getWorkspace().getRemote());
+            reports = locateCoverageReports(build.getWorkspace());
+        } else {
+            logger.println("Emma: looking for coverage reports in the provided path: " + includes );
+            reports = locateCoverageReports(build.getWorkspace(), includes);
+        }
+        
+        if (reports.length == 0) {
             if(build.getResult().isWorseThan(Result.UNSTABLE))
-                // build has failed, so that's probably why this was not generated.
-                // so don't report an error
                 return true;
-            logger.println("Coverage file "+src+" not found. Has the report generated?");
+            
+            logger.println("Emma: no coverage files found in workspace. Was any report generated?");
             build.setResult(Result.FAILURE);
             return true;
+        } else {
+        	String found = "";
+        	for (FilePath f: reports) 
+        		found += "\n          " + f.getRemote();
+            logger.println("Emma: found " + reports.length  + " report files: " + found );
         }
-
-        final File localReport = getEmmaReport(build);
-        src.copyTo(new FilePath(localReport));
-
-        final EmmaBuildAction action = EmmaBuildAction.load(build,rule,healthReports,localReport);
+        
+        FilePath emmafolder = new FilePath(getEmmaReport(build));
+        saveCoverageReports(emmafolder, reports);
+        logger.println("Emma: stored " + reports.length + " report files in the build folder: "+ emmafolder);
+        
+        final EmmaBuildAction action = EmmaBuildAction.load(build, rule, healthReports, reports);
+        
+        logger.println("Emma: " + action.getBuildHealth().getDescription());
 
         build.getActions().add(action);
 
         if (action.getResult().isFailed()) {
-            logger.println("Code coverage enforcement failed. Setting Build to unstable.");
+            logger.println("Emma: code coverage enforcement failed. Setting Build to unstable.");
             build.setResult(Result.UNSTABLE);
         }
 
@@ -88,8 +154,8 @@ public class EmmaPublisher extends Recorder {
     /**
      * Gets the directory to store report files
      */
-    static File getEmmaReport(AbstractBuild build) {
-        return new File(build.getRootDir(), "emma.xml");
+    static File getEmmaReport(AbstractBuild<?,?> build) {
+        return new File(build.getRootDir(), "emma");
     }
 
     @Override

@@ -2,19 +2,19 @@
 <!-- taken from http://emma.sourceforge.net/coverage_sample_c/coverage.xml -->
 
 <report>
-  <stats>
-    <packages value="8"/>
-    <classes value="185"/>
-    <methods value="2061"/>
-    <srcfiles value="62"/>
-    <srclines value="13135"/>
-  </stats>
+<!--  <stats>-->
+<!--    <packages value="8"/>-->
+<!--    <classes value="185"/>-->
+<!--    <methods value="2061"/>-->
+<!--    <srcfiles value="62"/>-->
+<!--    <srclines value="13135"/>-->
+<!--  </stats>-->
   <data>
     <all name="all classes">
       <coverage type="class, %" value="100% (185/185)"/>
       <coverage type="method, %" value="65%  (1345/2061)"/>
       <coverage type="block, %" value="60%  (44997/74846)"/>
-      <coverage type="line, %" value="64%  (8346.3/13135)"/>
+      <coverage type="line, %" value="63%  (8346.3/13135)"/>
 
       <package name="com.sun.tools.javac.v8.resources">
         <coverage type="class, %" value="100% (4/4)"/>

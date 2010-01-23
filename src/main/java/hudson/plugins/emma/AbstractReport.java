@@ -64,7 +64,7 @@ public abstract class AbstractReport<
     }
 
     @Override
-    public AbstractBuild getBuild() {
+    public AbstractBuild<?,?> getBuild() {
         return parent.getBuild();
     }
 }

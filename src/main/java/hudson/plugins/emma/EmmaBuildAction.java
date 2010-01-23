@@ -1,5 +1,6 @@
 package hudson.plugins.emma;
 
+import hudson.FilePath;
 import hudson.model.AbstractBuild;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
@@ -7,20 +8,20 @@ import hudson.model.Result;
 import hudson.util.IOException2;
 import hudson.util.NullStream;
 import hudson.util.StreamTaskListener;
+
+import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.jvnet.localizer.Localizable;
 
 /**
  * Build view extension by Emma plugin.
@@ -30,7 +31,8 @@ import org.jvnet.localizer.Localizable;
  * @author Kohsuke Kawaguchi
  */
 public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> implements HealthReportingAction, StaplerProxy {
-    public final AbstractBuild owner;
+	
+    public final AbstractBuild<?,?> owner;
 
     private transient WeakReference<CoverageReport> report;
 
@@ -45,7 +47,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      */
     private final EmmaHealthReportThresholds thresholds;
 
-    public EmmaBuildAction(AbstractBuild owner, Rule rule, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage, EmmaHealthReportThresholds thresholds) {
+    public EmmaBuildAction(AbstractBuild<?,?> owner, Rule rule, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage, EmmaHealthReportThresholds thresholds) {
         this.owner = owner;
         this.rule = rule;
         this.clazz = classCoverage;
@@ -137,22 +139,44 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     }
 
     @Override
-    public AbstractBuild getBuild() {
+    public AbstractBuild<?,?> getBuild() {
         return owner;
     }
+    
+	protected static FilePath[] getEmmaReports(File file) throws IOException, InterruptedException {
+		FilePath path = new FilePath(file);
+		if (path.isDirectory()) {
+			return path.list("*xml");
+		} else {
+			// Read old builds (before 1.11) 
+			FilePath report = new FilePath(new File(path.getName() + ".xml"));
+			return report.exists() ? new FilePath[]{report} : new FilePath[0];
+		}
+	}
 
     /**
      * Obtains the detailed {@link CoverageReport} instance.
      */
     public synchronized CoverageReport getResult() {
+
+    	File reportFolder = EmmaPublisher.getEmmaReport(owner);
+    	
         if(report!=null) {
             CoverageReport r = report.get();
             if(r!=null)     return r;
         }
-
-        File reportFile = EmmaPublisher.getEmmaReport(owner);
+        
         try {
-            CoverageReport r = new CoverageReport(this,reportFile);
+        	
+        	// Get the list of report files stored for this build
+            FilePath[] reports = getEmmaReports(reportFolder);
+            InputStream[] streams = new InputStream[reports.length];
+            for (int i=0; i<reports.length; i++) {
+            	streams[i] = reports[i].read();
+            }
+            
+            // Generate the report
+            CoverageReport r = new CoverageReport(this, streams);
 
             if(rule!=null) {
                 // we change the report so that the FAILED flag is set correctly
@@ -162,8 +186,11 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
 
             report = new WeakReference<CoverageReport>(r);
             return r;
+        } catch (InterruptedException e) {
+            logger.log(Level.WARNING, "Failed to load " + reportFolder, e);
+            return null;
         } catch (IOException e) {
-            logger.log(Level.WARNING, "Failed to load "+reportFile,e);
+            logger.log(Level.WARNING, "Failed to load " + reportFolder, e);
             return null;
         }
     }
@@ -176,7 +203,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     /**
      * Gets the previous {@link EmmaBuildAction} of the given build.
      */
-    /*package*/ static EmmaBuildAction getPreviousResult(AbstractBuild start) {
+    /*package*/ static EmmaBuildAction getPreviousResult(AbstractBuild<?,?> start) {
         AbstractBuild<?,?> b = start;
         while(true) {
             b = b.getPreviousBuild();
@@ -191,26 +218,40 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     }
 
     /**
-     * Constructs the object from emma XML report file.
+     * Constructs the object from emma XML report files.
      * See <a href="http://emma.sourceforge.net/coverage_sample_c/coverage.xml">an example XML file</a>.
      *
      * @throws IOException
      *      if failed to parse the file.
      */
-    public static EmmaBuildAction load(AbstractBuild owner, Rule rule, EmmaHealthReportThresholds thresholds, File f) throws IOException {
-        FileInputStream in = new FileInputStream(f);
-        try {
-            return load(owner,rule,thresholds,in);
-        } catch (XmlPullParserException e) {
-            throw new IOException2("Failed to parse "+f,e);
-        } finally {
-            in.close();
+    public static EmmaBuildAction load(AbstractBuild<?,?> owner, Rule rule, EmmaHealthReportThresholds thresholds, FilePath... files) throws IOException {
+        Ratio ratios[] = null;
+        for (FilePath f: files ) {
+            InputStream in = f.read();
+            try {
+                ratios = loadRatios(in, ratios);
+            } catch (XmlPullParserException e) {
+                throw new IOException2("Failed to parse " + f, e);
+            } finally {
+                in.close();
+            }
         }
+        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],thresholds);
     }
 
-    public static EmmaBuildAction load(AbstractBuild owner, Rule rule, EmmaHealthReportThresholds thresholds, InputStream in) throws IOException, XmlPullParserException {
+    public static EmmaBuildAction load(AbstractBuild<?,?> owner, Rule rule, EmmaHealthReportThresholds thresholds, InputStream... streams) throws IOException, XmlPullParserException {
+        Ratio ratios[] = null;
+        for (InputStream in: streams) {
+          ratios = loadRatios(in, ratios);
+        }
+        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],thresholds);
+    }
+
+    private static Ratio[] loadRatios(InputStream in, Ratio[] r) throws IOException, XmlPullParserException {
+      
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
+      
         XmlPullParser parser = factory.newPullParser();
 
         parser.setInput(in,null);
@@ -222,27 +263,30 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
             break;
         }
 
+        if (r == null || r.length < 4) 
+            r = new Ratio[4];
+        
         // head for the first <coverage> tag.
-        Ratio[] r = new Ratio[4];
         for( int i=0; i<r.length; i++ ) {
             if(!parser.getName().equals("coverage"))
                 break;  // line coverage is optional
+
             parser.require(XmlPullParser.START_TAG,"","coverage");
-            r[i] = readCoverageTag(parser);
+            String v = parser.getAttributeValue("", "value");
+            
+            if (r[i] == null) {
+                r[i] = Ratio.parseValue(v);
+            } else {
+                r[i].addValue(v);
+            }
+            
+            // move to the next coverage tag.
+            parser.nextTag();
+            parser.nextTag();
         }
-
-        return new EmmaBuildAction(owner,rule,r[0],r[1],r[2],r[3],thresholds);
-    }
-
-    private static Ratio readCoverageTag(XmlPullParser parser) throws IOException, XmlPullParserException {
-        String v = parser.getAttributeValue("", "value");
-        Ratio r = Ratio.parseValue(v);
-
-        // move to the next coverage tag.
-        parser.nextTag();
-        parser.nextTag();
-
+        
         return r;
+
     }
 
     private static final Logger logger = Logger.getLogger(EmmaBuildAction.class.getName());

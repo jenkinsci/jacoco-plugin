@@ -13,12 +13,24 @@ import org.kohsuke.stapler.export.ExportedBean;
  */
 @ExportedBean
 final public class Ratio implements Serializable {
-    public final float numerator;
-    public final float denominator;
+  
 
-    private Ratio(float numerator, float denominator) {
-        this.numerator = numerator;
-        this.denominator = denominator;
+    private float numerator = 0;
+    private float denominator = 0;
+
+    public Ratio(float...f) {
+    	if (f.length >=2 ) {
+            this.numerator = f[0];
+            this.denominator = f[1];
+    	}
+    }
+    
+    public float getNumerator() {
+        return numerator;
+    }
+
+    public float getDenominator() {
+        return denominator;
     }
 
     /**
@@ -69,22 +81,29 @@ final public class Ratio implements Serializable {
         result = 31 * result + denominator != +0.0f ? Float.floatToIntBits(denominator) : 0;
         return result;
     }
+    
+    public void addValue(String v) {
+        float[] f = parse(v);
+        numerator += f[0];
+        denominator += f[1];
+    }
 
     /**
      * Parses the value attribute format of EMMA "52% (52/100)".
      */
-    static Ratio parseValue(String v) throws IOException {
+    static float[] parse(String v) {
         // if only I could use java.util.Scanner...
-
+        
         // only leave "a/b" in "N% (a/b)"
         int idx = v.indexOf('(');
         v = v.substring(idx+1,v.length()-1);
-
         idx = v.indexOf('/');
+        
+        return new float[]{ parseFloat(v.substring(0,idx)), parseFloat(v.substring(idx+1)) };
+    }
 
-        return Ratio.create(
-           parseFloat(v.substring(0,idx)),
-           parseFloat(v.substring(idx+1)));
+    static Ratio parseValue(String v) throws IOException {
+        return new Ratio(parse(v));
     }
 
      /**
@@ -101,29 +120,4 @@ final public class Ratio implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-//
-// fly-weight patterns for common Ratio instances (x/y) where x<y
-// and x,y are integers.
-//
-    private static final Ratio[] COMMON_INSTANCES = new Ratio[256];
-
-    /**
-     * Creates a new instance of {@link Ratio}.
-     */
-    public static Ratio create(float x, float y) {
-        int xx= (int) x;
-        int yy= (int) y;
-
-        if(xx==x && yy==y) {
-            int idx = yy * (yy + 1) / 2 + xx;
-            if(0<=idx && idx<COMMON_INSTANCES.length) {
-                Ratio r = COMMON_INSTANCES[idx];
-                if(r==null)
-                    COMMON_INSTANCES[idx] = r = new Ratio(x,y);
-                return r;
-            }
-        }
-
-        return new Ratio(x,y);
-    }
 }

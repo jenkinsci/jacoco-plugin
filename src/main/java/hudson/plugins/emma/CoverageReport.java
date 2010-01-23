@@ -22,12 +22,14 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         setName("Emma");
     }
 
-    public CoverageReport(EmmaBuildAction action, InputStream xmlReport) throws IOException {
+    public CoverageReport(EmmaBuildAction action, InputStream... xmlReports) throws IOException {
         this(action);
-        try {
-            createDigester().parse(xmlReport);
-        } catch (SAXException e) {
-            throw new IOException2("Failed to parse XML",e);
+        for (InputStream is: xmlReports) {
+          try {
+            createDigester().parse(is);
+          } catch (SAXException e) {
+              throw new IOException2("Failed to parse XML",e);
+          }
         }
         setParent(null);
     }
@@ -52,7 +54,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     }
 
     @Override
-    public AbstractBuild getBuild() {
+    public AbstractBuild<?,?> getBuild() {
         return action.owner;
     }
 

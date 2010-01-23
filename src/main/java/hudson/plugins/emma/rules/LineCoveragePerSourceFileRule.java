@@ -11,6 +11,9 @@ import hudson.plugins.emma.SourceFileReport;
  * goes below a certain threashold.
  */
 public class LineCoveragePerSourceFileRule extends Rule {
+
+    private static final long serialVersionUID = -2869893039051762047L;
+
     private final float minPercentage;
 
     public LineCoveragePerSourceFileRule(float minPercentage) {
@@ -23,7 +26,7 @@ public class LineCoveragePerSourceFileRule extends Rule {
                 float percentage = sfReport.getLineCoverage().getPercentageFloat();
 
                 if (percentage < minPercentage) {
-                    listener.getLogger().println(sfReport.getDisplayName() + " failed (below " + minPercentage + "%).");
+                    listener.getLogger().println("Emma: " + sfReport.getDisplayName() + " failed (below " + minPercentage + "%).");
                     sfReport.setFailed();
                 }
             }

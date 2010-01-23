@@ -35,7 +35,11 @@ import java.util.Calendar;
  */
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
-    /*package*/ Ratio clazz,method,block,line;
+
+	Ratio clazz = new Ratio();
+    Ratio method = new Ratio();
+    Ratio block = new Ratio();
+    Ratio line = new Ratio();
     
     private volatile boolean failed = false;
 
@@ -67,7 +71,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     }
 
     /**
-     * Line converage. Can be null if this information is not collected.
+     * Line coverage. Can be null if this information is not collected.
      */
     @Exported(inline=true)
     public Ratio getLineCoverage() {
@@ -77,7 +81,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     /**
      * Gets the build object that owns the whole coverage report tree.
      */
-    public abstract AbstractBuild getBuild();
+    public abstract AbstractBuild<?,?> getBuild();
 
     /**
      * Gets the corresponding coverage report object in the previous
@@ -136,7 +140,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
             return;
         }
 
-        AbstractBuild build = getBuild();
+        AbstractBuild<?,?> build = getBuild();
         Calendar t = build.getTimestamp();
 
         if(req.checkIfModified(t,rsp))

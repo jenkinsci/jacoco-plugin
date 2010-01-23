@@ -22,26 +22,21 @@ public final class CoverageElement {
         this.value = value;
     }
 
-    void addTo(AbstractReport report) throws IOException {
-        Ratio r = Ratio.parseValue(value);
+    void addTo(AbstractReport<?,?> report) throws IOException {
 
-        if(type.equals("class, %")) {
-            report.clazz = r;
-            return;
+    	Ratio r = null;
+    	if(type.equals("class, %")) {
+    		r = report.clazz;
+        } else if(type.equals("method, %")) {
+    		r = report.method;
+        } else if(type.equals("block, %")) {
+    		r = report.block;
+        } else if(type.equals("line, %")) {
+    		r = report.line;
+        } else {
+            throw new IllegalArgumentException("Invalid type: "+type);
         }
-        if(type.equals("method, %")) {
-            report.method = r;
-            return;
-        }
-        if(type.equals("block, %")) {
-            report.block = r;
-            return;
-        }
-        if(type.equals("line, %")) {
-            report.line = r;
-            return;
-        }
+    	r.addValue(value);
 
-        throw new IllegalArgumentException("Invalid type: "+type);
     }
 }
