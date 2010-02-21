@@ -102,7 +102,7 @@ public class EmmaPublisher extends Recorder {
         final PrintStream logger = listener.getLogger();
 
         FilePath[] reports;
-        if (includes == null || includes.trim().isEmpty()) {
+        if (includes == null || includes.trim().length() == 0) {
             logger.println("Emma: looking for coverage reports in the entire workspace: " + build.getWorkspace().getRemote());
             reports = locateCoverageReports(build.getWorkspace());
         } else {
