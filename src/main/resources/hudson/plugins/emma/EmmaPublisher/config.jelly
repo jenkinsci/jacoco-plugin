@@ -9,7 +9,7 @@
     <f:textbox name="emma.minLineCoveragePerSource" value="${instance.minLineCoveragePerSource}"/>
   </f:entry>
   -->
-    <f:entry title="Health reporting"
+    <f:entry title="${%Health reporting}"
              description="${%thresholds.description}">
         <table>
             <thead>

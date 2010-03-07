@@ -16,15 +16,17 @@
           <developer>
             <id>kohsuke</id>
             <name>Kohsuke Kawaguchi</name>
-          </developer>
-          <developer>
-            <id>mindless</id>
-            <name>Alan Harder</name>
+            <email>kohsuke@dev.java.net</email>
           </developer>
           <developer>
             <id>manuel_carrasco</id>
             <name>Manuel Carrasco Monino</name>
             <email>manolo@apache.org</email>
+          </developer>
+          <developer>
+            <id>mindless</id>
+            <name>Alan Harder</name>
+            <email>mindless@dev.java.net</email>
           </developer>
   </developers>
 </project>
