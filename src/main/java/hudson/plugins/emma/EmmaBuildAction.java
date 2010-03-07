@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import hudson.plugins.emma.Messages;
 /**
  * Build view extension by Emma plugin.
  *
@@ -58,7 +59,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     }
 
     public String getDisplayName() {
-        return "Coverage Report";
+        return Messages.BuildAction_DisplayName();
     }
 
     public String getIconFileName() {

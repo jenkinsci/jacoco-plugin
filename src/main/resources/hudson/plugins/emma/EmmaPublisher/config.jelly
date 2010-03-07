@@ -1,43 +1,31 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <f:entry title="Folders or files containing Emma XML reports"
-           description="
-           Specify the path to the Emma's XML report files, relative to
-           &lt;a href='ws/'>the workspace root&lt;/a>.&lt;br/>
-           - If you left this field blank the plugin will look for files matching the pattern: coverage*.xml in the entire workspace.&lt;br/>
-           - Or you can enclose the search specifying a list of files and folders separated by semicolon.  
-           ">
+  <f:entry title="${%entry.title}"
+           description="${%includes.description}">
     <f:textbox name="emma.includes" value="${instance.includes}"/>
   </f:entry>
   <!--
   <f:entry title="MinLine Coverage %"
-           description="% min line coverage (between 0 and 100) - 0 is as if you disable MinLineCoverage-Enforcer.">
+           description="${%minLineCoveragePerSource.description}">
     <f:textbox name="emma.minLineCoveragePerSource" value="${instance.minLineCoveragePerSource}"/>
   </f:entry>
   -->
     <f:entry title="Health reporting"
-             description="
-             Configure health reporting thresholds. &lt;br/&gt;
-             For the &lt;img src='${rootURL}/images/16x16/health-80plus.gif' alt='100%'&gt;
-             row, leave blank to use the default values (i.e. 100, 70, 80, and 80 for class, method, block
-             and line respectively). &lt;br/&gt;
-             For the &lt;img src='${rootURL}/images/16x16/health-00to19.gif' alt='0%'&gt; row, leave blank to
-             use the default values (i.e. 0).
-    ">
+             description="${%thresholds.description}">
         <table>
             <thead>
                 <tr>
                     <td width="20%"></td>
-                    <td width="20%">% Class</td>
-                    <td width="20%">% Method</td>
-                    <td width="20%">% Block</td>
-                    <td width="20%">% Line</td>
+                    <td width="20%">${%Class}</td>
+                    <td width="20%">${%Method}</td>
+                    <td width="20%">${%Block}</td>
+                    <td width="20%">${%Line}</td>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <th>
                         <img src="${rootURL}/images/16x16/health-80plus.gif" alt="100%"
-                             title="Report health as 100% when coverage is greater than"/>
+                             title="${%health.100.title}"/>
                     </th>
                     <td>
                         <f:textbox name="emmaHealthReports.maxClass" value="${instance.healthReports.maxClass}" />
@@ -55,7 +43,7 @@
                 <tr>
                     <th>
                         <img src="${rootURL}/images/16x16/health-00to19.gif" alt="0%"
-                             title="Report health as 0% when coverage is less than"/>
+                             title="${%health.0.title}"/>
                     </th>
                     <td>
                         <f:textbox name="emmaHealthReports.minClass" value="${instance.healthReports.minClass}" />

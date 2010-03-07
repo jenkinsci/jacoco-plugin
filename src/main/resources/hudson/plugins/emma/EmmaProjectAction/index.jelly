@@ -2,7 +2,7 @@
   <l:layout>
     <st:include it="${it.project}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>Emma Coverage Trend</h1>
+      <h1>${%Emma Coverage Trend}</h1>
 
       <!-- TODO: how do I make this clickable? -->
       <div>

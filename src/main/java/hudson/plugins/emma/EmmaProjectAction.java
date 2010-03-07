@@ -26,7 +26,7 @@ public final class EmmaProjectAction implements Action {
     }
 
     public String getDisplayName() {
-        return "Coverage Trend";
+        return Messages.ProjectAction_DisplayName();
     }
 
     public String getUrlName() {
