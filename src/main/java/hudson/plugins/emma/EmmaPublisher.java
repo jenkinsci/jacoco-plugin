@@ -23,8 +23,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import hudson.plugins.emma.Messages;
-
 /**
  * {@link Publisher} that captures Emma coverage reports.
  *

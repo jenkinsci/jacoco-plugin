@@ -23,10 +23,5 @@
             <name>Manuel Carrasco Monino</name>
             <email>manolo@apache.org</email>
           </developer>
-          <developer>
-            <id>mindless</id>
-            <name>Alan Harder</name>
-            <email>mindless@dev.java.net</email>
-          </developer>
   </developers>
 </project>
