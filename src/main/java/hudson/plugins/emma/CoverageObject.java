@@ -3,10 +3,11 @@ package hudson.plugins.emma;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.util.ChartUtil;
-import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
 import hudson.util.ShiftedCategoryAxis;
+import hudson.util.ChartUtil.NumberOnlyBuildLabel;
+
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -24,8 +25,11 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Color;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Calendar;
 
 /**
@@ -101,10 +105,10 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         if(clazz==null)
             buf.append("<td></td>");
         else
-            printColumn(clazz,buf);
-        printColumn(method,buf);
-        printColumn(block,buf);
-        printColumn(line,buf);
+            printColumn(isFailed(), clazz, buf);
+        printColumn(isFailed(), method,buf);
+        printColumn(isFailed(), block,buf);
+        printColumn(isFailed(), line,buf);
         return buf.toString();
     }
 
@@ -112,15 +116,18 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         return line!=null;
     }
 
-    private void printColumn(Ratio ratio, StringBuilder buf) {
+    
+    static NumberFormat dataFormat = new DecimalFormat("000.00");
+    
+    protected static void printColumn(boolean failed, Ratio ratio, StringBuilder buf) {
         if(ratio==null)     return; // not recorded
 
-       if (isFailed())
+       if (failed)
           buf.append("<td bgcolor=red");
        else
           buf.append("<td");
 
-        buf.append(" data='>").append(ratio.getPercentageFloat()).append("'>");
+        buf.append(" data='").append(dataFormat.format(ratio.getPercentageFloat())).append("' style='white-space: nowrap;'>");
 
         String p = String.valueOf(ratio.getPercentage());
         for(int i=p.length();i<3;i++)
