@@ -46,36 +46,31 @@ public class EmmaPublisher extends Recorder {
      */
     public EmmaHealthReportThresholds healthReports = new EmmaHealthReportThresholds();
     
-    
-    /**
-     * look for emma reports recursively in a folder
-     */
-    protected static FilePath[] locateCoverageReports (FilePath workspace) throws IOException, InterruptedException {
-		ArrayList<FilePath> files = new ArrayList<FilePath>();
-		if (workspace.exists() && workspace.isDirectory()) {
-			files.addAll(Arrays.asList(workspace.list("coverage*.xml")));
-			for (FilePath dir: workspace.listDirectories()) {
-				try {
-					files.addAll(Arrays.asList(locateCoverageReports(dir)));
-                } catch (Exception e) {
-                }
-			}
-		}
-		return files.toArray(new FilePath[files.size()]); 
-    }
-
     /**
      * look for emma reports based in the configured parameter includes.
-     * 'includes' is a list of files and folders separated by the characters ;:,    
+     * 'includes' is 
+     *   - an Ant-style pattern
+     *   - a list of files and folders separated by the characters ;:,  
      */
     protected static FilePath[] locateCoverageReports(FilePath workspace, String includes) throws IOException, InterruptedException {
-		ArrayList<FilePath> files = new ArrayList<FilePath>();
+
+    	// First use ant-style pattern
+    	try {
+        	FilePath[] ret = workspace.list(includes);
+            if (ret.length > 0) { 
+            	return ret;
+            }
+        } catch (Exception e) {
+        }
+
+        // If it fails, do a legacy search
+        ArrayList<FilePath> files = new ArrayList<FilePath>();
 		String parts[] = includes.split("\\s*[;:,]+\\s*");
 		for (String path : parts) {
 			FilePath src = workspace.child(path);
 			if (src.exists()) {
 				if (src.isDirectory()) {
-					files.addAll(Arrays.asList(locateCoverageReports(src)));
+					files.addAll(Arrays.asList(src.list("**/coverage*.xml")));
 				} else {
 					files.add(src);
 				}
@@ -104,7 +99,7 @@ public class EmmaPublisher extends Recorder {
         FilePath[] reports;
         if (includes == null || includes.trim().length() == 0) {
             logger.println("Emma: looking for coverage reports in the entire workspace: " + build.getWorkspace().getRemote());
-            reports = locateCoverageReports(build.getWorkspace());
+            reports = locateCoverageReports(build.getWorkspace(), "**/emma/coverage.xml");
         } else {
             logger.println("Emma: looking for coverage reports in the provided path: " + includes );
             reports = locateCoverageReports(build.getWorkspace(), includes);

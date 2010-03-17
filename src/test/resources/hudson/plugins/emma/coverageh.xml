@@ -4692,10 +4692,14 @@
               <coverage type="block, %" value="100% (4/4)"/>
               <coverage type="line, %" value="100% (1/1)"/>
             </method>
+            <method name="Foo (): void">
+              <coverage type="method, %" value="100% (1/1)"/>
+              <coverage type="block, %" value="100% (0/0)"/>
+            </method>
             <method name="isValidAddressList (String): boolean">
               <coverage type="method, %" value="100% (1/1)"/>
               <coverage type="block, %" value="100% (38/38)"/>
-              <coverage type="line, %" value="100% (8/8)"/>
+             <coverage type="line, %" value="100% (8/8)"/>
             </method>
           </class>
         </srcfile>

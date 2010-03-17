@@ -7,7 +7,7 @@ import junit.framework.TestCase;
  */
 abstract class AbstractEmmaTestBase extends TestCase {
     protected final void assertRatio(Ratio r, float numerator, float denominator) {
-        assertEquals(numerator, r.getNumerator());
-        assertEquals(denominator, r.getDenominator());
+        assertEquals("Numerator doesn't match.",numerator, r.getNumerator());
+        assertEquals("Denominator doesn't match.",denominator, r.getDenominator());
     }
 }

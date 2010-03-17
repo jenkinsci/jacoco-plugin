@@ -14,27 +14,26 @@ public class EmmaPublisherTest extends AbstractEmmaTestBase {
 	
 	public void testLocateReports() throws Exception {
 
-		// Calculate default tmp dir in the system, and configure it as workspace
-		File f0 = File.createTempFile("whatever", ".xml");
-		FilePath workspace = new FilePath(f0.getParentFile());
+		// Create a temporary workspace in the system 
+		File w = File.createTempFile("workspace", ".test");
+		w.delete();
+		w.mkdir();
+		w.deleteOnExit();
+		FilePath workspace = new FilePath(w);
 
-		// Count files which can be in the tmp dir before do the test
-		FilePath[] reports = EmmaPublisher.locateCoverageReports(workspace);
-		int nfiles = reports.length;
-
-		// Create 4 files
-		File f1 = File.createTempFile("coverage", ".xml");
+		// Create 4 files in the workspace
+		File f1 = File.createTempFile("coverage", ".xml", w);
 		f1.deleteOnExit();
-		File f2 = File.createTempFile("anyname", ".xml");
+		File f2 = File.createTempFile("anyname", ".xml", w);
 		f2.deleteOnExit();
-		File f3 = File.createTempFile("coverage", ".xml");
+		File f3 = File.createTempFile("coverage", ".xml", w);
 		f3.deleteOnExit();
-		File f4 = File.createTempFile("anyname", ".xml");
+		File f4 = File.createTempFile("anyname", ".xml", w);
 		f4.deleteOnExit();
 
 
 		// Create a folder and move there 2 files
-		File d1 = new File(workspace.child("coverage_whatever").getRemote());
+		File d1 = new File(workspace.child("subdir").getRemote());
 		d1.mkdir();
 		d1.deleteOnExit();
 
@@ -47,8 +46,8 @@ public class EmmaPublisherTest extends AbstractEmmaTestBase {
 		
 		// Look for files in the entire workspace recursively without providing 
 		// the includes parameter
-		reports = EmmaPublisher.locateCoverageReports(workspace);
-		Assert.assertEquals(2 + nfiles, reports.length);
+		FilePath[] reports = EmmaPublisher.locateCoverageReports(workspace, "**/coverage*.xml");
+		Assert.assertEquals(2 , reports.length);
 
 		// Generate a includes string and look for files 
 		String includes = f1.getName() + "; " + f2.getName() + "; " + d1.getName();

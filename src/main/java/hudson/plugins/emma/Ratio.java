@@ -17,9 +17,11 @@ final public class Ratio implements Serializable {
 
     private float numerator = 0;
     private float denominator = 0;
+    boolean initialized = false;
 
     public Ratio(float...f) {
     	if (f.length >=2 ) {
+    		initialized = true;
             this.numerator = f[0];
             this.denominator = f[1];
     	}
@@ -61,7 +63,7 @@ final public class Ratio implements Serializable {
      */
     @Exported
     public float getPercentageFloat() {
-        return 100*numerator/denominator;
+        return denominator<=0? 0: 100*numerator/denominator;
     }
 
     public boolean equals(Object o) {
@@ -86,6 +88,11 @@ final public class Ratio implements Serializable {
         float[] f = parse(v);
         numerator += f[0];
         denominator += f[1];
+		initialized = true;
+    }
+    
+    public boolean isInitialized() {
+    	return initialized;
     }
 
     /**

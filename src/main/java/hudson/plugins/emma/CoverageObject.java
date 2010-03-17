@@ -102,40 +102,49 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
      */
     public String printFourCoverageColumns() {
         StringBuilder buf = new StringBuilder();
-        if(clazz==null)
-            buf.append("<td></td>");
-        else
-            printColumn(isFailed(), clazz, buf);
-        printColumn(isFailed(), method,buf);
-        printColumn(isFailed(), block,buf);
-        printColumn(isFailed(), line,buf);
+        printRatioCell(isFailed(), clazz, buf);
+        printRatioCell(isFailed(), method, buf);
+        printRatioCell(isFailed(), block, buf);
+        printRatioCell(isFailed(), line, buf);
         return buf.toString();
     }
 
     public boolean hasLineCoverage() {
-        return line!=null;
+        return line.isInitialized();
+    }
+
+    public boolean hasClassCoverage() {
+        return clazz.isInitialized();
     }
 
     
     static NumberFormat dataFormat = new DecimalFormat("000.00");
+    static NumberFormat percentFormat = new DecimalFormat("0.0");
+    static NumberFormat intFormat = new DecimalFormat("0");
     
-    protected static void printColumn(boolean failed, Ratio ratio, StringBuilder buf) {
-        if(ratio==null)     return; // not recorded
-
-       if (failed)
-          buf.append("<td bgcolor=red");
-       else
-          buf.append("<td");
-
-        buf.append(" data='").append(dataFormat.format(ratio.getPercentageFloat())).append("' style='white-space: nowrap;'>");
-
-        String p = String.valueOf(ratio.getPercentage());
-        for(int i=p.length();i<3;i++)
-            buf.append("&nbsp;");    // padding
-        buf.append(p).append("% (").append(ratio.toString()).append(')');
-
-        buf.append("</td>");
-    }
+	protected static void printRatioCell(boolean failed, Ratio ratio, StringBuilder buf) {
+		if (ratio != null && ratio.isInitialized()) {
+			String className = "nowrap" + (failed ? " red" : "");
+			buf.append("<td class='").append(className).append("'");
+			buf.append(" data='").append(dataFormat.format(ratio.getPercentageFloat()));
+			buf.append("'>\n");
+			printRatioTable(ratio, buf);
+			buf.append("</td>\n");
+		}
+	}
+	
+	protected static void printRatioTable(Ratio ratio, StringBuilder buf){
+		String data = dataFormat.format(ratio.getPercentageFloat());
+		String percent = percentFormat.format(ratio.getPercentageFloat());
+		String numerator = intFormat.format(ratio.getNumerator());
+		String denominator = intFormat.format(ratio.getDenominator());
+		buf.append("<table class='percentgraph'><tr class='percentgraph'>")
+				.append("<td width='44' data='").append(data).append("'>").append(percent).append("%</td>")
+				.append("<td class='percentgraph' data='").append(data).append("'>")
+				.append("<div class='percentgraph'><div class='greenbar' style='width: ").append(ratio.getPercentageFloat()).append("px;'>")
+				.append("<span class='text'>").append(numerator).append("/").append(denominator)
+				.append("</span></div></div></td></tr></table>") ;
+	}
 
     /**
      * Generates the graph that shows the coverage trend up to this report.

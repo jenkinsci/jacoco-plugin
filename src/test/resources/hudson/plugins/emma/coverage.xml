@@ -12106,6 +12106,21 @@
           </class>
         </srcfile>
       </package>
+      <package name="an.empty.package">
+        <coverage type="class, %" value="0% (0/0)"/>
+        <coverage type="method, %" value="0%  (0/0)"/>
+        <coverage type="block, %" value="0%  (0/0)"/>
+        <coverage type="line, %" value="0%  (0/0)"/>
+      </package>
+      <package name="an.package.without.lines">
+        <coverage type="class, %" value="0% (0/0)"/>
+        <coverage type="method, %" value="0%  (0/0)"/>
+        <coverage type="block, %" value="0%  (0/0)"/>
+        <srcfile name="AFile.java">
+              <coverage type="method, %" value="0% (0/0)"/>
+              <coverage type="block, %" value="0% (0/0)"/>
+        </srcfile>
+      </package>
     </all>
   </data>
 </report>

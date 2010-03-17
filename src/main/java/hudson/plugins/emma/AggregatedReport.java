@@ -21,6 +21,7 @@ public abstract class AggregatedReport<
 
     public void add(CHILD child) {
         children.put(child.getName(),child);
+        this.hasClassCoverage();
     }
 
     public Map<String,CHILD> getChildren() {
@@ -44,4 +45,27 @@ public abstract class AggregatedReport<
         if (getParent() != null)
             getParent().setFailed();
     }
+    
+    public boolean hasChildren() {
+    	return getChildren().size() > 0;
+    }
+
+    public boolean hasChildrenLineCoverage() {
+    	for (CHILD child : getChildren().values()){
+    		if (child.hasLineCoverage()) {
+    			return true;
+    		}
+    	}
+        return false;
+    }
+
+    public boolean hasChildrenClassCoverage() {
+    	for (CHILD child : getChildren().values()){
+    		if (child.hasClassCoverage()) {
+    			return true;
+    		}
+    	}
+        return false;
+    }
+
 }
