@@ -4,7 +4,7 @@
     <f:textbox name="emma.includes" value="${instance.includes}"/>
   </f:entry>
   <!--
-  <f:entry title="MinLine Coverage %"
+  <f:entry title="${%MinLine Coverage}"
            description="${%minLineCoveragePerSource.description}">
     <f:textbox name="emma.minLineCoveragePerSource" value="${instance.minLineCoveragePerSource}"/>
   </f:entry>

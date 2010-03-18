@@ -10,7 +10,7 @@
 
       <h2>${%Coverage Breakdown by Class and Method}</h2>
  	     <j:forEach var="clazz" items="${it.children.values()}">
-	        <h3>${clazz.name}</h3>
+	        <h3>${%Class}: ${clazz.name}</h3>
 	        <e:breakdownTable it="${clazz}" nolink="${true}" />
 	     </j:forEach>
     </l:main-panel>
