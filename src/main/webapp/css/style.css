@@ -1,64 +1,86 @@
-  .nwrap {
-    white-space: nowrap;
-  }
-  .red {
-    background-color: red;
-  }
-  
-  
-  div.percentgraph {
-    background-color: #ff9090;
-    border: #808080 1px solid;
-    height: 1.1em;
-    margin: 0px;
-    padding: 0px;
-    width: 100px;
-  }
+table.source {
+    border-style: solid;
+    border-color: #bbb;
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+}
 
-  div.percentgraph div.greenbar {
-    background-color: #80ff80;
-    height: 1.1em;
-    margin: 0px;
-    padding: 0px;
-  }
+table.source td {
+    font-family: courier, monospace;
+}
 
-  div.percentgraph div.na {
-    background-color: #eaeaea;
-    height: 1.1em;
-    margin: 0px;
-    padding: 0px;
-  }
+table.source th {
+    padding-left: 0.5em;
+    font-weight: bold;
+    background-color: #f0f0f0;
+}
 
-  div.percentgraph span.text {
-    display: block;
-    position: absolute;
-    text-align: center;
-    width: 100px;
-  }
+.nwrap {
+  white-space: nowrap;
+}
+.red {
+  background-color: red;
+}
 
-  table.percentgraph {
-    border: 0px;
-    font-size: 130%;
-    margin: 0px;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 0px;
-    text-align: left;
-  }
 
-  table.percentgraph tr.percentgraph {
-    border: 0px;
-    margin: 0px;
-    padding: 0px;
-  }
+div.percentgraph {
+  background-color: #ff9090;
+  border: #808080 1px solid;
+  height: 1.1em;
+  margin: 0px;
+  padding: 0px;
+  width: 100px;
+}
 
-  table.percentgraph td.percentgraph {
-    border: 0px;
-    margin: 0px;
-    padding: 0px;
-    padding-left: 4px;
-  }
-  
-  table.percentgraph td {
-    text-align: right;
-  }
+div.percentgraph div.greenbar {
+  background-color: #80ff80;
+  height: 1.1em;
+  margin: 0px;
+  padding: 0px;
+}
+
+div.percentgraph div.na {
+  background-color: #eaeaea;
+  height: 1.1em;
+  margin: 0px;
+  padding: 0px;
+}
+
+div.percentgraph span.text {
+  display: block;
+  position: absolute;
+  text-align: center;
+  width: 100px;
+}
+
+table.percentgraph {
+  border: 0px;
+  font-size: 130%;
+  margin: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0px;
+  text-align: left;
+}
+
+table.percentgraph td {
+    border-width: 0px;
+}
+
+table.percentgraph tr.percentgraph {
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+}
+
+table.percentgraph td.percentgraph {
+  border: 0px;
+  margin: 0px;
+  padding: 0px;
+  padding-left: 4px;
+}
+
+table.percentgraph td {
+  text-align: right;
+}
