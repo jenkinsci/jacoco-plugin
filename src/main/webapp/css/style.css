@@ -6,8 +6,8 @@ table.source {
     width: 100%;
 }
 
-table.source td {
-    font-family: courier, monospace;
+table.source .text {
+    margin-top: -1px;
 }
 
 table.source th {
