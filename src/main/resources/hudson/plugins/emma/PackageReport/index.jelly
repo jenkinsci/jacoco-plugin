@@ -2,13 +2,13 @@
   <l:layout xmlns:e="/hudson/plugins/emma/tags" css="/plugin/emma/css/style.css">
     <st:include it="${it.build}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h1>${%Package}: ${it.name}</h1>
+      <h2>${%Package}: ${it.name}</h2>
       <e:floatingTrendGraph/>
 
-      <h2>${%Coverage Summary}</h2>
+      <h3>${%Coverage Summary}</h3>
       <e:summaryTable title="${it.name}"/>
 
-      <h2>${%Coverage Breakdown by Source File}</h2>
+      <h3>${%Coverage Breakdown by Source File}</h3>
       <e:breakdownTable />
     </l:main-panel>
   </l:layout>
