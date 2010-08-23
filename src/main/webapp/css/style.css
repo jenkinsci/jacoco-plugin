@@ -49,7 +49,6 @@ div.percentgraph div.na {
 
 div.percentgraph span.text {
   display: block;
-  position: absolute;
   text-align: center;
   width: 100px;
 }
