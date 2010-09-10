@@ -170,11 +170,6 @@ public class EmmaPublisher extends Recorder {
             return Messages.EmmaPublisher_DisplayName();
         }
 
-        @Override
-        public String getHelpFile() {
-            return "/plugin/emma/help.html";
-        }
-
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
