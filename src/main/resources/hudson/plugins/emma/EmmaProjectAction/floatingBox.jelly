@@ -1,0 +1,11 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:local="local">
+  <div class="test-trend-caption">
+    ${%Code Coverage Trend}
+  </div>
+  <div>
+    <a href="lastBuild/emma/"><img src="emma/graph" /></a>
+  </div>
+  <div style="text-align:right">
+    <a href="emma/">${%enlarge}</a>
+  </div>
+</j:jelly>

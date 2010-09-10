@@ -5,7 +5,7 @@
       <h1>${%Emma Coverage Trend}</h1>
 
       <div>
-        <a href="../lastBuild/emma"><img src="./graph?width=640&amp;height=480" width="640" height="480" /></a> 
+        <a href="../lastBuild/emma"><img src="./graph?width=640&amp;height=480" width="640" height="480" /></a>
       </div>
     </l:main-panel>
   </l:layout>

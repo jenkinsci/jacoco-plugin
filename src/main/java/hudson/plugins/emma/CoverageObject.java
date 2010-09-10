@@ -1,5 +1,6 @@
 package hudson.plugins.emma;
 
+import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.util.ChartUtil;
@@ -7,6 +8,7 @@ import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
 import hudson.util.ShiftedCategoryAxis;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
+import hudson.util.Graph;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -159,74 +161,95 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         AbstractBuild<?,?> build = getBuild();
         Calendar t = build.getTimestamp();
 
-        if(req.checkIfModified(t,rsp))
-            return; // up to date
+        String w = Util.fixEmptyAndTrim(req.getParameter("width"));
+        String h = Util.fixEmptyAndTrim(req.getParameter("height"));
+        int width = (w != null) ? Integer.valueOf(w) : 500;
+        int height = (h != null) ? Integer.valueOf(h) : 200;
 
-        DataSetBuilder<String,NumberOnlyBuildLabel> dsb = new DataSetBuilder<String,NumberOnlyBuildLabel>();
+        new GraphImpl(this, t, width, height) {
 
-        for( CoverageObject<SELF> a=this; a!=null; a=a.getPreviousResult() ) {
-            NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
-            dsb.add( a.clazz.getPercentageFloat(), "class", label);
-            dsb.add( a.block.getPercentageFloat(), "block", label);
-            dsb.add( a.method.getPercentageFloat(), "method", label);
-            if(a.line!=null)
-                dsb.add( a.line.getPercentageFloat(), "line", label);
-        }
+            @Override
+            protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj) {
+                DataSetBuilder<String, NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, NumberOnlyBuildLabel>();
 
-        ChartUtil.generateGraph(req,rsp,createChart(dsb.build()),400,200);
+                for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult()) {
+                    NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
+                    dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);
+                    dsb.add(a.block.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
+                    dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
+                    if (a.line != null) {
+                        dsb.add(a.line.getPercentageFloat(), Messages.CoverageObject_Legend_Line(), label);
+                    }
+                }
+
+                return dsb;
+            }
+        }.doPng(req, rsp);
     }
-    
+
     public Api getApi() {
     	return new Api(this);
     }
 
-    private JFreeChart createChart(CategoryDataset dataset) {
+    private abstract class GraphImpl extends Graph {
 
-        final JFreeChart chart = ChartFactory.createLineChart(
-            null,                   // chart title
-            null,                   // unused
-            "%",                    // range axis label
-            dataset,                  // data
-            PlotOrientation.VERTICAL, // orientation
-            true,                     // include legend
-            true,                     // tooltips
-            false                     // urls
-        );
+        private CoverageObject<SELF> obj;
 
-        // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
+        public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH) {
+            super(timestamp, defaultW, defaultH);
+            this.obj = obj;
+        }
 
-        final LegendTitle legend = chart.getLegend();
-        legend.setPosition(RectangleEdge.RIGHT);
+        protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
 
-        chart.setBackgroundPaint(Color.white);
+        protected JFreeChart createGraph() {
+            final CategoryDataset dataset = createDataSet(obj).build();
+            final JFreeChart chart = ChartFactory.createLineChart(
+                    null, // chart title
+                    null, // unused
+                    "%", // range axis label
+                    dataset, // data
+                    PlotOrientation.VERTICAL, // orientation
+                    true, // include legend
+                    true, // tooltips
+                    false // urls
+                    );
 
-        final CategoryPlot plot = chart.getCategoryPlot();
+            // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
-        // plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setOutlinePaint(null);
-        plot.setRangeGridlinesVisible(true);
-        plot.setRangeGridlinePaint(Color.black);
+            final LegendTitle legend = chart.getLegend();
+            legend.setPosition(RectangleEdge.RIGHT);
 
-        CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
-        plot.setDomainAxis(domainAxis);
-        domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-        domainAxis.setLowerMargin(0.0);
-        domainAxis.setUpperMargin(0.0);
-        domainAxis.setCategoryMargin(0.0);
+            chart.setBackgroundPaint(Color.white);
 
-        final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-        rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        rangeAxis.setUpperBound(100);
-        rangeAxis.setLowerBound(0);
+            final CategoryPlot plot = chart.getCategoryPlot();
 
-        final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-        renderer.setStroke(new BasicStroke(4.0f));
-        ColorPalette.apply(renderer);
+            // plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
+            plot.setBackgroundPaint(Color.WHITE);
+            plot.setOutlinePaint(null);
+            plot.setRangeGridlinesVisible(true);
+            plot.setRangeGridlinePaint(Color.black);
 
-        // crop extra space around the graph
-        plot.setInsets(new RectangleInsets(5.0,0,0,5.0));
+            CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
+            plot.setDomainAxis(domainAxis);
+            domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+            domainAxis.setLowerMargin(0.0);
+            domainAxis.setUpperMargin(0.0);
+            domainAxis.setCategoryMargin(0.0);
 
-        return chart;
+            final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+            rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+            rangeAxis.setUpperBound(100);
+            rangeAxis.setLowerBound(0);
+
+            final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+            renderer.setBaseStroke(new BasicStroke(4.0f));
+            ColorPalette.apply(renderer);
+
+            // crop extra space around the graph
+            plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
+
+            return chart;
+        }
     }
 }

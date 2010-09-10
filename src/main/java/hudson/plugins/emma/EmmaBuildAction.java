@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import hudson.plugins.emma.Messages;
 /**
  * Build view extension by Emma plugin.
  *
