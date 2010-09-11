@@ -1,5 +1,5 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:e="/hudson/plugins/emma/tags">
-  <table border="1" class="sortable source">
+  <table border="1px" class="sortable pane">
     <e:captionLine />
     <j:forEach var="c" items="${it.children.values()}">
       <tr>

@@ -140,9 +140,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getNumerator());
 		String denominator = intFormat.format(ratio.getDenominator());
-		buf.append("<table class='percentgraph'><tr class='percentgraph'>")
-				.append("<td width='44' data='").append(data).append("'>").append(percent).append("%</td>")
-				.append("<td class='percentgraph' data='").append(data).append("'>")
+		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
+				.append("<td width='64px' class='data'>").append(percent).append("%</td>")
+				.append("<td class='percentgraph'>")
 				.append("<div class='percentgraph'><div class='greenbar' style='width: ").append(ratio.getPercentageFloat()).append("px;'>")
 				.append("<span class='text'>").append(numerator).append("/").append(denominator)
 				.append("</span></div></div></td></tr></table>") ;

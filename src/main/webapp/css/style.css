@@ -50,6 +50,7 @@ div.percentgraph div.na {
 div.percentgraph span.text {
   display: block;
   text-align: center;
+  position: absolute;
   width: 100px;
 }
 
@@ -61,10 +62,6 @@ table.percentgraph {
   margin-right: 0px;
   padding: 0px;
   text-align: left;
-}
-
-table.percentgraph td {
-    border-width: 0px;
 }
 
 table.percentgraph tr.percentgraph {
@@ -80,6 +77,6 @@ table.percentgraph td.percentgraph {
   padding-left: 4px;
 }
 
-table.percentgraph td {
-  text-align: right;
+table.percentgraph td.data {
+    text-align: right;
 }
