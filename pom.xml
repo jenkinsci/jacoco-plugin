@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>emma</artifactId>
-  <version>1.21-SNAPSHOT</version>
+  <version>1.21</version>
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Emma+Plugin</url>
@@ -24,4 +24,10 @@
             <email>manolo@apache.org</email>
           </developer>
   </developers>
+
+  <scm>
+    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/emma-1.21</connection>
+    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/emma-1.21</developerConnection>
+    <url>https://hudson.dev.java.net/source/browse/hudson/tags/emma-1.21</url>
+  </scm>
 </project>
