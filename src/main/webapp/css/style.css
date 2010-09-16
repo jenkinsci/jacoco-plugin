@@ -27,7 +27,7 @@ table.source th {
 div.percentgraph {
   background-color: #ff9090;
   border: #808080 1px solid;
-  height: 1.1em;
+  height: 1.3em;
   margin: 0px;
   padding: 0px;
   width: 100px;
@@ -35,14 +35,14 @@ div.percentgraph {
 
 div.percentgraph div.greenbar {
   background-color: #80ff80;
-  height: 1.1em;
+  height: 1.3em;
   margin: 0px;
   padding: 0px;
 }
 
 div.percentgraph div.na {
   background-color: #eaeaea;
-  height: 1.1em;
+  height: 1.3em;
   margin: 0px;
   padding: 0px;
 }
@@ -78,5 +78,7 @@ table.percentgraph td.percentgraph {
 }
 
 table.percentgraph td.data {
+    padding-top: 0px;
+    padding-bottom: 0px;
     text-align: right;
 }
