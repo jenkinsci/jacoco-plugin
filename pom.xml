@@ -12,6 +12,12 @@
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Emma+Plugin</url>
+
+  <scm>
+    <connection>scm:git:git://github.com/hudson/emma-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:hudson/emma-plugin.git</developerConnection>
+  </scm>
+
   <developers>
           <developer>
             <id>kohsuke</id>
