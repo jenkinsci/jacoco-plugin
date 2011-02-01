@@ -1,0 +1,3 @@
+<div>
+  <p>The default value is 250. This field will set the height of the chart. The chart will consider the default value if some negative, null or non-numeric value is filled in this field.</p>
+</div>

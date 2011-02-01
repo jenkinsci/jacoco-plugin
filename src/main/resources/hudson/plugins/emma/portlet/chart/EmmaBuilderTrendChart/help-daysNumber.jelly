@@ -1,0 +1,3 @@
+<div>
+  <p>The default value is 30. The chart will consider only the builds within the specified number of days from the last build date (including it) of all jobs chosen on Dashboard View.</p>
+</div>
