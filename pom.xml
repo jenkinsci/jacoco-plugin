@@ -8,7 +8,7 @@
   </parent>
   
   <artifactId>emma</artifactId>
-  <version>1.25-SNAPSHOT</version>
+  <version>1.24-SNAPSHOT</version>
   <packaging>hpi</packaging>
   <name>Hudson Emma plugin</name>
   <url>http://wiki.hudson-ci.org/display/HUDSON/Emma+Plugin</url>
@@ -20,8 +20,8 @@
 
   <distributionManagement>
     <repository>
-      <id>java.net-m2-repository</id>
-      <url>http://maven.hudson-labs.org:8081/content/repositories/releases/</url>
+      <id>maven.jenkins-ci.org</id>
+      <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
     </repository>
   </distributionManagement>
 
