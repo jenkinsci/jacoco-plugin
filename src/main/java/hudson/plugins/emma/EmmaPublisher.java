@@ -129,7 +129,11 @@ public class EmmaPublisher extends Recorder {
 
         build.getActions().add(action);
 
-        if (action.getResult().isFailed()) {
+        final CoverageReport result = action.getResult();
+        if (result == null) {
+            logger.println("Emma: Could not parse coverage results. Setting Build to failure.");
+            build.setResult(Result.FAILURE);
+        } else if (result.isFailed()) {
             logger.println("Emma: code coverage enforcement failed. Setting Build to unstable.");
             build.setResult(Result.UNSTABLE);
         }
