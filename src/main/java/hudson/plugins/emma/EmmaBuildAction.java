@@ -159,13 +159,13 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      */
     public synchronized CoverageReport getResult() {
 
-    	File reportFolder = EmmaPublisher.getEmmaReport(owner);
-    	
         if(report!=null) {
-            CoverageReport r = report.get();
+            final CoverageReport r = report.get();
             if(r!=null)     return r;
         }
-        
+
+        final File reportFolder = EmmaPublisher.getEmmaReport(owner);
+
         try {
         	
         	// Get the list of report files stored for this build
