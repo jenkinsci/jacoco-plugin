@@ -1,5 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
@@ -10,19 +11,9 @@
   <artifactId>emma</artifactId>
   <version>1.26-SNAPSHOT</version>
   <packaging>hpi</packaging>
+
   <name>Jenkins Emma plugin</name>
   <url>https://wiki.jenkins-ci.org/display/JENKINS/Emma+Plugin</url>
-
-  <scm>
-    <connection>scm:git:git://github.com/jenkinsci/emma-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/emma-plugin.git</developerConnection>
-  </scm>
-
-  <properties>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
 
   <developers>
     <developer>
@@ -39,6 +30,24 @@
       <email>manolo@apache.org</email>
     </developer>
   </developers>
+
+  <scm>
+    <connection>scm:git:git://github.com/jenkinsci/emma-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/emma-plugin.git</developerConnection>
+  </scm>
+
+  <properties>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>m.g.o-public</id>
+      <url>http://maven.glassfish.org/content/groups/public/</url>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -63,11 +72,5 @@
     </plugins>
   </build>
 
-  <repositories>
-    <repository>
-      <id>m.g.o-public</id>
-      <url>http://maven.glassfish.org/content/groups/public/</url>
-    </repository>
-  </repositories>
 
 </project>
