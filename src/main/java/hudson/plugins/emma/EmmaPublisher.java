@@ -1,5 +1,6 @@
 package hudson.plugins.emma;
 
+import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -93,7 +94,11 @@ public class EmmaPublisher extends Recorder {
 	}
 
     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-    	
+        EnvVars env = build.getEnvironment(listener);
+        env.overrideAll(build.getBuildVariables());
+        
+        includes = env.expand(includes);
+        
         final PrintStream logger = listener.getLogger();
 
         FilePath[] reports;
