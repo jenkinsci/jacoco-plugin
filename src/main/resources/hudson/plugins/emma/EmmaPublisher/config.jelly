@@ -10,7 +10,7 @@
   </f:entry>
   -->
     <f:entry title="${%Health reporting}"
-             description="${%thresholds.description}">
+             description="${%thresholds.description(rootURL)}">
         <table>
             <thead>
                 <tr>

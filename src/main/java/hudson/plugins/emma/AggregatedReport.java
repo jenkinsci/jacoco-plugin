@@ -12,8 +12,7 @@ import java.util.TreeMap;
  *
  * @author Kohsuke Kawaguchi
  */
-public abstract class AggregatedReport<
-    PARENT extends AggregatedReport<?,PARENT,?>,
+public abstract class AggregatedReport<PARENT extends AggregatedReport<?,PARENT,?>,
     SELF extends AggregatedReport<PARENT,SELF,CHILD>,
     CHILD extends AbstractReport<SELF,CHILD>> extends AbstractReport<PARENT,SELF> {
 
