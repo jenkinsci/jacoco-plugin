@@ -267,4 +267,15 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
             return chart;
         }
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + ":"
+                + " class=" + clazz
+                + " method=" + method
+                + " line=" + line
+                + " branch=" + branch
+                + " instruction=" + instruction
+                + " complexity=" + complexity;
+    }
 }

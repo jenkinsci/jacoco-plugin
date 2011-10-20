@@ -71,7 +71,7 @@ public class EmmaPublisher extends Recorder {
 			FilePath src = workspace.child(path);
 			if (src.exists()) {
 				if (src.isDirectory()) {
-					files.addAll(Arrays.asList(src.list("**/coverage*.xml")));
+					files.addAll(Arrays.asList(src.list("**/jacoco*.xml")));
 				} else {
 					files.add(src);
 				}
@@ -86,7 +86,7 @@ public class EmmaPublisher extends Recorder {
 	protected static void saveCoverageReports(FilePath folder, FilePath[] files) throws IOException, InterruptedException {
 		folder.mkdirs();
 		for (int i = 0; i < files.length; i++) {
-			String name = "coverage" + (i > 0 ? i : "") + ".xml";
+			String name = "jacoco" + (i > 0 ? i : "") + ".xml";
 			FilePath src = files[i];
 			FilePath dst = folder.child(name);
 			src.copyTo(dst);
@@ -104,7 +104,7 @@ public class EmmaPublisher extends Recorder {
         FilePath[] reports;
         if (includes == null || includes.trim().length() == 0) {
             logger.println("Emma: looking for coverage reports in the entire workspace: " + build.getWorkspace().getRemote());
-            reports = locateCoverageReports(build.getWorkspace(), "**/emma/coverage.xml");
+            reports = locateCoverageReports(build.getWorkspace(), "**/jacoco/jacoco.xml");
         } else {
             logger.println("Emma: looking for coverage reports in the provided path: " + includes );
             reports = locateCoverageReports(build.getWorkspace(), includes);

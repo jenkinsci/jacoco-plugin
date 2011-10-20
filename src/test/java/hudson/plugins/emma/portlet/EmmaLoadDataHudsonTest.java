@@ -48,11 +48,11 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
         //Make it do something, in this case it writes a coverage report to the workspace.
         job1.getBuildersList().add(
-          new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/coveragePortlet.xml"),
-                        "reports/coverage/coveragePortlet.xml"));
+          new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/jacocoPortlet.xml"),
+                        "reports/coverage/jacocoPortlet.xml"));
         //Add a emma publisher
         EmmaPublisher emmaPublisher = new EmmaPublisher();
-        emmaPublisher.includes = "reports/coverage/coveragePortlet.xml";
+        emmaPublisher.includes = "reports/coverage/jacocoPortlet.xml";
         job1.getPublishersList().add(emmaPublisher);
         //Build it
         job1.scheduleBuild2(0).get();
@@ -100,12 +100,12 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
         //Make it do something, in this case it writes a coverage report to the workspace.
         job1.getBuildersList().add(
-                new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/coveragePortlet.xml"),
-                        "reports/coverage/coveragePortlet.xml"));
+                new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/jacocoPortlet.xml"),
+                        "reports/coverage/jacocoPortlet.xml"));
         //Add a emma publisher
         EmmaPublisher emmaPublisher = new EmmaPublisher();
-        emmaPublisher.includes = "reports/coverage/coveragePortlet.xml";
-        // emmaPublisher.includes = "resources/hudson/plugins/emma/coveragePortlet.xml";
+        emmaPublisher.includes = "reports/coverage/jacocoPortlet.xml";
+        // emmaPublisher.includes = "resources/hudson/plugins/emma/jacocoPortlet.xml";
         job1.getPublishersList().add(emmaPublisher);
         //Build it
         job1.scheduleBuild2(0).get();

@@ -22,11 +22,11 @@ public class EmmaPublisherTest extends AbstractEmmaTestBase {
 		FilePath workspace = new FilePath(w);
 
 		// Create 4 files in the workspace
-		File f1 = File.createTempFile("coverage", ".xml", w);
+		File f1 = File.createTempFile("jacoco", ".xml", w);
 		f1.deleteOnExit();
 		File f2 = File.createTempFile("anyname", ".xml", w);
 		f2.deleteOnExit();
-		File f3 = File.createTempFile("coverage", ".xml", w);
+		File f3 = File.createTempFile("jacoco", ".xml", w);
 		f3.deleteOnExit();
 		File f4 = File.createTempFile("anyname", ".xml", w);
 		f4.deleteOnExit();
@@ -46,7 +46,7 @@ public class EmmaPublisherTest extends AbstractEmmaTestBase {
 		
 		// Look for files in the entire workspace recursively without providing 
 		// the includes parameter
-		FilePath[] reports = EmmaPublisher.locateCoverageReports(workspace, "**/coverage*.xml");
+		FilePath[] reports = EmmaPublisher.locateCoverageReports(workspace, "**/jacoco*.xml");
 		Assert.assertEquals(2 , reports.length);
 
 		// Generate a includes string and look for files 

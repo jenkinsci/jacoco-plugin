@@ -3,6 +3,9 @@ package hudson.plugins.emma;
 import hudson.model.AbstractBuild;
 import hudson.util.IOException2;
 import org.apache.commons.digester.Digester;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 
 import java.io.File;
@@ -64,6 +67,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     private Digester createDigester() {
         Digester digester = new Digester();
         digester.setClassLoader(getClass().getClassLoader());
+        digester.register("-//JACOCO//DTD Report 1.0//EN", getClass().getResource("jacoco-report.dtd").toString());
 
         digester.push(this);
 
@@ -80,9 +84,9 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         digester.addSetNext(      "*/method","add");
         digester.addSetProperties("*/method");
 
-        digester.addObjectCreate("*/coverage", CoverageElement.class);
-        digester.addSetProperties("*/coverage");
-        digester.addSetNext(      "*/coverage","addCoverage");
+        digester.addObjectCreate( "*/counter", CoverageElement.class);
+        digester.addSetProperties("*/counter");
+        digester.addSetNext(      "*/counter","addCoverage");
 
         //digester.addObjectCreate("*/testcase",TestCase.class);
         //digester.addSetNext("*/testsuite","add");

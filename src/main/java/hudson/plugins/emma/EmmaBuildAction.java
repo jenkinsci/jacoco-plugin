@@ -229,8 +229,8 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     }
 
     /**
-     * Constructs the object from emma XML report files.
-     * See <a href="http://emma.sourceforge.net/coverage_sample_c/coverage.xml">an example XML file</a>.
+     * Constructs the object from JaCoCo XML report files.
+     * See <a href="https://github.com/jfuerth/emma-plugin/blob/jacoco/src/test/resources/hudson/plugins/emma/jacoco.xml">an example XML file</a>.
      *
      * @throws IOException
      *      if failed to parse the file.

@@ -9,7 +9,7 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
     public void testLoadReport1() throws Exception {
         EmmaBuildAction r = EmmaBuildAction.load(null,null,
                 new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
-                getClass().getResourceAsStream("coverage.xml"));
+                getClass().getResourceAsStream("jacoco.xml"));
         assertEquals(100, r.clazz.getPercentage());
         assertEquals(64, r.line.getPercentage());
         assertRatio(r.clazz, 185,185);
@@ -25,7 +25,7 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
     public void testLoadReport2() throws Exception {
         EmmaBuildAction r = EmmaBuildAction.load(null,null,
                 new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
-                getClass().getResourceAsStream("coverageh.xml"));
+                getClass().getResourceAsStream("jacoco2.xml"));
         assertEquals(1, r.clazz.getPercentage());
         assertEquals(1, r.line.getPercentage());
         assertRatio(r.clazz, 1, 149);
@@ -41,8 +41,8 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
     public void testLoadMultipleReports() throws Exception {
       EmmaBuildAction r = EmmaBuildAction.load(null,null,
               new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
-              getClass().getResourceAsStream("coverage.xml"), 
-              getClass().getResourceAsStream("coverageh.xml"));
+              getClass().getResourceAsStream("jacoco.xml"),
+              getClass().getResourceAsStream("jacoco2.xml"));
       assertEquals(56, r.clazz.getPercentage());
       assertEquals(56, r.line.getPercentage());
       assertRatio(r.clazz, 186, 334);

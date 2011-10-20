@@ -6,16 +6,17 @@ package hudson.plugins.emma;
 public class CoverageReportTest extends AbstractEmmaTestBase {
 	
     public void testLoad() throws Exception {
-        CoverageReport r = new CoverageReport(null, getClass().getResourceAsStream("coverage.xml"));
-        PackageReport pkg = r.getChildren().get("com.sun.tools.javac.v8.resources");
-        assertRatio(pkg.getLineCoverage(),3,12);
-        assertEquals(8346.3f, r.getLineCoverage().getNumerator());
+        CoverageReport r = new CoverageReport(null, getClass().getResourceAsStream("jacoco.xml"));
+        PackageReport pkg = r.getChildren().get("hudson.plugins.emma");
+        System.out.println(pkg);
+        assertRatio(pkg.getLineCoverage(), 196, (196+393));
+        assertEquals(2733f, r.getLineCoverage().getNumerator());
     }
 
     public void testLoadMultipleReports() throws Exception {
       CoverageReport r = new CoverageReport(null,  
-          getClass().getResourceAsStream("coverage.xml"), 
-          getClass().getResourceAsStream("coverageh.xml"));
+          getClass().getResourceAsStream("jacoco.xml"), 
+          getClass().getResourceAsStream("jacoco2.xml"));
 
       assertRatio(r.getLineCoverage(), 8355.3f, 14828.0f);
       
@@ -28,7 +29,7 @@ public class CoverageReportTest extends AbstractEmmaTestBase {
     }
     
     public void testTreeReport() throws Exception {
-        CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("coverageh.xml"));
+        CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco2.xml"));
         assertRatio(r.getLineCoverage(), 9, 1693);
         
         PackageReport pkg = r.getChildren().get("org.apache.hupa.client.validation");
@@ -52,7 +53,7 @@ public class CoverageReportTest extends AbstractEmmaTestBase {
     }
     
     public void testEmptyPackage() throws Exception {
-        CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("coverage.xml"));
+        CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco.xml"));
 
         PackageReport pkg = r.getChildren().get("an.empty.package");
         assertRatio(pkg.getLineCoverage(), 0, 0);
