@@ -9,12 +9,12 @@
     <relativePath />
   </parent>
 
-  <artifactId>emma</artifactId>
-  <version>1.27-SNAPSHOT</version>
+  <artifactId>jacoco</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <packaging>hpi</packaging>
 
-  <name>Jenkins Emma plugin</name>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/Emma+Plugin</url>
+  <name>Jenkins JaCoCo plugin</name>
+  <url>https://wiki.jenkins-ci.org/display/JENKINS/JaCoCo+Plugin</url>
 
   <developers>
     <developer>
@@ -30,11 +30,15 @@
       <name>Manuel Carrasco Monino</name>
       <email>manolo@apache.org</email>
     </developer>
+    <developer>
+      <id>jfuerth</id>
+      <name>Jonathan Fuerth</name>
+    </developer>
   </developers>
 
   <scm>
-    <connection>scm:git:git://github.com/jenkinsci/emma-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jenkinsci/emma-plugin.git</developerConnection>
+    <connection>scm:git:git://github.com/jfuerth/emma-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jfuerth/emma-plugin.git</developerConnection>
   </scm>
 
   <properties>
