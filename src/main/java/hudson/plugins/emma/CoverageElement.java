@@ -9,34 +9,78 @@ import java.io.IOException;
  * @author Kohsuke Kawaguchi
  */
 public final class CoverageElement {
-    private String type;
-    private String value;
+
+    /**
+     * Enumeration of coverage types that appear in a JaCoCo report.
+     * 
+     * @author Jonathan Fuerth <jfuerth@gmail.com>
+     */
+    private enum Type {
+      INSTRUCTION {
+        @Override
+        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+          return from.instruction;
+        }
+      },
+      BRANCH {
+        @Override
+        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+          return from.branch;
+        }
+      },
+      LINE {
+        @Override
+        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+          return from.line;
+        }
+      },
+      COMPLEXITY {
+        @Override
+        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+          return from.complexity;
+        }
+      },
+      METHOD {
+        @Override
+        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+          return from.method;
+        }
+      },
+      CLASS {
+        @Override
+        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+          return from.clazz;
+        }
+      };
+      
+      /**
+       * Returns the ratio object on the given report that tracks this type of coverage.
+       * 
+       * @param from The report to return the appropriate Ratio object from. Not null.
+       */
+      public abstract Ratio getAssociatedRatio(AbstractReport<?,?> from);
+    }
+
+    private Type type;
+    private int missed;
+    private int covered;
 
     // set by attributes
     public void setType(String type) {
-        this.type = type;
+        this.type = Type.valueOf(type);
     }
 
     // set by attributes
-    public void setValue(String value) {
-        this.value = value;
+    public void setMissed(int missed) {
+      this.missed = missed;
+    }
+
+    // set by attributes
+    public void setCovered(int covered) {
+      this.covered = covered;
     }
 
     void addTo(AbstractReport<?,?> report) throws IOException {
-
-    	Ratio r = null;
-    	if(type.equals("class, %")) {
-    		r = report.clazz;
-        } else if(type.equals("method, %")) {
-    		r = report.method;
-        } else if(type.equals("block, %")) {
-    		r = report.block;
-        } else if(type.equals("line, %")) {
-    		r = report.line;
-        } else {
-            throw new IllegalArgumentException("Invalid type: "+type);
-        }
-    	r.addValue(value);
-
+        type.getAssociatedRatio(report).accumulate(covered, (missed + covered));
     }
 }

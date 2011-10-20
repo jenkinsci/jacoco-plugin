@@ -206,27 +206,35 @@ public class EmmaBuilderTrendChart extends DashboardPortlet {
     DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<String, LocalDate>();
 
     for (Map.Entry<LocalDate, EmmaCoverageResultSummary> entry : summaries.entrySet()) {
-      float blockCoverage = 0;
       float classCoverage = 0;
       float lineCoverage = 0;
       float methodCoverage = 0;
+      float branchCoverage = 0;
+      float instructionCoverage = 0;
+      float complexityScore = 0;
 
       int count = 0;
 
       List<EmmaCoverageResultSummary> list = entry.getValue().getEmmaCoverageResults();
 
       for (EmmaCoverageResultSummary item : list) {
-        blockCoverage += item.getBlockCoverage();
         classCoverage += item.getClassCoverage();
         lineCoverage += item.getLineCoverage();
         methodCoverage += item.getMethodCoverage();
+        branchCoverage += item.getBranchCoverage();
+        instructionCoverage += item.getInstructionCoverage();
+        complexityScore+= item.getComplexityScore();
         count++;
       }
 
-      dataSetBuilder.add((blockCoverage / count), "block", entry.getKey());
       dataSetBuilder.add((classCoverage / count), "class", entry.getKey());
       dataSetBuilder.add((lineCoverage / count), "line", entry.getKey());
       dataSetBuilder.add((methodCoverage / count), "method", entry.getKey());
+      dataSetBuilder.add((branchCoverage / count), "branch", entry.getKey());
+      dataSetBuilder.add((instructionCoverage / count), "instruction", entry.getKey());
+      
+      // XXX this should be a separate chart. the range axis is different.
+      dataSetBuilder.add((complexityScore / count), "complexity", entry.getKey());
     }
 
     return dataSetBuilder.build();

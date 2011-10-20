@@ -44,8 +44,10 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 	Ratio clazz = new Ratio();
     Ratio method = new Ratio();
-    Ratio block = new Ratio();
     Ratio line = new Ratio();
+    Ratio complexity = new Ratio();
+    Ratio instruction = new Ratio();
+    Ratio branch = new Ratio();
     
     private volatile boolean failed = false;
 
@@ -72,8 +74,18 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     }
 
     @Exported(inline=true)
-    public Ratio getBlockCoverage() {
-        return block;
+    public Ratio getComplexityScore() {
+        return complexity;
+    }
+
+    @Exported(inline=true)
+    public Ratio getInstructionCoverage() {
+        return instruction;
+    }
+
+    @Exported(inline=true)
+    public Ratio getBranchCoverage() {
+        return branch;
     }
 
     /**
@@ -106,8 +118,10 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
         StringBuilder buf = new StringBuilder();
         printRatioCell(isFailed(), clazz, buf);
         printRatioCell(isFailed(), method, buf);
-        printRatioCell(isFailed(), block, buf);
         printRatioCell(isFailed(), line, buf);
+        printRatioCell(isFailed(), complexity, buf);
+        printRatioCell(isFailed(), instruction, buf);
+        printRatioCell(isFailed(), branch, buf);
         return buf.toString();
     }
 
@@ -136,7 +150,6 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	}
 	
 	protected static void printRatioTable(Ratio ratio, StringBuilder buf){
-		String data = dataFormat.format(ratio.getPercentageFloat());
 		String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getNumerator());
 		String denominator = intFormat.format(ratio.getDenominator());
@@ -175,8 +188,10 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
                 for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult()) {
                     NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
                     dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);
-                    dsb.add(a.block.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
                     dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
+                    dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
+                    dsb.add(a.branch.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
+                    dsb.add(a.complexity.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
                     if (a.line != null) {
                         dsb.add(a.line.getPercentageFloat(), Messages.CoverageObject_Legend_Line(), label);
                     }

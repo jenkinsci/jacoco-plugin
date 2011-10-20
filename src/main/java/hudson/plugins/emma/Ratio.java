@@ -90,7 +90,20 @@ final public class Ratio implements Serializable {
         denominator += f[1];
 		initialized = true;
     }
-    
+
+    /**
+     * Adds the given numerator and denominator values to the ones already
+     * contained in this ratio.
+     * 
+     * @param numerator The amount to add to the numerator.
+     * @param denominator The amount to add to the denominator.
+     */
+    public void accumulate(float numerator, float denominator) {
+      this.numerator += numerator;
+      this.denominator += denominator;
+      initialized = true;
+    }
+
     public boolean isInitialized() {
     	return initialized;
     }

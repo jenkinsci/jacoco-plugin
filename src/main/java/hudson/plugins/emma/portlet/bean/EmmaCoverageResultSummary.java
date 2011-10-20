@@ -47,11 +47,6 @@ public class EmmaCoverageResultSummary {
   private Job job;
 
   /**
-   * Block coverage percentage.
-   */
-  private float blockCoverage;
-
-  /**
    * Line coverage percentage.
    */
   private float lineCoverage;
@@ -65,6 +60,21 @@ public class EmmaCoverageResultSummary {
    * Class coverage percentage.
    */
   private float classCoverage;
+
+  /**
+   * Block coverage percentage.
+   */
+  private float instructionCoverage;
+
+  /**
+   * Block coverage percentage.
+   */
+  private float branchCoverage;
+
+  /**
+   * Complexity score (not a percentage).
+   */
+  private float complexityScore;
 
   private List<EmmaCoverageResultSummary> coverageResults = new ArrayList<EmmaCoverageResultSummary>();
 
@@ -88,13 +98,15 @@ public class EmmaCoverageResultSummary {
    * @param classCoverage
    *          coverage percentage
    */
-  public EmmaCoverageResultSummary(Job job, float blockCoverage, float lineCoverage, float methodCoverage,
-    float classCoverage) {
+  public EmmaCoverageResultSummary(Job job, float lineCoverage, float methodCoverage,
+    float classCoverage, float branchCoverage, float instructionCoverage, float complexityScore) {
     this.job = job;
-    this.blockCoverage = blockCoverage;
     this.lineCoverage = lineCoverage;
     this.methodCoverage = methodCoverage;
     this.classCoverage = classCoverage;
+    this.branchCoverage = branchCoverage;
+    this.instructionCoverage = instructionCoverage;
+    this.complexityScore = complexityScore;
   }
 
   /**
@@ -107,10 +119,12 @@ public class EmmaCoverageResultSummary {
    */
   public EmmaCoverageResultSummary addCoverageResult(EmmaCoverageResultSummary coverageResult) {
 
-    this.setBlockCoverage(this.getBlockCoverage() + coverageResult.getBlockCoverage());
     this.setLineCoverage(this.getLineCoverage() + coverageResult.getLineCoverage());
     this.setMethodCoverage(this.getMethodCoverage() + coverageResult.getMethodCoverage());
     this.setClassCoverage(this.getClassCoverage() + coverageResult.getClassCoverage());
+    this.setBranchCoverage(this.getBranchCoverage() + coverageResult.getBranchCoverage());
+    this.setInstructionCoverage(this.getInstructionCoverage() + coverageResult.getInstructionCoverage());
+    this.setComplexityScore(this.getComplexityScore() + coverageResult.getComplexityScore());
 
     getCoverageResults().add(coverageResult);
 
@@ -146,13 +160,44 @@ public class EmmaCoverageResultSummary {
    *
    * @return float the total of block coverage.
    */
-  public float getTotalBlockCoverage() {
+  public float getTotalBranchCoverage() {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
     } else {
-      float totalBlock = this.getBlockCoverage() / this.getCoverageResults().size();
-      totalBlock = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalBlock);
-      return totalBlock;
+      float totalBranch = this.getBranchCoverage() / this.getCoverageResults().size();
+      totalBranch = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalBranch);
+      return totalBranch;
+    }
+  }
+
+  /**
+   * Getter of the total of block coverage.
+   *
+   * @return float the total of block coverage.
+   */
+  public float getTotalInstructionCoverage() {
+    if (this.getCoverageResults().size() <= 0) {
+      return 0.0f;
+    } else {
+      float totalInstr = this.getInstructionCoverage() / this.getCoverageResults().size();
+      totalInstr = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalInstr);
+      return totalInstr;
+    }
+  }
+
+  /**
+   * Getter of the total of block coverage.
+   *
+   * @return float the total of block coverage.
+   */
+  public float getTotalComplexityScore() {
+    if (this.getCoverageResults().size() <= 0) {
+      return 0.0f;
+    } else {
+      // FIXME not sure if we should aggregate these by summation or mean
+      float totalComplex = this.getComplexityScore();
+      totalComplex = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalComplex);
+      return totalComplex;
     }
   }
 
@@ -193,11 +238,16 @@ public class EmmaCoverageResultSummary {
     return job;
   }
 
-  /**
-   * @return the blockCoverage
-   */
-  public float getBlockCoverage() {
-    return blockCoverage;
+  public float getInstructionCoverage() {
+    return instructionCoverage;
+  }
+
+  public float getBranchCoverage() {
+    return branchCoverage;
+  }
+
+  public float getComplexityScore() {
+    return complexityScore;
   }
 
   /**
@@ -229,12 +279,16 @@ public class EmmaCoverageResultSummary {
     this.job = job;
   }
 
-  /**
-   * @param blockCoverage
-   *          the blockCoverage to set
-   */
-  public void setBlockCoverage(float blockCoverage) {
-    this.blockCoverage = blockCoverage;
+  public void setInstructionCoverage(float instructionCoverage) {
+    this.instructionCoverage = instructionCoverage;
+  }
+
+  public void setBranchCoverage(float branchCoverage) {
+    this.branchCoverage = branchCoverage;
+  }
+
+  public void setComplexityScore(float complexityScore) {
+    this.complexityScore = complexityScore;
   }
 
   /**

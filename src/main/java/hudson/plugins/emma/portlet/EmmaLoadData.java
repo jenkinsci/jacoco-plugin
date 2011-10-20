@@ -106,7 +106,7 @@ public final class EmmaLoadData {
     }
 
     // Sorting by date, ascending order
-    Map<LocalDate, EmmaCoverageResultSummary> sortedSummaries = new TreeMap(summaries);
+    Map<LocalDate, EmmaCoverageResultSummary> sortedSummaries = new TreeMap<LocalDate, EmmaCoverageResultSummary>(summaries);
 
     return sortedSummaries;
 
@@ -176,15 +176,14 @@ public final class EmmaLoadData {
   private static EmmaCoverageResultSummary getResult(Run run) {
     EmmaBuildAction emmaAction = run.getAction(EmmaBuildAction.class);
 
-    float blockCoverage = 0.0f;
     float classCoverage = 0.0f;
     float lineCoverage = 0.0f;
     float methodCoverage = 0.0f;
+    float branchCoverage = 0.0f;
+    float instructionCoverage = 0.0f;
+    float complexityScore = 0.0f;
 
     if (emmaAction != null) {
-      if (null != emmaAction.getBlockCoverage()) {
-        blockCoverage = emmaAction.getBlockCoverage().getPercentageFloat();
-      }
       if (null != emmaAction.getClassCoverage()) {
         classCoverage = emmaAction.getClassCoverage().getPercentageFloat();
       }
@@ -194,8 +193,19 @@ public final class EmmaLoadData {
       if (null != emmaAction.getMethodCoverage()) {
         methodCoverage = emmaAction.getMethodCoverage().getPercentageFloat();
       }
+      if (null != emmaAction.getBranchCoverage()) {
+        branchCoverage = emmaAction.getBranchCoverage().getPercentageFloat();
+      }
+      if (null != emmaAction.getInstructionCoverage()) {
+        instructionCoverage = emmaAction.getInstructionCoverage().getPercentageFloat();
+      }
+      if (null != emmaAction.getComplexityScore()) {
+        complexityScore = emmaAction.getComplexityScore().getPercentageFloat();
+      }
     }
-    return new EmmaCoverageResultSummary(run.getParent(), blockCoverage, lineCoverage, methodCoverage, classCoverage);
+    return new EmmaCoverageResultSummary(
+        run.getParent(), lineCoverage, methodCoverage, classCoverage,
+        branchCoverage, instructionCoverage, complexityScore);
   }
 
   /**
@@ -211,10 +221,12 @@ public final class EmmaLoadData {
 
     for (Job job : jobs) {
 
-      float blockCoverage = 0.0f;
       float classCoverage = 0.0f;
       float lineCoverage = 0.0f;
       float methodCoverage = 0.0f;
+      float branchCoverage = 0.0f;
+      float instructionCoverage = 0.0f;
+      float complexityScore = 0.0f;
 
       Run run = job.getLastSuccessfulBuild();
 
@@ -223,13 +235,6 @@ public final class EmmaLoadData {
         EmmaBuildAction emmaAction = job.getLastSuccessfulBuild().getAction(EmmaBuildAction.class);
 
         if (null != emmaAction) {
-          if (null != emmaAction.getBlockCoverage()) {
-            blockCoverage = emmaAction.getBlockCoverage().getPercentageFloat();
-            BigDecimal bigBlockCoverage = new BigDecimal(blockCoverage);
-            bigBlockCoverage = bigBlockCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
-            blockCoverage = bigBlockCoverage.floatValue();
-          }
-
           if (null != emmaAction.getClassCoverage()) {
             classCoverage = emmaAction.getClassCoverage().getPercentageFloat();
             BigDecimal bigClassCoverage = new BigDecimal(classCoverage);
@@ -249,10 +254,31 @@ public final class EmmaLoadData {
             bigMethodCoverage = bigMethodCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
             methodCoverage = bigMethodCoverage.floatValue();
           }
+
+          if (null != emmaAction.getBranchCoverage()) {
+            branchCoverage = emmaAction.getBranchCoverage().getPercentageFloat();
+            BigDecimal bigBranchCoverage = new BigDecimal(branchCoverage);
+            bigBranchCoverage = bigBranchCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            branchCoverage = bigBranchCoverage.floatValue();
+          }
+
+          if (null != emmaAction.getInstructionCoverage()) {
+            instructionCoverage = emmaAction.getInstructionCoverage().getPercentageFloat();
+            BigDecimal bigInstructionCoverage = new BigDecimal(instructionCoverage);
+            bigInstructionCoverage = bigInstructionCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            instructionCoverage = bigInstructionCoverage.floatValue();
+          }
+
+          if (null != emmaAction.getComplexityScore()) {
+            complexityScore = emmaAction.getComplexityScore().getPercentageFloat();
+            BigDecimal bigComplexityCoverage = new BigDecimal(complexityScore);
+            bigComplexityCoverage = bigComplexityCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            complexityScore = bigComplexityCoverage.floatValue();
+          }
         }
       }
-      summary.addCoverageResult(new EmmaCoverageResultSummary(job, blockCoverage, lineCoverage, methodCoverage,
-        classCoverage));
+      summary.addCoverageResult(new EmmaCoverageResultSummary(
+          job, lineCoverage, methodCoverage, classCoverage, branchCoverage, instructionCoverage, complexityScore));
     }
     return summary;
   }

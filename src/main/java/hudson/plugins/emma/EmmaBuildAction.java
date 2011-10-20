@@ -47,14 +47,17 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      */
     private final EmmaHealthReportThresholds thresholds;
 
-    public EmmaBuildAction(AbstractBuild<?,?> owner, Rule rule, Ratio classCoverage, Ratio methodCoverage, Ratio blockCoverage, Ratio lineCoverage, EmmaHealthReportThresholds thresholds) {
+    public EmmaBuildAction(AbstractBuild<?,?> owner, Rule rule,
+    		Ratio classCoverage, Ratio methodCoverage, Ratio lineCoverage, Ratio branchCoverage, Ratio instructionCoverage,
+    		EmmaHealthReportThresholds thresholds) {
         this.owner = owner;
         this.rule = rule;
         this.clazz = classCoverage;
         this.method = methodCoverage;
-        this.block = blockCoverage;
         this.line = lineCoverage;
         this.thresholds = thresholds;
+        this.branch = branchCoverage;
+        this.instruction = instructionCoverage;
     }
 
     public String getDisplayName() {
@@ -99,14 +102,6 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
             score = updateHealthScore(score, thresholds.getMinMethod(),
                                       percent, thresholds.getMaxMethod());
         }
-        if (block != null && thresholds.getMaxBlock() > 0) {
-            percent = block.getPercentage();
-            if (percent < thresholds.getMaxBlock()) {
-                reports.add(Messages._BuildAction_Blocks(block, percent));
-            }
-            score = updateHealthScore(score, thresholds.getMinBlock(),
-                                      percent, thresholds.getMaxBlock());
-        }
         if (line != null && thresholds.getMaxLine() > 0) {
             percent = line.getPercentage();
             if (percent < thresholds.getMaxLine()) {
@@ -114,6 +109,22 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
             }
             score = updateHealthScore(score, thresholds.getMinLine(),
                                       percent, thresholds.getMaxLine());
+        }
+        if (branch != null && thresholds.getMaxBranch() > 0) {
+            percent = branch.getPercentage();
+            if (percent < thresholds.getMaxBranch()) {
+                reports.add(Messages._BuildAction_Blocks(branch, percent));
+            }
+            score = updateHealthScore(score, thresholds.getMinBranch(),
+                                      percent, thresholds.getMaxBranch());
+        }
+        if (instruction != null && thresholds.getMaxInstruction() > 0) {
+            percent = instruction.getPercentage();
+            if (percent < thresholds.getMaxInstruction()) {
+                reports.add(Messages._BuildAction_Blocks(instruction, percent));
+            }
+            score = updateHealthScore(score, thresholds.getMinInstruction(),
+                                      percent, thresholds.getMaxInstruction());
         }
         if (score == 100) {
             reports.add(Messages._BuildAction_Perfect());
@@ -236,7 +247,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
                 in.close();
             }
         }
-        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],thresholds);
+        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],ratios[4],thresholds);
     }
 
     public static EmmaBuildAction load(AbstractBuild<?,?> owner, Rule rule, EmmaHealthReportThresholds thresholds, InputStream... streams) throws IOException, XmlPullParserException {
@@ -244,7 +255,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
         for (InputStream in: streams) {
           ratios = loadRatios(in, ratios);
         }
-        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],thresholds);
+        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],ratios[4],thresholds);
     }
 
     private static Ratio[] loadRatios(InputStream in, Ratio[] r) throws IOException, XmlPullParserException {

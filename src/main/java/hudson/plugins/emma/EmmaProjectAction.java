@@ -17,7 +17,7 @@ import java.io.IOException;
 public final class EmmaProjectAction implements Action {
     public final AbstractProject<?,?> project;
 
-    public EmmaProjectAction(AbstractProject project) {
+    public EmmaProjectAction(AbstractProject<?,?> project) {
         this.project = project;
     }
 

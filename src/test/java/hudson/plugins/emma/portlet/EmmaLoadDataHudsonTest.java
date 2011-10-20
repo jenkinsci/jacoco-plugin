@@ -34,10 +34,12 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      */
     public void testLoadChartDataWithinRangePositiveNumberOfDays() throws Exception {
 
-        final float expectedBlockCoverage = 0.5f;
         final float expectedClassCoverage = 13.7f;
         final float expectedLineCoverage = 0.6f;
         final float expectedMethodCoverage = 2.0f;
+        final float expectedBranchCoverage = 0.5f;
+        final float expectedInstructionCoverage = 0.5f;
+        final float expectedComplexityScore = 0.5f;
         final int numberOfDays = 1;
         final int summaryMapSize = 1;
 
@@ -68,10 +70,12 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
         EmmaCoverageResultSummary summary = summaryMap.entrySet().iterator().next().getValue();
 
         // Test evaluated values against expected ones
-        assertEquals(expectedBlockCoverage, summary.getBlockCoverage(), 0.1f);
         assertEquals(expectedClassCoverage, summary.getClassCoverage(), 0.1f);
         assertEquals(expectedLineCoverage, summary.getLineCoverage(), 0.1f);
         assertEquals(expectedMethodCoverage, summary.getMethodCoverage(), 0.1f);
+        assertEquals(expectedBranchCoverage, summary.getBranchCoverage(), 0.1f);
+        assertEquals(expectedInstructionCoverage, summary.getInstructionCoverage(), 0.1f);
+        assertEquals(expectedComplexityScore, summary.getComplexityScore(), 0.1f);
     }
 
     /**
@@ -82,10 +86,12 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      */
     public void testLoadChartDataWithinRangeMultJobsSingleBuild() throws Exception {
 
-        final float expectedBlockCoverage = 0.5f;
         final float expectedClassCoverage = 13.7f;
         final float expectedLineCoverage = 0.6f;
         final float expectedMethodCoverage = 2.0f;
+        final float expectedBranchCoverage = 0.5f;
+        final float expectedInstructionCoverage = 0.5f;
+        final float expectedComplexityScore = 0.5f;
         final int numberOfDays = 1;
         final int summaryMapSize = 1;
 
@@ -120,10 +126,12 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
         EmmaCoverageResultSummary summary = summaryMap.entrySet().iterator().next().getValue();
         // Test evaluated values against expected ones
-        assertEquals(expectedBlockCoverage, summary.getBlockCoverage(), 0.1f);
         assertEquals(expectedClassCoverage, summary.getClassCoverage(), 0.1f);
         assertEquals(expectedLineCoverage, summary.getLineCoverage(), 0.1f);
         assertEquals(expectedMethodCoverage, summary.getMethodCoverage(), 0.1f);
+        assertEquals(expectedBranchCoverage, summary.getBranchCoverage(), 0.1f);
+        assertEquals(expectedInstructionCoverage, summary.getInstructionCoverage(), 0.1f);
+        assertEquals(expectedComplexityScore, summary.getComplexityScore(), 0.1f);
     }
 
     /**
@@ -133,23 +141,27 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      */
     public void testGetResultSummary() throws Exception {
 
-        float blockCoverage = 12.0f;
         float classCoverage = 78.0f;
         float lineCoverage = 82.0f;
         float methodCoverage = 0.7f;
+        float branchCoverage = 7.7f;
+        float instructionCoverage = 8.8f;
+        float complexityScore = 1234f;
 
-        float blockCoverage2 = 54.0f;
         float classCoverage2 = 86.9f;
         float lineCoverage2 = 21.7f;
         float methodCoverage2 = 60.0f;
+        float branchCoverage2 = 17.7f;
+        float instructionCoverage2 = 18.8f;
+        float complexityScore2 = 2234f;
 
         // create a result summary with data from the first emma action
-        EmmaCoverageResultSummary coverageResultSummary = new EmmaCoverageResultSummary(null, blockCoverage, lineCoverage, methodCoverage,
-          classCoverage);
+        EmmaCoverageResultSummary coverageResultSummary = new EmmaCoverageResultSummary(
+        		null, lineCoverage, methodCoverage, classCoverage, branchCoverage, instructionCoverage, complexityScore);
 
         // create a result summary with data from the second emma action
-        EmmaCoverageResultSummary coverageResultSummary2 = new EmmaCoverageResultSummary(null, blockCoverage2, lineCoverage2, methodCoverage2,
-          classCoverage2);
+        EmmaCoverageResultSummary coverageResultSummary2 = new EmmaCoverageResultSummary(
+        		null, lineCoverage2, methodCoverage2, classCoverage2, branchCoverage2, instructionCoverage2, complexityScore2);
 
         // add both coverage result summaries to the emma result summary
         EmmaCoverageResultSummary summary = new EmmaCoverageResultSummary();
@@ -157,10 +169,12 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
         summary.addCoverageResult(coverageResultSummary2);
 
         // assert the sum has occurred correctly
-        assertEquals(blockCoverage + blockCoverage2, summary.getBlockCoverage());
         assertEquals(classCoverage + classCoverage2, summary.getClassCoverage());
         assertEquals(lineCoverage + lineCoverage2, summary.getLineCoverage());
         assertEquals(methodCoverage + methodCoverage2, summary.getMethodCoverage());
+        assertEquals(branchCoverage + branchCoverage2, summary.getBranchCoverage());
+        assertEquals(instructionCoverage + instructionCoverage2, summary.getInstructionCoverage());
+        assertEquals(complexityScore + complexityScore2, summary.getComplexityScore());
     }
 
     /**
