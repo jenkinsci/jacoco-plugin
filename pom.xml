@@ -69,7 +69,127 @@
           <target>1.6</target>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+        
+          <!-- Attention Eclipse users: if you see an error here, you have to install the M2E buildhelper plugin.-->
+          <execution>
+            <id>add-localizer-source-folder</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/localizer</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
+  <pluginManagement>
+    <plugins>
+      <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence 
+        on the Maven build itself. -->
+      <plugin>
+        <groupId>org.eclipse.m2e</groupId>
+        <artifactId>lifecycle-mapping</artifactId>
+        <version>1.0.0</version>
+        <configuration>
+          <lifecycleMappingMetadata>
+            <pluginExecutions>
+              <pluginExecution>
+                <pluginExecutionFilter>
+                  <groupId>org.jenkins-ci.tools</groupId>
+                  <artifactId>
+                    maven-hpi-plugin
+                  </artifactId>
+                  <versionRange>[1.64,)</versionRange>
+                  <goals>
+                    <goal>apt-compile</goal>
+                    <goal>insert-test</goal>
+                    <goal>
+                      resolve-test-dependencies
+                    </goal>
+                    <goal>test-hpl</goal>
+                  </goals>
+                </pluginExecutionFilter>
+                <action>
+                  <ignore></ignore>
+                </action>
+              </pluginExecution>
+              <pluginExecution>
+                <pluginExecutionFilter>
+                  <groupId>
+                    org.apache.maven.plugins
+                  </groupId>
+                  <artifactId>
+                    maven-enforcer-plugin
+                  </artifactId>
+                  <versionRange>[1.0,)</versionRange>
+                  <goals>
+                    <goal>display-info</goal>
+                  </goals>
+                </pluginExecutionFilter>
+                <action>
+                  <ignore></ignore>
+                </action>
+              </pluginExecution>
+              <pluginExecution>
+                <pluginExecutionFilter>
+                  <groupId>
+                    org.codehaus.groovy.maven
+                  </groupId>
+                  <artifactId>gmaven-plugin</artifactId>
+                  <versionRange>[1.0-rc-5,)</versionRange>
+                  <goals>
+                    <goal>generateTestStubs</goal>
+                    <goal>testCompile</goal>
+                  </goals>
+                </pluginExecutionFilter>
+                <action>
+                  <ignore></ignore>
+                </action>
+              </pluginExecution>
+              <pluginExecution>
+                <pluginExecutionFilter>
+                  <groupId>org.jvnet.localizer</groupId>
+                  <artifactId>
+                    maven-localizer-plugin
+                  </artifactId>
+                  <versionRange>[1.8,)</versionRange>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                </pluginExecutionFilter>
+                <action>
+                  <execute/>
+                </action>
+              </pluginExecution>
+              <pluginExecution>
+                <pluginExecutionFilter>
+                  <groupId>org.kohsuke</groupId>
+                  <artifactId>
+                    access-modifier-checker
+                  </artifactId>
+                  <versionRange>[1.0,)</versionRange>
+                  <goals>
+                    <goal>enforce</goal>
+                  </goals>
+                </pluginExecutionFilter>
+                <action>
+                  <ignore></ignore>
+                </action>
+              </pluginExecution>
+            </pluginExecutions>
+          </lifecycleMappingMetadata>
+        </configuration>
+      </plugin>
+    </plugins>
+  </pluginManagement>
   </build>
 
 
