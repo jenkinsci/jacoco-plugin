@@ -65,6 +65,17 @@ public final class CoverageElement {
     private int missed;
     private int covered;
 
+    /**
+     * Returns the enum constant that says what type of coverage this bean
+     * represents.
+     * <p>
+     * Warning: don't call this method getType() because that confuses the
+     * Digester.
+     */
+    public Type getTypeAsEnum() {
+        return type;
+    }
+    
     // set by attributes
     public void setType(String type) {
         this.type = Type.valueOf(type);

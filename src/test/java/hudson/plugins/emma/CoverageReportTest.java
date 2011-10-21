@@ -9,60 +9,64 @@ public class CoverageReportTest extends AbstractEmmaTestBase {
         CoverageReport r = new CoverageReport(null, getClass().getResourceAsStream("jacoco.xml"));
         PackageReport pkg = r.getChildren().get("hudson.plugins.emma");
         System.out.println(pkg);
-        assertRatio(pkg.getLineCoverage(), 196, (196+393));
-        assertEquals(2733f, r.getLineCoverage().getMissed());
+        assertCoverage(pkg.getLineCoverage(), 393, 196);
+        assertEquals(595, r.getLineCoverage().getMissed());
     }
 
+    /**
+     * Ensures the coverage after loading two reports represents the combined metrics of both reports.
+     */
     public void testLoadMultipleReports() throws Exception {
       CoverageReport r = new CoverageReport(null,  
           getClass().getResourceAsStream("jacoco.xml"), 
           getClass().getResourceAsStream("jacoco2.xml"));
 
-      assertRatio(r.getLineCoverage(), 8355.3f, 14828.0f);
+      assertCoverage(r.getLineCoverage(), 595 + 513, 293 + 361);
       
-      PackageReport pkg = r.getChildren().get("com.sun.tools.javac.v8.resources");
-      assertRatio(pkg.getLineCoverage(),3,12);
+      PackageReport pkg = r.getChildren().get("hudson.plugins.emma.portlet.bean");
+      assertCoverage(pkg.getLineCoverage(), 34 + 34, 41 + 41);
       
-      pkg = r.getChildren().get("org.apache.hupa.client.validation");
-      assertRatio(pkg.getLineCoverage(), 9,27);
+      pkg = r.getChildren().get("hudson.plugins.emma.portlet.chart");
+      assertCoverage(pkg.getLineCoverage(), 71 + 68, 0 + 1);
       
     }
     
     public void testTreeReport() throws Exception {
         CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco2.xml"));
-        assertRatio(r.getLineCoverage(), 9, 1693);
+        assertCoverage(r.getLineCoverage(), 513, 361);
         
-        PackageReport pkg = r.getChildren().get("org.apache.hupa.client.validation");
-        assertRatio(pkg.getLineCoverage(), 9, 27);
+        PackageReport pkg = r.getChildren().get("hudson.plugins.emma.portlet.bean");
+        assertCoverage(pkg.getLineCoverage(), 34, 41);
 
-        SourceFileReport src = pkg.getChildren().get("EmailListValidator.java");
-        assertRatio(src.getLineCoverage(), 9, 18);
+        SourceFileReport src = pkg.getChildren().get("EmmaCoverageResultSummary.java");
+        assertCoverage(src.getLineCoverage(), 34, 41);
 
-        ClassReport clz = src.getChildren().get("EmailListValidator");
-        assertRatio(clz.getLineCoverage(), 9, 18);
-        assertTrue(clz.hasClassCoverage());
-
-        MethodReport mth = clz.getChildren().get("isValidAddress (String): boolean");
-        assertRatio(mth.getLineCoverage(), 1, 1);
-        assertFalse(mth.hasClassCoverage());
-
-        mth = clz.getChildren().get("Foo (): void");
-        assertRatio(mth.getLineCoverage(), 0, 0);
-        assertFalse(mth.hasClassCoverage());
-        assertFalse(mth.hasLineCoverage());
+        fail("No test yet for method-level coverage data");
+        //        ClassReport clz = src.getChildren().get("EmailListValidator");
+//        assertRatio(clz.getLineCoverage(), 9, 18);
+//        assertTrue(clz.hasClassCoverage());
+//
+//        MethodReport mth = clz.getChildren().get("isValidAddress (String): boolean");
+//        assertRatio(mth.getLineCoverage(), 1, 1);
+//        assertFalse(mth.hasClassCoverage());
+//
+//        mth = clz.getChildren().get("Foo (): void");
+//        assertRatio(mth.getLineCoverage(), 0, 0);
+//        assertFalse(mth.hasClassCoverage());
+//        assertFalse(mth.hasLineCoverage());
     }
     
     public void testEmptyPackage() throws Exception {
         CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco.xml"));
 
-        PackageReport pkg = r.getChildren().get("an.empty.package");
-        assertRatio(pkg.getLineCoverage(), 0, 0);
+        PackageReport pkg = r.getChildren().get("fake.empty.package");
+        assertCoverage(pkg.getLineCoverage(), 0, 0);
         assertFalse(pkg.hasChildren());
         assertFalse(pkg.hasChildrenClassCoverage());
         assertFalse(pkg.hasChildrenLineCoverage());
 
-        pkg = r.getChildren().get("an.package.without.lines");
-        assertRatio(pkg.getLineCoverage(), 0, 0);
+        pkg = r.getChildren().get("fake.empty.package.without.lines");
+        assertCoverage(pkg.getLineCoverage(), 0, 0);
         assertTrue(pkg.hasChildren());
         assertFalse(pkg.hasChildrenClassCoverage());
         assertFalse(pkg.hasChildrenLineCoverage());
