@@ -42,12 +42,12 @@ import java.util.Calendar;
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
-	Ratio clazz = new Ratio();
-    Ratio method = new Ratio();
-    Ratio line = new Ratio();
-    Ratio complexity = new Ratio();
-    Ratio instruction = new Ratio();
-    Ratio branch = new Ratio();
+    Coverage clazz = new Coverage();
+    Coverage method = new Coverage();
+    Coverage line = new Coverage();
+    Coverage complexity = new Coverage();
+    Coverage instruction = new Coverage();
+    Coverage branch = new Coverage();
     
     private volatile boolean failed = false;
 
@@ -64,27 +64,27 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     }
 
     @Exported(inline=true)
-    public Ratio getClassCoverage() {
+    public Coverage getClassCoverage() {
         return clazz;
     }
 
     @Exported(inline=true)
-    public Ratio getMethodCoverage() {
+    public Coverage getMethodCoverage() {
         return method;
     }
 
     @Exported(inline=true)
-    public Ratio getComplexityScore() {
+    public Coverage getComplexityScore() {
         return complexity;
     }
 
     @Exported(inline=true)
-    public Ratio getInstructionCoverage() {
+    public Coverage getInstructionCoverage() {
         return instruction;
     }
 
     @Exported(inline=true)
-    public Ratio getBranchCoverage() {
+    public Coverage getBranchCoverage() {
         return branch;
     }
 
@@ -92,7 +92,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
      * Line coverage. Can be null if this information is not collected.
      */
     @Exported(inline=true)
-    public Ratio getLineCoverage() {
+    public Coverage getLineCoverage() {
         return line;
     }
 
@@ -138,7 +138,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     static NumberFormat percentFormat = new DecimalFormat("0.0");
     static NumberFormat intFormat = new DecimalFormat("0");
     
-	protected static void printRatioCell(boolean failed, Ratio ratio, StringBuilder buf) {
+	protected static void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
 		if (ratio != null && ratio.isInitialized()) {
 			String className = "nowrap" + (failed ? " red" : "");
 			buf.append("<td class='").append(className).append("'");
@@ -149,10 +149,10 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		}
 	}
 	
-	protected static void printRatioTable(Ratio ratio, StringBuilder buf){
+	protected static void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
-		String numerator = intFormat.format(ratio.getNumerator());
-		String denominator = intFormat.format(ratio.getDenominator());
+		String numerator = intFormat.format(ratio.getMissed());
+		String denominator = intFormat.format(ratio.getCovered());
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
 				.append("<td width='64px' class='data'>").append(percent).append("%</td>")
 				.append("<td class='percentgraph'>")

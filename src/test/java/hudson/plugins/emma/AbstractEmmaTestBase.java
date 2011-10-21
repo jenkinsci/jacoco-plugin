@@ -6,8 +6,11 @@ import junit.framework.TestCase;
  * @author Kohsuke Kawaguchi
  */
 abstract class AbstractEmmaTestBase extends TestCase {
-    protected final void assertRatio(Ratio r, float numerator, float denominator) {
-        assertEquals("Numerator doesn't match.",numerator, r.getNumerator());
-        assertEquals("Denominator doesn't match.",denominator, r.getDenominator());
+    protected final void assertRatio(Coverage r, float numerator, float denominator) {
+        fail("Replaced by assertCoverage()");
+    }
+    
+    protected final void assertCoverage(Coverage coverage, int missed, int covered) {
+        assertEquals(missed + "/" + covered, coverage.getMissed() + "/" + coverage.getCovered());
     }
 }

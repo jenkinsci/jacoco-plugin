@@ -34,12 +34,13 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      */
     public void testLoadChartDataWithinRangePositiveNumberOfDays() throws Exception {
 
-        final float expectedClassCoverage = 13.7f;
-        final float expectedLineCoverage = 0.6f;
-        final float expectedMethodCoverage = 2.0f;
-        final float expectedBranchCoverage = 0.5f;
-        final float expectedInstructionCoverage = 0.5f;
-        final float expectedComplexityScore = 0.5f;
+        // Classes 17/20 (54%). Methods 167/69 (29%). Lines 595/293 (33%). Branches 223/67 (23%). Instructions 2733/1351 (33%)
+        final float expectedClassCoverage =       100f *   20f / (  17f +   20f);
+        final float expectedLineCoverage =        100f *  293f / ( 595f +  293f);
+        final float expectedMethodCoverage =      100f *   69f / ( 167f +   69f);
+        final float expectedBranchCoverage =      100f *   67f / ( 223f +   67f);
+        final float expectedInstructionCoverage = 100f * 1351f / (2733f + 1351f);
+        final float expectedComplexityScore =     100f *   92f / ( 289f +   92f);
         final int numberOfDays = 1;
         final int summaryMapSize = 1;
 
@@ -48,18 +49,22 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
         //Make it do something, in this case it writes a coverage report to the workspace.
         job1.getBuildersList().add(
-          new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/jacocoPortlet.xml"),
-                        "reports/coverage/jacocoPortlet.xml"));
+          new CopyResourceToWorkspaceBuilder(
+                  getClass().getResourceAsStream("/hudson/plugins/emma/jacoco.xml"),
+                  "reports/coverage/jacoco.xml"));
+
         //Add a emma publisher
         EmmaPublisher emmaPublisher = new EmmaPublisher();
-        emmaPublisher.includes = "reports/coverage/jacocoPortlet.xml";
+        emmaPublisher.includes = "reports/coverage/jacoco.xml";
         job1.getPublishersList().add(emmaPublisher);
+
         //Build it
         job1.scheduleBuild2(0).get();
 
         //Do the test
         List<Job> jobs = new LinkedList<Job>();
         jobs.add(job1);
+
         //Verify the result
         Map<LocalDate, EmmaCoverageResultSummary> summaryMap = EmmaLoadData.loadChartDataWithinRange(jobs, numberOfDays);
 
@@ -86,12 +91,13 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      */
     public void testLoadChartDataWithinRangeMultJobsSingleBuild() throws Exception {
 
-        final float expectedClassCoverage = 13.7f;
-        final float expectedLineCoverage = 0.6f;
-        final float expectedMethodCoverage = 2.0f;
-        final float expectedBranchCoverage = 0.5f;
-        final float expectedInstructionCoverage = 0.5f;
-        final float expectedComplexityScore = 0.5f;
+        // Classes 17/20 (54%). Methods 167/69 (29%). Lines 595/293 (33%). Branches 223/67 (23%). Instructions 2733/1351 (33%)
+        final float expectedClassCoverage =       100f *   20f / (  17f +   20f);
+        final float expectedLineCoverage =        100f *  293f / ( 595f +  293f);
+        final float expectedMethodCoverage =      100f *   69f / ( 167f +   69f);
+        final float expectedBranchCoverage =      100f *   67f / ( 223f +   67f);
+        final float expectedInstructionCoverage = 100f * 1351f / (2733f + 1351f);
+        final float expectedComplexityScore =     100f *   92f / ( 289f +   92f);
         final int numberOfDays = 1;
         final int summaryMapSize = 1;
 
@@ -100,12 +106,11 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
         //Make it do something, in this case it writes a coverage report to the workspace.
         job1.getBuildersList().add(
-                new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/jacocoPortlet.xml"),
-                        "reports/coverage/jacocoPortlet.xml"));
+                new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/jacoco.xml"),
+                        "reports/coverage/jacoco.xml"));
         //Add a emma publisher
         EmmaPublisher emmaPublisher = new EmmaPublisher();
-        emmaPublisher.includes = "reports/coverage/jacocoPortlet.xml";
-        // emmaPublisher.includes = "resources/hudson/plugins/emma/jacocoPortlet.xml";
+        emmaPublisher.includes = "reports/coverage/jacoco.xml";
         job1.getPublishersList().add(emmaPublisher);
         //Build it
         job1.scheduleBuild2(0).get();

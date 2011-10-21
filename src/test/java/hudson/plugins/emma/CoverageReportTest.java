@@ -10,7 +10,7 @@ public class CoverageReportTest extends AbstractEmmaTestBase {
         PackageReport pkg = r.getChildren().get("hudson.plugins.emma");
         System.out.println(pkg);
         assertRatio(pkg.getLineCoverage(), 196, (196+393));
-        assertEquals(2733f, r.getLineCoverage().getNumerator());
+        assertEquals(2733f, r.getLineCoverage().getMissed());
     }
 
     public void testLoadMultipleReports() throws Exception {

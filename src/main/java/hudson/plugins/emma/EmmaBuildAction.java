@@ -1,27 +1,31 @@
 package hudson.plugins.emma;
 
 import hudson.FilePath;
-import hudson.model.AbstractBuild;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.model.Result;
+import hudson.model.AbstractBuild;
+import hudson.plugins.emma.CoverageElement.Type;
 import hudson.util.IOException2;
 import hudson.util.NullStream;
 import hudson.util.StreamTaskListener;
-
-import org.jvnet.localizer.Localizable;
-import org.kohsuke.stapler.StaplerProxy;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jvnet.localizer.Localizable;
+import org.kohsuke.stapler.StaplerProxy;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Build view extension by Emma plugin.
@@ -47,17 +51,38 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      */
     private final EmmaHealthReportThresholds thresholds;
 
+    /**
+     * 
+     * @param owner
+     * @param rule
+     * @param ratios
+     *            The available coverage ratios in the report. Null is treated
+     *            the same as an empty map.
+     * @param thresholds
+     */
     public EmmaBuildAction(AbstractBuild<?,?> owner, Rule rule,
-    		Ratio classCoverage, Ratio methodCoverage, Ratio lineCoverage, Ratio branchCoverage, Ratio instructionCoverage,
+    		Map<CoverageElement.Type, Coverage> ratios,
     		EmmaHealthReportThresholds thresholds) {
+        if (ratios == null) {
+            ratios = Collections.emptyMap();
+        }
         this.owner = owner;
         this.rule = rule;
-        this.clazz = classCoverage;
-        this.method = methodCoverage;
-        this.line = lineCoverage;
+        this.clazz = getOrCreateRatio(ratios, CoverageElement.Type.CLASS);
+        this.method = getOrCreateRatio(ratios, CoverageElement.Type.METHOD);
+        this.line = getOrCreateRatio(ratios, CoverageElement.Type.LINE);
         this.thresholds = thresholds;
-        this.branch = branchCoverage;
-        this.instruction = instructionCoverage;
+        this.branch = getOrCreateRatio(ratios, CoverageElement.Type.BRANCH);
+        this.instruction = getOrCreateRatio(ratios, CoverageElement.Type.INSTRUCTION);
+        this.complexity = getOrCreateRatio(ratios, CoverageElement.Type.COMPLEXITY);
+    }
+
+    private Coverage getOrCreateRatio(Map<CoverageElement.Type, Coverage> ratios, CoverageElement.Type type) {
+        Coverage r = ratios.get(type);
+        if (r == null) {
+            r = new Coverage();
+        }
+        return r;
     }
 
     public String getDisplayName() {
@@ -113,7 +138,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
         if (branch != null && thresholds.getMaxBranch() > 0) {
             percent = branch.getPercentage();
             if (percent < thresholds.getMaxBranch()) {
-                reports.add(Messages._BuildAction_Blocks(branch, percent));
+                reports.add(Messages._BuildAction_Branches(branch, percent));
             }
             score = updateHealthScore(score, thresholds.getMinBranch(),
                                       percent, thresholds.getMaxBranch());
@@ -121,7 +146,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
         if (instruction != null && thresholds.getMaxInstruction() > 0) {
             percent = instruction.getPercentage();
             if (percent < thresholds.getMaxInstruction()) {
-                reports.add(Messages._BuildAction_Blocks(instruction, percent));
+                reports.add(Messages._BuildAction_Instructions(instruction, percent));
             }
             score = updateHealthScore(score, thresholds.getMinInstruction(),
                                       percent, thresholds.getMaxInstruction());
@@ -236,7 +261,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      *      if failed to parse the file.
      */
     public static EmmaBuildAction load(AbstractBuild<?,?> owner, Rule rule, EmmaHealthReportThresholds thresholds, FilePath... files) throws IOException {
-        Ratio ratios[] = null;
+        Map<CoverageElement.Type,Coverage> ratios = null;
         for (FilePath f: files ) {
             InputStream in = f.read();
             try {
@@ -247,56 +272,56 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
                 in.close();
             }
         }
-        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],ratios[4],thresholds);
+        return new EmmaBuildAction(owner, rule, ratios, thresholds);
     }
 
     public static EmmaBuildAction load(AbstractBuild<?,?> owner, Rule rule, EmmaHealthReportThresholds thresholds, InputStream... streams) throws IOException, XmlPullParserException {
-        Ratio ratios[] = null;
+        Map<CoverageElement.Type,Coverage> ratios = null;
         for (InputStream in: streams) {
           ratios = loadRatios(in, ratios);
         }
-        return new EmmaBuildAction(owner,rule,ratios[0],ratios[1],ratios[2],ratios[3],ratios[4],thresholds);
+        return new EmmaBuildAction(owner, rule, ratios, thresholds);
     }
 
-    private static Ratio[] loadRatios(InputStream in, Ratio[] r) throws IOException, XmlPullParserException {
-      
+    /**
+     * Extracts top-level coverage information from the JaCoCo report document.
+     * 
+     * @param in
+     * @param ratios
+     * @return
+     * @throws IOException
+     * @throws XmlPullParserException
+     */
+    private static Map<Type, Coverage> loadRatios(InputStream in, Map<Type, Coverage> ratios) throws IOException, XmlPullParserException {
+
+        if (ratios == null) {
+            ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();
+        }
+
         XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
-      
         XmlPullParser parser = factory.newPullParser();
-
-        parser.setInput(in,null);
-        while(true) {
-            if(parser.nextTag()!=XmlPullParser.START_TAG)
-                continue;
-            if(!parser.getName().equals("coverage"))
-                continue;
-            break;
-        }
-
-        if (r == null || r.length < 4) 
-            r = new Ratio[4];
+        parser.setInput(in, null);
         
-        // head for the first <coverage> tag.
-        for( int i=0; i<r.length; i++ ) {
-            if(!parser.getName().equals("coverage"))
-                break;  // line coverage is optional
+        int eventType = parser.getEventType();
+        do {
+            // this predicate matches the start tags of the elements selected by the XPath expression "/report/counter"
+            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("counter") && parser.getDepth() == 2) {
+                Type type = Type.valueOf(parser.getAttributeValue("", "type"));
+                int covered = Integer.parseInt(parser.getAttributeValue("", "covered"));
+                int missed = Integer.parseInt(parser.getAttributeValue("", "missed"));
 
-            parser.require(XmlPullParser.START_TAG,"","coverage");
-            String v = parser.getAttributeValue("", "value");
-            
-            if (r[i] == null) {
-                r[i] = Ratio.parseValue(v);
-            } else {
-                r[i].addValue(v);
+                Coverage ratio = ratios.get(type);
+                if (ratio == null) {
+                    ratio = new Coverage();
+                    ratios.put(type, ratio);
+                }
+                ratio.accumulate(missed, covered);
             }
-            
-            // move to the next coverage tag.
-            parser.nextTag();
-            parser.nextTag();
-        }
+            eventType = parser.next();
+        } while (eventType != XmlPullParser.END_DOCUMENT);
         
-        return r;
+        return ratios;
 
     }
 

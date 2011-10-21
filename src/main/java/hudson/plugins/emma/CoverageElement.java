@@ -15,40 +15,40 @@ public final class CoverageElement {
      * 
      * @author Jonathan Fuerth <jfuerth@gmail.com>
      */
-    private enum Type {
+    enum Type {
       INSTRUCTION {
         @Override
-        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+        public Coverage getAssociatedRatio(AbstractReport<?, ?> from) {
           return from.instruction;
         }
       },
       BRANCH {
         @Override
-        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+        public Coverage getAssociatedRatio(AbstractReport<?, ?> from) {
           return from.branch;
         }
       },
       LINE {
         @Override
-        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+        public Coverage getAssociatedRatio(AbstractReport<?, ?> from) {
           return from.line;
         }
       },
       COMPLEXITY {
         @Override
-        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+        public Coverage getAssociatedRatio(AbstractReport<?, ?> from) {
           return from.complexity;
         }
       },
       METHOD {
         @Override
-        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+        public Coverage getAssociatedRatio(AbstractReport<?, ?> from) {
           return from.method;
         }
       },
       CLASS {
         @Override
-        public Ratio getAssociatedRatio(AbstractReport<?, ?> from) {
+        public Coverage getAssociatedRatio(AbstractReport<?, ?> from) {
           return from.clazz;
         }
       };
@@ -56,9 +56,9 @@ public final class CoverageElement {
       /**
        * Returns the ratio object on the given report that tracks this type of coverage.
        * 
-       * @param from The report to return the appropriate Ratio object from. Not null.
+       * @param from The report to return the appropriate Coverage object from. Not null.
        */
-      public abstract Ratio getAssociatedRatio(AbstractReport<?,?> from);
+      public abstract Coverage getAssociatedRatio(AbstractReport<?,?> from);
     }
 
     private Type type;
@@ -81,6 +81,6 @@ public final class CoverageElement {
     }
 
     void addTo(AbstractReport<?,?> report) throws IOException {
-        type.getAssociatedRatio(report).accumulate(covered, (missed + covered));
+        type.getAssociatedRatio(report).accumulate(missed, covered);
     }
 }
