@@ -29,7 +29,7 @@
  */
 package hudson.plugins.jacoco.portlet.chart;
 
-import hudson.plugins.emma.portlet.Messages;
+import hudson.plugins.jacoco.portlet.Messages;
 import hudson.plugins.jacoco.portlet.EmmaLoadData;
 import hudson.plugins.jacoco.portlet.bean.EmmaCoverageResultSummary;
 import hudson.plugins.jacoco.portlet.utils.Constants;

@@ -5,7 +5,7 @@ import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
-import hudson.plugins.emma.Messages;
+import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.CoverageElement.Type;
 import hudson.util.IOException2;
 import hudson.util.NullStream;
@@ -201,7 +201,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
             if(r!=null)     return r;
         }
 
-        final File reportFolder = EmmaPublisher.getEmmaReport(owner);
+        final File reportFolder = JacocoPublisher.getEmmaReport(owner);
 
         try {
         	

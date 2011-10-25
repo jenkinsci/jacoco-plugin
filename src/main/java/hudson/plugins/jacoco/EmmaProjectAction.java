@@ -4,7 +4,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.Result;
-import hudson.plugins.emma.Messages;
+import hudson.plugins.jacoco.Messages;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;

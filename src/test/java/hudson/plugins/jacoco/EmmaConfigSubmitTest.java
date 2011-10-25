@@ -4,7 +4,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.model.FreeStyleProject;
 import hudson.plugins.jacoco.EmmaHealthReportThresholds;
-import hudson.plugins.jacoco.EmmaPublisher;
+import hudson.plugins.jacoco.JacocoPublisher;
 
 import org.jvnet.hudson.test.HudsonTestCase;
 
@@ -22,11 +22,11 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         HtmlPage p = client.goTo(fp.getUrl() + "/configure");
         HtmlForm f = p.getFormByName("config");
 
-        f.getInputByName("hudson-plugins-jacoco-EmmaPublisher").setChecked(true);
+        f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
         // includes is empty
         submit(f);
 
-        EmmaPublisher publisher = (EmmaPublisher) fp.getPublisher(EmmaPublisher.DESCRIPTOR);
+        JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
 
         assertEquals("", publisher.includes);
     }
@@ -39,11 +39,11 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         HtmlPage p = client.goTo(fp.getUrl() + "/configure");
         HtmlForm f = p.getFormByName("config");
 
-        f.getInputByName("hudson-plugins-emma-EmmaPublisher").setChecked(true);
-        f.getInputByName("emma.includes").setValueAttribute("**/*");
+        f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
+        f.getInputByName("jacoco.includes").setValueAttribute("**/*");
         submit(f);
 
-        EmmaPublisher publisher = (EmmaPublisher) fp.getPublisher(EmmaPublisher.DESCRIPTOR);
+        JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
 
         assertEquals("**/*", publisher.includes);
     }
@@ -56,7 +56,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         HtmlPage p = client.goTo(fp.getUrl() + "/configure");
         HtmlForm f = p.getFormByName("config");
 
-        f.getInputByName("hudson-plugins-jacoco-EmmaPublisher").setChecked(true);
+        f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
         f.getInputByName("jacocoHealthReports.maxClass").setValueAttribute("");
         f.getInputByName("jacocoHealthReports.maxMethod").setValueAttribute("");
         f.getInputByName("jacocoHealthReports.maxLine").setValueAttribute("");
@@ -65,7 +65,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         f.getInputByName("jacocoHealthReports.maxComplexity").setValueAttribute("");
         submit(f);
 
-        EmmaPublisher publisher = (EmmaPublisher) fp.getPublisher(EmmaPublisher.DESCRIPTOR);
+        JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
         EmmaHealthReportThresholds thresholds = publisher.healthReports;
         
         assertEquals(100, thresholds.getMaxClass());
@@ -84,7 +84,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         HtmlPage p = client.goTo(fp.getUrl() + "/configure");
         HtmlForm f = p.getFormByName("config");
 
-        f.getInputByName("hudson-plugins-jacoco-EmmaPublisher").setChecked(true);
+        f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
         f.getInputByName("jacocoHealthReports.maxClass").setValueAttribute("8");
         f.getInputByName("jacocoHealthReports.maxMethod").setValueAttribute("9");
         f.getInputByName("jacocoHealthReports.maxLine").setValueAttribute("10");
@@ -93,7 +93,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         f.getInputByName("jacocoHealthReports.maxComplexity").setValueAttribute("13");
         submit(f);
 
-        EmmaPublisher publisher = (EmmaPublisher) fp.getPublisher(EmmaPublisher.DESCRIPTOR);
+        JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
         EmmaHealthReportThresholds thresholds = publisher.healthReports;
         
         assertEquals(8, thresholds.getMaxClass());
@@ -112,7 +112,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         HtmlPage p = client.goTo(fp.getUrl() + "/configure");
         HtmlForm f = p.getFormByName("config");
 
-        f.getInputByName("hudson-plugins-jacoco-EmmaPublisher").setChecked(true);
+        f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
         f.getInputByName("jacocoHealthReports.minClass").setValueAttribute("1");
         f.getInputByName("jacocoHealthReports.minMethod").setValueAttribute("2");
         f.getInputByName("jacocoHealthReports.minLine").setValueAttribute("3");
@@ -121,7 +121,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         f.getInputByName("jacocoHealthReports.minComplexity").setValueAttribute("13");
         submit(f);
 
-        EmmaPublisher publisher = (EmmaPublisher) fp.getPublisher(EmmaPublisher.DESCRIPTOR);
+        JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
         EmmaHealthReportThresholds thresholds = publisher.healthReports;
         
         assertEquals(1, thresholds.getMinClass());

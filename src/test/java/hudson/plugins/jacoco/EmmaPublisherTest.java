@@ -1,7 +1,7 @@
 package hudson.plugins.jacoco;
 
 import hudson.FilePath;
-import hudson.plugins.jacoco.EmmaPublisher;
+import hudson.plugins.jacoco.JacocoPublisher;
 
 import junit.framework.Assert;
 
@@ -47,17 +47,17 @@ public class EmmaPublisherTest extends AbstractEmmaTestBase {
 		
 		// Look for files in the entire workspace recursively without providing 
 		// the includes parameter
-		FilePath[] reports = EmmaPublisher.locateCoverageReports(workspace, "**/jacoco*.xml");
+		FilePath[] reports = JacocoPublisher.locateCoverageReports(workspace, "**/jacoco*.xml");
 		Assert.assertEquals(2 , reports.length);
 
 		// Generate a includes string and look for files 
 		String includes = f1.getName() + "; " + f2.getName() + "; " + d1.getName();
-		reports = EmmaPublisher.locateCoverageReports(workspace, includes);
+		reports = JacocoPublisher.locateCoverageReports(workspace, includes);
 		Assert.assertEquals(3, reports.length);
 
 		// Save files in local workspace
 		FilePath local = workspace.child("coverage_localfolder");
-		EmmaPublisher.saveCoverageReports(local, reports);
+		JacocoPublisher.saveCoverageReports(local, reports);
 		Assert.assertEquals(3, local.list().size());
 		local.deleteRecursive();
 

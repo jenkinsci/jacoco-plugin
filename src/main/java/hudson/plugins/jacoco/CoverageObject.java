@@ -3,7 +3,7 @@ package hudson.plugins.jacoco;
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
-import hudson.plugins.emma.Messages;
+import hudson.plugins.jacoco.Messages;
 import hudson.util.ChartUtil;
 import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;

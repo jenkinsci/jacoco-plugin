@@ -32,7 +32,7 @@ package hudson.plugins.jacoco.portlet.grid;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.Job;
-import hudson.plugins.emma.portlet.Messages;
+import hudson.plugins.jacoco.portlet.Messages;
 import hudson.plugins.jacoco.portlet.EmmaLoadData;
 import hudson.plugins.jacoco.portlet.bean.EmmaCoverageResultSummary;
 import hudson.plugins.view.dashboard.DashboardPortlet;

@@ -6,7 +6,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
 import hudson.model.FreeStyleProject;
 import hudson.model.Job;
-import hudson.plugins.jacoco.EmmaPublisher;
+import hudson.plugins.jacoco.JacocoPublisher;
 import hudson.plugins.jacoco.portlet.EmmaLoadData;
 import hudson.plugins.jacoco.portlet.bean.EmmaCoverageResultSummary;
 import hudson.tasks.Builder;
@@ -55,7 +55,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
                   "reports/coverage/jacoco.xml"));
 
         //Add a emma publisher
-        EmmaPublisher emmaPublisher = new EmmaPublisher();
+        JacocoPublisher emmaPublisher = new JacocoPublisher();
         emmaPublisher.includes = "reports/coverage/jacoco.xml";
         job1.getPublishersList().add(emmaPublisher);
 
@@ -110,7 +110,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
                 new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/jacoco.xml"),
                         "reports/coverage/jacoco.xml"));
         //Add a emma publisher
-        EmmaPublisher emmaPublisher = new EmmaPublisher();
+        JacocoPublisher emmaPublisher = new JacocoPublisher();
         emmaPublisher.includes = "reports/coverage/jacoco.xml";
         job1.getPublishersList().add(emmaPublisher);
         //Build it

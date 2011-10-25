@@ -9,7 +9,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
-import hudson.plugins.emma.Messages;
+import hudson.plugins.jacoco.Messages;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -30,7 +30,7 @@ import java.util.Arrays;
  *
  * @author Kohsuke Kawaguchi
  */
-public class EmmaPublisher extends Recorder {
+public class JacocoPublisher extends Recorder {
     /**
      * Relative path to the jacoco XML file inside the workspace.
      */
@@ -173,11 +173,11 @@ public class EmmaPublisher extends Recorder {
 
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
-            super(EmmaPublisher.class);
+            super(JacocoPublisher.class);
         }
 
         public String getDisplayName() {
-            return Messages.EmmaPublisher_DisplayName();
+            return Messages.JacocoPublisher_DisplayName();
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
@@ -186,7 +186,7 @@ public class EmmaPublisher extends Recorder {
 
         @Override
         public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
-            EmmaPublisher pub = new EmmaPublisher();
+            JacocoPublisher pub = new JacocoPublisher();
             req.bindParameters(pub, "jacoco.");
             req.bindParameters(pub.healthReports, "jacocoHealthReports.");
             // start ugly hack
