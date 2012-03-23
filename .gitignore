@@ -12,3 +12,6 @@ work
 .classpath
 .project
 build
+
+# other
+*~
