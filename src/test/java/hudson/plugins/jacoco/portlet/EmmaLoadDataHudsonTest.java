@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.LocalDate;
+import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
 /**
@@ -33,6 +34,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      *
      * @throws Exception if so.
      */
+	@Test
     public void testLoadChartDataWithinRangePositiveNumberOfDays() throws Exception {
 
         // Classes 17/20 (54%). Methods 167/69 (29%). Lines 595/293 (33%). Branches 223/67 (23%). Instructions 2733/1351 (33%)
@@ -51,7 +53,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
         //Make it do something, in this case it writes a coverage report to the workspace.
         job1.getBuildersList().add(
           new CopyResourceToWorkspaceBuilder(
-                  getClass().getResourceAsStream("/hudson/plugins/emma/jacoco.xml"),
+                  getClass().getResourceAsStream("/hudson/plugins/jacoco/jacoco.xml"),
                   "reports/coverage/jacoco.xml"));
 
         //Add a emma publisher
@@ -76,12 +78,14 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
         EmmaCoverageResultSummary summary = summaryMap.entrySet().iterator().next().getValue();
 
         // Test evaluated values against expected ones
-        assertEquals(expectedClassCoverage, summary.getClassCoverage(), 0.1f);
-        assertEquals(expectedLineCoverage, summary.getLineCoverage(), 0.1f);
-        assertEquals(expectedMethodCoverage, summary.getMethodCoverage(), 0.1f);
-        assertEquals(expectedBranchCoverage, summary.getBranchCoverage(), 0.1f);
-        assertEquals(expectedInstructionCoverage, summary.getInstructionCoverage(), 0.1f);
-        assertEquals(expectedComplexityScore, summary.getComplexityScore(), 0.1f);
+        
+        
+        assertEquals("Class Coverage.", expectedClassCoverage, summary.getClassCoverage(), 0.1f);
+        assertEquals("Line Coverage.", expectedLineCoverage, summary.getLineCoverage(), 0.1f);
+        assertEquals("Method Coverage.", expectedMethodCoverage, summary.getMethodCoverage(), 0.1f);
+        assertEquals("Branch Coverage.", expectedBranchCoverage, summary.getBranchCoverage(), 0.1f);
+        assertEquals("Instruction Coverage.", expectedInstructionCoverage, summary.getInstructionCoverage(), 0.1f);
+        assertEquals("Complexity Score.", expectedComplexityScore, summary.getComplexityScore(), 0.1f);
     }
 
     /**
@@ -90,6 +94,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      *
      * @throws Exception if so.
      */
+	@Test
     public void testLoadChartDataWithinRangeMultJobsSingleBuild() throws Exception {
 
         // Classes 17/20 (54%). Methods 167/69 (29%). Lines 595/293 (33%). Branches 223/67 (23%). Instructions 2733/1351 (33%)
@@ -107,7 +112,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
         //Make it do something, in this case it writes a coverage report to the workspace.
         job1.getBuildersList().add(
-                new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/emma/jacoco.xml"),
+                new CopyResourceToWorkspaceBuilder(getClass().getResourceAsStream("/hudson/plugins/jacoco/jacoco.xml"),
                         "reports/coverage/jacoco.xml"));
         //Add a emma publisher
         JacocoPublisher emmaPublisher = new JacocoPublisher();
@@ -145,6 +150,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
      * Tests {@link hudson.plugins.jacoco.portlet.EmmaLoadData#getResultSummary(java.util.Collection)}.
      * @throws Exception if any
      */
+	@Test
     public void testGetResultSummary() throws Exception {
 
         float classCoverage = 78.0f;

@@ -60,6 +60,8 @@ public class EmmaHealthReportThresholds implements Serializable {
         minBranch = applyRange(0, minBranch, maxBranch);
         maxInstruction = applyRange(0, maxInstruction, 100);
         minInstruction = applyRange(0, minInstruction, maxInstruction);
+        maxComplexity = applyRange(0, maxComplexity, 100);
+        minComplexity = applyRange(0, minComplexity, maxComplexity);
     }
 
     public int getMinClass() {

@@ -7,12 +7,15 @@ import junit.framework.Assert;
 
 import java.io.File;
 
+import org.junit.Test;
+
 /**
  * 
  * @autor manuel_carrasco
  */
 public class EmmaPublisherTest extends AbstractEmmaTestBase {
 	
+	@Test
 	public void testLocateReports() throws Exception {
 
 		// Create a temporary workspace in the system 

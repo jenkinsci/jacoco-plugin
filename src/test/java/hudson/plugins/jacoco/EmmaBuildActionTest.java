@@ -1,7 +1,10 @@
 package hudson.plugins.jacoco;
 
+import org.junit.Test;
+
 import hudson.plugins.jacoco.EmmaBuildAction;
 import hudson.plugins.jacoco.EmmaHealthReportThresholds;
+import static org.junit.Assert.*;
 
 
 /**
@@ -9,6 +12,7 @@ import hudson.plugins.jacoco.EmmaHealthReportThresholds;
  */
 public class EmmaBuildActionTest extends AbstractEmmaTestBase {
   
+	@Test
     public void testLoadReport1() throws Exception {
         EmmaBuildAction r = EmmaBuildAction.load(null,null,
                 new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
@@ -25,6 +29,7 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
                      r.getBuildHealth().getDescription());
     }
     
+	@Test
     public void testLoadReport2() throws Exception {
         EmmaBuildAction r = EmmaBuildAction.load(null,null,
                 new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
@@ -41,6 +46,7 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
                      r.getBuildHealth().getDescription());
     }
     
+	@Test
     public void testLoadMultipleReports() throws Exception {
       EmmaBuildAction r = EmmaBuildAction.load(null,null,
               new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),

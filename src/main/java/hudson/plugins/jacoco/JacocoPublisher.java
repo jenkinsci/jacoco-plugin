@@ -211,6 +211,9 @@ public class JacocoPublisher extends Recorder {
             if ("".equals(req.getParameter("jacocoHealthReports.maxInstruction"))) {
                 pub.healthReports.setMaxInstruction(70);
             }
+            if ("".equals(req.getParameter("jacocoHealthReports.maxComplexity"))) {
+                pub.healthReports.setMaxComplexity(70);
+            }
             // end ugly hack
             return pub;
         }
