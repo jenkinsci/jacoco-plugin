@@ -10,6 +10,9 @@
     <j:if test="${it.hasChildrenLineCoverage()}">
       <th>${%line}</th>
     </j:if>
+    <th>${%complexity}</th>
+    <th>${%instruction}</th>
+    <th>${%branch}</th>
   </tr>
  </j:if>  
 </j:jelly>
