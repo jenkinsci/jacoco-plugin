@@ -6,7 +6,6 @@
       <th>${%class}</th>
     </j:if>
     <th>${%method}</th>
-    <th>${%block}</th>
     <j:if test="${it.hasChildrenLineCoverage()}">
       <th>${%line}</th>
     </j:if>
