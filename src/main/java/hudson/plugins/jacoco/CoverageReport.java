@@ -71,36 +71,30 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
         digester.push(this);
 
-        digester.addObjectCreate( "*/package", PackageReport.class);
-        digester.addSetNext(      "*/package","add");
-        digester.addSetProperties("*/package");
-        digester.addObjectCreate( "*/sourcefile", SourceFileReport.class);
-        digester.addSetNext(      "*/sourcefile","add");
-        digester.addSetProperties("*/sourcefile");
-        digester.addObjectCreate( "*/class", ClassReport.class);
-        digester.addSetNext(      "*/class","add");
-        digester.addSetProperties("*/class");
-        digester.addObjectCreate( "*/method", MethodReport.class);
-        digester.addSetNext(      "*/method","add");
-        digester.addSetProperties("*/method");
+        // Create the list of Packages
+        digester.addObjectCreate( "report/package", PackageReport.class);
+        digester.addSetNext(      "report/package","add");
+        digester.addSetProperties("report/package");
+        
+        
+        // Now the classes
+        digester.addObjectCreate( "report/package/class", ClassReport.class);
+        digester.addSetNext(      "report/class","add");
+        digester.addSetProperties("report/class");
+        digester.addObjectCreate( "report/method", MethodReport.class);
+        digester.addSetNext(      "report/method","add");
+        digester.addSetProperties("report/method");
+        
+        // Create the list of Source Files next
+        digester.addObjectCreate( "report/package/sourcefile", SourceFileReport.class);
+        digester.addSetNext(      "report/package/sourcefile","add");
+        digester.addSetProperties("report/package/sourcefile");
+
 
         digester.addObjectCreate( "*/counter", CoverageElement.class);
         digester.addSetProperties("*/counter");
         digester.addSetNext(      "*/counter","addCoverage");
 
-        //digester.addObjectCreate("*/testcase",TestCase.class);
-        //digester.addSetNext("*/testsuite","add");
-        //digester.addSetNext("*/test","add");
-        //if(owner.considerTestAsTestObject())
-        //    digester.addCallMethod("*/test", "setconsiderTestAsTestObject");
-        //digester.addSetNext("*/testcase","add");
-        //
-        //// common properties applicable to more than one TestObjects.
-        //digester.addBeanPropertySetter("*/id");
-        //digester.addBeanPropertySetter("*/name");
-        //digester.addBeanPropertySetter("*/description");
-        //digester.addSetProperties("*/status","value","statusString");  // set attributes. in particular @revision
-        //digester.addBeanPropertySetter("*/status","statusMessage");
         return digester;
     }
 }

@@ -9,4 +9,5 @@ public final class PackageReport extends AggregatedReport<CoverageReport,Package
     public void setName(String name) {
         super.setName(name.replaceAll("/", "."));
     }
+    
 }
