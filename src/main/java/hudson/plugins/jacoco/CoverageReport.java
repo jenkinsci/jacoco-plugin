@@ -81,6 +81,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         digester.addObjectCreate( "report/package/class", ClassReport.class);
         digester.addSetNext(      "report/class","add");
         digester.addSetProperties("report/class");
+        
         digester.addObjectCreate( "report/method", MethodReport.class);
         digester.addSetNext(      "report/method","add");
         digester.addSetProperties("report/method");
