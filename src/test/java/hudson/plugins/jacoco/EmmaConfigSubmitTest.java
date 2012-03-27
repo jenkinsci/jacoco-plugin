@@ -6,6 +6,7 @@ import hudson.model.FreeStyleProject;
 import hudson.plugins.jacoco.EmmaHealthReportThresholds;
 import hudson.plugins.jacoco.JacocoPublisher;
 
+import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
 /**
@@ -14,6 +15,7 @@ import org.jvnet.hudson.test.HudsonTestCase;
  */
 public class EmmaConfigSubmitTest extends HudsonTestCase {
 
+	@Test
     public void testIncludeIsEmpty() throws Exception {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
@@ -31,6 +33,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         assertEquals("", publisher.includes);
     }
     
+	@Test
     public void testIncludeIsSet() throws Exception {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
@@ -48,6 +51,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         assertEquals("**/*", publisher.includes);
     }
 
+	@Test
     public void testHealthReportDefaultMaxValue() throws Exception {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
@@ -70,12 +74,13 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         
         assertEquals(100, thresholds.getMaxClass());
         assertEquals(70, thresholds.getMaxMethod());
-        assertEquals(80, thresholds.getMaxLine());
+        assertEquals(70, thresholds.getMaxLine());
         assertEquals(70, thresholds.getMaxBranch());
         assertEquals(70, thresholds.getMaxInstruction());
         assertEquals(70, thresholds.getMaxComplexity());
     }    
 
+	@Test
     public void testHealthReportMaxValue() throws Exception {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);
@@ -104,6 +109,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         assertEquals(13, thresholds.getMaxComplexity());
     }    
 
+	@Test
     public void testHealthReportMinValue() throws Exception {
         WebClient client = new WebClient();
         client.setThrowExceptionOnFailingStatusCode(false);

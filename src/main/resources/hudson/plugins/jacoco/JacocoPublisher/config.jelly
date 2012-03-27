@@ -39,6 +39,15 @@
                     <td>
                         <f:textbox name="jacocoHealthReports.maxLine" value="${instance.healthReports.maxLine}" />
                     </td>
+                    <td>
+                        <f:textbox name="jacocoHealthReports.maxBranch" value="${instance.healthReports.maxBranch}" />
+                    </td>
+                    <td>
+                        <f:textbox name="jacocoHealthReports.maxInstruction" value="${instance.healthReports.maxInstruction}" />
+                    </td>
+                    <td>
+                        <f:textbox name="jacocoHealthReports.maxComplexity" value="${instance.healthReports.maxComplexity}" />
+                    </td>
                 </tr>
                 <tr>
                     <th>
@@ -57,6 +66,16 @@
                     <td>
                         <f:textbox name="jacocoHealthReports.minLine" value="${instance.healthReports.minLine}" />
                     </td>
+                    <td>
+                        <f:textbox name="jacocoHealthReports.minBranch" value="${instance.healthReports.minBranch}" />
+                    </td>
+                    <td>
+                        <f:textbox name="jacocoHealthReports.minInstruction" value="${instance.healthReports.minInstruction}" />
+                    </td>
+                    <td>
+                        <f:textbox name="jacocoHealthReports.minComplexity" value="${instance.healthReports.minComplexity}" />
+                    </td>
+                    
                 </tr>
             </tbody>
 

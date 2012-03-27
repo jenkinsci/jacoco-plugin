@@ -1,12 +1,12 @@
 package hudson.plugins.jacoco;
 
 import hudson.plugins.jacoco.Coverage;
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-abstract class AbstractEmmaTestBase extends TestCase {
+abstract class AbstractEmmaTestBase {
     protected final void assertRatio(Coverage r, float numerator, float denominator) {
         fail("Replaced by assertCoverage()");
     }
