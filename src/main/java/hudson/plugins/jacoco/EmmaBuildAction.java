@@ -95,7 +95,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     }
 
     public String getUrlName() {
-        return "emma";
+        return "jacoco";
     }
 
     /**

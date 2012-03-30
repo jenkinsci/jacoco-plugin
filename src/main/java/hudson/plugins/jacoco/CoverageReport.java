@@ -22,7 +22,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     private CoverageReport(EmmaBuildAction action) {
         this.action = action;
-        setName("Emma");
+        setName("Jacoco");
     }
 
     public CoverageReport(EmmaBuildAction action, InputStream... xmlReports) throws IOException {
