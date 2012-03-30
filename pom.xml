@@ -10,7 +10,7 @@
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>1.0-SNAPSHOT</version>
+   <version>1.0.0-SNAPSHOT</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
@@ -33,6 +33,10 @@
       <developer>
          <id>jfuerth</id>
          <name>Jonathan Fuerth</name>
+      </developer>
+      <developer>
+         <id>kingargyle</id>
+         <name>David Carver</name>
       </developer>
    </developers>
 
@@ -272,6 +276,110 @@
          </plugins>
       </pluginManagement>
    </build>
+	<profiles>
+		<profile>
+			<id>coverage</id>
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.jacoco</groupId>
+                  <artifactId>jacoco-maven-plugin</artifactId>
+                  <version>0.5.6.201201232323</version>
+                  <executions>
+                     <execution>
+                        <goals>
+                           <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                           <includes>
+                              <include>hudson.plugins.jacoco.*</include>
+                           </includes>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.7</version>
+                  <dependencies>
+                     <dependency>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>org.jacoco.ant</artifactId>
+                        <version>0.5.6.201201232323</version>
+                     </dependency>
+                     <dependency>
+                        <groupId>ant-contrib</groupId>
+                        <artifactId>ant-contrib</artifactId>
+                        <version>20020829</version>
+                     </dependency>
+                  </dependencies>
+                  <executions>
+                     <execution>
+                        <id>jacoco-report</id>
+                        <phase>install</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+                              <taskdef name="jacoco-report"
+                                 classname="org.jacoco.ant.ReportTask"
+                                 classpathref="maven.plugin.classpath" />
+                              <taskdef classpathref="maven.runtime.classpath"
+                                 resource="net/sf/antcontrib/antcontrib.properties" />
+                              <available
+                                 file="${project.basedir}/target/jacoco.exec"
+                                 property="jacoco.exec.file.exists" />
+                              <echo message="${project.basedir}/target/jacoco.exec" />
+                              <if>
+                                 <equals arg1="${jacoco.exec.file.exists}"
+                                    arg2="true" />
+                                 <then>
+                                    <echo message="Executing jacoco report" />
+                                    <trycatch>
+                                       <try>
+                                          <jacoco-report>
+                                             <executiondata>
+                                                <file
+                                                   file="${project.basedir}/target/jacoco.exec" />
+                                             </executiondata>
+
+                                             <structure name="Minerva">
+                                                <classfiles>
+                                                   <fileset
+                                                      dir="${project.basedir}/target/classes" />
+                                                </classfiles>
+                                                <sourcefiles
+                                                   encoding="UTF-8">
+                                                   <fileset
+                                                      dir="${project.basedir}/src/main/java" />
+                                                </sourcefiles>
+                                             </structure>
+
+                                             <html
+                                                destdir="${project.basedir}/target/jacoco/report" />
+                                             <xml destfile="${project.basedir}/target/jacoco/report/jacoco.xml"/>
+                                          </jacoco-report>
+                                       </try>
+                                       <catch>
+                                          <echo>skipping</echo>
+                                       </catch>
+                                    </trycatch>
+                                 </then>
+                                 <else>
+                                    <echo message="No jacoco.exec file found." />
+                                 </else>
+                              </if>
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>
+            </plugins>
+         </build>
+		</profile>
+	</profiles>
 
 
 </project>
