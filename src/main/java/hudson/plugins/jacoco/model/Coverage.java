@@ -1,4 +1,4 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.model;
 
 import java.io.Serializable;
 

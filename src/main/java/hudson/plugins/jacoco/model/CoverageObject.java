@@ -1,9 +1,10 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.model;
 
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.plugins.jacoco.Messages;
+import hudson.plugins.jacoco.Rule;
 import hudson.util.ChartUtil;
 import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
@@ -43,12 +44,12 @@ import java.util.Calendar;
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
-    Coverage clazz = new Coverage();
-    Coverage method = new Coverage();
-    Coverage line = new Coverage();
-    Coverage complexity = new Coverage();
-    Coverage instruction = new Coverage();
-    Coverage branch = new Coverage();
+    public Coverage clazz = new Coverage();
+    public Coverage method = new Coverage();
+    public Coverage line = new Coverage();
+    public Coverage complexity = new Coverage();
+    public Coverage instruction = new Coverage();
+    public Coverage branch = new Coverage();
     
     private volatile boolean failed = false;
 

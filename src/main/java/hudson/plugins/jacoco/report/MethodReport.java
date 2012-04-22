@@ -1,4 +1,4 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.report;
 
 /**
  * @author Kohsuke Kawaguchi

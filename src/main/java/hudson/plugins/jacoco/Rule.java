@@ -3,6 +3,8 @@ package hudson.plugins.jacoco;
 import hudson.ExtensionPoint;
 import hudson.model.Build;
 import hudson.model.TaskListener;
+import hudson.plugins.jacoco.model.CoverageObject;
+import hudson.plugins.jacoco.report.CoverageReport;
 
 import java.io.Serializable;
 

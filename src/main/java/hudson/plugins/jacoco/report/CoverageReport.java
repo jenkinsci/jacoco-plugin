@@ -1,6 +1,8 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.report;
 
 import hudson.model.AbstractBuild;
+import hudson.plugins.jacoco.EmmaBuildAction;
+import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.util.IOException2;
 import org.apache.commons.digester.Digester;
 import org.xml.sax.EntityResolver;

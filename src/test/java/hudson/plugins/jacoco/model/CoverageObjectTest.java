@@ -1,10 +1,11 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.model;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import hudson.plugins.jacoco.Coverage;
-import hudson.plugins.jacoco.CoverageObject;
+import hudson.plugins.jacoco.AbstractEmmaTestBase;
+import hudson.plugins.jacoco.model.Coverage;
+import hudson.plugins.jacoco.model.CoverageObject;
 
 /**
  * @author Manuel Carrasco

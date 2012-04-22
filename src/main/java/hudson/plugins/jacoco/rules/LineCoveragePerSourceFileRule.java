@@ -1,10 +1,10 @@
 package hudson.plugins.jacoco.rules;
 
 import hudson.model.TaskListener;
-import hudson.plugins.jacoco.CoverageReport;
-import hudson.plugins.jacoco.PackageReport;
 import hudson.plugins.jacoco.Rule;
-import hudson.plugins.jacoco.SourceFileReport;
+import hudson.plugins.jacoco.report.CoverageReport;
+import hudson.plugins.jacoco.report.PackageReport;
+import hudson.plugins.jacoco.report.SourceFileReport;
 
 /**
  * Flags a failure if the line coverage of a source file
