@@ -2,7 +2,7 @@ package hudson.plugins.jacoco;
 
 import org.junit.Test;
 
-import hudson.plugins.jacoco.Coverage;
+import hudson.plugins.jacoco.model.Coverage;
 import static org.junit.Assert.*;
 
 /**

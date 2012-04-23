@@ -1,4 +1,6 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.model;
+
+import hudson.plugins.jacoco.report.AbstractReport;
 
 import java.io.IOException;
 
@@ -15,7 +17,7 @@ public final class CoverageElement {
      * 
      * @author Jonathan Fuerth <jfuerth@gmail.com>
      */
-    enum Type {
+    public enum Type {
       INSTRUCTION {
         @Override
         public Coverage getAssociatedRatio(AbstractReport<?, ?> from) {
@@ -91,7 +93,7 @@ public final class CoverageElement {
       this.covered = covered;
     }
 
-    void addTo(AbstractReport<?,?> report) throws IOException {
+    public void addTo(AbstractReport<?,?> report) throws IOException {
         type.getAssociatedRatio(report).accumulate(missed, covered);
     }
 }

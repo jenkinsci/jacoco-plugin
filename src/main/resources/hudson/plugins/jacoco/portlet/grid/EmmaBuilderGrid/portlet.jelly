@@ -38,6 +38,9 @@
             <td class="pane-header" colspan="2">% ${%Block}</td>
             <td class="pane-header" colspan="2">% ${%Method}</td>
             <td class="pane-header" colspan="2">% ${%Line}</td>
+            <td class="pane-header" colspan="2">% ${%Branch}</td>
+            <td class="pane-header" colspan="2">% ${%Instruction}</td>
+            <td class="pane-header" colspan="2">% ${%Complexity}</td>
         </tr>
         <j:set var="summary" value="${it.getJaCoCoCoverageResultSummary(jobs)}"/>
         <j:forEach var="tr" items="${summary.jacocoCoverageResults}">
@@ -49,6 +52,9 @@
                 <td colspan="2">${tr.blockCoverage}</td>
                 <td colspan="2">${tr.methodCoverage}</td>
                 <td colspan="2">${tr.lineCoverage}</td>
+                <td colspan="2">${tr.branchCoverage}</td>
+                <td colspan="2">${tr.instructionCoverage}</td>
+                <td colspan="2">${tr.complexityScore}</td>
             </tr>
         </j:forEach>
         <tr>
@@ -57,6 +63,9 @@
             <td colspan="2">${summary.totalBlockCoverage}</td>
             <td colspan="2">${summary.totalMethodCoverage}</td>
             <td colspan="2">${summary.totalLineCoverage}</td>
+            <td colspan="2">${summary.totalBranchCoverage}</td>
+            <td colspan="2">${summary.totalInstructionCoverage}</td>
+            <td colspan="2">${summary.totalComplexityScore}</td>
         </tr>
     </dp:decorate>
 </j:jelly>

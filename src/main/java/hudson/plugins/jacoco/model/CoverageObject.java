@@ -1,9 +1,10 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.model;
 
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.plugins.jacoco.Messages;
+import hudson.plugins.jacoco.Rule;
 import hudson.util.ChartUtil;
 import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
@@ -43,12 +44,12 @@ import java.util.Calendar;
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
-    Coverage clazz = new Coverage();
-    Coverage method = new Coverage();
-    Coverage line = new Coverage();
-    Coverage complexity = new Coverage();
-    Coverage instruction = new Coverage();
-    Coverage branch = new Coverage();
+    public Coverage clazz = new Coverage();
+    public Coverage method = new Coverage();
+    public Coverage line = new Coverage();
+    public Coverage complexity = new Coverage();
+    public Coverage instruction = new Coverage();
+    public Coverage branch = new Coverage();
     
     private volatile boolean failed = false;
 
@@ -190,9 +191,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
                     NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
                     dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);
                     dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
-                    dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
-                    dsb.add(a.branch.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
-                    dsb.add(a.complexity.getPercentageFloat(), Messages.CoverageObject_Legend_Block(), label);
+                    dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Instructions(), label);
+                    dsb.add(a.branch.getPercentageFloat(), Messages.CoverageObject_Legend_Branch(), label);
+                    dsb.add(a.complexity.getPercentageFloat(), Messages.CoverageObject_Legend_Complexity(), label);
                     if (a.line != null) {
                         dsb.add(a.line.getPercentageFloat(), Messages.CoverageObject_Legend_Line(), label);
                     }

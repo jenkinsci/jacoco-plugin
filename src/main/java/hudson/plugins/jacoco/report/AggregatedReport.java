@@ -1,4 +1,4 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.report;
 
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;

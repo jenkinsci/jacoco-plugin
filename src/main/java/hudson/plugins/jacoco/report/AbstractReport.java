@@ -1,7 +1,9 @@
-package hudson.plugins.jacoco;
+package hudson.plugins.jacoco.report;
 
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
+import hudson.plugins.jacoco.model.CoverageElement;
+import hudson.plugins.jacoco.model.CoverageObject;
 
 import java.io.IOException;
 

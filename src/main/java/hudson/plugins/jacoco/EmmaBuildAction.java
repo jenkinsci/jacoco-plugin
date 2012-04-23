@@ -6,7 +6,11 @@ import hudson.model.HealthReportingAction;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.plugins.jacoco.Messages;
-import hudson.plugins.jacoco.CoverageElement.Type;
+import hudson.plugins.jacoco.model.Coverage;
+import hudson.plugins.jacoco.model.CoverageElement;
+import hudson.plugins.jacoco.model.CoverageObject;
+import hudson.plugins.jacoco.model.CoverageElement.Type;
+import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.util.IOException2;
 import hudson.util.NullStream;
 import hudson.util.StreamTaskListener;
@@ -95,7 +99,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     }
 
     public String getUrlName() {
-        return "emma";
+        return "jacoco";
     }
 
     /**
