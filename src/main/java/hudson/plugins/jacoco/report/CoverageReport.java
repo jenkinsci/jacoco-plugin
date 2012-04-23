@@ -81,17 +81,17 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         
         // Now the classes
         digester.addObjectCreate( "report/package/class", ClassReport.class);
-        digester.addSetNext(      "report/class","add");
-        digester.addSetProperties("report/class");
+        digester.addSetNext(      "report/package/class","add");
+        digester.addSetProperties("report/package/class");
         
-        digester.addObjectCreate( "report/method", MethodReport.class);
-        digester.addSetNext(      "report/method","add");
-        digester.addSetProperties("report/method");
+        digester.addObjectCreate( "report/package/class/method", MethodReport.class);
+        digester.addSetNext(      "report/package/class/method","add");
+        digester.addSetProperties("report/package/class/method");
         
         // Create the list of Source Files next
-        digester.addObjectCreate( "report/package/sourcefile", SourceFileReport.class);
-        digester.addSetNext(      "report/package/sourcefile","add");
-        digester.addSetProperties("report/package/sourcefile");
+//        digester.addObjectCreate( "report/package/sourcefile", SourceFileReport.class);
+//        digester.addSetNext(      "report/package/sourcefile","add");
+//        digester.addSetProperties("report/package/sourcefile");
 
 
         digester.addObjectCreate( "*/counter", CoverageElement.class);

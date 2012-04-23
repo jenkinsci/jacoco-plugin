@@ -21,15 +21,15 @@ public class LineCoveragePerSourceFileRule extends Rule {
     }
 
     public void enforce(CoverageReport report, TaskListener listener) {
-        for (PackageReport pack : report.getChildren().values()) {
-            for (SourceFileReport sfReport : pack.getChildren().values()) {
-                float percentage = sfReport.getLineCoverage().getPercentageFloat();
-
-                if (percentage < minPercentage) {
-                    listener.getLogger().println("Emma: " + sfReport.getDisplayName() + " failed (below " + minPercentage + "%).");
-                    sfReport.setFailed();
-                }
-            }
-        }
+//        for (PackageReport pack : report.getChildren().values()) {
+//            for (SourceFileReport sfReport : pack.getChildren().values()) {
+//                float percentage = sfReport.getLineCoverage().getPercentageFloat();
+//
+//                if (percentage < minPercentage) {
+//                    listener.getLogger().println("Emma: " + sfReport.getDisplayName() + " failed (below " + minPercentage + "%).");
+//                    sfReport.setFailed();
+//                }
+//            }
+//        }
     }
 }
