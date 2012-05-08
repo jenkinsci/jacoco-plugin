@@ -38,11 +38,15 @@
          <id>kingargyle</id>
          <name>David Carver</name>
       </developer>
+      <developer>
+         <id>ognjenb</id>
+         <name>Ognjen Bubalo</name>
+      </developer>
    </developers>
 
    <scm>
-      <connection>scm:git:git://github.com/jfuerth/emma-plugin.git</connection>
-      <developerConnection>scm:git:git@github.com:jfuerth/emma-plugin.git</developerConnection>
+      <connection>scm:git:git://github.com/ognjenb/jenkins-jacoco-plugin.git</connection>
+      <developerConnection>scm:git:git@github.com:ognjenb/jenkins-jacoco-plugin.git</developerConnection>
    </scm>
 
    <properties>
