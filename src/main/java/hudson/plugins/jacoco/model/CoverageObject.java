@@ -33,8 +33,10 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Base class of all coverage objects.
@@ -136,9 +138,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     }
 
     
-    static NumberFormat dataFormat = new DecimalFormat("000.00");
-    static NumberFormat percentFormat = new DecimalFormat("0.0");
-    static NumberFormat intFormat = new DecimalFormat("0");
+    static NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
+    static NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
+    static NumberFormat intFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
     
 	protected static void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
 		if (ratio != null && ratio.isInitialized()) {
