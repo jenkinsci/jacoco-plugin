@@ -15,6 +15,7 @@
    <name>Jenkins JaCoCo plugin</name>
    <url>https://wiki.jenkins-ci.org/display/JENKINS/JaCoCo+Plugin</url>
 
+   
    <developers>
       <developer>
          <id>kohsuke</id>
