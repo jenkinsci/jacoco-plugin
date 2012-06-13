@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
    <parent>
@@ -10,7 +9,7 @@
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>1.0.0-SNAPSHOT</version>
+   <version>1.0.0</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
@@ -168,7 +167,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore></ignore>
+                              <ignore />
                            </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -185,7 +184,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore></ignore>
+                              <ignore />
                            </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -201,7 +200,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore></ignore>
+                              <ignore />
                            </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -231,7 +230,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore></ignore>
+                              <ignore />
                            </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -244,7 +243,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore></ignore>
+                              <ignore />
                            </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -258,7 +257,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore></ignore>
+                              <ignore />
                            </action>
                         </pluginExecution>
                         <pluginExecution>
@@ -271,7 +270,7 @@
                               </goals>
                            </pluginExecutionFilter>
                            <action>
-                              <ignore></ignore>
+                              <ignore />
                            </action>
                         </pluginExecution>
                      </pluginExecutions>
@@ -328,43 +327,32 @@
                         </goals>
                         <configuration>
                            <target>
-                              <taskdef name="jacoco-report"
-                                 classname="org.jacoco.ant.ReportTask"
-                                 classpathref="maven.plugin.classpath" />
-                              <taskdef classpathref="maven.runtime.classpath"
-                                 resource="net/sf/antcontrib/antcontrib.properties" />
-                              <available
-                                 file="${project.basedir}/target/jacoco.exec"
-                                 property="jacoco.exec.file.exists" />
+                              <taskdef name="jacoco-report" classname="org.jacoco.ant.ReportTask" classpathref="maven.plugin.classpath" />
+                              <taskdef classpathref="maven.runtime.classpath" resource="net/sf/antcontrib/antcontrib.properties" />
+                              <available file="${project.basedir}/target/jacoco.exec" property="jacoco.exec.file.exists" />
                               <echo message="${project.basedir}/target/jacoco.exec" />
                               <if>
-                                 <equals arg1="${jacoco.exec.file.exists}"
-                                    arg2="true" />
+                                 <equals arg1="${jacoco.exec.file.exists}" arg2="true" />
                                  <then>
                                     <echo message="Executing jacoco report" />
                                     <trycatch>
                                        <try>
                                           <jacoco-report>
                                              <executiondata>
-                                                <file
-                                                   file="${project.basedir}/target/jacoco.exec" />
+                                                <file file="${project.basedir}/target/jacoco.exec" />
                                              </executiondata>
 
                                              <structure name="Minerva">
                                                 <classfiles>
-                                                   <fileset
-                                                      dir="${project.basedir}/target/classes" />
+                                                   <fileset dir="${project.basedir}/target/classes" />
                                                 </classfiles>
-                                                <sourcefiles
-                                                   encoding="UTF-8">
-                                                   <fileset
-                                                      dir="${project.basedir}/src/main/java" />
+                                                <sourcefiles encoding="UTF-8">
+                                                   <fileset dir="${project.basedir}/src/main/java" />
                                                 </sourcefiles>
                                              </structure>
 
-                                             <html
-                                                destdir="${project.basedir}/target/jacoco/report" />
-                                             <xml destfile="${project.basedir}/target/jacoco/report/jacoco.xml"/>
+                                             <html destdir="${project.basedir}/target/jacoco/report" />
+                                             <xml destfile="${project.basedir}/target/jacoco/report/jacoco.xml" />
                                           </jacoco-report>
                                        </try>
                                        <catch>
