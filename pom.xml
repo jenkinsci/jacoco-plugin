@@ -45,7 +45,7 @@
 
    <scm>
       <connection>scm:git:ssh://github.com/jenkinsci/jacoco-plugin.git</connection>
-      <developerConnection>scm:git:ssh@github.com:jenkinsci/jacoco-plugin.git</developerConnection>
+      <developerConnection>scm:git:ssh://github.com/jenkinsci/jacoco-plugin.git</developerConnection>
 	  <url>https://github.com/jenkinsci/jacoco-plugin</url>
    </scm>
 
