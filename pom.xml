@@ -9,7 +9,7 @@
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>1.0.1</version>
+   <version>1.0.1-SNAPSHOT</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
@@ -45,7 +45,7 @@
 
    <scm>
       <connection>scm:git:ssh://github.com/jenkinsci/jacoco-plugin.git</connection>
-      <developerConnection>scm:git:ssh://github.com/jenkinsci/jacoco-plugin.git</developerConnection>
+      <developerConnection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</developerConnection>
 	  <url>https://github.com/jenkinsci/jacoco-plugin</url>
    </scm>
 
@@ -89,7 +89,7 @@
 		  <id>maven.jenkins-ci.org</id>
 		  <url>http://maven.jenkins-ci.org:8081/content/repositories/releases/</url>
 		</repository>
-	</distributionManagement>
+	 </distributionManagement>
 
    <build>
       <plugins>
