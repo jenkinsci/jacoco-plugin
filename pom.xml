@@ -45,8 +45,9 @@
    </developers>
 
    <scm>
-      <connection>scm:git:git://github.com/ognjenb/jenkins-jacoco-plugin.git</connection>
-      <developerConnection>scm:git:git@github.com:ognjenb/jenkins-jacoco-plugin.git</developerConnection>
+      <url>scm:git:git@github.com/jenkins-ci/jacoco-plugin.git</url>
+      <connection>scm:git:git@github.com/jenkins-ci/jacoco-plugin.git</connection>
+      <developerConnection>scm:git:ssh://git@github.com:jenkins-ci/jacoco-plugin.git</developerConnection>
    </scm>
 
    <properties>
