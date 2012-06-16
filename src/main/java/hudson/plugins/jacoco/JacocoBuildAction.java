@@ -39,7 +39,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> implements HealthReportingAction, StaplerProxy {
+public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy {
 	
     public final AbstractBuild<?,?> owner;
 
@@ -54,7 +54,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      * The thresholds that applied when this build was built.
      * @TODO add ability to trend thresholds on the graph
      */
-    private final EmmaHealthReportThresholds thresholds;
+    private final JacocoHealthReportThresholds thresholds;
 
     /**
      * 
@@ -65,9 +65,9 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      *            the same as an empty map.
      * @param thresholds
      */
-    public EmmaBuildAction(AbstractBuild<?,?> owner, Rule rule,
+    public JacocoBuildAction(AbstractBuild<?,?> owner, Rule rule,
     		Map<CoverageElement.Type, Coverage> ratios,
-    		EmmaHealthReportThresholds thresholds) {
+    		JacocoHealthReportThresholds thresholds) {
         if (ratios == null) {
             ratios = Collections.emptyMap();
         }
@@ -237,14 +237,14 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
     }
 
     @Override
-    public EmmaBuildAction getPreviousResult() {
+    public JacocoBuildAction getPreviousResult() {
         return getPreviousResult(owner);
     }
 
     /**
-     * Gets the previous {@link EmmaBuildAction} of the given build.
+     * Gets the previous {@link JacocoBuildAction} of the given build.
      */
-    /*package*/ static EmmaBuildAction getPreviousResult(AbstractBuild<?,?> start) {
+    /*package*/ static JacocoBuildAction getPreviousResult(AbstractBuild<?,?> start) {
         AbstractBuild<?,?> b = start;
         while(true) {
             b = b.getPreviousBuild();
@@ -252,7 +252,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
                 return null;
             if(b.getResult()== Result.FAILURE)
                 continue;
-            EmmaBuildAction r = b.getAction(EmmaBuildAction.class);
+            JacocoBuildAction r = b.getAction(JacocoBuildAction.class);
             if(r!=null)
                 return r;
         }
@@ -265,7 +265,7 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
      * @throws IOException
      *      if failed to parse the file.
      */
-    public static EmmaBuildAction load(AbstractBuild<?,?> owner, Rule rule, EmmaHealthReportThresholds thresholds, FilePath... files) throws IOException {
+    public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, FilePath... files) throws IOException {
         Map<CoverageElement.Type,Coverage> ratios = null;
         for (FilePath f: files ) {
             InputStream in = f.read();
@@ -277,15 +277,15 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
                 in.close();
             }
         }
-        return new EmmaBuildAction(owner, rule, ratios, thresholds);
+        return new JacocoBuildAction(owner, rule, ratios, thresholds);
     }
 
-    public static EmmaBuildAction load(AbstractBuild<?,?> owner, Rule rule, EmmaHealthReportThresholds thresholds, InputStream... streams) throws IOException, XmlPullParserException {
+    public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, InputStream... streams) throws IOException, XmlPullParserException {
         Map<CoverageElement.Type,Coverage> ratios = null;
         for (InputStream in: streams) {
           ratios = loadRatios(in, ratios);
         }
-        return new EmmaBuildAction(owner, rule, ratios, thresholds);
+        return new JacocoBuildAction(owner, rule, ratios, thresholds);
     }
 
     /**
@@ -330,5 +330,5 @@ public final class EmmaBuildAction extends CoverageObject<EmmaBuildAction> imple
 
     }
 
-    private static final Logger logger = Logger.getLogger(EmmaBuildAction.class.getName());
+    private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
 }

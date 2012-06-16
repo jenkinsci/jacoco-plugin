@@ -47,7 +47,7 @@ public class JacocoPublisher extends Recorder {
     /**
      * {@link hudson.model.HealthReport} thresholds to apply.
      */
-    public EmmaHealthReportThresholds healthReports = new EmmaHealthReportThresholds();
+    public JacocoHealthReportThresholds healthReports = new JacocoHealthReportThresholds();
     
     /**
      * look for jacoco reports based in the configured parameter includes.
@@ -130,7 +130,7 @@ public class JacocoPublisher extends Recorder {
         saveCoverageReports(emmafolder, reports);
         logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ emmafolder);
         
-        final EmmaBuildAction action = EmmaBuildAction.load(build, rule, healthReports, reports);
+        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, reports);
         
         logger.println("JaCoCo: " + action.getBuildHealth().getDescription());
 
@@ -150,7 +150,7 @@ public class JacocoPublisher extends Recorder {
 
     @Override
     public Action getProjectAction(AbstractProject<?, ?> project) {
-        return new EmmaProjectAction(project);
+        return new JacocoProjectAction(project);
     }
 
     public BuildStepMonitor getRequiredMonitorService() {

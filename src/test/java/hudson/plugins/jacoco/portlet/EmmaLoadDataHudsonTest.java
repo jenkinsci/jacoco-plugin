@@ -7,8 +7,8 @@ import hudson.model.BuildListener;
 import hudson.model.FreeStyleProject;
 import hudson.model.Job;
 import hudson.plugins.jacoco.JacocoPublisher;
-import hudson.plugins.jacoco.portlet.EmmaLoadData;
-import hudson.plugins.jacoco.portlet.bean.EmmaCoverageResultSummary;
+import hudson.plugins.jacoco.portlet.JacocoLoadData;
+import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.tasks.Builder;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
 /**
- * Tests {@link hudson.plugins.jacoco.portlet.EmmaLoadData} in a Hudson environment.
+ * Tests {@link hudson.plugins.jacoco.portlet.JacocoLoadData} in a Hudson environment.
  *
  * @author Robert Sandell &lt;robert.sandell@sonyericsson.com&gt;
  * @author Mauro Durante Junior (Mauro.Durantejunior@sonyericsson.com)
@@ -30,7 +30,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
     /**
      * This method tests loadChartDataWithinRange() when it has positive number of days.
-     * Tests {@link hudson.plugins.jacoco.portlet.EmmaLoadData#loadChartDataWithinRange(java.util.List, int)}.
+     * Tests {@link hudson.plugins.jacoco.portlet.JacocoLoadData#loadChartDataWithinRange(java.util.List, int)}.
      *
      * @throws Exception if so.
      */
@@ -69,13 +69,13 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
         jobs.add(job1);
 
         //Verify the result
-        Map<LocalDate, EmmaCoverageResultSummary> summaryMap = EmmaLoadData.loadChartDataWithinRange(jobs, numberOfDays);
+        Map<LocalDate, JacocoCoverageResultSummary> summaryMap = JacocoLoadData.loadChartDataWithinRange(jobs, numberOfDays);
 
         // Testing the size of the returned map against the exepected value,
         // which is a non-zero, therefore tha map must not be empty
         assertEquals(summaryMapSize, summaryMap.size());
 
-        EmmaCoverageResultSummary summary = summaryMap.entrySet().iterator().next().getValue();
+        JacocoCoverageResultSummary summary = summaryMap.entrySet().iterator().next().getValue();
 
         // Test evaluated values against expected ones
         
@@ -90,7 +90,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
     /**
      * This method tests loadChartDataWithinRange() when it has multiple jobs and a single build.
-     * Tests {@link hudson.plugins.jacoco.portlet.EmmaLoadData#loadChartDataWithinRange(java.util.List, int)}.
+     * Tests {@link hudson.plugins.jacoco.portlet.JacocoLoadData#loadChartDataWithinRange(java.util.List, int)}.
      *
      * @throws Exception if so.
      */
@@ -129,13 +129,13 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
         jobs.add(job2);
 
         //Verify the result
-        Map<LocalDate, EmmaCoverageResultSummary> summaryMap = EmmaLoadData.loadChartDataWithinRange(jobs, numberOfDays);
+        Map<LocalDate, JacocoCoverageResultSummary> summaryMap = JacocoLoadData.loadChartDataWithinRange(jobs, numberOfDays);
 
         // Testing the size of the returned map against the exepected value,
         // which is a non-zero, therefore tha map must not be empty
         assertEquals(summaryMapSize, summaryMap.size());
 
-        EmmaCoverageResultSummary summary = summaryMap.entrySet().iterator().next().getValue();
+        JacocoCoverageResultSummary summary = summaryMap.entrySet().iterator().next().getValue();
         // Test evaluated values against expected ones
         assertEquals(expectedClassCoverage, summary.getClassCoverage(), 0.1f);
         assertEquals(expectedLineCoverage, summary.getLineCoverage(), 0.1f);
@@ -147,7 +147,7 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
 
     /**
      * This method tests the getResultSummary() behavior.
-     * Tests {@link hudson.plugins.jacoco.portlet.EmmaLoadData#getResultSummary(java.util.Collection)}.
+     * Tests {@link hudson.plugins.jacoco.portlet.JacocoLoadData#getResultSummary(java.util.Collection)}.
      * @throws Exception if any
      */
 	@Test
@@ -168,15 +168,15 @@ public class EmmaLoadDataHudsonTest extends HudsonTestCase {
         float complexityScore2 = 2234f;
 
         // create a result summary with data from the first emma action
-        EmmaCoverageResultSummary coverageResultSummary = new EmmaCoverageResultSummary(
+        JacocoCoverageResultSummary coverageResultSummary = new JacocoCoverageResultSummary(
         		null, lineCoverage, methodCoverage, classCoverage, branchCoverage, instructionCoverage, complexityScore);
 
         // create a result summary with data from the second emma action
-        EmmaCoverageResultSummary coverageResultSummary2 = new EmmaCoverageResultSummary(
+        JacocoCoverageResultSummary coverageResultSummary2 = new JacocoCoverageResultSummary(
         		null, lineCoverage2, methodCoverage2, classCoverage2, branchCoverage2, instructionCoverage2, complexityScore2);
 
         // add both coverage result summaries to the emma result summary
-        EmmaCoverageResultSummary summary = new EmmaCoverageResultSummary();
+        JacocoCoverageResultSummary summary = new JacocoCoverageResultSummary();
         summary.addCoverageResult(coverageResultSummary);
         summary.addCoverageResult(coverageResultSummary2);
 

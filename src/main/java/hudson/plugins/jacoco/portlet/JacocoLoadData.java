@@ -31,8 +31,8 @@ package hudson.plugins.jacoco.portlet;
 
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.plugins.jacoco.EmmaBuildAction;
-import hudson.plugins.jacoco.portlet.bean.EmmaCoverageResultSummary;
+import hudson.plugins.jacoco.JacocoBuildAction;
+import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.math.BigDecimal;
@@ -47,12 +47,12 @@ import org.joda.time.LocalDate;
 /**
  * Load data of Emma coverage results used by chart or grid.
  */
-public final class EmmaLoadData {
+public final class JacocoLoadData {
 
   /**
    * Private constructor avoiding this class to be used in a non-static way.
    */
-  private EmmaLoadData() {
+  private JacocoLoadData() {
   }
 
   /**
@@ -65,9 +65,9 @@ public final class EmmaLoadData {
    *          number of days
    * @return Map The sorted summaries
    */
-  public static Map<LocalDate, EmmaCoverageResultSummary> loadChartDataWithinRange(List<Job> jobs, int daysNumber) {
+  public static Map<LocalDate, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job> jobs, int daysNumber) {
 
-    Map<LocalDate, EmmaCoverageResultSummary> summaries = new HashMap<LocalDate, EmmaCoverageResultSummary>();
+    Map<LocalDate, JacocoCoverageResultSummary> summaries = new HashMap<LocalDate, JacocoCoverageResultSummary>();
 
     // Get the last build (last date) of the all jobs
     LocalDate lastDate = Utils.getLastDate(jobs);
@@ -106,7 +106,7 @@ public final class EmmaLoadData {
     }
 
     // Sorting by date, ascending order
-    Map<LocalDate, EmmaCoverageResultSummary> sortedSummaries = new TreeMap<LocalDate, EmmaCoverageResultSummary>(summaries);
+    Map<LocalDate, JacocoCoverageResultSummary> sortedSummaries = new TreeMap<LocalDate, JacocoCoverageResultSummary>(summaries);
 
     return sortedSummaries;
 
@@ -116,7 +116,7 @@ public final class EmmaLoadData {
    * Summarize Emma converage results.
    *
    * @param summaries
-   *          a Map of EmmaCoverageResultSummary objects indexed by
+   *          a Map of JacocoCoverageResultSummary objects indexed by
    *          dates
    * @param run
    *          the build which will provide information about the
@@ -126,12 +126,12 @@ public final class EmmaLoadData {
    * @param job
    *          job from the DashBoard Portlet view
    */
-  private static void summarize(Map<LocalDate, EmmaCoverageResultSummary> summaries, Run run, LocalDate runDate, Job job) {
+  private static void summarize(Map<LocalDate, JacocoCoverageResultSummary> summaries, Run run, LocalDate runDate, Job job) {
 
-    EmmaCoverageResultSummary emmaCoverageResult = getResult(run);
+    JacocoCoverageResultSummary emmaCoverageResult = getResult(run);
 
     // Retrieve Emma information for informed date
-    EmmaCoverageResultSummary emmaCoverageResultSummary = summaries.get(runDate);
+    JacocoCoverageResultSummary emmaCoverageResultSummary = summaries.get(runDate);
 
     // Consider the last result of each
     // job date (if there are many builds for the same date). If not
@@ -139,16 +139,16 @@ public final class EmmaLoadData {
     // Emma coverage data for the same date but it belongs to other
     // job, sum the values.
     if (emmaCoverageResultSummary == null) {
-      emmaCoverageResultSummary = new EmmaCoverageResultSummary();
+      emmaCoverageResultSummary = new JacocoCoverageResultSummary();
       emmaCoverageResultSummary.addCoverageResult(emmaCoverageResult);
       emmaCoverageResultSummary.setJob(job);
     } else {
 
       // Check if exists Emma data for same date and job
-      List<EmmaCoverageResultSummary> listResults = emmaCoverageResultSummary.getEmmaCoverageResults();
+      List<JacocoCoverageResultSummary> listResults = emmaCoverageResultSummary.getEmmaCoverageResults();
       boolean found = false;
 
-      for (EmmaCoverageResultSummary item : listResults) {
+      for (JacocoCoverageResultSummary item : listResults) {
         if ((null != item.getJob()) && (null != item.getJob().getName()) && (null != job)) {
           if (item.getJob().getName().equals(job.getName())) {
             found = true;
@@ -173,8 +173,8 @@ public final class EmmaLoadData {
    *          a job execution
    * @return EmmaCoverageTestResult the coverage result
    */
-  private static EmmaCoverageResultSummary getResult(Run run) {
-    EmmaBuildAction emmaAction = run.getAction(EmmaBuildAction.class);
+  private static JacocoCoverageResultSummary getResult(Run run) {
+    JacocoBuildAction emmaAction = run.getAction(JacocoBuildAction.class);
 
     float classCoverage = 0.0f;
     float lineCoverage = 0.0f;
@@ -203,7 +203,7 @@ public final class EmmaLoadData {
         complexityScore = emmaAction.getComplexityScore().getPercentageFloat();
       }
     }
-    return new EmmaCoverageResultSummary(
+    return new JacocoCoverageResultSummary(
         run.getParent(), lineCoverage, methodCoverage, classCoverage,
         branchCoverage, instructionCoverage, complexityScore);
   }
@@ -214,10 +214,10 @@ public final class EmmaLoadData {
    *
    * @param jobs
    *          a final Collection of Job objects
-   * @return EmmaCoverageResultSummary the result summary
+   * @return JacocoCoverageResultSummary the result summary
    */
-  public static EmmaCoverageResultSummary getResultSummary(final Collection<Job> jobs) {
-    EmmaCoverageResultSummary summary = new EmmaCoverageResultSummary();
+  public static JacocoCoverageResultSummary getResultSummary(final Collection<Job> jobs) {
+    JacocoCoverageResultSummary summary = new JacocoCoverageResultSummary();
 
     for (Job job : jobs) {
 
@@ -232,7 +232,7 @@ public final class EmmaLoadData {
 
       if (run != null) {
 
-        EmmaBuildAction emmaAction = job.getLastSuccessfulBuild().getAction(EmmaBuildAction.class);
+        JacocoBuildAction emmaAction = job.getLastSuccessfulBuild().getAction(JacocoBuildAction.class);
 
         if (null != emmaAction) {
           if (null != emmaAction.getClassCoverage()) {
@@ -277,7 +277,7 @@ public final class EmmaLoadData {
           }
         }
       }
-      summary.addCoverageResult(new EmmaCoverageResultSummary(
+      summary.addCoverageResult(new JacocoCoverageResultSummary(
           job, lineCoverage, methodCoverage, classCoverage, branchCoverage, instructionCoverage, complexityScore));
     }
     return summary;

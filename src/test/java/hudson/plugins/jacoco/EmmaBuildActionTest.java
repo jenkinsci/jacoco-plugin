@@ -2,8 +2,8 @@ package hudson.plugins.jacoco;
 
 import org.junit.Test;
 
-import hudson.plugins.jacoco.EmmaBuildAction;
-import hudson.plugins.jacoco.EmmaHealthReportThresholds;
+import hudson.plugins.jacoco.JacocoBuildAction;
+import hudson.plugins.jacoco.JacocoHealthReportThresholds;
 import static org.junit.Assert.*;
 
 
@@ -14,8 +14,8 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
   
 	@Test
     public void testLoadReport1() throws Exception {
-        EmmaBuildAction r = EmmaBuildAction.load(null,null,
-                new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
+        JacocoBuildAction r = JacocoBuildAction.load(null,null,
+                new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
                 getClass().getResourceAsStream("jacoco.xml"));
         assertEquals(54, r.clazz.getPercentage());
         assertEquals(33, r.line.getPercentage());
@@ -31,8 +31,8 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
     
 	@Test
     public void testLoadReport2() throws Exception {
-        EmmaBuildAction r = EmmaBuildAction.load(null,null,
-                new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
+        JacocoBuildAction r = JacocoBuildAction.load(null,null,
+                new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
                 getClass().getResourceAsStream("jacoco2.xml"));
         assertEquals(76, r.clazz.getPercentage());
         assertEquals(41, r.line.getPercentage());
@@ -48,8 +48,8 @@ public class EmmaBuildActionTest extends AbstractEmmaTestBase {
     
 	@Test
     public void testLoadMultipleReports() throws Exception {
-      EmmaBuildAction r = EmmaBuildAction.load(null,null,
-              new EmmaHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
+      JacocoBuildAction r = JacocoBuildAction.load(null,null,
+              new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
               getClass().getResourceAsStream("jacoco.xml"),
               getClass().getResourceAsStream("jacoco2.xml"));
       assertEquals(65, r.clazz.getPercentage());

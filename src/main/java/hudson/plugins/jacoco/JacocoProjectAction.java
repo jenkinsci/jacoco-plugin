@@ -16,10 +16,10 @@ import java.io.IOException;
  * 
  * @author Kohsuke Kawaguchi
  */
-public final class EmmaProjectAction implements Action {
+public final class JacocoProjectAction implements Action {
     public final AbstractProject<?,?> project;
 
-    public EmmaProjectAction(AbstractProject<?,?> project) {
+    public JacocoProjectAction(AbstractProject<?,?> project) {
         this.project = project;
     }
 
@@ -36,13 +36,13 @@ public final class EmmaProjectAction implements Action {
     }
 
     /**
-     * Gets the most recent {@link EmmaBuildAction} object.
+     * Gets the most recent {@link JacocoBuildAction} object.
      */
-    public EmmaBuildAction getLastResult() {
+    public JacocoBuildAction getLastResult() {
         for (AbstractBuild<?, ?> b = project.getLastBuild(); b != null; b = b.getPreviousBuild()) {
             if (b.getResult() == Result.FAILURE)
                 continue;
-            EmmaBuildAction r = b.getAction(EmmaBuildAction.class);
+            JacocoBuildAction r = b.getAction(JacocoBuildAction.class);
             if (r != null)
                 return r;
         }

@@ -1,7 +1,7 @@
 package hudson.plugins.jacoco.report;
 
 import hudson.model.AbstractBuild;
-import hudson.plugins.jacoco.EmmaBuildAction;
+import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.util.IOException2;
 import org.apache.commons.digester.Digester;
@@ -20,14 +20,14 @@ import java.io.InputStream;
  * @author Kohsuke Kawaguchi
  */
 public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy*/,CoverageReport,PackageReport> {
-    private final EmmaBuildAction action;
+    private final JacocoBuildAction action;
 
-    private CoverageReport(EmmaBuildAction action) {
+    private CoverageReport(JacocoBuildAction action) {
         this.action = action;
         setName("Jacoco");
     }
 
-    public CoverageReport(EmmaBuildAction action, InputStream... xmlReports) throws IOException {
+    public CoverageReport(JacocoBuildAction action, InputStream... xmlReports) throws IOException {
         this(action);
         for (InputStream is: xmlReports) {
           try {
@@ -39,7 +39,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         setParent(null);
     }
 
-    public CoverageReport(EmmaBuildAction action, File xmlReport) throws IOException {
+    public CoverageReport(JacocoBuildAction action, File xmlReport) throws IOException {
         this(action);
         try {
             createDigester().parse(xmlReport);
@@ -51,7 +51,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     @Override
     public CoverageReport getPreviousResult() {
-        EmmaBuildAction prev = action.getPreviousResult();
+        JacocoBuildAction prev = action.getPreviousResult();
         if(prev!=null)
             return prev.getResult();
         else

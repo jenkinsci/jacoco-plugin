@@ -62,7 +62,7 @@ public class CoverageReportTest extends AbstractEmmaTestBase {
 	public void testSourceFileReport() throws Exception {
 		CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco2.xml"));
 		PackageReport pkg = r.getChildren().get("hudson.plugins.emma.portlet.bean");
-//		SourceFileReport src = pkg.getChildren().get("EmmaCoverageResultSummary.java");
+//		SourceFileReport src = pkg.getChildren().get("JacocoCoverageResultSummary.java");
 //        assertCoverage(src.getLineCoverage(), 34, 41);
     }
 	
@@ -70,7 +70,7 @@ public class CoverageReportTest extends AbstractEmmaTestBase {
 	public void testClassReport() throws Exception {
 		CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco2.xml"));
 		PackageReport pkg = r.getChildren().get("hudson.plugins.emma.portlet.bean");		
-        ClassReport clz = pkg.getChildren().get("EmmaCoverageResultSummary");
+        ClassReport clz = pkg.getChildren().get("JacocoCoverageResultSummary");
         
 		assertCoverage(clz.getLineCoverage(),34, 41);
 		assertTrue(clz.hasClassCoverage());
@@ -80,7 +80,7 @@ public class CoverageReportTest extends AbstractEmmaTestBase {
 	public void testMethodReport() throws Exception {
 		CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco2.xml"));
 		PackageReport pkg = r.getChildren().get("hudson.plugins.emma.portlet.bean");
-        ClassReport clz = pkg.getChildren().get("EmmaCoverageResultSummary");
+        ClassReport clz = pkg.getChildren().get("JacocoCoverageResultSummary");
 		MethodReport mth = clz.getChildren().get("getEmmaCoverageResults");
 		assertCoverage(mth.getLineCoverage(), 1, 0);
 		assertFalse("Found Class coverage on Method. ", mth.hasClassCoverage());

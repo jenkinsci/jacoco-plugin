@@ -3,7 +3,7 @@ package hudson.plugins.jacoco;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.model.FreeStyleProject;
-import hudson.plugins.jacoco.EmmaHealthReportThresholds;
+import hudson.plugins.jacoco.JacocoHealthReportThresholds;
 import hudson.plugins.jacoco.JacocoPublisher;
 
 import org.junit.Test;
@@ -70,7 +70,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         submit(f);
 
         JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
-        EmmaHealthReportThresholds thresholds = publisher.healthReports;
+        JacocoHealthReportThresholds thresholds = publisher.healthReports;
         
         assertEquals(100, thresholds.getMaxClass());
         assertEquals(70, thresholds.getMaxMethod());
@@ -99,7 +99,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         submit(f);
 
         JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
-        EmmaHealthReportThresholds thresholds = publisher.healthReports;
+        JacocoHealthReportThresholds thresholds = publisher.healthReports;
         
         assertEquals(8, thresholds.getMaxClass());
         assertEquals(9, thresholds.getMaxMethod());
@@ -128,7 +128,7 @@ public class EmmaConfigSubmitTest extends HudsonTestCase {
         submit(f);
 
         JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
-        EmmaHealthReportThresholds thresholds = publisher.healthReports;
+        JacocoHealthReportThresholds thresholds = publisher.healthReports;
         
         assertEquals(1, thresholds.getMinClass());
         assertEquals(2, thresholds.getMinMethod());

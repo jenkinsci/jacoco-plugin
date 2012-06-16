@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author Stephen Connolly
  * @since 1.7
  */
-public class EmmaHealthReportThresholds implements Serializable {
+public class JacocoHealthReportThresholds implements Serializable {
     private int minClass;
     private int maxClass;
     private int minMethod;
@@ -22,10 +22,10 @@ public class EmmaHealthReportThresholds implements Serializable {
     private int minComplexity;
     private int maxComplexity;
 
-    public EmmaHealthReportThresholds() {
+    public JacocoHealthReportThresholds() {
     }
 
-    public EmmaHealthReportThresholds(
+    public JacocoHealthReportThresholds(
     		int minClass, int maxClass, int minMethod, int maxMethod, int minLine, int maxLine,
     		int minBranch, int maxBranch, int minInstruction, int maxInstruction, int minComplexity, int maxComplexity) {
         this.minClass = minClass;

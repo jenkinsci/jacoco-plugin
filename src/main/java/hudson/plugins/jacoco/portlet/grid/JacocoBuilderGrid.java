@@ -33,8 +33,8 @@ import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.Job;
 import hudson.plugins.jacoco.portlet.Messages;
-import hudson.plugins.jacoco.portlet.EmmaLoadData;
-import hudson.plugins.jacoco.portlet.bean.EmmaCoverageResultSummary;
+import hudson.plugins.jacoco.portlet.JacocoLoadData;
+import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.plugins.view.dashboard.DashboardPortlet;
 
 import java.util.Collection;
@@ -45,7 +45,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  *
  * @see http://wiki.hudson-ci.org/display/HUDSON/Dashboard+View
  */
-public class EmmaBuilderGrid extends DashboardPortlet {
+public class JacocoBuilderGrid extends DashboardPortlet {
 
   /**
    * Constructor with grid name as parameter. DataBoundConstructor
@@ -57,7 +57,7 @@ public class EmmaBuilderGrid extends DashboardPortlet {
    *          grid name
    */
   @DataBoundConstructor
-  public EmmaBuilderGrid(String name) {
+  public JacocoBuilderGrid(String name) {
     super(name);
   }
 
@@ -67,10 +67,10 @@ public class EmmaBuilderGrid extends DashboardPortlet {
    *
    * @param jobs
    *          a Collection of Job objects
-   * @return EmmaCoverageResultSummary a coverage result summary
+   * @return JacocoCoverageResultSummary a coverage result summary
    */
-  public EmmaCoverageResultSummary getJaCoCoCoverageResultSummary(Collection<Job> jobs) {
-    return EmmaLoadData.getResultSummary(jobs);
+  public JacocoCoverageResultSummary getJaCoCoCoverageResultSummary(Collection<Job> jobs) {
+    return JacocoLoadData.getResultSummary(jobs);
   }
 
   /**

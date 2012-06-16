@@ -30,8 +30,8 @@
 package hudson.plugins.jacoco.portlet.chart;
 
 import hudson.plugins.jacoco.portlet.Messages;
-import hudson.plugins.jacoco.portlet.EmmaLoadData;
-import hudson.plugins.jacoco.portlet.bean.EmmaCoverageResultSummary;
+import hudson.plugins.jacoco.portlet.JacocoLoadData;
+import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.plugins.jacoco.portlet.utils.Constants;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 
@@ -63,7 +63,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 /**
  * A portlet for Emma coverage results - Trend Chart.
  */
-public class EmmaBuilderTrendChart extends DashboardPortlet {
+public class JacocoBuilderTrendChart extends DashboardPortlet {
 
   /**
    * Chart width that can be set by user.
@@ -96,7 +96,7 @@ public class EmmaBuilderTrendChart extends DashboardPortlet {
    *          the number of days
    */
   @DataBoundConstructor
-  public EmmaBuilderTrendChart(String name, String width, String height, String daysNumber) {
+  public JacocoBuilderTrendChart(String name, String width, String height, String daysNumber) {
 
     super(name);
 
@@ -113,13 +113,13 @@ public class EmmaBuilderTrendChart extends DashboardPortlet {
    */
   public Graph getSummaryGraph() {
 
-    Map<LocalDate, EmmaCoverageResultSummary> summaries;
+    Map<LocalDate, JacocoCoverageResultSummary> summaries;
 
     // Retrieve Dashboard View jobs
     List<Job> jobs = getDashboard().getJobs();
 
     // Fill a HashMap with the data will be showed in the chart
-    summaries = EmmaLoadData.loadChartDataWithinRange(jobs, daysNumber);
+    summaries = JacocoLoadData.loadChartDataWithinRange(jobs, daysNumber);
 
     return createTrendChart(summaries, width, height);
   }
@@ -136,7 +136,7 @@ public class EmmaBuilderTrendChart extends DashboardPortlet {
    *          the chart height
    * @return Graph (JFreeChart)
    */
-  private static Graph createTrendChart(final Map<LocalDate, EmmaCoverageResultSummary> summaries, int widthParam,
+  private static Graph createTrendChart(final Map<LocalDate, JacocoCoverageResultSummary> summaries, int widthParam,
     int heightParam) {
 
     return new Graph(-1, widthParam, heightParam) {
@@ -201,11 +201,11 @@ public class EmmaBuilderTrendChart extends DashboardPortlet {
    * @return CategoryDataset Interface for a dataset with one or more
    *         series, and values associated with categories.
    */
-  private static CategoryDataset buildDataSet(Map<LocalDate, EmmaCoverageResultSummary> summaries) {
+  private static CategoryDataset buildDataSet(Map<LocalDate, JacocoCoverageResultSummary> summaries) {
 
     DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<String, LocalDate>();
 
-    for (Map.Entry<LocalDate, EmmaCoverageResultSummary> entry : summaries.entrySet()) {
+    for (Map.Entry<LocalDate, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
       float classCoverage = 0;
       float lineCoverage = 0;
       float methodCoverage = 0;
@@ -215,9 +215,9 @@ public class EmmaBuilderTrendChart extends DashboardPortlet {
 
       int count = 0;
 
-      List<EmmaCoverageResultSummary> list = entry.getValue().getEmmaCoverageResults();
+      List<JacocoCoverageResultSummary> list = entry.getValue().getEmmaCoverageResults();
 
-      for (EmmaCoverageResultSummary item : list) {
+      for (JacocoCoverageResultSummary item : list) {
         classCoverage += item.getClassCoverage();
         lineCoverage += item.getLineCoverage();
         methodCoverage += item.getMethodCoverage();

@@ -39,7 +39,7 @@ import java.util.List;
 /**
  * Summary of the EMMA Coverage result.
  */
-public class EmmaCoverageResultSummary {
+public class JacocoCoverageResultSummary {
 
   /**
    * The related job.
@@ -76,12 +76,12 @@ public class EmmaCoverageResultSummary {
    */
   private float complexityScore;
 
-  private List<EmmaCoverageResultSummary> coverageResults = new ArrayList<EmmaCoverageResultSummary>();
+  private List<JacocoCoverageResultSummary> coverageResults = new ArrayList<JacocoCoverageResultSummary>();
 
   /**
    * Default Constructor.
    */
-  public EmmaCoverageResultSummary() {
+  public JacocoCoverageResultSummary() {
   }
 
   /**
@@ -98,7 +98,7 @@ public class EmmaCoverageResultSummary {
    * @param classCoverage
    *          coverage percentage
    */
-  public EmmaCoverageResultSummary(Job job, float lineCoverage, float methodCoverage,
+  public JacocoCoverageResultSummary(Job job, float lineCoverage, float methodCoverage,
     float classCoverage, float branchCoverage, float instructionCoverage, float complexityScore) {
     this.job = job;
     this.lineCoverage = lineCoverage;
@@ -114,10 +114,10 @@ public class EmmaCoverageResultSummary {
    *
    * @param coverageResult
    *          a coverage result
-   * @return EmmaCoverageResultSummary summary of the EMMA coverage
+   * @return JacocoCoverageResultSummary summary of the EMMA coverage
    *         result
    */
-  public EmmaCoverageResultSummary addCoverageResult(EmmaCoverageResultSummary coverageResult) {
+  public JacocoCoverageResultSummary addCoverageResult(JacocoCoverageResultSummary coverageResult) {
 
     this.setLineCoverage(this.getLineCoverage() + coverageResult.getLineCoverage());
     this.setMethodCoverage(this.getMethodCoverage() + coverageResult.getMethodCoverage());
@@ -136,7 +136,7 @@ public class EmmaCoverageResultSummary {
    *
    * @return List a List of EmmaCoverageResult objects
    */
-  public List<EmmaCoverageResultSummary> getEmmaCoverageResults() {
+  public List<JacocoCoverageResultSummary> getEmmaCoverageResults() {
     return this.getCoverageResults();
   }
 
@@ -318,7 +318,7 @@ public class EmmaCoverageResultSummary {
   /**
    * @return a list of coverage results
    */
-  public List<EmmaCoverageResultSummary> getCoverageResults() {
+  public List<JacocoCoverageResultSummary> getCoverageResults() {
     return coverageResults;
   }
 
@@ -326,7 +326,7 @@ public class EmmaCoverageResultSummary {
    * @param coverageResults
    *          the list of coverage results to set
    */
-  public void setCoverageResults(List<EmmaCoverageResultSummary> coverageResults) {
+  public void setCoverageResults(List<JacocoCoverageResultSummary> coverageResults) {
     this.coverageResults = coverageResults;
   }
 }

@@ -5,7 +5,7 @@
   <sessioninfo id="to-tck1.yyz.redhat.com-39eac6af"
   start="1319127894856" dump="1319127942762" />
   <package name="hudson/plugins/emma/portlet/bean">
-    <class name="hudson/plugins/emma/portlet/bean/EmmaCoverageResultSummary">
+    <class name="hudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary">
 
       <method name="&lt;init&gt;" desc="()V" line="79">
         <counter type="INSTRUCTION" missed="0" covered="8" />
@@ -21,7 +21,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="addCoverageResult"
-      desc="(Lhudson/plugins/emma/portlet/bean/EmmaCoverageResultSummary;)Lhudson/plugins/emma/portlet/bean/EmmaCoverageResultSummary;"
+      desc="(Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
       line="122">
         <counter type="INSTRUCTION" missed="0" covered="49" />
         <counter type="LINE" missed="0" covered="8" />
@@ -184,7 +184,7 @@
       <counter type="METHOD" missed="9" covered="17" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <sourcefile name="EmmaCoverageResultSummary.java">
+    <sourcefile name="JacocoCoverageResultSummary.java">
       <line nr="79" mi="0" ci="10" mb="0" cb="0" />
       <line nr="84" mi="0" ci="2" mb="0" cb="0" />
       <line nr="85" mi="0" ci="1" mb="0" cb="0" />
@@ -636,7 +636,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getResult"
-      desc="(Lhudson/model/Run;)Lhudson/plugins/emma/portlet/bean/EmmaCoverageResultSummary;"
+      desc="(Lhudson/model/Run;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
       line="177">
         <counter type="INSTRUCTION" missed="42" covered="31" />
         <counter type="BRANCH" missed="13" covered="1" />
@@ -645,7 +645,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getResultSummary"
-      desc="(Ljava/util/Collection;)Lhudson/plugins/emma/portlet/bean/EmmaCoverageResultSummary;"
+      desc="(Ljava/util/Collection;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
       line="220">
         <counter type="INSTRUCTION" missed="181" covered="0" />
         <counter type="BRANCH" missed="18" covered="0" />
@@ -2957,7 +2957,7 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getEmmaCoverageResultSummary"
-      desc="(Ljava/util/Collection;)Lhudson/plugins/emma/portlet/bean/EmmaCoverageResultSummary;"
+      desc="(Ljava/util/Collection;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
       line="73">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
