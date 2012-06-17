@@ -26,7 +26,7 @@ import org.jvnet.hudson.test.HudsonTestCase;
  * @author Robert Sandell &lt;robert.sandell@sonyericsson.com&gt;
  * @author Mauro Durante Junior (Mauro.Durantejunior@sonyericsson.com)
  */
-public class EmmaLoadDataHudsonTest extends HudsonTestCase {
+public class JacocoLoadDataHudsonTest extends HudsonTestCase {
 
     /**
      * This method tests loadChartDataWithinRange() when it has positive number of days.

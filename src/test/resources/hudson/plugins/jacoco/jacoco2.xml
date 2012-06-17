@@ -4,8 +4,8 @@
 <report name="Jenkins JaCoCo plugin">
   <sessioninfo id="to-tck1.yyz.redhat.com-9289a527"
   start="1319148000741" dump="1319148056853" />
-  <package name="hudson/plugins/emma/portlet/bean">
-    <class name="hudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary">
+  <package name="hudson/plugins/jacoco/portlet/bean">
+    <class name="hudson/plugins/jacoco/portlet/bean/JacocoCoverageResultSummary">
 
       <method name="&lt;init&gt;" desc="()V" line="79">
         <counter type="INSTRUCTION" missed="0" covered="8" />
@@ -21,14 +21,14 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="addCoverageResult"
-      desc="(Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
+      desc="(Lhudson/plugins/jacoco/portlet/bean/JacocoCoverageResultSummary;)Lhudson/plugins/jacoco/portlet/bean/JacocoCoverageResultSummary;"
       line="122">
         <counter type="INSTRUCTION" missed="0" covered="49" />
         <counter type="LINE" missed="0" covered="8" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
         <counter type="METHOD" missed="0" covered="1" />
       </method>
-      <method name="getEmmaCoverageResults"
+      <method name="getJacocoCoverageResults"
       desc="()Ljava/util/List;" line="140">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -274,8 +274,8 @@
     <counter type="METHOD" missed="9" covered="17" />
     <counter type="CLASS" missed="0" covered="1" />
   </package>
-  <package name="hudson/plugins/emma/portlet/chart">
-    <class name="hudson/plugins/emma/portlet/chart/EmmaBuilderTrendChart$DescriptorImpl">
+  <package name="hudson/plugins/jacoco/portlet/chart">
+    <class name="hudson/plugins/jacoco/portlet/chart/JacocoBuilderTrendChart$DescriptorImpl">
 
       <method name="&lt;init&gt;" desc="()V" line="247">
         <counter type="INSTRUCTION" missed="0" covered="3" />
@@ -296,7 +296,7 @@
       <counter type="METHOD" missed="1" covered="1" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/portlet/chart/EmmaBuilderTrendChart">
+    <class name="hudson/plugins/jacoco/portlet/chart/JacocoBuilderTrendChart">
 
       <method name="&lt;init&gt;"
       desc="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"
@@ -354,7 +354,7 @@
       <counter type="METHOD" missed="7" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <class name="hudson/plugins/emma/portlet/chart/EmmaBuilderTrendChart$1">
+    <class name="hudson/plugins/jacoco/portlet/chart/JacocoBuilderTrendChart$1">
 
       <method name="&lt;init&gt;" desc="(JIILjava/util/Map;)V"
       line="142">
@@ -378,7 +378,7 @@
       <counter type="METHOD" missed="2" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <sourcefile name="EmmaBuilderTrendChart.java">
+    <sourcefile name="JacocoBuilderTrendChart.java">
       <line nr="101" mi="3" ci="0" mb="0" cb="0" />
       <line nr="103" mi="5" ci="0" mb="0" cb="0" />
       <line nr="104" mi="5" ci="0" mb="0" cb="0" />
@@ -462,8 +462,8 @@
     <counter type="METHOD" missed="10" covered="1" />
     <counter type="CLASS" missed="2" covered="1" />
   </package>
-  <package name="hudson/plugins/emma/portlet/utils">
-    <class name="hudson/plugins/emma/portlet/utils/Constants">
+  <package name="hudson/plugins/jacoco/portlet/utils">
+    <class name="hudson/plugins/jacoco/portlet/utils/Constants">
       <method name="&lt;init&gt;" desc="()V" line="39">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="2" covered="0" />
@@ -476,7 +476,7 @@
       <counter type="METHOD" missed="1" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <class name="hudson/plugins/emma/portlet/utils/Utils">
+    <class name="hudson/plugins/jacoco/portlet/utils/Utils">
       <method name="&lt;init&gt;" desc="()V" line="47">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="2" covered="0" />
@@ -562,8 +562,8 @@
     <counter type="METHOD" missed="2" covered="3" />
     <counter type="CLASS" missed="1" covered="1" />
   </package>
-  <package name="hudson/plugins/emma/portlet">
-    <class name="hudson/plugins/emma/portlet/Messages">
+  <package name="hudson/plugins/jacoco/portlet">
+    <class name="hudson/plugins/jacoco/portlet/Messages">
       <method name="&lt;init&gt;" desc="()V" line="12">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -610,7 +610,7 @@
       <counter type="METHOD" missed="6" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <class name="hudson/plugins/emma/portlet/EmmaLoadData">
+    <class name="hudson/plugins/jacoco/portlet/JacocoLoadData">
       <method name="&lt;init&gt;" desc="()V" line="55">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="2" covered="0" />
@@ -635,7 +635,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getResult"
-      desc="(Lhudson/model/Run;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
+      desc="(Lhudson/model/Run;)Lhudson/plugins/jacoco/portlet/bean/JacocoCoverageResultSummary;"
       line="177">
         <counter type="INSTRUCTION" missed="48" covered="31" />
         <counter type="BRANCH" missed="13" covered="1" />
@@ -644,7 +644,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getResultSummary"
-      desc="(Ljava/util/Collection;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
+      desc="(Ljava/util/Collection;)Lhudson/plugins/jacoco/portlet/bean/JacocoCoverageResultSummary;"
       line="220">
         <counter type="INSTRUCTION" missed="188" covered="0" />
         <counter type="BRANCH" missed="18" covered="0" />
@@ -672,7 +672,7 @@
       <counter type="METHOD" missed="6" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </sourcefile>
-    <sourcefile name="EmmaLoadData.java">
+    <sourcefile name="JacocoLoadData.java">
       <line nr="55" mi="2" ci="0" mb="0" cb="0" />
       <line nr="56" mi="1" ci="0" mb="0" cb="0" />
       <line nr="70" mi="0" ci="4" mb="0" cb="0" />
@@ -791,10 +791,10 @@
     <counter type="METHOD" missed="8" covered="3" />
     <counter type="CLASS" missed="1" covered="1" />
   </package>
-  <package name="hudson/plugins/emma">
-    <class name="hudson/plugins/emma/CoverageObject$1">
+  <package name="hudson/plugins/jacoco">
+    <class name="hudson/plugins/jacoco/CoverageObject$1">
       <method name="&lt;init&gt;"
-      desc="(Lhudson/plugins/emma/CoverageObject;Lhudson/plugins/emma/CoverageObject;Ljava/util/Calendar;II)V"
+      desc="(Lhudson/plugins/jacoco/CoverageObject;Lhudson/plugins/jacoco/CoverageObject;Ljava/util/Calendar;II)V"
       line="182">
         <counter type="INSTRUCTION" missed="11" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -802,7 +802,7 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="createDataSet"
-      desc="(Lhudson/plugins/emma/CoverageObject;)Lhudson/util/DataSetBuilder;"
+      desc="(Lhudson/plugins/jacoco/CoverageObject;)Lhudson/util/DataSetBuilder;"
       line="186">
         <counter type="INSTRUCTION" missed="71" covered="0" />
         <counter type="BRANCH" missed="4" covered="0" />
@@ -817,7 +817,7 @@
       <counter type="METHOD" missed="2" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <class name="hudson/plugins/emma/CoverageObject">
+    <class name="hudson/plugins/jacoco/CoverageObject">
       <method name="&lt;init&gt;" desc="()V" line="43">
         <counter type="INSTRUCTION" missed="0" covered="48" />
         <counter type="LINE" missed="0" covered="9" />
@@ -837,42 +837,42 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getClassCoverage"
-      desc="()Lhudson/plugins/emma/Ratio;" line="68">
+      desc="()Lhudson/plugins/jacoco/Ratio;" line="68">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getMethodCoverage"
-      desc="()Lhudson/plugins/emma/Ratio;" line="73">
+      desc="()Lhudson/plugins/jacoco/Ratio;" line="73">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getComplexityScore"
-      desc="()Lhudson/plugins/emma/Ratio;" line="78">
+      desc="()Lhudson/plugins/jacoco/Ratio;" line="78">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getInstructionCoverage"
-      desc="()Lhudson/plugins/emma/Ratio;" line="83">
+      desc="()Lhudson/plugins/jacoco/Ratio;" line="83">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getBranchCoverage"
-      desc="()Lhudson/plugins/emma/Ratio;" line="88">
+      desc="()Lhudson/plugins/jacoco/Ratio;" line="88">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getLineCoverage"
-      desc="()Lhudson/plugins/emma/Ratio;" line="96">
+      desc="()Lhudson/plugins/jacoco/Ratio;" line="96">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
@@ -898,7 +898,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="printRatioCell"
-      desc="(ZLhudson/plugins/emma/Ratio;Ljava/lang/StringBuilder;)V"
+      desc="(ZLhudson/plugins/jacoco/Ratio;Ljava/lang/StringBuilder;)V"
       line="142">
         <counter type="INSTRUCTION" missed="0" covered="48" />
         <counter type="BRANCH" missed="1" covered="5" />
@@ -907,7 +907,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="printRatioTable"
-      desc="(Lhudson/plugins/emma/Ratio;Ljava/lang/StringBuilder;)V"
+      desc="(Lhudson/plugins/jacoco/Ratio;Ljava/lang/StringBuilder;)V"
       line="153">
         <counter type="INSTRUCTION" missed="0" covered="48" />
         <counter type="LINE" missed="0" covered="5" />
@@ -949,7 +949,7 @@
       <counter type="METHOD" missed="11" covered="7" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/ClassReport">
+    <class name="hudson/plugins/jacoco/ClassReport">
       <method name="&lt;init&gt;" desc="()V" line="6">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -962,7 +962,7 @@
       <counter type="METHOD" missed="0" covered="1" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/AggregatedReport">
+    <class name="hudson/plugins/jacoco/AggregatedReport">
       <method name="&lt;init&gt;" desc="()V" line="15">
         <counter type="INSTRUCTION" missed="0" covered="8" />
         <counter type="LINE" missed="0" covered="2" />
@@ -970,7 +970,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="add"
-      desc="(Lhudson/plugins/emma/AbstractReport;)V" line="22">
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)V" line="22">
         <counter type="INSTRUCTION" missed="0" covered="11" />
         <counter type="LINE" missed="0" covered="3" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
@@ -984,7 +984,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="setParent"
-      desc="(Lhudson/plugins/emma/AggregatedReport;)V" line="31">
+      desc="(Lhudson/plugins/jacoco/AggregatedReport;)V" line="31">
         <counter type="INSTRUCTION" missed="0" covered="20" />
         <counter type="BRANCH" missed="0" covered="2" />
         <counter type="LINE" missed="0" covered="4" />
@@ -992,7 +992,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getDynamic"
-      desc="(Ljava/lang/String;Lorg/kohsuke/stapler/StaplerRequest;Lorg/kohsuke/stapler/StaplerResponse;)Lhudson/plugins/emma/AbstractReport;"
+      desc="(Ljava/lang/String;Lorg/kohsuke/stapler/StaplerRequest;Lorg/kohsuke/stapler/StaplerResponse;)Lhudson/plugins/jacoco/AbstractReport;"
       line="37">
         <counter type="INSTRUCTION" missed="6" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -1034,7 +1034,7 @@
       <counter type="METHOD" missed="5" covered="4" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/Rule">
+    <class name="hudson/plugins/jacoco/Rule">
       <method name="&lt;init&gt;" desc="()V" line="25">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -1047,7 +1047,7 @@
       <counter type="METHOD" missed="1" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <class name="hudson/plugins/emma/AbstractReport">
+    <class name="hudson/plugins/jacoco/AbstractReport">
       <method name="&lt;init&gt;" desc="()V" line="14">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1055,7 +1055,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="addCoverage"
-      desc="(Lhudson/plugins/emma/CoverageElement;)V" line="23">
+      desc="(Lhudson/plugins/jacoco/CoverageElement;)V" line="23">
         <counter type="INSTRUCTION" missed="0" covered="4" />
         <counter type="LINE" missed="0" covered="2" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
@@ -1082,21 +1082,21 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="setParent"
-      desc="(Lhudson/plugins/emma/AggregatedReport;)V" line="43">
+      desc="(Lhudson/plugins/jacoco/AggregatedReport;)V" line="43">
         <counter type="INSTRUCTION" missed="0" covered="4" />
         <counter type="LINE" missed="0" covered="2" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getParent"
-      desc="()Lhudson/plugins/emma/AggregatedReport;" line="50">
+      desc="()Lhudson/plugins/jacoco/AggregatedReport;" line="50">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getPreviousResult"
-      desc="()Lhudson/plugins/emma/CoverageObject;" line="55">
+      desc="()Lhudson/plugins/jacoco/CoverageObject;" line="55">
         <counter type="INSTRUCTION" missed="23" covered="0" />
         <counter type="BRANCH" missed="4" covered="0" />
         <counter type="LINE" missed="8" covered="0" />
@@ -1117,7 +1117,7 @@
       <counter type="METHOD" missed="4" covered="5" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement">
+    <class name="hudson/plugins/jacoco/CoverageElement">
       <method name="&lt;init&gt;" desc="()V" line="11">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="2" />
@@ -1144,7 +1144,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="addTo"
-      desc="(Lhudson/plugins/emma/AbstractReport;)V" line="84">
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)V" line="84">
         <counter type="INSTRUCTION" missed="0" covered="15" />
         <counter type="LINE" missed="0" covered="2" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
@@ -1156,7 +1156,7 @@
       <counter type="METHOD" missed="0" covered="5" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/EmmaPublisher">
+    <class name="hudson/plugins/jacoco/JacocoPublisher">
       <method name="&lt;init&gt;" desc="()V" line="32">
         <counter type="INSTRUCTION" missed="0" covered="8" />
         <counter type="LINE" missed="0" covered="3" />
@@ -1204,7 +1204,7 @@
         <counter type="COMPLEXITY" missed="0" covered="1" />
         <counter type="METHOD" missed="0" covered="1" />
       </method>
-      <method name="getEmmaReport"
+      <method name="getJacocoReport"
       desc="(Lhudson/model/AbstractBuild;)Ljava/io/File;"
       line="162">
         <counter type="INSTRUCTION" missed="0" covered="7" />
@@ -1232,7 +1232,7 @@
       <counter type="METHOD" missed="0" covered="9" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/EmmaHealthReportThresholds">
+    <class name="hudson/plugins/jacoco/JacocoHealthReportThresholds">
       <method name="&lt;init&gt;" desc="()V" line="25">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="2" />
@@ -1409,7 +1409,7 @@
       <counter type="METHOD" missed="18" covered="10" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/EmmaProjectAction">
+    <class name="hudson/plugins/jacoco/JacocoProjectAction">
       <method name="&lt;init&gt;"
       desc="(Lhudson/model/AbstractProject;)V" line="20">
         <counter type="INSTRUCTION" missed="0" covered="6" />
@@ -1439,7 +1439,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getLastResult"
-      desc="()Lhudson/plugins/emma/EmmaBuildAction;" line="40">
+      desc="()Lhudson/plugins/jacoco/JacocoBuildAction;" line="40">
         <counter type="INSTRUCTION" missed="28" covered="0" />
         <counter type="BRANCH" missed="6" covered="0" />
         <counter type="LINE" missed="7" covered="0" />
@@ -1462,7 +1462,7 @@
       <counter type="METHOD" missed="2" covered="4" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/SourceFileReport">
+    <class name="hudson/plugins/jacoco/SourceFileReport">
       <method name="&lt;init&gt;" desc="()V" line="6">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1475,16 +1475,16 @@
       <counter type="METHOD" missed="0" covered="1" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageReport">
+    <class name="hudson/plugins/jacoco/CoverageReport">
       <method name="&lt;init&gt;"
-      desc="(Lhudson/plugins/emma/EmmaBuildAction;)V" line="23">
+      desc="(Lhudson/plugins/jacoco/JacocoBuildAction;)V" line="23">
         <counter type="INSTRUCTION" missed="0" covered="9" />
         <counter type="LINE" missed="0" covered="4" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="&lt;init&gt;"
-      desc="(Lhudson/plugins/emma/EmmaBuildAction;[Ljava/io/InputStream;)V"
+      desc="(Lhudson/plugins/jacoco/JacocoBuildAction;[Ljava/io/InputStream;)V"
       line="29">
         <counter type="INSTRUCTION" missed="8" covered="29" />
         <counter type="BRANCH" missed="0" covered="2" />
@@ -1493,7 +1493,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="&lt;init&gt;"
-      desc="(Lhudson/plugins/emma/EmmaBuildAction;Ljava/io/File;)V"
+      desc="(Lhudson/plugins/jacoco/JacocoBuildAction;Ljava/io/File;)V"
       line="41">
         <counter type="INSTRUCTION" missed="28" covered="0" />
         <counter type="LINE" missed="7" covered="0" />
@@ -1501,7 +1501,7 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getPreviousResult"
-      desc="()Lhudson/plugins/emma/CoverageReport;" line="52">
+      desc="()Lhudson/plugins/jacoco/CoverageReport;" line="52">
         <counter type="INSTRUCTION" missed="11" covered="0" />
         <counter type="BRANCH" missed="2" covered="0" />
         <counter type="LINE" missed="4" covered="0" />
@@ -1529,9 +1529,9 @@
       <counter type="METHOD" missed="3" covered="3" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement$Type">
+    <class name="hudson/plugins/jacoco/CoverageElement$Type">
       <method name="values"
-      desc="()[Lhudson/plugins/emma/CoverageElement$Type;"
+      desc="()[Lhudson/plugins/jacoco/CoverageElement$Type;"
       line="18">
         <counter type="INSTRUCTION" missed="0" covered="4" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1539,7 +1539,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="valueOf"
-      desc="(Ljava/lang/String;)Lhudson/plugins/emma/CoverageElement$Type;"
+      desc="(Ljava/lang/String;)Lhudson/plugins/jacoco/CoverageElement$Type;"
       line="18">
         <counter type="INSTRUCTION" missed="0" covered="5" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1565,7 +1565,7 @@
       <counter type="METHOD" missed="0" covered="4" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/PackageReport">
+    <class name="hudson/plugins/jacoco/PackageReport">
       <method name="&lt;init&gt;" desc="()V" line="6">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1585,9 +1585,9 @@
       <counter type="METHOD" missed="0" covered="2" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/EmmaBuildAction">
+    <class name="hudson/plugins/jacoco/JacocoBuildAction">
       <method name="&lt;init&gt;"
-      desc="(Lhudson/model/AbstractBuild;Lhudson/plugins/emma/Rule;Lhudson/plugins/emma/Ratio;Lhudson/plugins/emma/Ratio;Lhudson/plugins/emma/Ratio;Lhudson/plugins/emma/Ratio;Lhudson/plugins/emma/Ratio;Lhudson/plugins/emma/EmmaHealthReportThresholds;)V"
+      desc="(Lhudson/model/AbstractBuild;Lhudson/plugins/jacoco/Rule;Lhudson/plugins/jacoco/Ratio;Lhudson/plugins/jacoco/Ratio;Lhudson/plugins/jacoco/Ratio;Lhudson/plugins/jacoco/Ratio;Lhudson/plugins/jacoco/Ratio;Lhudson/plugins/jacoco/JacocoHealthReportThresholds;)V"
       line="52">
         <counter type="INSTRUCTION" missed="27" covered="0" />
         <counter type="LINE" missed="10" covered="0" />
@@ -1644,7 +1644,7 @@
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
-      <method name="getEmmaReports"
+      <method name="getJacocoReports"
       desc="(Ljava/io/File;)[Lhudson/FilePath;" line="158">
         <counter type="INSTRUCTION" missed="41" covered="0" />
         <counter type="BRANCH" missed="4" covered="0" />
@@ -1653,7 +1653,7 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getResult"
-      desc="()Lhudson/plugins/emma/CoverageReport;" line="173">
+      desc="()Lhudson/plugins/jacoco/CoverageReport;" line="173">
         <counter type="INSTRUCTION" missed="108" covered="0" />
         <counter type="BRANCH" missed="8" covered="0" />
         <counter type="LINE" missed="20" covered="0" />
@@ -1661,14 +1661,14 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getPreviousResult"
-      desc="()Lhudson/plugins/emma/EmmaBuildAction;" line="211">
+      desc="()Lhudson/plugins/jacoco/JacocoBuildAction;" line="211">
         <counter type="INSTRUCTION" missed="4" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="getPreviousResult"
-      desc="(Lhudson/model/AbstractBuild;)Lhudson/plugins/emma/EmmaBuildAction;"
+      desc="(Lhudson/model/AbstractBuild;)Lhudson/plugins/jacoco/JacocoBuildAction;"
       line="218">
         <counter type="INSTRUCTION" missed="25" covered="0" />
         <counter type="BRANCH" missed="6" covered="0" />
@@ -1677,7 +1677,7 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="load"
-      desc="(Lhudson/model/AbstractBuild;Lhudson/plugins/emma/Rule;Lhudson/plugins/emma/EmmaHealthReportThresholds;[Lhudson/FilePath;)Lhudson/plugins/emma/EmmaBuildAction;"
+      desc="(Lhudson/model/AbstractBuild;Lhudson/plugins/jacoco/Rule;Lhudson/plugins/jacoco/JacocoHealthReportThresholds;[Lhudson/FilePath;)Lhudson/plugins/jacoco/JacocoBuildAction;"
       line="239">
         <counter type="INSTRUCTION" missed="48" covered="24" />
         <counter type="BRANCH" missed="1" covered="1" />
@@ -1686,7 +1686,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="load"
-      desc="(Lhudson/model/AbstractBuild;Lhudson/plugins/emma/Rule;Lhudson/plugins/emma/EmmaHealthReportThresholds;[Ljava/io/InputStream;)Lhudson/plugins/emma/EmmaBuildAction;"
+      desc="(Lhudson/model/AbstractBuild;Lhudson/plugins/jacoco/Rule;Lhudson/plugins/jacoco/JacocoHealthReportThresholds;[Ljava/io/InputStream;)Lhudson/plugins/jacoco/JacocoBuildAction;"
       line="254">
         <counter type="INSTRUCTION" missed="35" covered="9" />
         <counter type="BRANCH" missed="2" covered="0" />
@@ -1695,7 +1695,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="loadRatios"
-      desc="(Ljava/io/InputStream;[Lhudson/plugins/emma/Ratio;)[Lhudson/plugins/emma/Ratio;"
+      desc="(Ljava/io/InputStream;[Lhudson/plugins/jacoco/Ratio;)[Lhudson/plugins/jacoco/Ratio;"
       line="263">
         <counter type="INSTRUCTION" missed="56" covered="23" />
         <counter type="BRANCH" missed="11" covered="3" />
@@ -1717,7 +1717,7 @@
       <counter type="METHOD" missed="12" covered="4" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/Ratio">
+    <class name="hudson/plugins/jacoco/Ratio">
       <method name="&lt;init&gt;" desc="([F)V" line="18">
         <counter type="INSTRUCTION" missed="0" covered="29" />
         <counter type="BRANCH" missed="0" covered="2" />
@@ -1805,7 +1805,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="parseValue"
-      desc="(Ljava/lang/String;)Lhudson/plugins/emma/Ratio;"
+      desc="(Ljava/lang/String;)Lhudson/plugins/jacoco/Ratio;"
       line="126">
         <counter type="INSTRUCTION" missed="0" covered="6" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1827,7 +1827,7 @@
       <counter type="METHOD" missed="3" covered="12" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/EmmaPublisher$DescriptorImpl">
+    <class name="hudson/plugins/jacoco/JacocoPublisher$DescriptorImpl">
       <method name="&lt;init&gt;" desc="()V" line="175">
         <counter type="INSTRUCTION" missed="0" covered="4" />
         <counter type="LINE" missed="0" covered="2" />
@@ -1864,9 +1864,9 @@
       <counter type="METHOD" missed="0" covered="4" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageObject$GraphImpl">
+    <class name="hudson/plugins/jacoco/CoverageObject$GraphImpl">
       <method name="&lt;init&gt;"
-      desc="(Lhudson/plugins/emma/CoverageObject;Lhudson/plugins/emma/CoverageObject;Ljava/util/Calendar;II)V"
+      desc="(Lhudson/plugins/jacoco/CoverageObject;Lhudson/plugins/jacoco/CoverageObject;Ljava/util/Calendar;II)V"
       line="213">
         <counter type="INSTRUCTION" missed="12" covered="0" />
         <counter type="LINE" missed="4" covered="0" />
@@ -1886,7 +1886,7 @@
       <counter type="METHOD" missed="2" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement$Type$1">
+    <class name="hudson/plugins/jacoco/CoverageElement$Type$1">
       <method name="&lt;init&gt;" desc="(Ljava/lang/String;I)V"
       line="19">
         <counter type="INSTRUCTION" missed="0" covered="6" />
@@ -1895,7 +1895,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getAssociatedRatio"
-      desc="(Lhudson/plugins/emma/AbstractReport;)Lhudson/plugins/emma/Ratio;"
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)Lhudson/plugins/jacoco/Ratio;"
       line="22">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1908,7 +1908,7 @@
       <counter type="METHOD" missed="0" covered="2" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement$Type$4">
+    <class name="hudson/plugins/jacoco/CoverageElement$Type$4">
       <method name="&lt;init&gt;" desc="(Ljava/lang/String;I)V"
       line="37">
         <counter type="INSTRUCTION" missed="0" covered="6" />
@@ -1917,7 +1917,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getAssociatedRatio"
-      desc="(Lhudson/plugins/emma/AbstractReport;)Lhudson/plugins/emma/Ratio;"
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)Lhudson/plugins/jacoco/Ratio;"
       line="40">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1930,7 +1930,7 @@
       <counter type="METHOD" missed="0" covered="2" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement$Type$5">
+    <class name="hudson/plugins/jacoco/CoverageElement$Type$5">
       <method name="&lt;init&gt;" desc="(Ljava/lang/String;I)V"
       line="43">
         <counter type="INSTRUCTION" missed="0" covered="6" />
@@ -1939,7 +1939,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getAssociatedRatio"
-      desc="(Lhudson/plugins/emma/AbstractReport;)Lhudson/plugins/emma/Ratio;"
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)Lhudson/plugins/jacoco/Ratio;"
       line="46">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1952,7 +1952,7 @@
       <counter type="METHOD" missed="0" covered="2" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement$Type$2">
+    <class name="hudson/plugins/jacoco/CoverageElement$Type$2">
       <method name="&lt;init&gt;" desc="(Ljava/lang/String;I)V"
       line="25">
         <counter type="INSTRUCTION" missed="0" covered="6" />
@@ -1961,7 +1961,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getAssociatedRatio"
-      desc="(Lhudson/plugins/emma/AbstractReport;)Lhudson/plugins/emma/Ratio;"
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)Lhudson/plugins/jacoco/Ratio;"
       line="28">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1974,7 +1974,7 @@
       <counter type="METHOD" missed="0" covered="2" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement$Type$3">
+    <class name="hudson/plugins/jacoco/CoverageElement$Type$3">
       <method name="&lt;init&gt;" desc="(Ljava/lang/String;I)V"
       line="31">
         <counter type="INSTRUCTION" missed="0" covered="6" />
@@ -1983,7 +1983,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getAssociatedRatio"
-      desc="(Lhudson/plugins/emma/AbstractReport;)Lhudson/plugins/emma/Ratio;"
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)Lhudson/plugins/jacoco/Ratio;"
       line="34">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -1996,7 +1996,7 @@
       <counter type="METHOD" missed="0" covered="2" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/Messages">
+    <class name="hudson/plugins/jacoco/Messages">
       <method name="&lt;init&gt;" desc="()V" line="12">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -2049,14 +2049,14 @@
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
-      <method name="EmmaPublisher_DisplayName"
+      <method name="JacocoPublisher_DisplayName"
       desc="()Ljava/lang/String;" line="69">
         <counter type="INSTRUCTION" missed="0" covered="6" />
         <counter type="LINE" missed="0" covered="1" />
         <counter type="COMPLEXITY" missed="0" covered="1" />
         <counter type="METHOD" missed="0" covered="1" />
       </method>
-      <method name="_EmmaPublisher_DisplayName"
+      <method name="_JacocoPublisher_DisplayName"
       desc="()Lorg/jvnet/localizer/Localizable;" line="77">
         <counter type="INSTRUCTION" missed="8" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -2207,7 +2207,7 @@
       <counter type="METHOD" missed="25" covered="3" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/CoverageElement$Type$6">
+    <class name="hudson/plugins/jacoco/CoverageElement$Type$6">
       <method name="&lt;init&gt;" desc="(Ljava/lang/String;I)V"
       line="49">
         <counter type="INSTRUCTION" missed="0" covered="6" />
@@ -2216,7 +2216,7 @@
         <counter type="METHOD" missed="0" covered="1" />
       </method>
       <method name="getAssociatedRatio"
-      desc="(Lhudson/plugins/emma/AbstractReport;)Lhudson/plugins/emma/Ratio;"
+      desc="(Lhudson/plugins/jacoco/AbstractReport;)Lhudson/plugins/jacoco/Ratio;"
       line="52">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -2229,7 +2229,7 @@
       <counter type="METHOD" missed="0" covered="2" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <class name="hudson/plugins/emma/MethodReport">
+    <class name="hudson/plugins/jacoco/MethodReport">
       <method name="&lt;init&gt;" desc="()V" line="6">
         <counter type="INSTRUCTION" missed="0" covered="3" />
         <counter type="LINE" missed="0" covered="1" />
@@ -2250,7 +2250,7 @@
       <counter type="METHOD" missed="0" covered="1" />
       <counter type="CLASS" missed="0" covered="1" />
     </sourcefile>
-    <sourcefile name="EmmaPublisher.java">
+    <sourcefile name="JacocoPublisher.java">
       <line nr="32" mi="0" ci="2" mb="0" cb="0" />
       <line nr="48" mi="0" ci="5" mb="0" cb="0" />
       <line nr="60" mi="0" ci="4" mb="0" cb="0" />
@@ -2565,7 +2565,7 @@
       <counter type="METHOD" missed="15" covered="7" />
       <counter type="CLASS" missed="2" covered="1" />
     </sourcefile>
-    <sourcefile name="EmmaBuildAction.java">
+    <sourcefile name="JacocoBuildAction.java">
       <line nr="33" mi="2" ci="5" mb="1" cb="1" />
       <line nr="52" mi="2" ci="0" mb="0" cb="0" />
       <line nr="53" mi="3" ci="0" mb="0" cb="0" />
@@ -2719,7 +2719,7 @@
       <counter type="METHOD" missed="1" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </sourcefile>
-    <sourcefile name="EmmaHealthReportThresholds.java">
+    <sourcefile name="JacocoHealthReportThresholds.java">
       <line nr="25" mi="0" ci="2" mb="0" cb="0" />
       <line nr="26" mi="0" ci="1" mb="0" cb="0" />
       <line nr="30" mi="0" ci="2" mb="0" cb="0" />
@@ -2846,7 +2846,7 @@
       <counter type="METHOD" missed="3" covered="3" />
       <counter type="CLASS" missed="0" covered="1" />
     </sourcefile>
-    <sourcefile name="EmmaProjectAction.java">
+    <sourcefile name="JacocoProjectAction.java">
       <line nr="20" mi="0" ci="2" mb="0" cb="0" />
       <line nr="21" mi="0" ci="3" mb="0" cb="0" />
       <line nr="22" mi="0" ci="1" mb="0" cb="0" />
@@ -2946,8 +2946,8 @@
     <counter type="METHOD" missed="88" covered="91" />
     <counter type="CLASS" missed="3" covered="23" />
   </package>
-  <package name="hudson/plugins/emma/portlet/grid">
-    <class name="hudson/plugins/emma/portlet/grid/EmmaBuilderGrid">
+  <package name="hudson/plugins/jacoco/portlet/grid">
+    <class name="hudson/plugins/jacoco/portlet/grid/JacocoBuilderGrid">
       <method name="&lt;init&gt;" desc="(Ljava/lang/String;)V"
       line="61">
         <counter type="INSTRUCTION" missed="4" covered="0" />
@@ -2955,8 +2955,8 @@
         <counter type="COMPLEXITY" missed="1" covered="0" />
         <counter type="METHOD" missed="1" covered="0" />
       </method>
-      <method name="getEmmaCoverageResultSummary"
-      desc="(Ljava/util/Collection;)Lhudson/plugins/emma/portlet/bean/JacocoCoverageResultSummary;"
+      <method name="getJacocoCoverageResultSummary"
+      desc="(Ljava/util/Collection;)Lhudson/plugins/jacoco/portlet/bean/JacocoCoverageResultSummary;"
       line="73">
         <counter type="INSTRUCTION" missed="3" covered="0" />
         <counter type="LINE" missed="1" covered="0" />
@@ -2969,7 +2969,7 @@
       <counter type="METHOD" missed="2" covered="0" />
       <counter type="CLASS" missed="1" covered="0" />
     </class>
-    <class name="hudson/plugins/emma/portlet/grid/EmmaBuilderGrid$EmmaGridDescriptor">
+    <class name="hudson/plugins/jacoco/portlet/grid/JacocoBuilderGrid$JacocoGridDescriptor">
 
       <method name="&lt;init&gt;" desc="()V" line="80">
         <counter type="INSTRUCTION" missed="0" covered="3" />
@@ -2990,7 +2990,7 @@
       <counter type="METHOD" missed="1" covered="1" />
       <counter type="CLASS" missed="0" covered="1" />
     </class>
-    <sourcefile name="EmmaBuilderGrid.java">
+    <sourcefile name="JacocoBuilderGrid.java">
       <line nr="61" mi="3" ci="0" mb="0" cb="0" />
       <line nr="62" mi="1" ci="0" mb="0" cb="0" />
       <line nr="73" mi="3" ci="0" mb="0" cb="0" />
@@ -3008,8 +3008,8 @@
     <counter type="METHOD" missed="3" covered="1" />
     <counter type="CLASS" missed="1" covered="1" />
   </package>
-  <package name="hudson/plugins/emma/rules">
-    <class name="hudson/plugins/emma/rules/LineCoveragePerSourceFileRule">
+  <package name="hudson/plugins/jacoco/rules">
+    <class name="hudson/plugins/jacoco/rules/LineCoveragePerSourceFileRule">
 
       <method name="&lt;init&gt;" desc="(F)V" line="19">
         <counter type="INSTRUCTION" missed="6" covered="0" />
@@ -3018,7 +3018,7 @@
         <counter type="METHOD" missed="1" covered="0" />
       </method>
       <method name="enforce"
-      desc="(Lhudson/plugins/emma/CoverageReport;Lhudson/model/TaskListener;)V"
+      desc="(Lhudson/plugins/jacoco/CoverageReport;Lhudson/model/TaskListener;)V"
       line="24">
         <counter type="INSTRUCTION" missed="57" covered="0" />
         <counter type="BRANCH" missed="6" covered="0" />

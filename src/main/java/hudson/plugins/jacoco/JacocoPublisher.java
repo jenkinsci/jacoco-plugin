@@ -126,9 +126,9 @@ public class JacocoPublisher extends Recorder {
             logger.println("JaCoCo: found " + reports.length  + " report files: " + found );
         }
         
-        FilePath emmafolder = new FilePath(getEmmaReport(build));
-        saveCoverageReports(emmafolder, reports);
-        logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ emmafolder);
+        FilePath jacocofolder = new FilePath(getJacocoReport(build));
+        saveCoverageReports(jacocofolder, reports);
+        logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);
         
         final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, reports);
         
@@ -160,7 +160,7 @@ public class JacocoPublisher extends Recorder {
     /**
      * Gets the directory to store report files
      */
-    static File getEmmaReport(AbstractBuild<?,?> build) {
+    static File getJacocoReport(AbstractBuild<?,?> build) {
         return new File(build.getRootDir(), "jacoco");
     }
 

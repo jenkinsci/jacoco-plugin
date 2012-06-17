@@ -13,7 +13,7 @@ import org.junit.Test;
  * 
  * @autor manuel_carrasco
  */
-public class EmmaPublisherTest extends AbstractEmmaTestBase {
+public class JacocoPublisherTest extends AbstractJacocoTestBase {
 	
 	@Test
 	public void testLocateReports() throws Exception {

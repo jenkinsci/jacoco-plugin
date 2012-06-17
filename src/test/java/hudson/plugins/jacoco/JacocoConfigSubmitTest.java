@@ -13,7 +13,7 @@ import org.jvnet.hudson.test.HudsonTestCase;
  * Test for Project configuration.
  * @author Seiji Sogabe
  */
-public class EmmaConfigSubmitTest extends HudsonTestCase {
+public class JacocoConfigSubmitTest extends HudsonTestCase {
 
 	@Test
     public void testIncludeIsEmpty() throws Exception {

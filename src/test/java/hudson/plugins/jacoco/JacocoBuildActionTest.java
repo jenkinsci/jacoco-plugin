@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * @author Kohsuke Kawaguchi
  */
-public class EmmaBuildActionTest extends AbstractEmmaTestBase {
+public class JacocoBuildActionTest extends AbstractJacocoTestBase {
   
 	@Test
     public void testLoadReport1() throws Exception {

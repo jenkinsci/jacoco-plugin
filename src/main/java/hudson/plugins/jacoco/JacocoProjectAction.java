@@ -12,7 +12,7 @@ import org.kohsuke.stapler.StaplerResponse;
 import java.io.IOException;
 
 /**
- * Project view extension by Emma plugin.
+ * Project view extension by JaCoCo plugin.
  * 
  * @author Kohsuke Kawaguchi
  */

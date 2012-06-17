@@ -45,7 +45,7 @@ import java.util.TreeMap;
 import org.joda.time.LocalDate;
 
 /**
- * Load data of Emma coverage results used by chart or grid.
+ * Load data of JaCoCo coverage results used by chart or grid.
  */
 public final class JacocoLoadData {
 
@@ -56,7 +56,7 @@ public final class JacocoLoadData {
   }
 
   /**
-   * Get Emma coverage results of all jobs and store into a sorted
+   * Get JaCoCo coverage results of all jobs and store into a sorted
    * HashMap by date.
    *
    * @param jobs
@@ -80,7 +80,7 @@ public final class JacocoLoadData {
     // Get the first date from last build date minus number of days
     LocalDate firstDate = lastDate.minusDays(daysNumber);
 
-    // For each job, get Emma coverage results according with
+    // For each job, get JaCoCo coverage results according with
     // date range (last build date minus number of days)
     for (Job job : jobs) {
 
@@ -113,7 +113,7 @@ public final class JacocoLoadData {
   }
 
   /**
-   * Summarize Emma converage results.
+   * Summarize JaCoCo converage results.
    *
    * @param summaries
    *          a Map of JacocoCoverageResultSummary objects indexed by
@@ -128,24 +128,24 @@ public final class JacocoLoadData {
    */
   private static void summarize(Map<LocalDate, JacocoCoverageResultSummary> summaries, Run run, LocalDate runDate, Job job) {
 
-    JacocoCoverageResultSummary emmaCoverageResult = getResult(run);
+    JacocoCoverageResultSummary jacocoCoverageResult = getResult(run);
 
-    // Retrieve Emma information for informed date
-    JacocoCoverageResultSummary emmaCoverageResultSummary = summaries.get(runDate);
+    // Retrieve JaCoCo information for informed date
+    JacocoCoverageResultSummary jacocoCoverageResultSummary = summaries.get(runDate);
 
     // Consider the last result of each
     // job date (if there are many builds for the same date). If not
-    // exists, the Emma coverage data must be added. If exists
-    // Emma coverage data for the same date but it belongs to other
+    // exists, the JaCoCo coverage data must be added. If exists
+    // JaCoCo coverage data for the same date but it belongs to other
     // job, sum the values.
-    if (emmaCoverageResultSummary == null) {
-      emmaCoverageResultSummary = new JacocoCoverageResultSummary();
-      emmaCoverageResultSummary.addCoverageResult(emmaCoverageResult);
-      emmaCoverageResultSummary.setJob(job);
+    if (jacocoCoverageResultSummary == null) {
+      jacocoCoverageResultSummary = new JacocoCoverageResultSummary();
+      jacocoCoverageResultSummary.addCoverageResult(jacocoCoverageResult);
+      jacocoCoverageResultSummary.setJob(job);
     } else {
 
-      // Check if exists Emma data for same date and job
-      List<JacocoCoverageResultSummary> listResults = emmaCoverageResultSummary.getEmmaCoverageResults();
+      // Check if exists JaCoCo data for same date and job
+      List<JacocoCoverageResultSummary> listResults = jacocoCoverageResultSummary.getJacocoCoverageResults();
       boolean found = false;
 
       for (JacocoCoverageResultSummary item : listResults) {
@@ -158,23 +158,23 @@ public final class JacocoLoadData {
       }
 
       if (!found) {
-        emmaCoverageResultSummary.addCoverageResult(emmaCoverageResult);
-        emmaCoverageResultSummary.setJob(job);
+        jacocoCoverageResultSummary.addCoverageResult(jacocoCoverageResult);
+        jacocoCoverageResultSummary.setJob(job);
       }
     }
 
-    summaries.put(runDate, emmaCoverageResultSummary);
+    summaries.put(runDate, jacocoCoverageResultSummary);
   }
 
   /**
-   * Get the Emma coverage result for a specific run.
+   * Get the JaCoCo coverage result for a specific run.
    *
    * @param run
    *          a job execution
-   * @return EmmaCoverageTestResult the coverage result
+   * @return JaCoCoCoverageTestResult the coverage result
    */
   private static JacocoCoverageResultSummary getResult(Run run) {
-    JacocoBuildAction emmaAction = run.getAction(JacocoBuildAction.class);
+    JacocoBuildAction jacocoAction = run.getAction(JacocoBuildAction.class);
 
     float classCoverage = 0.0f;
     float lineCoverage = 0.0f;
@@ -183,24 +183,24 @@ public final class JacocoLoadData {
     float instructionCoverage = 0.0f;
     float complexityScore = 0.0f;
 
-    if (emmaAction != null) {
-      if (null != emmaAction.getClassCoverage()) {
-        classCoverage = emmaAction.getClassCoverage().getPercentageFloat();
+    if (jacocoAction != null) {
+      if (null != jacocoAction.getClassCoverage()) {
+        classCoverage = jacocoAction.getClassCoverage().getPercentageFloat();
       }
-      if (null != emmaAction.getLineCoverage()) {
-        lineCoverage = emmaAction.getLineCoverage().getPercentageFloat();
+      if (null != jacocoAction.getLineCoverage()) {
+        lineCoverage = jacocoAction.getLineCoverage().getPercentageFloat();
       }
-      if (null != emmaAction.getMethodCoverage()) {
-        methodCoverage = emmaAction.getMethodCoverage().getPercentageFloat();
+      if (null != jacocoAction.getMethodCoverage()) {
+        methodCoverage = jacocoAction.getMethodCoverage().getPercentageFloat();
       }
-      if (null != emmaAction.getBranchCoverage()) {
-        branchCoverage = emmaAction.getBranchCoverage().getPercentageFloat();
+      if (null != jacocoAction.getBranchCoverage()) {
+        branchCoverage = jacocoAction.getBranchCoverage().getPercentageFloat();
       }
-      if (null != emmaAction.getInstructionCoverage()) {
-        instructionCoverage = emmaAction.getInstructionCoverage().getPercentageFloat();
+      if (null != jacocoAction.getInstructionCoverage()) {
+        instructionCoverage = jacocoAction.getInstructionCoverage().getPercentageFloat();
       }
-      if (null != emmaAction.getComplexityScore()) {
-        complexityScore = emmaAction.getComplexityScore().getPercentageFloat();
+      if (null != jacocoAction.getComplexityScore()) {
+        complexityScore = jacocoAction.getComplexityScore().getPercentageFloat();
       }
     }
     return new JacocoCoverageResultSummary(
@@ -232,45 +232,45 @@ public final class JacocoLoadData {
 
       if (run != null) {
 
-        JacocoBuildAction emmaAction = job.getLastSuccessfulBuild().getAction(JacocoBuildAction.class);
+        JacocoBuildAction jacocoAction = job.getLastSuccessfulBuild().getAction(JacocoBuildAction.class);
 
-        if (null != emmaAction) {
-          if (null != emmaAction.getClassCoverage()) {
-            classCoverage = emmaAction.getClassCoverage().getPercentageFloat();
+        if (null != jacocoAction) {
+          if (null != jacocoAction.getClassCoverage()) {
+            classCoverage = jacocoAction.getClassCoverage().getPercentageFloat();
             BigDecimal bigClassCoverage = new BigDecimal(classCoverage);
             bigClassCoverage = bigClassCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
             classCoverage = bigClassCoverage.floatValue();
           }
-          if (null != emmaAction.getLineCoverage()) {
-            lineCoverage = emmaAction.getLineCoverage().getPercentageFloat();
+          if (null != jacocoAction.getLineCoverage()) {
+            lineCoverage = jacocoAction.getLineCoverage().getPercentageFloat();
             BigDecimal bigLineCoverage = new BigDecimal(lineCoverage);
             bigLineCoverage = bigLineCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
             lineCoverage = bigLineCoverage.floatValue();
           }
 
-          if (null != emmaAction.getMethodCoverage()) {
-            methodCoverage = emmaAction.getMethodCoverage().getPercentageFloat();
+          if (null != jacocoAction.getMethodCoverage()) {
+            methodCoverage = jacocoAction.getMethodCoverage().getPercentageFloat();
             BigDecimal bigMethodCoverage = new BigDecimal(methodCoverage);
             bigMethodCoverage = bigMethodCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
             methodCoverage = bigMethodCoverage.floatValue();
           }
 
-          if (null != emmaAction.getBranchCoverage()) {
-            branchCoverage = emmaAction.getBranchCoverage().getPercentageFloat();
+          if (null != jacocoAction.getBranchCoverage()) {
+            branchCoverage = jacocoAction.getBranchCoverage().getPercentageFloat();
             BigDecimal bigBranchCoverage = new BigDecimal(branchCoverage);
             bigBranchCoverage = bigBranchCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
             branchCoverage = bigBranchCoverage.floatValue();
           }
 
-          if (null != emmaAction.getInstructionCoverage()) {
-            instructionCoverage = emmaAction.getInstructionCoverage().getPercentageFloat();
+          if (null != jacocoAction.getInstructionCoverage()) {
+            instructionCoverage = jacocoAction.getInstructionCoverage().getPercentageFloat();
             BigDecimal bigInstructionCoverage = new BigDecimal(instructionCoverage);
             bigInstructionCoverage = bigInstructionCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
             instructionCoverage = bigInstructionCoverage.floatValue();
           }
 
-          if (null != emmaAction.getComplexityScore()) {
-            complexityScore = emmaAction.getComplexityScore().getPercentageFloat();
+          if (null != jacocoAction.getComplexityScore()) {
+            complexityScore = jacocoAction.getComplexityScore().getPercentageFloat();
             BigDecimal bigComplexityCoverage = new BigDecimal(complexityScore);
             bigComplexityCoverage = bigComplexityCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
             complexityScore = bigComplexityCoverage.floatValue();

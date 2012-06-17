@@ -61,7 +61,7 @@ import hudson.util.ShiftedCategoryAxis;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * A portlet for Emma coverage results - Trend Chart.
+ * A portlet for JaCoCo coverage results - Trend Chart.
  */
 public class JacocoBuilderTrendChart extends DashboardPortlet {
 
@@ -125,7 +125,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
   }
 
   /**
-   * Creates a graph for Emma Coverage results.
+   * Creates a graph for JaCoCo Coverage results.
    *
    * @param summaries
    *          HashMap(key = run date and value = Instrumentation tests
@@ -215,7 +215,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
 
       int count = 0;
 
-      List<JacocoCoverageResultSummary> list = entry.getValue().getEmmaCoverageResults();
+      List<JacocoCoverageResultSummary> list = entry.getValue().getJacocoCoverageResults();
 
       for (JacocoCoverageResultSummary item : list) {
         classCoverage += item.getClassCoverage();

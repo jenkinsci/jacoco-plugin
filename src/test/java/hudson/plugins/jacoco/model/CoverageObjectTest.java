@@ -3,14 +3,14 @@ package hudson.plugins.jacoco.model;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import hudson.plugins.jacoco.AbstractEmmaTestBase;
+import hudson.plugins.jacoco.AbstractJacocoTestBase;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageObject;
 
 /**
  * @author Manuel Carrasco
  */
-public class CoverageObjectTest extends AbstractEmmaTestBase {
+public class CoverageObjectTest extends AbstractJacocoTestBase {
 	
 	@Test
     public void testPrintRatioTable() throws Exception {

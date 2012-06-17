@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 /**
  * @author Kohsuke Kawaguchi
  */
-public abstract class AbstractEmmaTestBase {
+public abstract class AbstractJacocoTestBase {
     protected final void assertRatio(Coverage r, float numerator, float denominator) {
         fail("Replaced by assertCoverage()");
     }

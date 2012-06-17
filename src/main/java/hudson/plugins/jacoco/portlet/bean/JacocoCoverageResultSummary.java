@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Summary of the EMMA Coverage result.
+ * Summary of the Jacoco Coverage result.
  */
 public class JacocoCoverageResultSummary {
 
@@ -114,7 +114,7 @@ public class JacocoCoverageResultSummary {
    *
    * @param coverageResult
    *          a coverage result
-   * @return JacocoCoverageResultSummary summary of the EMMA coverage
+   * @return JacocoCoverageResultSummary summary of the Jacoco coverage
    *         result
    */
   public JacocoCoverageResultSummary addCoverageResult(JacocoCoverageResultSummary coverageResult) {
@@ -132,11 +132,11 @@ public class JacocoCoverageResultSummary {
   }
 
   /**
-   * Get list of EmmaCoverageResult objects.
+   * Get list of JacocoCoverageResult objects.
    *
-   * @return List a List of EmmaCoverageResult objects
+   * @return List a List of JacocoCoverageResult objects
    */
-  public List<JacocoCoverageResultSummary> getEmmaCoverageResults() {
+  public List<JacocoCoverageResultSummary> getJacocoCoverageResults() {
     return this.getCoverageResults();
   }
 

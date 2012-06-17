@@ -41,7 +41,7 @@ import java.util.Collection;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
- * A portlet for Emma Coverage results - Grid data.
+ * A portlet for JaCoCo Coverage results - Grid data.
  *
  * @see http://wiki.hudson-ci.org/display/HUDSON/Dashboard+View
  */
@@ -77,7 +77,7 @@ public class JacocoBuilderGrid extends DashboardPortlet {
    * Descriptor that will be shown on Dashboard Portlets view.
    */
   @Extension
-  public static class EmmaGridDescriptor extends Descriptor<DashboardPortlet> {
+  public static class JacocoGridDescriptor extends Descriptor<DashboardPortlet> {
 
     @Override
     public String getDisplayName() {

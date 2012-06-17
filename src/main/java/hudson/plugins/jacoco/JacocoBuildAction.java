@@ -33,7 +33,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
- * Build view extension by Emma plugin.
+ * Build view extension by JaCoCo plugin.
  *
  * As {@link CoverageObject}, it retains the overall coverage report.
  *
@@ -184,7 +184,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         return owner;
     }
     
-	protected static FilePath[] getEmmaReports(File file) throws IOException, InterruptedException {
+	protected static FilePath[] getJacocoReports(File file) throws IOException, InterruptedException {
 		FilePath path = new FilePath(file);
 		if (path.isDirectory()) {
 			return path.list("*xml");
@@ -205,12 +205,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
             if(r!=null)     return r;
         }
 
-        final File reportFolder = JacocoPublisher.getEmmaReport(owner);
+        final File reportFolder = JacocoPublisher.getJacocoReport(owner);
 
         try {
         	
         	// Get the list of report files stored for this build
-            FilePath[] reports = getEmmaReports(reportFolder);
+            FilePath[] reports = getJacocoReports(reportFolder);
             InputStream[] streams = new InputStream[reports.length];
             for (int i=0; i<reports.length; i++) {
             	streams[i] = reports[i].read();

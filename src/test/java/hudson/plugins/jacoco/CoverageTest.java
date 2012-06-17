@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 /**
  * JUnit test for {@link Coverage}
  */
-public class CoverageTest extends AbstractEmmaTestBase {
+public class CoverageTest extends AbstractJacocoTestBase {
 
 	@Test
     public void testPercentageCalculation() throws Exception {
