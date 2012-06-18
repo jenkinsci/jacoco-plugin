@@ -1,4 +1,3 @@
-/*
  *  The MIT License
  *
  *  Copyright 2010 Sony Ericsson Mobile Communications. All rights reserved.
@@ -243,7 +242,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
   /**
    * Descriptor that will be shown on Dashboard Portlets view.
    */
-  @Extension
+  @Extension(optional = true)
   public static class DescriptorImpl extends Descriptor<DashboardPortlet> {
 
     @Override
