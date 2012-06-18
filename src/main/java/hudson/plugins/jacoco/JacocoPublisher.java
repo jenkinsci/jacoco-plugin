@@ -94,7 +94,8 @@ public class JacocoPublisher extends Recorder {
 			src.copyTo(dst);
 		}
 	}
-
+	
+	@Override
     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
         EnvVars env = build.getEnvironment(listener);
         env.overrideAll(build.getBuildVariables());
@@ -153,6 +154,7 @@ public class JacocoPublisher extends Recorder {
         return new JacocoProjectAction(project);
     }
 
+	@Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.BUILD;
     }
@@ -177,10 +179,12 @@ public class JacocoPublisher extends Recorder {
             super(JacocoPublisher.class);
         }
 
+		@Override
         public String getDisplayName() {
             return Messages.JacocoPublisher_DisplayName();
         }
 
+		@Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
