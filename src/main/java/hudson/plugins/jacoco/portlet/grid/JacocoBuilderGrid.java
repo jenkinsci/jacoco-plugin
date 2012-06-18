@@ -76,7 +76,7 @@ public class JacocoBuilderGrid extends DashboardPortlet {
   /**
    * Descriptor that will be shown on Dashboard Portlets view.
    */
-  @Extension
+  @Extension(optional = true)
   public static class JacocoGridDescriptor extends Descriptor<DashboardPortlet> {
 
     @Override
