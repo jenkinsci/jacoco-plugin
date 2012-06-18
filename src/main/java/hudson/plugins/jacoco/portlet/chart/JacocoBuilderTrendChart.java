@@ -1,3 +1,4 @@
+/*
  *  The MIT License
  *
  *  Copyright 2010 Sony Ericsson Mobile Communications. All rights reserved.
