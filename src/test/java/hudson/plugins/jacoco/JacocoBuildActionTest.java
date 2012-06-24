@@ -52,15 +52,16 @@ public class JacocoBuildActionTest extends AbstractJacocoTestBase {
               new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
               getClass().getResourceAsStream("jacoco.xml"),
               getClass().getResourceAsStream("jacoco2.xml"));
-      assertEquals(65, r.clazz.getPercentage());
-      assertEquals(37, r.line.getPercentage());
-      assertCoverage(r.clazz, 17 + 9, 20 + 28);
-      assertCoverage(r.method, 167 + 122, 69 + 116);
-      assertCoverage(r.line, 595 + 513, 293 + 361);
-      assertCoverage(r.branch, 223 + 224, 67 + 66);
-      assertCoverage(r.instruction, 2733 + 2548, 1351 + 1613);
-      assertCoverage(r.complexity, 289 + 246, 92 + 137);
-      assertEquals("Coverage: Classes 26/48 (65%). Methods 289/185 (39%). Lines 1108/654 (37%). Branches 447/133 (23%). Instructions 5281/2964 (36%).",
+      assertEquals(76, r.clazz.getPercentage());
+      assertEquals(41, r.line.getPercentage());
+      assertCoverage(r.clazz,  9,  28);
+      assertCoverage(r.method,  122,  116);
+      assertCoverage(r.line, 513, 361);
+      assertCoverage(r.branch,  224,  66);
+      assertCoverage(r.instruction,  2548, 1613);
+      assertCoverage(r.complexity,  246,  137);
+      assertEquals("Coverage: Classes 9/28 (76%). Methods 122/116 (49%). Lines 513/361 (41%). Branches 224/66 (23%). Instructions 2548/1613" +
+      		" (39%).",
                    r.getBuildHealth().getDescription());
   }
 }

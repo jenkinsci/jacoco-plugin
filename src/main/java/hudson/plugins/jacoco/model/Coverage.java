@@ -86,8 +86,8 @@ final public class Coverage implements Serializable {
      * @param covered The amount to add to the covered.
      */
     public void accumulate(int missed, int covered) {
-      this.missed += missed;
-      this.covered += covered;
+      this.missed = missed;
+      this.covered = covered;
       initialized = true;
     }
 

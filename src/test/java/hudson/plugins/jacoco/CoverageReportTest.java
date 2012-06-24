@@ -21,7 +21,7 @@ public class CoverageReportTest extends AbstractJacocoTestBase {
         CoverageReport r = new CoverageReport(null, getClass().getResourceAsStream("jacoco.xml"));
         PackageReport pkg = r.getChildren().get("hudson.plugins.jacoco");
         System.out.println(pkg);
-        assertCoverage(pkg.getLineCoverage(), 786, 392);
+        assertCoverage(pkg.getLineCoverage(), 393, 196);
         assertEquals(595, r.getLineCoverage().getMissed());
     }
 
@@ -34,13 +34,13 @@ public class CoverageReportTest extends AbstractJacocoTestBase {
           getClass().getResourceAsStream("jacoco.xml"), 
           getClass().getResourceAsStream("jacoco2.xml"));
 
-      assertCoverage(r.getLineCoverage(), 595 + 513, 293 + 361);
+      assertCoverage(r.getLineCoverage(), 513, 361);
       
       PackageReport pkg = r.getChildren().get("hudson.plugins.jacoco.portlet.bean");
-      assertCoverage(pkg.getLineCoverage(), 68, 82);
+      assertCoverage(pkg.getLineCoverage(), 34, 41);
       
       pkg = r.getChildren().get("hudson.plugins.jacoco.portlet.chart");
-      assertCoverage(pkg.getLineCoverage(), 136, 0 + 2);
+      assertCoverage(pkg.getLineCoverage(), 68, 1);
       
     }
 	
@@ -54,7 +54,7 @@ public class CoverageReportTest extends AbstractJacocoTestBase {
 	public void testPackageReport() throws Exception {
 		CoverageReport r = new CoverageReport(null,getClass().getResourceAsStream("jacoco2.xml"));
 		PackageReport pkg = r.getChildren().get("hudson.plugins.jacoco.portlet.bean");
-		assertCoverage(pkg.getLineCoverage(), 68, 82);
+		assertCoverage(pkg.getLineCoverage(), 34, 41);
 	}
 	
 	@Test
