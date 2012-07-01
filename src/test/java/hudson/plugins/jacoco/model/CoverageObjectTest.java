@@ -22,7 +22,7 @@ public class CoverageObjectTest extends AbstractJacocoTestBase {
     	b = new StringBuilder();
     	CoverageObject.printRatioTable(r, b);
     	
-    	assertEquals("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'><td width='64px' class='data'>100.0%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width: 100.0px;'><span class='text'>0/100</span></div></div></td></tr></table>", b.toString());
+    	assertEquals("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'><td width='64px' class='data'>100.0%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width: 100.0px;'><span class='text'>100/100</span></div></div></td></tr></table>", b.toString());
     }
     
 	@Test
@@ -33,7 +33,7 @@ public class CoverageObjectTest extends AbstractJacocoTestBase {
     	b = new StringBuilder();
     	
     	CoverageObject.printRatioTable(r, b);
-    	assertEquals("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'><td width='64px' class='data'>79.7%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width: 79.681274px;'><span class='text'>51/200</span></div></div></td></tr></table>", b.toString());
+    	assertEquals("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'><td width='64px' class='data'>79.7%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width: 79.681274px;'><span class='text'>200/251</span></div></div></td></tr></table>", b.toString());
     }
 
 
@@ -61,7 +61,7 @@ public class CoverageObjectTest extends AbstractJacocoTestBase {
     	System.out.println(b.toString());
     	
     	assertEquals("<td class='nowrap' data='079.68'>\n" +
-    			"<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'><td width='64px' class='data'>79.7%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width: 79.681274px;'><span class='text'>51/200</span></div></div></td></tr></table></td>\n", b.toString());
+    			"<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'><td width='64px' class='data'>79.7%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width: 79.681274px;'><span class='text'>200/251</span></div></div></td></tr></table></td>\n", b.toString());
 
     }
  

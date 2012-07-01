@@ -155,8 +155,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	
 	protected static void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
-		String numerator = intFormat.format(ratio.getMissed());
-		String denominator = intFormat.format(ratio.getCovered());
+		String numerator = intFormat.format(ratio.getCovered());
+		String denominator = intFormat.format(ratio.getCovered()+ratio.getMissed());
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
 				.append("<td width='64px' class='data'>").append(percent).append("%</td>")
 				.append("<td class='percentgraph'>")
