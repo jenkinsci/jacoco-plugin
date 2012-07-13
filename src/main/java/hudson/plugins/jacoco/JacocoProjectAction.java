@@ -10,6 +10,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import java.io.IOException;
+import java.util.logging.Logger;
 
 /**
  * Project view extension by JaCoCo plugin.
@@ -53,4 +54,5 @@ public final class JacocoProjectAction implements Action {
        if (getLastResult() != null)
           getLastResult().doGraph(req,rsp);
     }
+    private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
 }

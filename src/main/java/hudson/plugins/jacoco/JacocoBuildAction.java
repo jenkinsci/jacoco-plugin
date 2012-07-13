@@ -5,12 +5,13 @@ import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
-import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
-import hudson.plugins.jacoco.model.CoverageObject;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
+import hudson.plugins.jacoco.model.CoverageObject;
 import hudson.plugins.jacoco.report.CoverageReport;
+import hudson.plugins.jacoco.report.ReportFactory;
+import hudson.model.BuildListener;
 import hudson.util.IOException2;
 import hudson.util.NullStream;
 import hudson.util.StreamTaskListener;
@@ -18,6 +19,7 @@ import hudson.util.StreamTaskListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +44,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy {
 	
     public final AbstractBuild<?,?> owner;
-
+    private final PrintStream logger;
     private transient WeakReference<CoverageReport> report;
 
     /**
@@ -67,8 +69,9 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
      */
     public JacocoBuildAction(AbstractBuild<?,?> owner, Rule rule,
     		Map<CoverageElement.Type, Coverage> ratios,
-    		JacocoHealthReportThresholds thresholds) {
-        if (ratios == null) {
+    		JacocoHealthReportThresholds thresholds, BuildListener listener) {
+    	logger = listener.getLogger();
+    	if (ratios == null) {
             ratios = Collections.emptyMap();
         }
         this.owner = owner;
@@ -221,17 +224,19 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
             if(rule!=null) {
                 // we change the report so that the FAILED flag is set correctly
-                logger.info("calculating failed packages based on " + rule);
+                logger.println("calculating failed packages based on " + rule);
                 rule.enforce(r,new StreamTaskListener(new NullStream()));
             }
 
             report = new WeakReference<CoverageReport>(r);
             return r;
         } catch (InterruptedException e) {
-            logger.log(Level.WARNING, "Failed to load " + reportFolder, e);
+            logger.println("Failed to load " + reportFolder);
+            e.printStackTrace(logger);
             return null;
         } catch (IOException e) {
-            logger.log(Level.WARNING, "Failed to load " + reportFolder, e);
+            logger.println("Failed to load " + reportFolder);
+            e.printStackTrace(logger);
             return null;
         }
     }
@@ -265,8 +270,9 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
      * @throws IOException
      *      if failed to parse the file.
      */
-    public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, FilePath... files) throws IOException {
-        Map<CoverageElement.Type,Coverage> ratios = null;
+    public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, FilePath... files) throws IOException {
+    	PrintStream logger = listener.getLogger();
+    	Map<CoverageElement.Type,Coverage> ratios = null;
         for (FilePath f: files ) {
             InputStream in = f.read();
             try {
@@ -277,7 +283,15 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
                 in.close();
             }
         }
-        return new JacocoBuildAction(owner, rule, ratios, thresholds);
+        /*try {
+			ReportFactory reportFactory = new ReportFactory(new File(owner.getWorkspace().getRemote()), listener); // FIXME probably doesn't work with jenkins remote build slaves
+			reportFactory.createReport();
+			logger.println("ReportFactory lunched!");
+		} catch (IOException e) {
+			logger.println("ReportFactory failed!");
+			//we see logger only in debug mode, maybe an IOException, but hmm
+		}*/
+        return new JacocoBuildAction(owner, rule, ratios, thresholds, listener);
     }
 
     public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, InputStream... streams) throws IOException, XmlPullParserException {
@@ -285,7 +299,16 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         for (InputStream in: streams) {
           ratios = loadRatios(in, ratios);
         }
-        return new JacocoBuildAction(owner, rule, ratios, thresholds);
+        
+        /*try {
+			ReportFactory reportFactory = new ReportFactory();
+			reportFactory.createReport();
+			logger.log(Level.INFO, "ReportFactory lunched!");
+		} catch (IOException e) {
+			logger.log(Level.WARNING, "ReportFactory failed!");
+		}*/
+        throw new RuntimeException("Broken; needs new tests for jacoco.exec rather than jacoco.xml");
+        //return new JacocoBuildAction(owner, rule, ratios, thresholds);
     }
 
     /**
@@ -330,5 +353,5 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
     }
 
-    private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
+    //private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
 }

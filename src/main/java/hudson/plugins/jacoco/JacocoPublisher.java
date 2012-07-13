@@ -11,6 +11,7 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.report.CoverageReport;
+import hudson.plugins.jacoco.report.ReportFactory;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -25,6 +26,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Logger;
+
 
 /**
  * {@link Publisher} that captures jacoco coverage reports.
@@ -103,14 +106,24 @@ public class JacocoPublisher extends Recorder {
         includes = env.expand(includes);
         
         final PrintStream logger = listener.getLogger();
-
+        try {
+			ReportFactory reportFactory = new ReportFactory(new File(build.getWorkspace().getRemote()), listener); // FIXME probably doesn't work with jenkins remote build slaves
+			reportFactory.createReport();
+			logger.println("ReportFactory lunched!");
+		} catch (IOException e) {
+			logger.println("ReportFactory failed! WorkspaceDir: "+ build.getWorkspace().getRemote()+ e.getMessage());
+			//e.printStackTrace();
+			//we see logger only in debug mode, maybe an IOException, but hmm
+		}
+        /*
         FilePath[] reports;
         if (includes == null || includes.trim().length() == 0) {
             logger.println("JaCoCo: looking for coverage reports in the entire workspace: " + build.getWorkspace().getRemote());
-            reports = locateCoverageReports(build.getWorkspace(), "**/jacoco/jacoco.xml");
+            reports = locateCoverageReports(build.getWorkspace(), "**jacoco/jacoco.xml"); here we need a /
         } else {
             logger.println("JaCoCo: looking for coverage reports in the provided path: " + includes );
             reports = locateCoverageReports(build.getWorkspace(), includes);
+            
         }
         
         if (reports.length == 0) {
@@ -131,7 +144,7 @@ public class JacocoPublisher extends Recorder {
         saveCoverageReports(jacocofolder, reports);
         logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);
         
-        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, reports);
+        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
         
         logger.println("JaCoCo: " + action.getBuildHealth().getDescription());
 
@@ -144,8 +157,8 @@ public class JacocoPublisher extends Recorder {
         } else if (result.isFailed()) {
             logger.println("JaCoCo: code coverage enforcement failed. Setting Build to unstable.");
             build.setResult(Result.UNSTABLE);
-        }
-
+        }*/
+      //  logger.log(Level.WARNING, "ReportFactory failed!");
         return true;
     }
 
@@ -223,4 +236,5 @@ public class JacocoPublisher extends Recorder {
             return pub;
         }
     }
+    private static final Logger logger = Logger.getLogger(JacocoPublisher.class.getName());
 }
