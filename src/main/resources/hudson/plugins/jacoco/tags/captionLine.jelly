@@ -2,16 +2,16 @@
  <j:if test="${it.hasChildren()}">
   <tr>
     <th style="background-color:#e0e0e0;">${%name}</th>
+	<th style="background-color:#e0e0e0;">${%instruction}</th>
+	<th style="background-color:#e0e0e0;">${%branch}</th>
+	<th style="background-color:#e0e0e0;">${%complexity}</th>
+	<j:if test="${it.hasChildrenLineCoverage()}">
+      <th style="background-color:#e0e0e0;">${%line}</th>
+    </j:if>
+	<th style="background-color:#e0e0e0;">${%method}</th>
     <j:if test="${it.hasChildrenClassCoverage()}">
       <th style="background-color:#e0e0e0;">${%class}</th>
     </j:if>
-    <th style="background-color:#e0e0e0;">${%method}</th>
-    <j:if test="${it.hasChildrenLineCoverage()}">
-      <th style="background-color:#e0e0e0;">${%line}</th>
-    </j:if>
-    <th style="background-color:#e0e0e0;">${%complexity}</th>
-    <th style="background-color:#e0e0e0;">${%instruction}</th>
-    <th style="background-color:#e0e0e0;">${%branch}</th>
   </tr>
  </j:if>  
 </j:jelly>

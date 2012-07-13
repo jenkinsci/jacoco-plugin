@@ -15,12 +15,12 @@
             <thead>
                 <tr>
                     <td width="10%"></td>
+					<td width="10%">${%Instruction}</td>
+					<td width="10%">${%Branch}</td>
+					<td width="10%">${%Complexity}</td>
+					<td width="10%">${%Line}</td>
+					<td width="10%">${%Method}</td>
                     <td width="10%">${%Class}</td>
-                    <td width="10%">${%Method}</td>
-                    <td width="10%">${%Line}</td>
-                    <td width="10%">${%Instruction}</td>
-                    <td width="10%">${%Complexity}</td>
-                    <td width="10%">${%Branch}</td>
                 </tr>
             </thead>
             <tbody>
@@ -29,23 +29,23 @@
                         <img src="${rootURL}/images/16x16/health-80plus.gif" alt="100%"
                              title="${%health.100.title}"/>
                     </th>
-                    <td>
-                        <f:textbox name="jacocoHealthReports.maxClass" value="${instance.healthReports.maxClass}" />
+					<td>
+                        <f:textbox name="jacocoHealthReports.maxInstruction" value="${instance.healthReports.maxInstruction}" />
                     </td>
-                    <td>
+					<td>
+                        <f:textbox name="jacocoHealthReports.maxBranch" value="${instance.healthReports.maxBranch}" />
+                    </td>
+					<td>
+                        <f:textbox name="jacocoHealthReports.maxComplexity" value="${instance.healthReports.maxComplexity}" />
+                    </td>
+					<td>
+                        <f:textbox name="jacocoHealthReports.maxLine" value="${instance.healthReports.maxLine}" />
+                    </td>
+					<td>
                         <f:textbox name="jacocoHealthReports.maxMethod" value="${instance.healthReports.maxMethod}" />
                     </td>
                     <td>
-                        <f:textbox name="jacocoHealthReports.maxLine" value="${instance.healthReports.maxLine}" />
-                    </td>
-                    <td>
-                        <f:textbox name="jacocoHealthReports.maxInstruction" value="${instance.healthReports.maxInstruction}" />
-                    </td>
-                    <td>
-                        <f:textbox name="jacocoHealthReports.maxComplexity" value="${instance.healthReports.maxComplexity}" />
-                    </td>
-                    <td>
-                        <f:textbox name="jacocoHealthReports.maxBranch" value="${instance.healthReports.maxBranch}" />
+                        <f:textbox name="jacocoHealthReports.maxClass" value="${instance.healthReports.maxClass}" />
                     </td>
                 </tr>
                 <tr>
@@ -54,22 +54,22 @@
                              title="${%health.0.title}"/>
                     </th>
                     <td>
-                        <f:textbox name="jacocoHealthReports.minClass" value="${instance.healthReports.minClass}" />
-                    </td>
-                    <td>
-                        <f:textbox name="jacocoHealthReports.minMethod" value="${instance.healthReports.minMethod}" />
-                    </td>
-                    <td>
-                        <f:textbox name="jacocoHealthReports.minLine" value="${instance.healthReports.minLine}" />
-                    </td>
-                    <td>
                         <f:textbox name="jacocoHealthReports.minInstruction" value="${instance.healthReports.minInstruction}" />
                     </td>
-                    <td>
+					<td>
+                        <f:textbox name="jacocoHealthReports.minBranch" value="${instance.healthReports.minBranch}" />
+                    </td>
+					<td>
                         <f:textbox name="jacocoHealthReports.minComplexity" value="${instance.healthReports.minComplexity}" />
                     </td>
-                    <td>
-                        <f:textbox name="jacocoHealthReports.minBranch" value="${instance.healthReports.minBranch}" />
+					<td>
+                        <f:textbox name="jacocoHealthReports.minLine" value="${instance.healthReports.minLine}" />
+                    </td>
+					<td>
+                        <f:textbox name="jacocoHealthReports.minMethod" value="${instance.healthReports.minMethod}" />
+                    </td>
+					<td>
+                        <f:textbox name="jacocoHealthReports.minClass" value="${instance.healthReports.minClass}" />
                     </td>
                 </tr>
             </tbody>

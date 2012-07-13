@@ -1,5 +1,10 @@
 package hudson.plugins.jacoco.report;
 
+import hudson.plugins.jacoco.model.CoverageObject;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * @author Kohsuke Kawaguchi
  * @author David Carver
@@ -34,12 +39,14 @@ public final class MethodReport extends AbstractReport<ClassReport,MethodReport>
 	@Override
 	public String printFourCoverageColumns() {
         StringBuilder buf = new StringBuilder();
+		printRatioCell(isFailed(), instruction, buf);
+		printRatioCell(isFailed(), branch, buf);
+		printRatioCell(isFailed(), complexity, buf);
+		printRatioCell(isFailed(), line, buf);
         printRatioCell(isFailed(), method, buf);
-        printRatioCell(isFailed(), line, buf);
-        printRatioCell(isFailed(), complexity, buf);
-        printRatioCell(isFailed(), instruction, buf);
-        printRatioCell(isFailed(), branch, buf);
-        return buf.toString();
+        logger.log(Level.INFO, "Printing Ratio cells within MethodReport.");
+		return buf.toString();
 	}
+	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 	
 }

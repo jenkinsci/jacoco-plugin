@@ -5,12 +5,24 @@ import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.Rule;
+import hudson.plugins.jacoco.report.ReportFactory;
 import hudson.util.ChartUtil;
+import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
-import hudson.util.ShiftedCategoryAxis;
-import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.Graph;
+import hudson.util.ShiftedCategoryAxis;
+
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -29,14 +41,6 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.NumberFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 /**
  * Base class of all coverage objects.
@@ -52,6 +56,13 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     public Coverage complexity = new Coverage();
     public Coverage instruction = new Coverage();
     public Coverage branch = new Coverage();
+    
+    private static int maxClazz=0;
+    private static int maxMethod=0;
+    private static int maxLine=0;
+    private static int maxComplexity=0;
+    private static int maxInstruction=0;
+    private static int maxBranch=0;
     
     private volatile boolean failed = false;
 
@@ -120,12 +131,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
      */
     public String printFourCoverageColumns() {
         StringBuilder buf = new StringBuilder();
-        printRatioCell(isFailed(), clazz, buf);
-        printRatioCell(isFailed(), method, buf);
-        printRatioCell(isFailed(), line, buf);
-        printRatioCell(isFailed(), complexity, buf);
         printRatioCell(isFailed(), instruction, buf);
         printRatioCell(isFailed(), branch, buf);
+        printRatioCell(isFailed(), complexity, buf);
+        printRatioCell(isFailed(), line, buf);
+        printRatioCell(isFailed(), method, buf);
+        printRatioCell(isFailed(), clazz, buf);
         return buf.toString();
     }
 
@@ -155,14 +166,15 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	
 	protected static void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
-		String numerator = intFormat.format(ratio.getCovered());
-		String denominator = intFormat.format(ratio.getCovered()+ratio.getMissed());
+		String numerator = intFormat.format(ratio.getMissed());
+		String denominator = intFormat.format(ratio.getCovered());
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
 				.append("<td width='64px' class='data'>").append(percent).append("%</td>")
 				.append("<td class='percentgraph'>")
-				.append("<div class='percentgraph'><div class='greenbar' style='width: ").append(ratio.getPercentageFloat()).append("px;'>")
-				.append("<span class='text'>").append(numerator).append("/").append(denominator)
+				.append("<div class='percentgraph'><div class='greenbar' style='width: ").append(55).append("px;'>")
+				.append("<span class='text'>").append("M:"+numerator).append(" ").append("C: "+ denominator)
 				.append("</span></div></div></td></tr></table>") ;
+		
 	}
 
     /**
@@ -191,13 +203,13 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
                 for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult()) {
                     NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
-                    dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);
-                    dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
-                    dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Instructions(), label);
+                    /*dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Instructions(), label);
                     dsb.add(a.branch.getPercentageFloat(), Messages.CoverageObject_Legend_Branch(), label);
                     dsb.add(a.complexity.getPercentageFloat(), Messages.CoverageObject_Legend_Complexity(), label);
-                    if (a.line != null) {
-                        dsb.add(a.line.getPercentageFloat(), Messages.CoverageObject_Legend_Line(), label);
+                    dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
+                    dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);*/
+                if (a.line != null) {
+                        dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_Line(), label);
                     }
                 }
 
@@ -275,11 +287,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     @Override
     public String toString() {
         return getClass().getSimpleName() + ":"
-                + " class=" + clazz
-                + " method=" + method
-                + " line=" + line
-                + " branch=" + branch
-                + " instruction=" + instruction
-                + " complexity=" + complexity;
+        		+ " instruction=" + instruction
+        		+ " branch=" + branch
+        		+ " complexity=" + complexity
+        		+ " line=" + line
+        		+ " method=" + method
+        		+ " class=" + clazz;
     }
+    private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 }
