@@ -332,7 +332,8 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         parser.setInput(in, null);
         
         int eventType = parser.getEventType();
-        do {
+
+	while (eventType != XmlPullParser.END_DOCUMENT) {
             // this predicate matches the start tags of the elements selected by the XPath expression "/report/counter"
             if (eventType == XmlPullParser.START_TAG && parser.getName().equals("counter") && parser.getDepth() == 2) {
                 Type type = Type.valueOf(parser.getAttributeValue("", "type"));
@@ -347,7 +348,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
                 ratio.accumulate(missed, covered);
             }
             eventType = parser.next();
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+        }
         
         return ratios;
 
