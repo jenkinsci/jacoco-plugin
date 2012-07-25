@@ -6,7 +6,7 @@
       <e:floatingTrendGraph/>
 
       <h3>${it.name}</h3>
-      <e:breakdownTable />
+      <e:breakdownMethodsTable />
     </l:main-panel>
   </l:layout>
 </j:jelly>
