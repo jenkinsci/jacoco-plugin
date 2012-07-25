@@ -76,7 +76,7 @@ public class JacocoPublisher extends Recorder {
 			FilePath src = workspace.child(path);
 			if (src.exists()) {
 				if (src.isDirectory()) {
-					files.addAll(Arrays.asList(src.list("**/jacoco*.xml")));
+					files.addAll(Arrays.asList(src.list("**/jacoco*.exec")));
 				} else {
 					files.add(src);
 				}
@@ -91,11 +91,13 @@ public class JacocoPublisher extends Recorder {
 	protected static void saveCoverageReports(FilePath folder, FilePath[] files) throws IOException, InterruptedException {
 		folder.mkdirs();
 		for (int i = 0; i < files.length; i++) {
-			String name = "jacoco" + (i > 0 ? i : "") + ".xml";
+			String name = "jacoco" + (i > 0 ? i : "") + ".exec";
 			FilePath src = files[i];
 			FilePath dst = folder.child(name);
 			src.copyTo(dst);
+			
 		}
+		//files[0].copyRecursiveTo(dst);
 	}
 	
 	@Override
@@ -115,13 +117,13 @@ public class JacocoPublisher extends Recorder {
 			//e.printStackTrace();
 			//we see logger only in debug mode, maybe an IOException, but hmm
 		}
-        /*
+        
         FilePath[] reports;
         if (includes == null || includes.trim().length() == 0) {
-            logger.println("JaCoCo: looking for coverage reports in the entire workspace: " + build.getWorkspace().getRemote());
-            reports = locateCoverageReports(build.getWorkspace(), "**jacoco/jacoco.xml"); here we need a /
+            logger.println("JaCoCo: looking for coverage reports (EXEC files) in the entire workspace: " + build.getWorkspace().getRemote());
+            reports = locateCoverageReports(build.getWorkspace(), "**/jacoco/jacoco.exec");// here we need a /
         } else {
-            logger.println("JaCoCo: looking for coverage reports in the provided path: " + includes );
+            logger.println("JaCoCo: looking for coverage reports (EXEC files) in the provided path: " + includes );
             reports = locateCoverageReports(build.getWorkspace(), includes);
             
         }
@@ -130,7 +132,7 @@ public class JacocoPublisher extends Recorder {
             if(build.getResult().isWorseThan(Result.UNSTABLE))
                 return true;
             
-            logger.println("JaCoCo: no coverage files found in workspace. Was any report generated?");
+            logger.println("JaCoCo: no coverage (EXEC) files found in workspace. Was any report generated?");
             build.setResult(Result.FAILURE);
             return true;
         } else {
@@ -157,7 +159,7 @@ public class JacocoPublisher extends Recorder {
         } else if (result.isFailed()) {
             logger.println("JaCoCo: code coverage enforcement failed. Setting Build to unstable.");
             build.setResult(Result.UNSTABLE);
-        }*/
+        }
       //  logger.log(Level.WARNING, "ReportFactory failed!");
         return true;
     }

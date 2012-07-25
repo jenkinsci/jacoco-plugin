@@ -20,6 +20,8 @@ public final class PackageReport extends AggregatedReport<CoverageReport,Package
     public void add(ClassReport child) {
     	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
     	child.setName(newChildName);
+    	child.setParent(this);
+    	//child.buildURL = this.getParent().getBuild().getUrl();
         getChildren().put(child.getName(), child);
         this.hasClassCoverage();
         logger.log(Level.INFO, "PackageReport");

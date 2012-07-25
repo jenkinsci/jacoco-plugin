@@ -283,14 +283,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
                 in.close();
             }
         }
-        /*try {
-			ReportFactory reportFactory = new ReportFactory(new File(owner.getWorkspace().getRemote()), listener); // FIXME probably doesn't work with jenkins remote build slaves
-			reportFactory.createReport();
-			logger.println("ReportFactory lunched!");
-		} catch (IOException e) {
-			logger.println("ReportFactory failed!");
-			//we see logger only in debug mode, maybe an IOException, but hmm
-		}*/
         return new JacocoBuildAction(owner, rule, ratios, thresholds, listener);
     }
 
@@ -299,14 +291,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         for (InputStream in: streams) {
           ratios = loadRatios(in, ratios);
         }
-        
-        /*try {
-			ReportFactory reportFactory = new ReportFactory();
-			reportFactory.createReport();
-			logger.log(Level.INFO, "ReportFactory lunched!");
-		} catch (IOException e) {
-			logger.log(Level.WARNING, "ReportFactory failed!");
-		}*/
         throw new RuntimeException("Broken; needs new tests for jacoco.exec rather than jacoco.xml");
         //return new JacocoBuildAction(owner, rule, ratios, thresholds);
     }

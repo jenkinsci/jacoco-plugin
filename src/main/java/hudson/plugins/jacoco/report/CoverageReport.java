@@ -23,6 +23,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     private final JacocoBuildAction action;
 
     private CoverageReport(JacocoBuildAction action) {
+    	
         this.action = action;
         setName("Jacoco");
     }
@@ -75,9 +76,16 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
         // Create the list of Packages
         digester.addObjectCreate( "report/package", PackageReport.class);
+        CoverageReport[] a = new CoverageReport[1];
+        a[0] = this;
+        digester.addCallMethod("report/package", "setParent", 1);
+ 
         digester.addSetNext(      "report/package","add");
         digester.addSetProperties("report/package");
         
+        //This wont work because object is created during the parsing.
+        //PackageReport a = digester.peek();
+        //a.setParent(this);
         
         // Now the classes
         digester.addObjectCreate( "report/package/class", ClassReport.class);
@@ -88,10 +96,10 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         digester.addSetNext(      "report/package/class/method","add");
         digester.addSetProperties("report/package/class/method");
         
-        // Create the list of Source Files next
-//        digester.addObjectCreate( "report/package/sourcefile", SourceFileReport.class);
-//        digester.addSetNext(      "report/package/sourcefile","add");
-//        digester.addSetProperties("report/package/sourcefile");
+    //    Create the list of Source Files next
+        //digester.addObjectCreate( "report/package/sourcefile", SourceFileReport.class);
+       // digester.addSetNext(      "report/package/sourcefile","add");
+        //digester.addSetProperties("report/package/sourcefile");
 
 
         digester.addObjectCreate( "*/counter", CoverageElement.class);
