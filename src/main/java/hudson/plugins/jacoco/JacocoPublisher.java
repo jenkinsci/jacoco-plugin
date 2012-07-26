@@ -76,7 +76,7 @@ public class JacocoPublisher extends Recorder {
 			FilePath src = workspace.child(path);
 			if (src.exists()) {
 				if (src.isDirectory()) {
-					files.addAll(Arrays.asList(src.list("**/jacoco*.exec")));
+					files.addAll(Arrays.asList(src.list("**/jacoco*.xml")));
 				} else {
 					files.add(src);
 				}
@@ -91,13 +91,19 @@ public class JacocoPublisher extends Recorder {
 	protected static void saveCoverageReports(FilePath folder, FilePath[] files) throws IOException, InterruptedException {
 		folder.mkdirs();
 		for (int i = 0; i < files.length; i++) {
-			String name = "jacoco" + (i > 0 ? i : "") + ".exec";
+			String name = "jacoco" + (i > 0 ? i : "") + ".xml";
 			FilePath src = files[i];
 			FilePath dst = folder.child(name);
 			src.copyTo(dst);
 			
 		}
 		//files[0].copyRecursiveTo(dst);
+	}
+	protected static void saveCoverageReports(FilePath folder, FilePath sourceFolder) throws IOException, InterruptedException {
+		folder.mkdirs();
+		//FilePath dst = folder.child(name);
+		//logger.println("Saving generated JaCoCo reports!");
+		sourceFolder.copyRecursiveTo(folder);
 	}
 	
 	@Override
@@ -121,7 +127,7 @@ public class JacocoPublisher extends Recorder {
         FilePath[] reports;
         if (includes == null || includes.trim().length() == 0) {
             logger.println("JaCoCo: looking for coverage reports (EXEC files) in the entire workspace: " + build.getWorkspace().getRemote());
-            reports = locateCoverageReports(build.getWorkspace(), "**/jacoco/jacoco.exec");// here we need a /
+            reports = locateCoverageReports(build.getWorkspace(), "**/jacoco/jacoco.xml");// here we need a /
         } else {
             logger.println("JaCoCo: looking for coverage reports (EXEC files) in the provided path: " + includes );
             reports = locateCoverageReports(build.getWorkspace(), includes);
@@ -133,7 +139,7 @@ public class JacocoPublisher extends Recorder {
                 return true;
             
             logger.println("JaCoCo: no coverage (EXEC) files found in workspace. Was any report generated?");
-            build.setResult(Result.FAILURE);
+            //build.setResult(Result.FAILURE);
             return true;
         } else {
         	String found = "";
@@ -144,6 +150,8 @@ public class JacocoPublisher extends Recorder {
         
         FilePath jacocofolder = new FilePath(getJacocoReport(build));
         saveCoverageReports(jacocofolder, reports);
+        jacocofolder = new FilePath(jacocofolder, "jenkins-jacoco");
+        saveCoverageReports(jacocofolder, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
         logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);
         
         final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
