@@ -148,10 +148,18 @@ public class JacocoPublisher extends Recorder {
             logger.println("JaCoCo: found " + reports.length  + " report files: " + found );
         }
         
-        FilePath jacocofolder = new FilePath(getJacocoReport(build));
-        saveCoverageReports(jacocofolder, reports);
+        FilePath jacocofolderRoot = new FilePath(getJacocoReport(build));
+        saveCoverageReports(jacocofolderRoot, reports);
+        FilePath jacocofolder = new FilePath(jacocofolderRoot, "classes");
+        saveCoverageReports(jacocofolder, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\classes")));
+        jacocofolder = new FilePath(jacocofolderRoot, "src");
+        saveCoverageReports(jacocofolder, new FilePath(new File(build.getWorkspace().getRemote(), "\\src")));
+        FilePath execfile = new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jacoco.exec"));
+        FilePath seged = jacocofolderRoot.child("jacoco.exec");
+        execfile.copyTo(seged);
         jacocofolder = new FilePath(jacocofolder, "jenkins-jacoco");
         saveCoverageReports(jacocofolder, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
+        
         logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);
         
         final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
