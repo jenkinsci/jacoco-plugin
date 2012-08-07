@@ -9,6 +9,7 @@ import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
+import hudson.plugins.jacoco.model.ModuleInfo;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.plugins.jacoco.report.ReportFactory;
 import hudson.model.BuildListener;
@@ -17,6 +18,7 @@ import hudson.util.NullStream;
 import hudson.util.StreamTaskListener;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -28,6 +30,12 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.analysis.CoverageBuilder;
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.SessionInfoStore;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
 import org.xmlpull.v1.XmlPullParser;
@@ -46,8 +54,10 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
     public final AbstractBuild<?,?> owner;
     private final PrintStream logger;
     private transient WeakReference<CoverageReport> report;
+    private ArrayList<ModuleInfo> reports;
 
-    /**
+
+	/**
      * Non-null if the coverage has pass/fail rules.
      */
     private final Rule rule;
@@ -105,6 +115,14 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         return "jacoco";
     }
 
+
+    public ArrayList<ModuleInfo> getReports() {
+		return reports;
+	}
+
+	public void setReports(ArrayList<ModuleInfo> reports) {
+		this.reports = reports;
+	}
     /**
      * Get the coverage {@link hudson.model.HealthReport}.
      *
@@ -213,27 +231,27 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         try {
         	
         	// Get the list of report files stored for this build
-            FilePath[] reports = getJacocoReports(reportFolder);
+            /*FilePath[] reports = getJacocoReports(reportFolder);
             InputStream[] streams = new InputStream[reports.length];
             for (int i=0; i<reports.length; i++) {
             	streams[i] = reports[i].read();
-            }
+            }*/
             
             // Generate the report
-            CoverageReport r = new CoverageReport(this, streams);
+            CoverageReport r = new CoverageReport(this, reports);
 
-            if(rule!=null) {
+           /* if(rule!=null) {
                 // we change the report so that the FAILED flag is set correctly
                 logger.println("calculating failed packages based on " + rule);
                 rule.enforce(r,new StreamTaskListener(new NullStream()));
-            }
+            }*/
 
             report = new WeakReference<CoverageReport>(r);
             return r;
-        } catch (InterruptedException e) {
+        /*} catch (InterruptedException e) {
             logger.println("Failed to load " + reportFolder);
             e.printStackTrace(logger);
-            return null;
+            return null;*/
         } catch (IOException e) {
             logger.println("Failed to load " + reportFolder);
             e.printStackTrace(logger);
@@ -270,30 +288,30 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
      * @throws IOException
      *      if failed to parse the file.
      */
-    public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, FilePath... files) throws IOException {
+    public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, ArrayList<ModuleInfo> modules) throws IOException {
     	PrintStream logger = listener.getLogger();
     	Map<CoverageElement.Type,Coverage> ratios = null;
-        for (FilePath f: files ) {
-            InputStream in = f.read();
+    	
+        for (ModuleInfo moduleInfo: modules ) {
+           // InputStream in = f.read();
             try {
-                ratios = loadRatios(in, ratios);
+                ratios = loadRatios(moduleInfo, ratios);
             } catch (XmlPullParserException e) {
-                throw new IOException2("Failed to parse " + f, e);
-            } finally {
-                in.close();
-            }
+                throw new IOException2("Failed to parse modules.", e);
+            }    
         }
         return new JacocoBuildAction(owner, rule, ratios, thresholds, listener);
     }
 
-    public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, InputStream... streams) throws IOException, XmlPullParserException {
+    /* public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, ArrayList<FilePath> files) throws IOException, XmlPullParserException {
         Map<CoverageElement.Type,Coverage> ratios = null;
         for (InputStream in: streams) {
           ratios = loadRatios(in, ratios);
         }
         throw new RuntimeException("Broken; needs new tests for jacoco.exec rather than jacoco.xml");
         //return new JacocoBuildAction(owner, rule, ratios, thresholds);
-    }
+    	
+    }*/
 
     /**
      * Extracts top-level coverage information from the JaCoCo report document.
@@ -304,13 +322,38 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
      * @throws IOException
      * @throws XmlPullParserException
      */
-    private static Map<Type, Coverage> loadRatios(InputStream in, Map<Type, Coverage> ratios) throws IOException, XmlPullParserException {
+    private static Map<Type, Coverage> loadRatios(ModuleInfo in, Map<Type, Coverage> ratios) throws IOException, XmlPullParserException {
 
         if (ratios == null) {
             ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();
         }
-
-        XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+        IBundleCoverage bundleCoverage = in.create();
+        
+        
+        Coverage ratio = new Coverage();
+        ratio.accumulate(bundleCoverage.getClassCounter().getMissedCount(), bundleCoverage.getClassCounter().getCoveredCount());
+        ratios.put(CoverageElement.Type.CLASS, ratio);
+        
+        ratio = new Coverage();
+        ratio.accumulate(bundleCoverage.getBranchCounter().getMissedCount(), bundleCoverage.getBranchCounter().getCoveredCount());
+        ratios.put(CoverageElement.Type.BRANCH, ratio);
+        
+        ratio = new Coverage();
+        ratio.accumulate(bundleCoverage.getInstructionCounter().getMissedCount(), bundleCoverage.getInstructionCounter().getCoveredCount());
+        ratios.put(CoverageElement.Type.INSTRUCTION, ratio);
+        
+        ratio = new Coverage();
+        ratio.accumulate(bundleCoverage.getMethodCounter().getMissedCount(), bundleCoverage.getMethodCounter().getCoveredCount());
+        ratios.put(CoverageElement.Type.METHOD, ratio);
+        
+        ratio = new Coverage();
+        ratio.accumulate(bundleCoverage.getComplexityCounter().getMissedCount(), bundleCoverage.getComplexityCounter().getCoveredCount());
+        ratios.put(CoverageElement.Type.COMPLEXITY, ratio);
+        
+        ratio = new Coverage();
+        ratio.accumulate(bundleCoverage.getLineCounter().getMissedCount(), bundleCoverage.getLineCounter().getCoveredCount());
+        ratios.put(CoverageElement.Type.LINE, ratio);
+       /* XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
         factory.setNamespaceAware(true);
         XmlPullParser parser = factory.newPullParser();
         parser.setInput(in, null);
@@ -331,11 +374,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
                 ratio.accumulate(missed, covered);
             }
             eventType = parser.next();
-        } while (eventType != XmlPullParser.END_DOCUMENT);
+        } while (eventType != XmlPullParser.END_DOCUMENT);*/
         
         return ratios;
 
     }
+    
 
     //private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
 }

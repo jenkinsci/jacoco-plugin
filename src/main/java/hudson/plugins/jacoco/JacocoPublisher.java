@@ -4,12 +4,12 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
-import hudson.plugins.jacoco.Messages;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.plugins.jacoco.model.ModuleInfo;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.plugins.jacoco.report.ReportFactory;
 import hudson.tasks.BuildStepDescriptor;
@@ -17,16 +17,16 @@ import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 
-import net.sf.json.JSONObject;
-
-import org.kohsuke.stapler.StaplerRequest;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Logger;
+
+import net.sf.json.JSONObject;
+
+import org.kohsuke.stapler.StaplerRequest;
 
 
 /**
@@ -52,6 +52,7 @@ public class JacocoPublisher extends Recorder {
      */
     public JacocoHealthReportThresholds healthReports = new JacocoHealthReportThresholds();
     
+    public int moduleNum;
     /**
      * look for jacoco reports based in the configured parameter includes.
      * 'includes' is 
@@ -124,10 +125,12 @@ public class JacocoPublisher extends Recorder {
 			//we see logger only in debug mode, maybe an IOException, but hmm
 		}
         
-        FilePath[] reports;
-        if (includes == null || includes.trim().length() == 0) {
+        //FilePath[] reports;
+        ArrayList<ModuleInfo> reports = new ArrayList<ModuleInfo>();
+        
+        /*if (includes == null || includes.trim().length() == 0) {
             logger.println("JaCoCo: looking for coverage reports (EXEC files) in the entire workspace: " + build.getWorkspace().getRemote());
-            reports = locateCoverageReports(build.getWorkspace(), "**/jacoco/jacoco.xml");// here we need a /
+            reports = locateCoverageReports(build.getWorkspace(), "**jacoco/jacoco.xml");// here we need a /
         } else {
             logger.println("JaCoCo: looking for coverage reports (EXEC files) in the provided path: " + includes );
             reports = locateCoverageReports(build.getWorkspace(), includes);
@@ -146,25 +149,39 @@ public class JacocoPublisher extends Recorder {
         	for (FilePath f: reports) 
         		found += "\n          " + f.getRemote();
             logger.println("JaCoCo: found " + reports.length  + " report files: " + found );
+        }*/
+        moduleNum=1;
+        FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
+        for (int i=0;i<moduleNum;++i) {
+        	ModuleInfo moduleInfo = new ModuleInfo();
+        
+	        FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
+	        //saveCoverageReports(jacocofolderRoot, reports);
+	        FilePath actualDestination = new FilePath(actualBuildModuleDir, "classes");
+	        moduleInfo.setClassDir(actualDestination);
+	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\classes")));
+
+	        actualDestination = new FilePath(actualBuildModuleDir, "src");
+	        moduleInfo.setSrcDir(actualDestination);
+	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\src")));
+	       
+	        
+	        FilePath execfile = new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jacoco.exec"));
+	        FilePath seged = actualBuildModuleDir.child("jacoco.exec");
+	        moduleInfo.setExecFile(seged);
+	        execfile.copyTo(seged);
+	        
+	        
+	        actualDestination = new FilePath(actualBuildModuleDir, "jenkins-jacoco");
+	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
+	        moduleInfo.setClassDir(actualDestination);
+	        reports.add(moduleInfo);
         }
-        
-        FilePath jacocofolderRoot = new FilePath(getJacocoReport(build));
-        saveCoverageReports(jacocofolderRoot, reports);
-        FilePath jacocofolder = new FilePath(jacocofolderRoot, "classes");
-        saveCoverageReports(jacocofolder, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\classes")));
-        jacocofolder = new FilePath(jacocofolderRoot, "src");
-        saveCoverageReports(jacocofolder, new FilePath(new File(build.getWorkspace().getRemote(), "\\src")));
-        FilePath execfile = new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jacoco.exec"));
-        FilePath seged = jacocofolderRoot.child("jacoco.exec");
-        execfile.copyTo(seged);
-        jacocofolder = new FilePath(jacocofolder, "jenkins-jacoco");
-        saveCoverageReports(jacocofolder, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
-        
-        logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);
+       // logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);
         
         final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
-        
-        logger.println("JaCoCo: " + action.getBuildHealth().getDescription());
+        action.setReports(reports);
+        //logger.println("JaCoCo: " + action.getBuildHealth().getDescription());
 
         build.getActions().add(action);
 
@@ -172,10 +189,11 @@ public class JacocoPublisher extends Recorder {
         if (result == null) {
             logger.println("JaCoCo: Could not parse coverage results. Setting Build to failure.");
             build.setResult(Result.FAILURE);
-        } else if (result.isFailed()) {
+        }
+        /*} else if (result.isFailed()) {
             logger.println("JaCoCo: code coverage enforcement failed. Setting Build to unstable.");
             build.setResult(Result.UNSTABLE);
-        }
+        }*/
       //  logger.log(Level.WARNING, "ReportFactory failed!");
         return true;
     }

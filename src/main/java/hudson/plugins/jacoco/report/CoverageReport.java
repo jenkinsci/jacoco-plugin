@@ -3,16 +3,18 @@ package hudson.plugins.jacoco.report;
 import hudson.model.AbstractBuild;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.CoverageElement;
+import hudson.plugins.jacoco.model.ModuleInfo;
 import hudson.util.IOException2;
-import org.apache.commons.digester.Digester;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.apache.commons.digester.Digester;
+import org.jacoco.core.analysis.IPackageCoverage;
+import org.xml.sax.SAXException;
 
 /**
  * Root object of the coverage report.
@@ -35,6 +37,28 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
             createDigester().parse(is);
           } catch (SAXException e) {
               throw new IOException2("Failed to parse XML",e);
+          }
+        }
+        setParent(null);
+    }
+    
+    public CoverageReport(JacocoBuildAction action, ArrayList<ModuleInfo> reports ) throws IOException {
+        this(action);
+        for (ModuleInfo is: reports) {
+          try {
+            //createDigester().parse(is);
+        	  if (is.getBundleCoverage() !=null ) {
+        		  ArrayList<IPackageCoverage> packageList = new ArrayList<IPackageCoverage>(is.getBundleCoverage().getPackages());
+        		  for (IPackageCoverage packageCov: packageList) {
+        			  PackageReport packageReport = new PackageReport();
+        			  packageReport.setName(packageCov.getName());
+        			  
+        		  }
+        	  }
+        	  
+          } catch (Exception e) {
+              e.printStackTrace();
+        	  //throw new Exception("Failed to parse XML",e);
           }
         }
         setParent(null);
