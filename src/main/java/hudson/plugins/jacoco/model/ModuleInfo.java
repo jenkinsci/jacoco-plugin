@@ -1,8 +1,12 @@
 package hudson.plugins.jacoco.model;
 
+import hudson.FilePath;
+import hudson.model.BuildListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
@@ -11,10 +15,11 @@ import org.jacoco.core.data.ExecutionDataReader;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 
-import hudson.FilePath;
-
 
 public class ModuleInfo {
+	 
+		private String title;
+		private BuildListener listener;
 		private FilePath srcDir;
 		private FilePath classDir;
 		private FilePath execFile;
@@ -25,8 +30,17 @@ public class ModuleInfo {
 		
 		private IBundleCoverage bundleCoverage;
 		
+		public ModuleInfo(BuildListener listener) {
+			this.listener = listener;
+		}
 		public IBundleCoverage getBundleCoverage() {
 			return bundleCoverage;
+		}
+		public String getTitle() {
+			return title;
+		}
+		public void setTitle(String title) {
+			this.title = title;
 		}
 		public void setBundleCoverage(IBundleCoverage bundleCoverage) {
 			this.bundleCoverage = bundleCoverage;
@@ -35,7 +49,7 @@ public class ModuleInfo {
 			return generatedHTMLsDir;
 		}
 		public void setGeneratedHTMLsDir(FilePath generatedHTMLsDir) {
-			new File(generatedHTMLsDir.getRemote());
+			//new File(generatedHTMLsDir.getRemote());
 			this.generatedHTMLsDir = generatedHTMLsDir;
 		}
 		public FilePath getSrcDir() {
@@ -57,9 +71,11 @@ public class ModuleInfo {
 			this.execFile = execFile;
 		}
 		private void loadExecutionData() throws IOException {
-	    	ExecutionDataStore executionDataStore;
-	    	SessionInfoStore sessionInfoStore;
+			final PrintStream logger = listener.getLogger();
+			logger.println("Loading execution data..");
 	    	File executionDataFile = new File(execFile.getRemote());
+	    	logger.println("executionDataFile: " + executionDataFile.getAbsolutePath());
+	    	logger.println("title: " + title);
 			final FileInputStream fis = new FileInputStream(executionDataFile);
 			final ExecutionDataReader executionDataReader = new ExecutionDataReader(
 					fis);
@@ -75,13 +91,17 @@ public class ModuleInfo {
 			fis.close();
 		}
 	    private IBundleCoverage analyzeStructure() throws IOException {
+	    	final PrintStream logger = listener.getLogger();
+			logger.println("Analyze structure");
+			File classDirectory = new File(classDir.getRemote());
+			logger.println("classdir :" + classDirectory.getAbsolutePath());
 			final CoverageBuilder coverageBuilder = new CoverageBuilder();
 			final Analyzer analyzer = new Analyzer(executionDataStore,
 					coverageBuilder);
-
-			analyzer.analyzeAll(new File(classDir.getRemote()));
-
-			return coverageBuilder.getBundle("ModuleReport");
+			
+			analyzer.analyzeAll(classDirectory);
+			
+			return coverageBuilder.getBundle(title);
 		}
 	    public IBundleCoverage create() throws IOException {
 
@@ -95,8 +115,8 @@ public class ModuleInfo {
 			// class folder and each jar you want in your report. If you have
 			// more than one bundle you will need to add a grouping node to your
 			// report
-			final IBundleCoverage bundleCoverageFinal = analyzeStructure();
-			this.bundleCoverage = bundleCoverageFinal;
-			return bundleCoverageFinal;
+			//final IBundleCoverage bundleCoverageFinal ;
+			this.bundleCoverage = analyzeStructure();
+			return this.bundleCoverage;
 		}
 }

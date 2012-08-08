@@ -230,14 +230,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
         try {
         	
-        	// Get the list of report files stored for this build
-            /*FilePath[] reports = getJacocoReports(reportFolder);
-            InputStream[] streams = new InputStream[reports.length];
-            for (int i=0; i<reports.length; i++) {
-            	streams[i] = reports[i].read();
-            }*/
-            
-            // Generate the report
             CoverageReport r = new CoverageReport(this, reports);
 
            /* if(rule!=null) {
@@ -303,15 +295,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         return new JacocoBuildAction(owner, rule, ratios, thresholds, listener);
     }
 
-    /* public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, ArrayList<FilePath> files) throws IOException, XmlPullParserException {
-        Map<CoverageElement.Type,Coverage> ratios = null;
-        for (InputStream in: streams) {
-          ratios = loadRatios(in, ratios);
-        }
-        throw new RuntimeException("Broken; needs new tests for jacoco.exec rather than jacoco.xml");
-        //return new JacocoBuildAction(owner, rule, ratios, thresholds);
-    	
-    }*/
 
     /**
      * Extracts top-level coverage information from the JaCoCo report document.
@@ -328,7 +311,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
             ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();
         }
         IBundleCoverage bundleCoverage = in.create();
-        
         
         Coverage ratio = new Coverage();
         ratio.accumulate(bundleCoverage.getClassCounter().getMissedCount(), bundleCoverage.getClassCounter().getCoveredCount());
@@ -353,33 +335,9 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         ratio = new Coverage();
         ratio.accumulate(bundleCoverage.getLineCounter().getMissedCount(), bundleCoverage.getLineCounter().getCoveredCount());
         ratios.put(CoverageElement.Type.LINE, ratio);
-       /* XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-        factory.setNamespaceAware(true);
-        XmlPullParser parser = factory.newPullParser();
-        parser.setInput(in, null);
-        
-        int eventType = parser.getEventType();
-        do {
-            // this predicate matches the start tags of the elements selected by the XPath expression "/report/counter"
-            if (eventType == XmlPullParser.START_TAG && parser.getName().equals("counter") && parser.getDepth() == 2) {
-                Type type = Type.valueOf(parser.getAttributeValue("", "type"));
-                int covered = Integer.parseInt(parser.getAttributeValue("", "covered"));
-                int missed = Integer.parseInt(parser.getAttributeValue("", "missed"));
-
-                Coverage ratio = ratios.get(type);
-                if (ratio == null) {
-                    ratio = new Coverage();
-                    ratios.put(type, ratio);
-                }
-                ratio.accumulate(missed, covered);
-            }
-            eventType = parser.next();
-        } while (eventType != XmlPullParser.END_DOCUMENT);*/
         
         return ratios;
 
     }
-    
 
-    //private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
 }
