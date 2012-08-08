@@ -40,6 +40,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
+import org.kohsuke.stapler.jelly.ThisTagLibrary;
 
 
 /**
@@ -57,15 +58,66 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     public Coverage instruction = new Coverage();
     public Coverage branch = new Coverage();
     
-    private static int maxClazz=0;
-    private static int maxMethod=0;
-    private static int maxLine=0;
-    private static int maxComplexity=0;
-    private static int maxInstruction=0;
-    private static int maxBranch=0;
+  
+
+
+	public int maxClazz=1;
+    public int maxMethod=1;
+    public int maxLine=1;
+    public int maxComplexity=1;
+    public int maxInstruction=1;
+    public int maxBranch=1;
     
     private volatile boolean failed = false;
 
+    public int getMaxClazz() {
+  		return maxClazz;
+  	}
+
+  	public void setMaxClazz(int maxClazz) {
+  		this.maxClazz = maxClazz;
+  	}
+
+  	public int getMaxMethod() {
+  		return maxMethod;
+  	}
+
+  	public void setMaxMethod(int maxMethod) {
+  		this.maxMethod = maxMethod;
+  	}
+
+  	public int getMaxLine() {
+  		return maxLine;
+  	}
+
+  	public void setMaxLine(int maxLine) {
+  		this.maxLine = maxLine;
+  	}
+
+  	public int getMaxComplexity() {
+  		return maxComplexity;
+  	}
+
+  	public void setMaxComplexity(int maxComplexity) {
+  		this.maxComplexity = maxComplexity;
+  	}
+
+  	public int getMaxInstruction() {
+  		return maxInstruction;
+  	}
+
+  	public void setMaxInstruction(int maxInstruction) {
+  		this.maxInstruction = maxInstruction;
+  	}
+
+  	public int getMaxBranch() {
+  		return maxBranch;
+  	}
+
+  	public void setMaxBranch(int maxBranch) {
+  		this.maxBranch = maxBranch;
+  	}
+    
     public boolean isFailed() {
         return failed;
     }
@@ -131,6 +183,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
      */
     public String printFourCoverageColumns() {
         StringBuilder buf = new StringBuilder();
+        instruction.setType(CoverageElement.Type.INSTRUCTION);
+        clazz.setType(CoverageElement.Type.CLASS);
+        complexity.setType(CoverageElement.Type.COMPLEXITY);
+        branch.setType(CoverageElement.Type.BRANCH);
+        line.setType(CoverageElement.Type.LINE);
+        method.setType(CoverageElement.Type.METHOD);
         printRatioCell(isFailed(), instruction, buf);
         printRatioCell(isFailed(), branch, buf);
         printRatioCell(isFailed(), complexity, buf);
@@ -153,7 +211,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     static NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
     static NumberFormat intFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
     
-	protected static void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
+	protected void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
 		if (ratio != null && ratio.isInitialized()) {
 			String className = "nowrap" + (failed ? " red" : "");
 			buf.append("<td class='").append(className).append("'");
@@ -164,17 +222,31 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		}
 	}
 	
-	protected static void printRatioTable(Coverage ratio, StringBuilder buf){
+	protected void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getMissed());
 		String denominator = intFormat.format(ratio.getCovered());
+		int maximumCovered = 1;
+		if (ratio.getType().equals(CoverageElement.Type.INSTRUCTION)) {
+			maximumCovered = maxInstruction;
+		} else if (ratio.getType().equals(CoverageElement.Type.BRANCH)) {
+			maximumCovered = maxBranch;
+		} else if (ratio.getType().equals(CoverageElement.Type.COMPLEXITY)) {
+			maximumCovered = maxComplexity;
+		} else if (ratio.getType().equals(CoverageElement.Type.LINE)) {
+			maximumCovered = maxLine;
+		} else if (ratio.getType().equals(CoverageElement.Type.METHOD)) {
+			maximumCovered = maxMethod;
+		} else if (ratio.getType().equals(CoverageElement.Type.CLASS)) {
+			maximumCovered = maxClazz;
+		}
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
 				.append("<td width='64px' class='data'>").append(percent).append("%</td>")
 				.append("<td class='percentgraph'>")
-				.append("<div class='percentgraph'><div class='greenbar' style='width: ").append(55).append("px;'>")
+				.append("<div class='percentgraph'><div class='greenbar' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>")
 				.append("<span class='text'>").append("M:"+numerator).append(" ").append("C: "+ denominator)
 				.append("</span></div></div></td></tr></table>") ;
-		
+		//(ratio.getCovered()/maximumCovered)*100
 	}
 
     /**

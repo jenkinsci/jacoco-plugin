@@ -1,9 +1,17 @@
 package hudson.plugins.jacoco.report;
 
+import hudson.plugins.jacoco.model.Coverage;
+import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageObject;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.jacoco.core.analysis.IMethodCoverage;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -46,18 +54,24 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 	public String getLine() {
 		return lineNo;
 	}
-	//NOT NEEDED
-	/*@Override
+	@Override
 	public String printFourCoverageColumns() {
         StringBuilder buf = new StringBuilder();
-		printRatioCell(isFailed(), instruction, buf);
-		printRatioCell(isFailed(), branch, buf);
-		printRatioCell(isFailed(), complexity, buf);
-		printRatioCell(isFailed(), line, buf);
-        printRatioCell(isFailed(), method, buf);
+        instruction.setType(CoverageElement.Type.INSTRUCTION);
+        complexity.setType(CoverageElement.Type.COMPLEXITY);
+        branch.setType(CoverageElement.Type.BRANCH);
+        line.setType(CoverageElement.Type.LINE);
+        method.setType(CoverageElement.Type.METHOD);
+		printRatioCell(isFailed(), this.instruction, buf);
+		printRatioCell(isFailed(), this.branch, buf);
+		printRatioCell(isFailed(), this.complexity, buf);
+		printRatioCell(isFailed(), this.line, buf);
+        printRatioCell(isFailed(), this.method, buf);
         logger.log(Level.INFO, "Printing Ratio cells within MethodReport.");
 		return buf.toString();
-	}*/
+	}
+	
+	
 	@Override
 	public void add(SourceFileReport child) {
     	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
@@ -66,6 +80,28 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
         this.hasClassCoverage();
         logger.log(Level.INFO, "SourceFileReport");
     }
+
+	public  void setCoverage(IMethodCoverage covReport) {
+  	  Coverage tempCov = new Coverage();
+		  tempCov.accumulate(covReport.getBranchCounter().getMissedCount(), covReport.getBranchCounter().getCoveredCount());
+		  this.branch = tempCov;
+		  
+		  tempCov = new Coverage();
+		  tempCov.accumulate(covReport.getLineCounter().getMissedCount(), covReport.getLineCounter().getCoveredCount());
+		  this.line = tempCov;
+		  
+		  tempCov = new Coverage();
+		  tempCov.accumulate(covReport.getInstructionCounter().getMissedCount(), covReport.getInstructionCounter().getCoveredCount());
+		  this.instruction = tempCov;
+		  
+		  tempCov = new Coverage();
+		  tempCov.accumulate(covReport.getMethodCounter().getMissedCount(), covReport.getMethodCounter().getCoveredCount());
+		  this.method = tempCov;
+		  
+		  tempCov = new Coverage();
+		  tempCov.accumulate(covReport.getComplexityCounter().getMissedCount(), covReport.getComplexityCounter().getCoveredCount());
+		  this.complexity = tempCov;
+  }
 	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 	
 }

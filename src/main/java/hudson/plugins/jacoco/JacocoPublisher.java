@@ -98,12 +98,10 @@ public class JacocoPublisher extends Recorder {
 			src.copyTo(dst);
 			
 		}
-		//files[0].copyRecursiveTo(dst);
 	}
+	
 	protected static void saveCoverageReports(FilePath folder, FilePath sourceFolder) throws IOException, InterruptedException {
 		folder.mkdirs();
-		//FilePath dst = folder.child(name);
-		//logger.println("Saving generated JaCoCo reports!");
 		sourceFolder.copyRecursiveTo(folder);
 	}
 	
@@ -121,8 +119,6 @@ public class JacocoPublisher extends Recorder {
 			logger.println("ReportFactory lunched!");
 		} catch (IOException e) {
 			logger.println("ReportFactory failed! WorkspaceDir: "+ build.getWorkspace().getRemote()+ e.getMessage());
-			//e.printStackTrace();
-			//we see logger only in debug mode, maybe an IOException, but hmm
 		}
         
         //FilePath[] reports;
@@ -153,7 +149,7 @@ public class JacocoPublisher extends Recorder {
         moduleNum=1;
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
         for (int i=0;i<moduleNum;++i) {
-        	ModuleInfo moduleInfo = new ModuleInfo();
+        	ModuleInfo moduleInfo = new ModuleInfo(listener);
         
 	        FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
 	        //saveCoverageReports(jacocofolderRoot, reports);
@@ -171,10 +167,10 @@ public class JacocoPublisher extends Recorder {
 	        moduleInfo.setExecFile(seged);
 	        execfile.copyTo(seged);
 	        
-	        
+	        moduleInfo.setTitle(new File(actualBuildModuleDir.getRemote()).getName());
 	        actualDestination = new FilePath(actualBuildModuleDir, "jenkins-jacoco");
 	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
-	        moduleInfo.setClassDir(actualDestination);
+	        moduleInfo.setGeneratedHTMLsDir(actualDestination);
 	        reports.add(moduleInfo);
         }
        // logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);

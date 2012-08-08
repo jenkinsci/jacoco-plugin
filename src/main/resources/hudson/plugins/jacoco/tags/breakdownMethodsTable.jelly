@@ -4,7 +4,7 @@
     <j:forEach var="c" items="${it.children.values()}">
       <tr>
         <td class="nowrap ${h.ifThenElse(c.failed,' red','')}" >
-          <a href="${h.ifThenElse(nolink!=null,null,c.sourceFilePath+'/')}"><st:out value="${c.name}"/></a>
+          <a href="${c.sourceFilePath}"><st:out value="${c.name}"/></a>
         </td>	      
         ${c.printFourCoverageColumns()}
       </tr>

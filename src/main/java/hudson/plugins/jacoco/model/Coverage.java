@@ -16,6 +16,7 @@ final public class Coverage implements Serializable {
 
     private int missed = 0;
     private int covered = 0;
+    private CoverageElement.Type type;
     boolean initialized = false;
 
     public Coverage(int missed, int covered) {
@@ -60,7 +61,15 @@ final public class Coverage implements Serializable {
         return denominator <= 0 ? 0 : 100 * (numerator / denominator);
     }
 
-    public boolean equals(Object o) {
+    public CoverageElement.Type getType() {
+		return type;
+	}
+
+	public void setType(CoverageElement.Type type) {
+		this.type = type;
+	}
+
+	public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
