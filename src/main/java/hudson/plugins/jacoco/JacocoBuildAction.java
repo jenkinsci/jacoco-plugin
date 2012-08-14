@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,12 +50,12 @@ import org.xmlpull.v1.XmlPullParserFactory;
  *
  * @author Kohsuke Kawaguchi
  */
-public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy {
+public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable {
 	
     public final AbstractBuild<?,?> owner;
     private final PrintStream logger;
     private transient WeakReference<CoverageReport> report;
-    private ArrayList<ModuleInfo> reports;
+    public ArrayList<ModuleInfo> reports;
 
 
 	/**
@@ -205,7 +206,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         return owner;
     }
     
-	protected static FilePath[] getJacocoReports(File file) throws IOException, InterruptedException {
+	/*protected static FilePath[] getJacocoReports(File file) throws IOException, InterruptedException {
 		FilePath path = new FilePath(file);
 		if (path.isDirectory()) {
 			return path.list("*xml");
@@ -214,6 +215,40 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			FilePath report = new FilePath(new File(path.getName() + ".xml"));
 			return report.exists() ? new FilePath[]{report} : new FilePath[0];
 		}
+	}*/
+	protected static ArrayList<ModuleInfo> getJacocoReports(File file) throws IOException {
+		FilePath path = new FilePath(file);
+		ArrayList<ModuleInfo> reports= new ArrayList<ModuleInfo>();
+		int i=0;
+		try {
+			FilePath checkPath=null;
+			while(true){
+				if ((checkPath=new FilePath(path,"module"+i)).exists()) {
+					ModuleInfo moduleInfo = new ModuleInfo();
+					moduleInfo.setClassDir(new FilePath(checkPath, "classes"));
+					moduleInfo.setSrcDir(new FilePath(checkPath, "src"));
+					moduleInfo.setExecFile(new FilePath(checkPath, "jacoco.exec"));
+					moduleInfo.create();
+					reports.add(moduleInfo);
+				} else {
+					break;
+				}
+				i++;
+				
+			}
+			
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		/*if (path.isDirectory()) {
+			return path.list("*xml");
+		} else {
+			// Read old builds (before 1.11) 
+			FilePath report = new FilePath(new File(path.getName() + ".xml"));
+			return report.exists() ? new FilePath[]{report} : new FilePath[0];
+		}*/
+		return reports;
 	}
 
     /**
@@ -229,7 +264,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         final File reportFolder = JacocoPublisher.getJacocoReport(owner);
 
         try {
-        	
+        	ArrayList<ModuleInfo> reports = getJacocoReports(reportFolder);
             CoverageReport r = new CoverageReport(this, reports);
 
            /* if(rule!=null) {

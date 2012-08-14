@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.Serializable;
 
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
@@ -16,10 +17,9 @@ import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 
 
-public class ModuleInfo {
+public class ModuleInfo implements Serializable {
 	 
 		private String title;
-		private BuildListener listener;
 		private FilePath srcDir;
 		private FilePath classDir;
 		private FilePath execFile;
@@ -30,9 +30,6 @@ public class ModuleInfo {
 		
 		private IBundleCoverage bundleCoverage;
 		
-		public ModuleInfo(BuildListener listener) {
-			this.listener = listener;
-		}
 		public IBundleCoverage getBundleCoverage() {
 			return bundleCoverage;
 		}
@@ -71,11 +68,7 @@ public class ModuleInfo {
 			this.execFile = execFile;
 		}
 		private void loadExecutionData() throws IOException {
-			final PrintStream logger = listener.getLogger();
-			logger.println("Loading execution data..");
 	    	File executionDataFile = new File(execFile.getRemote());
-	    	logger.println("executionDataFile: " + executionDataFile.getAbsolutePath());
-	    	logger.println("title: " + title);
 			final FileInputStream fis = new FileInputStream(executionDataFile);
 			final ExecutionDataReader executionDataReader = new ExecutionDataReader(
 					fis);
@@ -91,10 +84,7 @@ public class ModuleInfo {
 			fis.close();
 		}
 	    private IBundleCoverage analyzeStructure() throws IOException {
-	    	final PrintStream logger = listener.getLogger();
-			logger.println("Analyze structure");
 			File classDirectory = new File(classDir.getRemote());
-			logger.println("classdir :" + classDirectory.getAbsolutePath());
 			final CoverageBuilder coverageBuilder = new CoverageBuilder();
 			final Analyzer analyzer = new Analyzer(executionDataStore,
 					coverageBuilder);

@@ -52,7 +52,7 @@ public class JacocoPublisher extends Recorder {
      */
     public JacocoHealthReportThresholds healthReports = new JacocoHealthReportThresholds();
     
-    public int moduleNum;
+    private int moduleNum;
     /**
      * look for jacoco reports based in the configured parameter includes.
      * 'includes' is 
@@ -149,7 +149,7 @@ public class JacocoPublisher extends Recorder {
         moduleNum=1;
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
         for (int i=0;i<moduleNum;++i) {
-        	ModuleInfo moduleInfo = new ModuleInfo(listener);
+        	ModuleInfo moduleInfo = new ModuleInfo();
         
 	        FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
 	        //saveCoverageReports(jacocofolderRoot, reports);

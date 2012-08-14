@@ -184,7 +184,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
 
         NumberAxis rangeAxis = (NumberAxis)plot.getRangeAxis();
         rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        rangeAxis.setUpperBound(Constants.UPPER_BOUND);
+        //rangeAxis.setUpperBound(Constants.UPPER_BOUND);
         rangeAxis.setLowerBound(Constants.LOWER_BOUND);
 
         return chart;
