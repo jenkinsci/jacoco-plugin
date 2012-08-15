@@ -1,12 +1,10 @@
 package hudson.plugins.jacoco.model;
 
 import hudson.FilePath;
-import hudson.model.BuildListener;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.Serializable;
 
 import org.jacoco.core.analysis.Analyzer;
@@ -46,7 +44,6 @@ public class ModuleInfo implements Serializable {
 			return generatedHTMLsDir;
 		}
 		public void setGeneratedHTMLsDir(FilePath generatedHTMLsDir) {
-			//new File(generatedHTMLsDir.getRemote());
 			this.generatedHTMLsDir = generatedHTMLsDir;
 		}
 		public FilePath getSrcDir() {
@@ -93,7 +90,7 @@ public class ModuleInfo implements Serializable {
 			
 			return coverageBuilder.getBundle(title);
 		}
-	    public IBundleCoverage create() throws IOException {
+	    public IBundleCoverage loadBundleCoverage() throws IOException {
 			loadExecutionData();
 			this.bundleCoverage = analyzeStructure();
 			return this.bundleCoverage;

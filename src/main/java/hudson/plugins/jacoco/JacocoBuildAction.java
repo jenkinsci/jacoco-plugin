@@ -228,7 +228,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 					moduleInfo.setClassDir(new FilePath(checkPath, "classes"));
 					moduleInfo.setSrcDir(new FilePath(checkPath, "src"));
 					moduleInfo.setExecFile(new FilePath(checkPath, "jacoco.exec"));
-					moduleInfo.create();
+					moduleInfo.loadBundleCoverage();
 					reports.add(moduleInfo);
 				} else {
 					break;
@@ -313,7 +313,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
     	Map<CoverageElement.Type,Coverage> ratios = null;
     	
         for (ModuleInfo moduleInfo: modules ) {
-           // InputStream in = f.read();
             try {
                 ratios = loadRatios(moduleInfo, ratios);
             } catch (IOException e) {
@@ -337,7 +336,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         if (ratios == null) {
             ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();
         }
-        IBundleCoverage bundleCoverage = in.create();
+        IBundleCoverage bundleCoverage = in.loadBundleCoverage();
         
         Coverage ratio = new Coverage();
         ratio.accumulatePP(bundleCoverage.getClassCounter().getMissedCount(), bundleCoverage.getClassCounter().getCoveredCount());
