@@ -13,15 +13,15 @@ import org.jacoco.core.analysis.ICoverageNode;
  * @author Kohsuke Kawaguchi
  * @author David Carver
  */
-public final class PackageReport extends AggregatedReport<ModuleReport,PackageReport,ClassReport> {
+public final class ModuleReport extends AggregatedReport<CoverageReport,ModuleReport,PackageReport>{
 
     @Override
     public void setName(String name) {
         super.setName(name.replaceAll("/", "."));
     }
-    
+    /*
     @Override
-    public void add(ClassReport child) {
+    public void add(PackageReport child) {
     	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
     	child.setName(newChildName);
     	//child.buildURL = this.getParent().getBuild().getUrl();
@@ -66,6 +66,6 @@ public final class PackageReport extends AggregatedReport<ModuleReport,PackageRe
     		 report.maxInstruction = maxInstruction;
     	 }
     }
-    private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
+    private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());*/
     
 }

@@ -12,7 +12,7 @@ import hudson.plugins.jacoco.model.CoverageObject;
  */
 public class CoverageObjectTest extends AbstractJacocoTestBase {
 	
-	@Test
+	/*@Test
     public void testPrintRatioTable() throws Exception {
 
     	Coverage r = null;
@@ -63,6 +63,6 @@ public class CoverageObjectTest extends AbstractJacocoTestBase {
     	assertEquals("<td class='nowrap' data='079.68'>\n" +
     			"<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'><td width='64px' class='data'>79.7%</td><td class='percentgraph'><div class='percentgraph'><div class='greenbar' style='width: 55px;'><span class='text'>M:51 C: 200</span></div></div></td></tr></table></td>\n", b.toString());
 
-    }
+    }*/
  
 }

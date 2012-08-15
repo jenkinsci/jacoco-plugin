@@ -24,7 +24,7 @@ import org.jacoco.core.analysis.IPackageCoverage;
  * 
  * @author Kohsuke Kawaguchi
  */
-public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy*/,CoverageReport,PackageReport> {
+public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy*/,CoverageReport,ModuleReport> {
     private final JacocoBuildAction action;
 
     private CoverageReport(JacocoBuildAction action) {
@@ -48,8 +48,32 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     public CoverageReport(JacocoBuildAction action, ArrayList<ModuleInfo> reports ) throws IOException {
         this(action);
         for (ModuleInfo is: reports) {
+        	Coverage tempCov = new Coverage();
+            tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+            this.branch = tempCov;
+            tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+        	this.line = tempCov;
+        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+        	this.complexity = tempCov;
+        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+        	this.clazz = tempCov;
+        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+        	this.instruction = tempCov;
+        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+        	this.method = tempCov;
+        }
+        
+        ArrayList<IBundleCoverage> moduleList = new ArrayList<IBundleCoverage>();
+		ArrayList<ModuleReport> moduleReportList = new ArrayList<ModuleReport>();
+        for (ModuleInfo is: reports) {
           try {
+        	  ModuleReport moduleReport = new ModuleReport();
+        	  moduleReport.setName(is.getBundleCoverage().getName());
+        	  moduleReport.setParent(this);
+        	  
         	  if (is.getBundleCoverage() !=null ) {
+        		  moduleList.add(is.getBundleCoverage());
+        		  
         		  setCoverage(this,is.getBundleCoverage());
         		  
         		  ArrayList<IPackageCoverage> packageList = new ArrayList<IPackageCoverage>(is.getBundleCoverage().getPackages());
@@ -57,7 +81,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         		  for (IPackageCoverage packageCov: packageList) {
         			  PackageReport packageReport = new PackageReport();
         			  packageReport.setName(packageCov.getName());
-        			  packageReport.setParent(this);
+        			  packageReport.setParent(moduleReport);
         			  setCoverage(packageReport, packageCov);
         			  ArrayList<IClassCoverage> classList = new ArrayList<IClassCoverage>(packageCov.getClasses());
         			  ArrayList<ClassReport> classReportList = new ArrayList<ClassReport>();
@@ -82,7 +106,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
             			  classReportList.add(classReport);
         			  }
         			  packageReport.reSetMaximumsClass(classReportList,classList);
-        			  this.add(packageReport);
+        			  moduleReport.add(packageReport);
         			  packageReportList.add(packageReport);
         		  }
         		  reSetMaximumsPackage(packageReportList,packageList);

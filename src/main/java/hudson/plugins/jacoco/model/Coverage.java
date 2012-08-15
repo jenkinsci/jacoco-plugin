@@ -99,6 +99,11 @@ final public class Coverage implements Serializable {
       this.covered = covered;
       initialized = true;
     }
+    public void accumulatePP(int missed, int covered) {
+        this.missed += missed;
+        this.covered += covered;
+        initialized = true;
+      }
 
     public boolean isInitialized() {
     	return initialized;

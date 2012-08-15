@@ -1,8 +1,38 @@
+
+
+
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <!--<f:entry title="${%entry.title}"
+   <!--
+  <f:entry title="${%entry.title}"
            description="${%includes.description}">
-    <f:textbox name="jacoco.includes" value="${instance.includes}"/> -->
-     <f:entry>
+    <f:textbox name="jacoco.includes" value="${instance.includes}"/>
+    <f:textbox field="execFile" default="target/jacoco.exec" />
+  </f:entry>
+  
+ 
+ 
+  
+  
+  
+  
+  <f:entry title="${%Port}" field="port">
+    <f:textbox />
+  </f:entry>
+  <f:entry title="${%Host}" field="host">
+    <f:textbox />
+  </f:entry>
+
+     
+    
+     -->
+    
+    
+    
+    
+    
+    
+    
+   <f:entry>
      <f:repeatable field="reportTargets">
      <table width="100%">
       <col width="20%"/>
@@ -20,7 +50,7 @@
         </td>
         
         <td>
-          <f:textbox field="sourceDir" default="src"/>
+          <f:textbox field="srcDir" default="src"/>
         </td>
         
         <td>
@@ -29,7 +59,21 @@
       </tr>
       </table>
      </f:repeatable>
-  </f:entry>
+ </f:entry>
+   
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   <!--
   <f:entry title="${%MinLine Coverage}"
            description="${%minLineCoveragePerSource.description}">

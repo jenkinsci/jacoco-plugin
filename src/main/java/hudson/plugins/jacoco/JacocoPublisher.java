@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
 
+import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 
@@ -39,7 +40,11 @@ public class JacocoPublisher extends Recorder {
      * Relative path to the jacoco XML file inside the workspace.
      */
     public String includes;
-
+    
+    
+    private final ArrayList<ConfigRow> reportTargets;
+	
+    public String execFile;
     /**
      * Rule to be enforced. Can be null.
      *
@@ -53,13 +58,17 @@ public class JacocoPublisher extends Recorder {
     public JacocoHealthReportThresholds healthReports = new JacocoHealthReportThresholds();
     
     private int moduleNum;
-    /**
-     * look for jacoco reports based in the configured parameter includes.
-     * 'includes' is 
-     *   - an Ant-style pattern
-     *   - a list of files and folders separated by the characters ;:,  
-     */
-    protected static FilePath[] locateCoverageReports(FilePath workspace, String includes) throws IOException, InterruptedException {
+    
+    @DataBoundConstructor
+    public JacocoPublisher(ArrayList<ConfigRow> reportTargets) {
+    	this.reportTargets = reportTargets != null ? new ArrayList<ConfigRow>(reportTargets) : new ArrayList<ConfigRow>();
+	}
+
+    public ArrayList<ConfigRow> getReportTargets() {
+		return reportTargets;
+	}
+    
+	protected static FilePath[] locateCoverageReports(FilePath workspace, String includes) throws IOException, InterruptedException {
 
     	// First use ant-style pattern
     	try {
@@ -105,23 +114,29 @@ public class JacocoPublisher extends Recorder {
 		sourceFolder.copyRecursiveTo(folder);
 	}
 	
+	
 	@Override
     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        EnvVars env = build.getEnvironment(listener);
+	
+		listener.getLogger().println("[jacoco] Collecting JaCoCo coverage data...");
+		listener.getLogger().println("[jacoco] " + reportTargets + " jacoco.exec locations are configured");
+		
+		EnvVars env = build.getEnvironment(listener);
         env.overrideAll(build.getBuildVariables());
         
         includes = env.expand(includes);
         
         final PrintStream logger = listener.getLogger();
+        
         try {
 			ReportFactory reportFactory = new ReportFactory(new File(build.getWorkspace().getRemote()), listener); // FIXME probably doesn't work with jenkins remote build slaves
 			reportFactory.createReport();
 			logger.println("ReportFactory lunched!");
+			
 		} catch (IOException e) {
 			logger.println("ReportFactory failed! WorkspaceDir: "+ build.getWorkspace().getRemote()+ e.getMessage());
 		}
         
-        //FilePath[] reports;
         ArrayList<ModuleInfo> reports = new ArrayList<ModuleInfo>();
         
         /*if (includes == null || includes.trim().length() == 0) {
@@ -146,7 +161,7 @@ public class JacocoPublisher extends Recorder {
         		found += "\n          " + f.getRemote();
             logger.println("JaCoCo: found " + reports.length  + " report files: " + found );
         }*/
-        moduleNum=1;
+        moduleNum=reportTargets.size();
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
         for (int i=0;i<moduleNum;++i) {
         	ModuleInfo moduleInfo = new ModuleInfo();
@@ -155,14 +170,14 @@ public class JacocoPublisher extends Recorder {
 	        //saveCoverageReports(jacocofolderRoot, reports);
 	        FilePath actualDestination = new FilePath(actualBuildModuleDir, "classes");
 	        moduleInfo.setClassDir(actualDestination);
-	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\classes")));
+	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), reportTargets.get(i).getClassDir())));
 
 	        actualDestination = new FilePath(actualBuildModuleDir, "src");
 	        moduleInfo.setSrcDir(actualDestination);
-	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\src")));
+	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), reportTargets.get(i).getSrcDir())));
 	       
 	        
-	        FilePath execfile = new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jacoco.exec"));
+	        FilePath execfile = new FilePath(new File(build.getWorkspace().getRemote(), reportTargets.get(i).getExecFile()));
 	        FilePath seged = actualBuildModuleDir.child("jacoco.exec");
 	        moduleInfo.setExecFile(seged);
 	        execfile.copyTo(seged);
@@ -234,39 +249,6 @@ public class JacocoPublisher extends Recorder {
             return true;
         }
 
-        @Override
-        public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
-            JacocoPublisher pub = new JacocoPublisher();
-            req.bindParameters(pub, "jacoco.");
-            req.bindParameters(pub.healthReports, "jacocoHealthReports.");
-            // start ugly hack
-            //@TODO remove ugly hack
-            // the default converter for integer values used by req.bindParameters
-            // defaults an empty value to 0. This happens even if the type is Integer
-            // and not int.  We want to change the default values, so we use this hack.
-            //
-            // If you know a better way, please fix.
-            if ("".equals(req.getParameter("jacocoHealthReports.maxClass"))) {
-                pub.healthReports.setMaxClass(100);
-            }
-            if ("".equals(req.getParameter("jacocoHealthReports.maxMethod"))) {
-                pub.healthReports.setMaxMethod(70);
-            }
-            if ("".equals(req.getParameter("jacocoHealthReports.maxLine"))) {
-                pub.healthReports.setMaxLine(70);
-            }
-            if ("".equals(req.getParameter("jacocoHealthReports.maxBranch"))) {
-                pub.healthReports.setMaxBranch(70);
-            }
-            if ("".equals(req.getParameter("jacocoHealthReports.maxInstruction"))) {
-                pub.healthReports.setMaxInstruction(70);
-            }
-            if ("".equals(req.getParameter("jacocoHealthReports.maxComplexity"))) {
-                pub.healthReports.setMaxComplexity(70);
-            }
-            // end ugly hack
-            return pub;
-        }
     }
     private static final Logger logger = Logger.getLogger(JacocoPublisher.class.getName());
 }

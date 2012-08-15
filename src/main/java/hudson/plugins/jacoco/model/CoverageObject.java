@@ -243,7 +243,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
 				.append("<td width='64px' class='data'>").append(percent).append("%</td>")
 				.append("<td class='percentgraph'>")
-				.append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>").append("<div class='redbar' style='width: ").append(((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
+				.append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>").append("<div class='redbar' style='width: ").append(0 == ratio.getCovered() ? 100 :  ((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
 				.append("<span class='text'>").append("M:"+numerator).append(" ").append("C: "+ denominator)
 				.append("</span></div></div></td></tr></table>") ;
 		//(ratio.getCovered()/maximumCovered)*100
