@@ -17,11 +17,12 @@ import org.jacoco.core.data.SessionInfoStore;
 
 public class ModuleInfo implements Serializable {
 	 
-		private String title;
+		private String name;
 		private FilePath srcDir;
 		private FilePath classDir;
 		private FilePath execFile;
 		private FilePath generatedHTMLsDir;
+		private String title;
 		
 		private ExecutionDataStore executionDataStore;
 		private SessionInfoStore sessionInfoStore;
@@ -31,11 +32,11 @@ public class ModuleInfo implements Serializable {
 		public IBundleCoverage getBundleCoverage() {
 			return bundleCoverage;
 		}
-		public String getTitle() {
-			return title;
+		public String getName() {
+			return name;
 		}
-		public void setTitle(String title) {
-			this.title = title;
+		public void setName(String name) {
+			this.name = name;
 		}
 		public void setBundleCoverage(IBundleCoverage bundleCoverage) {
 			this.bundleCoverage = bundleCoverage;
@@ -88,7 +89,7 @@ public class ModuleInfo implements Serializable {
 			
 			analyzer.analyzeAll(classDirectory);
 			
-			return coverageBuilder.getBundle(title);
+			return coverageBuilder.getBundle(name);
 		}
 	    public IBundleCoverage loadBundleCoverage() throws IOException {
 			loadExecutionData();

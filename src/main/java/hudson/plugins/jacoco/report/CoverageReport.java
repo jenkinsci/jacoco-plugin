@@ -23,53 +23,56 @@ import org.jacoco.core.analysis.IPackageCoverage;
  * Root object of the coverage report.
  * 
  * @author Kohsuke Kawaguchi
+ * @author Ognjen Bubalo
  */
 public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy*/,CoverageReport,ModuleReport> {
     private final JacocoBuildAction action;
 
     private CoverageReport(JacocoBuildAction action) {
-    	
         this.action = action;
         setName("Jacoco");
     }
 
     public CoverageReport(JacocoBuildAction action, InputStream... xmlReports) throws IOException {
-        this(action);
-        for (InputStream is: xmlReports) {
-         /* try {
-            //createDigester().parse(is);
-          } catch (SAXException e) {
-              throw new IOException2("Failed to parse XML",e);
-          }*/
-        }
-        setParent(null);
+    	this(action);
     }
     
     public CoverageReport(JacocoBuildAction action, ArrayList<ModuleInfo> reports ) throws IOException {
     	this(action);
     	try {
-	        for (ModuleInfo is: reports) {
+	        for (ModuleInfo moduleInfo: reports) {
 	        	Coverage tempCov = new Coverage();
-	            tempCov.accumulate(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+	            tempCov.accumulate(moduleInfo.getBundleCoverage().getBranchCounter().getMissedCount(), moduleInfo.getBundleCoverage().getBranchCounter().getCoveredCount());
 	            this.branch.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
-	            tempCov.accumulatePP(is.getBundleCoverage().getLineCounter().getMissedCount(), is.getBundleCoverage().getLineCounter().getCoveredCount());
+	            tempCov.accumulatePP(moduleInfo.getBundleCoverage().getLineCounter().getMissedCount(), moduleInfo.getBundleCoverage().getLineCounter().getCoveredCount());
 	        	this.line.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
-	        	tempCov.accumulatePP(is.getBundleCoverage().getComplexityCounter().getMissedCount(), is.getBundleCoverage().getComplexityCounter().getCoveredCount());
+	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getComplexityCounter().getMissedCount(), moduleInfo.getBundleCoverage().getComplexityCounter().getCoveredCount());
 	        	this.complexity.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
-	        	tempCov.accumulatePP(is.getBundleCoverage().getClassCounter().getMissedCount(), is.getBundleCoverage().getClassCounter().getCoveredCount());
+	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getClassCounter().getMissedCount(), moduleInfo.getBundleCoverage().getClassCounter().getCoveredCount());
 	        	this.clazz.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
-	        	tempCov.accumulatePP(is.getBundleCoverage().getInstructionCounter().getMissedCount(), is.getBundleCoverage().getInstructionCounter().getCoveredCount());
+	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getInstructionCounter().getMissedCount(), moduleInfo.getBundleCoverage().getInstructionCounter().getCoveredCount());
 	        	this.instruction.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
-	        	tempCov.accumulatePP(is.getBundleCoverage().getMethodCounter().getMissedCount(), is.getBundleCoverage().getMethodCounter().getCoveredCount());
+	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getMethodCounter().getMissedCount(), moduleInfo.getBundleCoverage().getMethodCounter().getCoveredCount());
 	        	this.method.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
 	        }
 	        
+	        this.maxBranch = this.branch.getCovered();
+	        this.maxLine = this.line.getCovered();
+	        this.maxClazz = this.line.getCovered();
+	        this.maxComplexity = this.complexity.getCovered();
+	        this.maxInstruction = this.instruction.getCovered();
+	        this.maxMethod = this.method.getCovered();
+	        
+	        
+	        
 	        ArrayList<IBundleCoverage> moduleList = new ArrayList<IBundleCoverage>();
 			ArrayList<ModuleReport> moduleReportList = new ArrayList<ModuleReport>();
+			int i=0;
 	        for (ModuleInfo moduleInfo: reports) {
 	          
 	        	  ModuleReport moduleReport = new ModuleReport();
-	        	  moduleReport.setName(moduleInfo.getBundleCoverage().getName());
+	        	  action.logger.println("[JaCoCo plugin] Loading module: " + moduleInfo.getBundleCoverage().getName());
+	        	  moduleReport.setName(moduleInfo.getName());
 	        	  moduleReport.setParent(this);
 	        	  if (moduleInfo.getBundleCoverage() !=null ) {
 	        		  moduleList.add(moduleInfo.getBundleCoverage());
@@ -101,7 +104,6 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	            				  methodReport.setName(methodCov.getName());
 	            				  methodReport.setParent(classReport);
 	            				  methodReport.setCoverage(methodCov);
-	                			  //methodReport.sourceFilePath = action.getBuild().getRootDir().getPath()+"/jacoco/index.html";
 	                			  classReport.add(methodReport);
 	                			  methodReportList.add(methodReport);
 	            			  }
@@ -119,14 +121,12 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	        		  }
 	        		  moduleReport.reSetMaximums(packageReportList,packageList);
 	        	  }
-	        	  reSetMaximums(moduleInfo.getBundleCoverage());
-	        	  moduleReportList.add(moduleReport);
 	        	  
+	        	  moduleReportList.add(moduleReport);
 	        	  this.add(moduleReport);
-	          
-	          
 	         
 	        }
+	        reSetMaximums(moduleReportList, moduleList);
 	        setParent(null);
     	} catch (Exception e) {
             e.printStackTrace();
@@ -134,7 +134,9 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     }
     
     
-    private void reSetMaximums(IBundleCoverage coverageCov) {
+    private void reSetMaximums(ArrayList<ModuleReport> reportList, ArrayList<IBundleCoverage> coverageList) {
+
+    	for (IBundleCoverage coverageCov : coverageList) {
          if (maxMethod < coverageCov.getMethodCounter().getCoveredCount()) {
 			 maxMethod = coverageCov.getMethodCounter().getCoveredCount();
 		 }
@@ -153,6 +155,15 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		 if (maxClazz < coverageCov.getClassCounter().getCoveredCount()) {
 			 maxClazz = coverageCov.getClassCounter().getCoveredCount();
 		 }
+    	}
+    	for (ModuleReport report:  reportList) {
+   		 report.maxClazz = maxClazz;
+   		 report.maxBranch = maxBranch;
+   		 report.maxMethod = maxMethod;
+   		 report.maxLine = maxLine;
+   		 report.maxComplexity = maxComplexity;
+   		 report.maxInstruction = maxInstruction;
+   	   } 
 	}
 
 	

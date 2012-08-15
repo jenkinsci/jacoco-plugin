@@ -42,6 +42,9 @@
       <col width="10%"/>
       <tr>
         <td>
+          <f:textbox field="moduleName" default="ModuleName" />
+        </td>
+        <td>
           <f:textbox field="execFile" default="target/jacoco.exec" />
         </td>
       

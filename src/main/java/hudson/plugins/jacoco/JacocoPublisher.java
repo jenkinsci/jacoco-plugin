@@ -105,19 +105,18 @@ public class JacocoPublisher extends Recorder {
             build.setResult(Result.FAILURE);
             return true;
         } else {
-        	/*String found = "";
-        	for (FilePath f: reports) 
-        		found += "\n          " + f.getRemote();
-            logger.println("JaCoCo: found " + reports.length  + " report files: " + found );*/
-        	logger.println("[JaCoCo plugin] " + configRows + " jacoco.exec locations are configured");
+        	logger.println("[JaCoCo plugin] Saving "+ configRows.size()+ " module information.");
+        	for (ConfigRow row: configRows) {
+        		logger.println("[JaCoCo plugin] " + row + " locations are configured");
+        	}
         }
         
         
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
         for (int i=0;i<configRows.size();++i) {
         	ModuleInfo moduleInfo = new ModuleInfo();
-        
-	        FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
+        	moduleInfo.setName(configRows.get(i).getModuleName());
+        	FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
 	        FilePath actualDestination = new FilePath(actualBuildModuleDir, "classes");
 	        moduleInfo.setClassDir(actualDestination);
 	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), configRows.get(i).getClassDir())));
@@ -132,13 +131,11 @@ public class JacocoPublisher extends Recorder {
 	        moduleInfo.setExecFile(seged);
 	        execfile.copyTo(seged);
 	        
-	        moduleInfo.setTitle(new File(actualBuildModuleDir.getRemote()).getName());
 	        actualDestination = new FilePath(actualBuildModuleDir, "jenkins-jacoco");
 	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
 	        moduleInfo.setGeneratedHTMLsDir(actualDestination);
 	        reports.add(moduleInfo);
         }
-       // logger.println("JaCoCo: stored " + reports.length + " report files in the build folder: "+ jacocofolder);
         
         final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
         action.setReports(reports);

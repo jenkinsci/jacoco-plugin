@@ -53,7 +53,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable {
 	
     public final AbstractBuild<?,?> owner;
-    private final PrintStream logger;
+    public final PrintStream logger;
     private transient WeakReference<CoverageReport> report;
     public ArrayList<ModuleInfo> reports;
 

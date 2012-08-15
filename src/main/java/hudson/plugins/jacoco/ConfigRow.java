@@ -8,16 +8,26 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class ConfigRow extends AbstractDescribableImpl<ConfigRow> {
 
+	private String moduleName;
 	private String srcDir;
 	private String classDir;
 	private String execFile;
 
 	@DataBoundConstructor
-	public ConfigRow(String srcDir, String classDir, String execFile) {
+	public ConfigRow(String moduleName, String srcDir, String classDir, String execFile) {
 		super();
+		this.moduleName = moduleName;
 		this.srcDir = srcDir;
 		this.classDir = classDir;
 		this.execFile = execFile;
+	}
+
+	public String getModuleName() {
+		return moduleName;
+	}
+
+	public void setModuleName(String moduleName) {
+		this.moduleName = moduleName;
 	}
 
 	public String getSrcDir() {
@@ -46,7 +56,7 @@ public class ConfigRow extends AbstractDescribableImpl<ConfigRow> {
 
     @Override
 	public String toString() {
-		return "ConfigRow [srcDir=" + srcDir + ", classDir=" + classDir
+		return "ConfigRow [moduleName=" +moduleName+ "srcDir=" + srcDir + ", classDir=" + classDir
 				+ ", execFile=" + execFile + "]";
 	}
 
