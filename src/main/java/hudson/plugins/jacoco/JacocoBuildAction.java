@@ -241,13 +241,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		/*if (path.isDirectory()) {
-			return path.list("*xml");
-		} else {
-			// Read old builds (before 1.11) 
-			FilePath report = new FilePath(new File(path.getName() + ".xml"));
-			return report.exists() ? new FilePath[]{report} : new FilePath[0];
-		}*/
 		return reports;
 	}
 
@@ -323,7 +316,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
            // InputStream in = f.read();
             try {
                 ratios = loadRatios(moduleInfo, ratios);
-            } catch (XmlPullParserException e) {
+            } catch (IOException e) {
                 throw new IOException2("Failed to parse modules.", e);
             }    
         }
@@ -338,9 +331,8 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
      * @param ratios
      * @return
      * @throws IOException
-     * @throws XmlPullParserException
      */
-    private static Map<Type, Coverage> loadRatios(ModuleInfo in, Map<Type, Coverage> ratios) throws IOException, XmlPullParserException {
+    private static Map<Type, Coverage> loadRatios(ModuleInfo in, Map<Type, Coverage> ratios) throws IOException {
 
         if (ratios == null) {
             ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();
@@ -348,27 +340,27 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         IBundleCoverage bundleCoverage = in.create();
         
         Coverage ratio = new Coverage();
-        ratio.accumulate(bundleCoverage.getClassCounter().getMissedCount(), bundleCoverage.getClassCounter().getCoveredCount());
+        ratio.accumulatePP(bundleCoverage.getClassCounter().getMissedCount(), bundleCoverage.getClassCounter().getCoveredCount());
         ratios.put(CoverageElement.Type.CLASS, ratio);
         
         ratio = new Coverage();
-        ratio.accumulate(bundleCoverage.getBranchCounter().getMissedCount(), bundleCoverage.getBranchCounter().getCoveredCount());
+        ratio.accumulatePP(bundleCoverage.getBranchCounter().getMissedCount(), bundleCoverage.getBranchCounter().getCoveredCount());
         ratios.put(CoverageElement.Type.BRANCH, ratio);
         
         ratio = new Coverage();
-        ratio.accumulate(bundleCoverage.getInstructionCounter().getMissedCount(), bundleCoverage.getInstructionCounter().getCoveredCount());
+        ratio.accumulatePP(bundleCoverage.getInstructionCounter().getMissedCount(), bundleCoverage.getInstructionCounter().getCoveredCount());
         ratios.put(CoverageElement.Type.INSTRUCTION, ratio);
         
         ratio = new Coverage();
-        ratio.accumulate(bundleCoverage.getMethodCounter().getMissedCount(), bundleCoverage.getMethodCounter().getCoveredCount());
+        ratio.accumulatePP(bundleCoverage.getMethodCounter().getMissedCount(), bundleCoverage.getMethodCounter().getCoveredCount());
         ratios.put(CoverageElement.Type.METHOD, ratio);
         
         ratio = new Coverage();
-        ratio.accumulate(bundleCoverage.getComplexityCounter().getMissedCount(), bundleCoverage.getComplexityCounter().getCoveredCount());
+        ratio.accumulatePP(bundleCoverage.getComplexityCounter().getMissedCount(), bundleCoverage.getComplexityCounter().getCoveredCount());
         ratios.put(CoverageElement.Type.COMPLEXITY, ratio);
         
         ratio = new Coverage();
-        ratio.accumulate(bundleCoverage.getLineCounter().getMissedCount(), bundleCoverage.getLineCounter().getCoveredCount());
+        ratio.accumulatePP(bundleCoverage.getLineCounter().getMissedCount(), bundleCoverage.getLineCounter().getCoveredCount());
         ratios.put(CoverageElement.Type.LINE, ratio);
         
         return ratios;

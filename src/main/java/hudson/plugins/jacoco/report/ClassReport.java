@@ -28,7 +28,7 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
         getChildren().put(child.getName(), child);
     }
 	
-	public void reSetMaximumsMethod(ArrayList<MethodReport> reportList,
+	public void reSetMaximums(ArrayList<MethodReport> reportList,
     		ArrayList<IMethodCoverage> coverageList) {
     	 int maxMethod=1;
     	 int maxLine=1;

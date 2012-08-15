@@ -46,82 +46,95 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     }
     
     public CoverageReport(JacocoBuildAction action, ArrayList<ModuleInfo> reports ) throws IOException {
-        this(action);
-        for (ModuleInfo is: reports) {
-        	Coverage tempCov = new Coverage();
-            tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
-            this.branch = tempCov;
-            tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
-        	this.line = tempCov;
-        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
-        	this.complexity = tempCov;
-        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
-        	this.clazz = tempCov;
-        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
-        	this.instruction = tempCov;
-        	tempCov.accumulatePP(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
-        	this.method = tempCov;
+    	this(action);
+    	try {
+	        for (ModuleInfo is: reports) {
+	        	Coverage tempCov = new Coverage();
+	            tempCov.accumulate(is.getBundleCoverage().getBranchCounter().getMissedCount(), is.getBundleCoverage().getBranchCounter().getCoveredCount());
+	            this.branch.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	            tempCov.accumulatePP(is.getBundleCoverage().getLineCounter().getMissedCount(), is.getBundleCoverage().getLineCounter().getCoveredCount());
+	        	this.line.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov.accumulatePP(is.getBundleCoverage().getComplexityCounter().getMissedCount(), is.getBundleCoverage().getComplexityCounter().getCoveredCount());
+	        	this.complexity.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov.accumulatePP(is.getBundleCoverage().getClassCounter().getMissedCount(), is.getBundleCoverage().getClassCounter().getCoveredCount());
+	        	this.clazz.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov.accumulatePP(is.getBundleCoverage().getInstructionCounter().getMissedCount(), is.getBundleCoverage().getInstructionCounter().getCoveredCount());
+	        	this.instruction.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov.accumulatePP(is.getBundleCoverage().getMethodCounter().getMissedCount(), is.getBundleCoverage().getMethodCounter().getCoveredCount());
+	        	this.method.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        }
+	        
+	        ArrayList<IBundleCoverage> moduleList = new ArrayList<IBundleCoverage>();
+			ArrayList<ModuleReport> moduleReportList = new ArrayList<ModuleReport>();
+	        for (ModuleInfo moduleInfo: reports) {
+	          
+	        	  ModuleReport moduleReport = new ModuleReport();
+	        	  moduleReport.setName(moduleInfo.getBundleCoverage().getName());
+	        	  moduleReport.setParent(this);
+	        	  if (moduleInfo.getBundleCoverage() !=null ) {
+	        		  moduleList.add(moduleInfo.getBundleCoverage());
+	        		  setCoverage(moduleReport, moduleInfo.getBundleCoverage());
+	        		  
+	        		  
+	        		  ArrayList<IPackageCoverage> packageList = new ArrayList<IPackageCoverage>(moduleInfo.getBundleCoverage().getPackages());
+	        		  ArrayList<PackageReport> packageReportList = new ArrayList<PackageReport>();
+	        		  for (IPackageCoverage packageCov: packageList) {
+	        			  PackageReport packageReport = new PackageReport();
+	        			  packageReport.setName(packageCov.getName());
+	        			  packageReport.setParent(moduleReport);
+	        			  setCoverage(packageReport, packageCov);
+	        			  
+	        			  
+	        			  ArrayList<IClassCoverage> classList = new ArrayList<IClassCoverage>(packageCov.getClasses());
+	        			  ArrayList<ClassReport> classReportList = new ArrayList<ClassReport>();
+	        			  for (IClassCoverage classCov: classList) {
+	        				  ClassReport classReport = new ClassReport();
+	        				  classReport.setName(classCov.getName());
+	        				  classReport.setParent(packageReport);
+	            			  setCoverage(classReport, classCov);
+	            			  
+	            			  
+	            			  ArrayList<IMethodCoverage> methodList = new ArrayList<IMethodCoverage>(classCov.getMethods());
+	            			  ArrayList<MethodReport> methodReportList = new ArrayList<MethodReport>();
+	            			  for (IMethodCoverage methodCov: methodList) {
+	            				  MethodReport methodReport = new MethodReport();
+	            				  methodReport.setName(methodCov.getName());
+	            				  methodReport.setParent(classReport);
+	            				  methodReport.setCoverage(methodCov);
+	                			  //methodReport.sourceFilePath = action.getBuild().getRootDir().getPath()+"/jacoco/index.html";
+	                			  classReport.add(methodReport);
+	                			  methodReportList.add(methodReport);
+	            			  }
+	            			  classReport.reSetMaximums(methodReportList,methodList);
+	            			  
+	            			  
+	            			  packageReport.add(classReport);
+	            			  classReportList.add(classReport);
+	        			  }
+	        			  packageReport.reSetMaximums(classReportList,classList);
+	        			  
+	        			  
+	        			  moduleReport.add(packageReport);
+	        			  packageReportList.add(packageReport);
+	        		  }
+	        		  moduleReport.reSetMaximums(packageReportList,packageList);
+	        	  }
+	        	  reSetMaximums(moduleInfo.getBundleCoverage());
+	        	  moduleReportList.add(moduleReport);
+	        	  
+	        	  this.add(moduleReport);
+	          
+	          
+	         
+	        }
+	        setParent(null);
+    	} catch (Exception e) {
+            e.printStackTrace();
         }
-        
-        ArrayList<IBundleCoverage> moduleList = new ArrayList<IBundleCoverage>();
-		ArrayList<ModuleReport> moduleReportList = new ArrayList<ModuleReport>();
-        for (ModuleInfo is: reports) {
-          try {
-        	  ModuleReport moduleReport = new ModuleReport();
-        	  moduleReport.setName(is.getBundleCoverage().getName());
-        	  moduleReport.setParent(this);
-        	  
-        	  if (is.getBundleCoverage() !=null ) {
-        		  moduleList.add(is.getBundleCoverage());
-        		  
-        		  setCoverage(this,is.getBundleCoverage());
-        		  
-        		  ArrayList<IPackageCoverage> packageList = new ArrayList<IPackageCoverage>(is.getBundleCoverage().getPackages());
-        		  ArrayList<PackageReport> packageReportList = new ArrayList<PackageReport>();
-        		  for (IPackageCoverage packageCov: packageList) {
-        			  PackageReport packageReport = new PackageReport();
-        			  packageReport.setName(packageCov.getName());
-        			  packageReport.setParent(moduleReport);
-        			  setCoverage(packageReport, packageCov);
-        			  ArrayList<IClassCoverage> classList = new ArrayList<IClassCoverage>(packageCov.getClasses());
-        			  ArrayList<ClassReport> classReportList = new ArrayList<ClassReport>();
-        			  for (IClassCoverage classCov: classList) {
-        				  ClassReport classReport = new ClassReport();
-        				  classReport.setName(classCov.getName());
-        				  classReport.setParent(packageReport);
-            			  setCoverage(classReport, classCov);
-            			  ArrayList<IMethodCoverage> methodList = new ArrayList<IMethodCoverage>(classCov.getMethods());
-            			  ArrayList<MethodReport> methodReportList = new ArrayList<MethodReport>();
-            			  for (IMethodCoverage methodCov: methodList) {
-            				  MethodReport methodReport = new MethodReport();
-            				  methodReport.setName(methodCov.getName());
-            				  methodReport.setParent(classReport);
-            				  methodReport.setCoverage(methodCov);
-                			  //methodReport.sourceFilePath = action.getBuild().getRootDir().getPath()+"/jacoco/index.html";
-                			  classReport.add(methodReport);
-                			  methodReportList.add(methodReport);
-            			  }
-            			  classReport.reSetMaximumsMethod(methodReportList,methodList);
-            			  packageReport.add(classReport);
-            			  classReportList.add(classReport);
-        			  }
-        			  packageReport.reSetMaximumsClass(classReportList,classList);
-        			  moduleReport.add(packageReport);
-        			  packageReportList.add(packageReport);
-        		  }
-        		  reSetMaximumsPackage(packageReportList,packageList);
-        	  }
-        	  reSetMaximumsBundle(is.getBundleCoverage());
-        	  
-          } catch (Exception e) {
-              e.printStackTrace();
-          }
-        }
-        setParent(null);
     }
     
     
-    private void reSetMaximumsBundle(IBundleCoverage coverageCov) {
+    private void reSetMaximums(IBundleCoverage coverageCov) {
          if (maxMethod < coverageCov.getMethodCounter().getCoveredCount()) {
 			 maxMethod = coverageCov.getMethodCounter().getCoveredCount();
 		 }
@@ -142,45 +155,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		 }
 	}
 
-	private  void reSetMaximumsPackage(ArrayList<PackageReport> reportList,
-    		ArrayList<IPackageCoverage> coverageList) {
-    	 int maxClazz = 1;
-    	 int maxMethod=1;
-    	 int maxLine=1;
-    	 int maxComplexity=1;
-    	 int maxInstruction=1;
-    	 int maxBranch=1;
-    	 
-    	 for (ICoverageNode coverageCov: coverageList) {
-    		 
-    		 if (maxMethod < coverageCov.getMethodCounter().getCoveredCount()) {
-    			 maxMethod = coverageCov.getMethodCounter().getCoveredCount();
-    		 }
-    		 if (maxLine < coverageCov.getLineCounter().getCoveredCount()) {
-    			 maxLine = coverageCov.getLineCounter().getCoveredCount();
-    		 }
-    		 if (maxComplexity < coverageCov.getComplexityCounter().getCoveredCount()) {
-    			 maxComplexity = coverageCov.getComplexityCounter().getCoveredCount();
-    		 }
-    		 if (maxInstruction < coverageCov.getInstructionCounter().getCoveredCount()) {
-    			 maxInstruction = coverageCov.getInstructionCounter().getCoveredCount();
-    		 }
-    		 if (maxBranch < coverageCov.getBranchCounter().getCoveredCount()) {
-    			 maxBranch = coverageCov.getBranchCounter().getCoveredCount();
-    		 }
-    		 if (maxClazz < coverageCov.getClassCounter().getCoveredCount()) {
-    			 maxClazz = coverageCov.getClassCounter().getCoveredCount();
-    		 }
-    	 }
-    	 for (PackageReport report:  reportList) {
-    		 report.setMaxClazz(maxClazz);
-    		 report.setMaxBranch(maxBranch);
-    		 report.setMaxMethod(maxMethod);
-    		 report.setMaxLine(maxLine);
-    		 report.setMaxComplexity(maxComplexity);
-    		 report.setMaxInstruction(maxInstruction);
-    	 }
-    }
+	
     
 
 	private  < ReportType extends AggregatedReport > void setCoverage( ReportType reportToSet, ICoverageNode covReport) {

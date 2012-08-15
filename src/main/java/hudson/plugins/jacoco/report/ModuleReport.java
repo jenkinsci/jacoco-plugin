@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.analysis.IPackageCoverage;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -19,17 +20,14 @@ public final class ModuleReport extends AggregatedReport<CoverageReport,ModuleRe
     public void setName(String name) {
         super.setName(name.replaceAll("/", "."));
     }
-    /*
+    
     @Override
     public void add(PackageReport child) {
-    	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
-    	child.setName(newChildName);
-    	//child.buildURL = this.getParent().getBuild().getUrl();
         this.getChildren().put(child.getName(), child);
-        logger.log(Level.INFO, "PackageReport");
+        logger.log(Level.INFO, "ModuleReport");
     }
-    public  void reSetMaximumsClass(ArrayList<ClassReport> reportList,
-    		ArrayList<IClassCoverage> coverageList) {
+    public  void reSetMaximums(ArrayList<PackageReport> reportList,
+    		ArrayList<IPackageCoverage> coverageList) {
     	 int maxClazz = 1;
     	 int maxMethod=1;
     	 int maxLine=1;
@@ -57,7 +55,7 @@ public final class ModuleReport extends AggregatedReport<CoverageReport,ModuleRe
     			 maxBranch = coverageCov.getBranchCounter().getCoveredCount();
     		 }
     	 }
-    	 for (ClassReport report:  reportList) {
+    	 for (PackageReport report:  reportList) {
     		 report.maxClazz = maxClazz;
     		 report.maxBranch = maxBranch;
     		 report.maxMethod = maxMethod;
@@ -66,6 +64,6 @@ public final class ModuleReport extends AggregatedReport<CoverageReport,ModuleRe
     		 report.maxInstruction = maxInstruction;
     	 }
     }
-    private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());*/
+    private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
     
 }

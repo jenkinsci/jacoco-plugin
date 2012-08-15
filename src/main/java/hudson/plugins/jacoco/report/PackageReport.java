@@ -28,7 +28,7 @@ public final class PackageReport extends AggregatedReport<ModuleReport,PackageRe
         this.getChildren().put(child.getName(), child);
         logger.log(Level.INFO, "PackageReport");
     }
-    public  void reSetMaximumsClass(ArrayList<ClassReport> reportList,
+    public  void reSetMaximums(ArrayList<ClassReport> reportList,
     		ArrayList<IClassCoverage> coverageList) {
     	 int maxClazz = 1;
     	 int maxMethod=1;
