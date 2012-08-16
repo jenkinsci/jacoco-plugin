@@ -76,7 +76,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
             br = new BufferedReader(new FileReader(filePath));
             String line = null;
             while ((line = br.readLine()) != null) {
-            	aList.add(line);
+            	aList.add(line.replaceAll("\t", "    ").replaceAll("<", "&lt"));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -164,7 +164,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 			
 			readFile(sourceFilePath);
 			buf.append(sourceFilePath+" lineSize:  "+this.sourceLines.size()).append("<br>");
-			
+			buf.append("<code>");
 			for (int i=1;i<=this.sourceLines.size(); ++i) {
 				if ((methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.FULLY_COVERED) || (methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.PARTLY_COVERED)) {
 					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #ffff00\">").append(sourceLines.get(i-1)).append("</SPAN>").append("<br>");
@@ -172,6 +172,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 					buf.append(i + ": ").append(sourceLines.get(i-1)).append("<br>");
 				}
 			}
+			buf.append("</code>");
 		} catch (FileNotFoundException e) {
 			buf.append("ERROR: Sourcefile does not exist!");
 		} catch (IOException e) {
