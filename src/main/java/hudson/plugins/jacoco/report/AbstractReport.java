@@ -66,6 +66,7 @@ public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>
 
     @Override
     public AbstractBuild<?,?> getBuild() {
-        return parent.getBuild();
+    	return parent.getBuild();
     }
+    
 }

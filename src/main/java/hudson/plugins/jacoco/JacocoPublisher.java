@@ -65,7 +65,7 @@ public class JacocoPublisher extends Recorder {
     	this.configRows = configRows != null ? new ArrayList<ConfigRow>(configRows) : new ArrayList<ConfigRow>();
 	}
 
-    public ArrayList<ConfigRow> getReportTargets() {
+    public ArrayList<ConfigRow> getConfigRows() {
 		return configRows;
 	}
     
@@ -115,7 +115,7 @@ public class JacocoPublisher extends Recorder {
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
         for (int i=0;i<configRows.size();++i) {
         	ModuleInfo moduleInfo = new ModuleInfo();
-        	moduleInfo.setName(configRows.get(i).getModuleName());
+        	moduleInfo.setName("module"+i);
         	FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
 	        FilePath actualDestination = new FilePath(actualBuildModuleDir, "classes");
 	        moduleInfo.setClassDir(actualDestination);

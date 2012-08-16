@@ -225,6 +225,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			while(true){
 				if ((checkPath=new FilePath(path,"module"+i)).exists()) {
 					ModuleInfo moduleInfo = new ModuleInfo();
+					moduleInfo.setName("module"+i);
 					moduleInfo.setClassDir(new FilePath(checkPath, "classes"));
 					moduleInfo.setSrcDir(new FilePath(checkPath, "src"));
 					moduleInfo.setExecFile(new FilePath(checkPath, "jacoco.exec"));

@@ -42,16 +42,21 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     	try {
 	        for (ModuleInfo moduleInfo: reports) {
 	        	Coverage tempCov = new Coverage();
-	            tempCov.accumulate(moduleInfo.getBundleCoverage().getBranchCounter().getMissedCount(), moduleInfo.getBundleCoverage().getBranchCounter().getCoveredCount());
+	            tempCov.accumulatePP(moduleInfo.getBundleCoverage().getBranchCounter().getMissedCount(), moduleInfo.getBundleCoverage().getBranchCounter().getCoveredCount());
 	            this.branch.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	            tempCov = new Coverage();
 	            tempCov.accumulatePP(moduleInfo.getBundleCoverage().getLineCounter().getMissedCount(), moduleInfo.getBundleCoverage().getLineCounter().getCoveredCount());
 	        	this.line.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov = new Coverage();
 	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getComplexityCounter().getMissedCount(), moduleInfo.getBundleCoverage().getComplexityCounter().getCoveredCount());
 	        	this.complexity.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov = new Coverage();
 	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getClassCounter().getMissedCount(), moduleInfo.getBundleCoverage().getClassCounter().getCoveredCount());
 	        	this.clazz.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov = new Coverage();
 	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getInstructionCounter().getMissedCount(), moduleInfo.getBundleCoverage().getInstructionCounter().getCoveredCount());
 	        	this.instruction.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
+	        	tempCov = new Coverage();
 	        	tempCov.accumulatePP(moduleInfo.getBundleCoverage().getMethodCounter().getMissedCount(), moduleInfo.getBundleCoverage().getMethodCounter().getCoveredCount());
 	        	this.method.accumulatePP(tempCov.getMissed(), tempCov.getCovered());
 	        }
@@ -71,7 +76,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	        for (ModuleInfo moduleInfo: reports) {
 	          
 	        	  ModuleReport moduleReport = new ModuleReport();
-	        	  action.logger.println("[JaCoCo plugin] Loading module: " + moduleInfo.getBundleCoverage().getName());
+	        	  action.logger.println("[JaCoCo plugin] Loading module: " + moduleInfo.getName());
 	        	  moduleReport.setName(moduleInfo.getName());
 	        	  moduleReport.setParent(this);
 	        	  if (moduleInfo.getBundleCoverage() !=null ) {
@@ -96,7 +101,9 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	        				  classReport.setParent(packageReport);
 	            			  setCoverage(classReport, classCov);
 	            			  
-	            			  
+	            			  //SourceFileReport sourceFileReport = new SourceFileReport();
+	            			  //sourceFileReport.setName(classReport.getName());
+	            			 
 	            			  ArrayList<IMethodCoverage> methodList = new ArrayList<IMethodCoverage>(classCov.getMethods());
 	            			  ArrayList<MethodReport> methodReportList = new ArrayList<MethodReport>();
 	            			  for (IMethodCoverage methodCov: methodList) {
@@ -104,6 +111,12 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	            				  methodReport.setName(methodCov.getName());
 	            				  methodReport.setParent(classReport);
 	            				  methodReport.setCoverage(methodCov);
+	            				  methodReport.setSrcFileInfo(methodCov, moduleInfo.getSrcDir()+ "/" + packageCov.getName() + "/"+ classCov.getSourceFileName());
+	            				  //methodReport.add(sourceFileReport);
+	            				  //methodReport.readFile(moduleInfo.getClassDir().getRemote()+"/html/Agave.java.html");
+	            				  //sourceFileReport.setParent(methodReport);
+	            				  
+	            				
 	                			  classReport.add(methodReport);
 	                			  methodReportList.add(methodReport);
 	            			  }
