@@ -56,15 +56,6 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 		return super.getDisplayName();
 	}
 	
-	public void setLine(String line) {
-		this.lineNo = line;
-	}
-	
-	public String getLine() {
-		return lineNo;
-	}
-	
-	
 	
 	public void readFile(String filePath) throws java.io.FileNotFoundException,
     java.io.IOException {
@@ -76,7 +67,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
             br = new BufferedReader(new FileReader(filePath));
             String line = null;
             while ((line = br.readLine()) != null) {
-            	aList.add(line.replaceAll("\t", "    ").replaceAll("<", "&lt"));
+            	aList.add(line.replaceAll("\\t","    ").replaceAll("<", "&lt"));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -113,13 +104,6 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 		return buf.toString();
 	}
 	
-	public String writeOut() {
-		StringBuilder buf = new StringBuilder();
-		for (String line : sourceLines) {
-			buf.append(line);
-		}
-		return buf.toString();
-	}
 	@Override
 	public void add(SourceFileReport child) {
     	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
@@ -167,7 +151,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 			buf.append("<code>");
 			for (int i=1;i<=this.sourceLines.size(); ++i) {
 				if ((methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.FULLY_COVERED) || (methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.PARTLY_COVERED)) {
-					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #ffff00\">").append(sourceLines.get(i-1)).append("</SPAN>").append("<br>");
+					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #ffff00\">"+ sourceLines.get(i-1)).append("</SPAN>").append("<br>");
 				} else {
 					buf.append(i + ": ").append(sourceLines.get(i-1)).append("<br>");
 				}

@@ -11,23 +11,20 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.plugins.jacoco.model.ModuleInfo;
 import hudson.plugins.jacoco.report.CoverageReport;
-import hudson.plugins.jacoco.report.ReportFactory;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Properties;
 import java.util.logging.Logger;
 
-import net.sf.json.JSONObject;
-
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
 
 
 /**
@@ -111,11 +108,13 @@ public class JacocoPublisher extends Recorder {
         	}
         }
         
-        
+        Properties props = new Properties();  
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
         for (int i=0;i<configRows.size();++i) {
         	ModuleInfo moduleInfo = new ModuleInfo();
         	moduleInfo.setName("module"+i);
+	        props.setProperty("module"+i, configRows.get(i).getModuleName());  
+	        
         	FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
 	        FilePath actualDestination = new FilePath(actualBuildModuleDir, "classes");
 	        moduleInfo.setClassDir(actualDestination);
@@ -131,11 +130,13 @@ public class JacocoPublisher extends Recorder {
 	        moduleInfo.setExecFile(seged);
 	        execfile.copyTo(seged);
 	        
-	        actualDestination = new FilePath(actualBuildModuleDir, "jenkins-jacoco");
-	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
-	        moduleInfo.setGeneratedHTMLsDir(actualDestination);
+	        //actualDestination = new FilePath(actualBuildModuleDir, "jenkins-jacoco");
+	        //saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
+	        //moduleInfo.setGeneratedHTMLsDir(actualDestination);
 	        reports.add(moduleInfo);
         }
+        	FileOutputStream fos = null;
+        	props.store((fos = new FileOutputStream(actualBuildDirRoot+"/Modules.properties")), "List of modules. Generated automatically.");
         
         final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
         action.setReports(reports);
@@ -148,11 +149,6 @@ public class JacocoPublisher extends Recorder {
             logger.println("JaCoCo: Could not parse coverage results. Setting Build to failure.");
             build.setResult(Result.FAILURE);
         }
-        /*} else if (result.isFailed()) {
-            logger.println("JaCoCo: code coverage enforcement failed. Setting Build to unstable.");
-            build.setResult(Result.UNSTABLE);
-        }*/
-      //  logger.log(Level.WARNING, "ReportFactory failed!");
         return true;
     }
 

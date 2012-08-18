@@ -1,6 +1,7 @@
 package hudson.plugins.jacoco;
 
 import hudson.FilePath;
+import hudson.model.BuildListener;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.model.Result;
@@ -11,14 +12,10 @@ import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
 import hudson.plugins.jacoco.model.ModuleInfo;
 import hudson.plugins.jacoco.report.CoverageReport;
-import hudson.plugins.jacoco.report.ReportFactory;
-import hudson.model.BuildListener;
 import hudson.util.IOException2;
-import hudson.util.NullStream;
-import hudson.util.StreamTaskListener;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -28,20 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Properties;
 
-import org.jacoco.core.analysis.Analyzer;
-import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
-import org.jacoco.core.data.ExecutionDataReader;
-import org.jacoco.core.data.ExecutionDataStore;
-import org.jacoco.core.data.SessionInfoStore;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 /**
  * Build view extension by JaCoCo plugin.
@@ -206,26 +194,22 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         return owner;
     }
     
-	/*protected static FilePath[] getJacocoReports(File file) throws IOException, InterruptedException {
-		FilePath path = new FilePath(file);
-		if (path.isDirectory()) {
-			return path.list("*xml");
-		} else {
-			// Read old builds (before 1.11) 
-			FilePath report = new FilePath(new File(path.getName() + ".xml"));
-			return report.exists() ? new FilePath[]{report} : new FilePath[0];
-		}
-	}*/
+	
 	protected static ArrayList<ModuleInfo> getJacocoReports(File file) throws IOException {
 		FilePath path = new FilePath(file);
 		ArrayList<ModuleInfo> reports= new ArrayList<ModuleInfo>();
 		int i=0;
 		try {
 			FilePath checkPath=null;
+			Properties props = new Properties();
+			props.load((new FileReader(path+"/Modules.properties")));
+			//props.load(new File(path+"/Modules.properties"));
 			while(true){
+				
 				if ((checkPath=new FilePath(path,"module"+i)).exists()) {
+					
 					ModuleInfo moduleInfo = new ModuleInfo();
-					moduleInfo.setName("module"+i);
+					moduleInfo.setName(props.getProperty("module"+i));
 					moduleInfo.setClassDir(new FilePath(checkPath, "classes"));
 					moduleInfo.setSrcDir(new FilePath(checkPath, "src"));
 					moduleInfo.setExecFile(new FilePath(checkPath, "jacoco.exec"));
@@ -260,19 +244,8 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         try {
         	ArrayList<ModuleInfo> reports = getJacocoReports(reportFolder);
             CoverageReport r = new CoverageReport(this, reports);
-
-           /* if(rule!=null) {
-                // we change the report so that the FAILED flag is set correctly
-                logger.println("calculating failed packages based on " + rule);
-                rule.enforce(r,new StreamTaskListener(new NullStream()));
-            }*/
-
             report = new WeakReference<CoverageReport>(r);
             return r;
-        /*} catch (InterruptedException e) {
-            logger.println("Failed to load " + reportFolder);
-            e.printStackTrace(logger);
-            return null;*/
         } catch (IOException e) {
             logger.println("Failed to load " + reportFolder);
             e.printStackTrace(logger);
