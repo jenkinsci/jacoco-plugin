@@ -2,7 +2,7 @@
   <l:layout xmlns:e="/hudson/plugins/jacoco/tags" norefresh="true" css="/plugin/jacoco/css/style.css">
     <st:include it="${it.build}" page="sidepanel.jelly" />
     <l:main-panel>
-      <h2>${%Source File}: ${it.name}</h2>
+      <h2>${%Method}: ${it.name}</h2>
 		${it.printHighlightedSrcFile()}
     </l:main-panel>
   </l:layout>
