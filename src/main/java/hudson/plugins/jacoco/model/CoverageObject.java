@@ -246,7 +246,6 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				.append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>").append("<div class='redbar' style='width: ").append(0 == ratio.getCovered() ? 100 :  ((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
 				.append("<span class='text'>").append("M:"+numerator).append(" ").append("C: "+ denominator)
 				.append("</span></div></div></td></tr></table>") ;
-		//(ratio.getCovered()/maximumCovered)*100
 	}
 
     /**
@@ -281,8 +280,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
                     dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
                     dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);*/
                     if (a.line != null) {
-                        dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_Line(), label);
-                        dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_Line(), label);
+                    	dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
+                        dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_LineCovered(), label);
                     }
                 }
 

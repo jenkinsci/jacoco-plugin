@@ -223,7 +223,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			}
 			
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return reports;
