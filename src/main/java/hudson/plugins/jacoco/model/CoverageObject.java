@@ -60,7 +60,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
     
   
 
-
+    /**
+     * Variables used to store which child has to highest coverage for each coverage type.
+     */
 	public int maxClazz=1;
     public int maxMethod=1;
     public int maxLine=1;

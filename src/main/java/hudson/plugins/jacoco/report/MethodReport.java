@@ -21,6 +21,7 @@ import org.jacoco.core.analysis.IMethodCoverage;
 /**
  * @author Kohsuke Kawaguchi
  * @author David Carver
+ * @author Ognjen Bubalo
  */
 //AggregatedReport<PackageReport,ClassReport,MethodReport>  -  AbstractReport<ClassReport,MethodReport>
 public final class MethodReport extends AggregatedReport<ClassReport,MethodReport, SourceFileReport> {
@@ -139,7 +140,6 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 	public void setSrcFileInfo(IMethodCoverage methodCov, String sourceFilePath) {
 		this.sourceFilePath = sourceFilePath;
 		this.methodCov = methodCov;
-		
 	}
 	
 	public String printHighlightedSrcFile() {

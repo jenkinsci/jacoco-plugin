@@ -19,9 +19,8 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
 	}
 	@Override
 	public void add(MethodReport child) {
-    	String newChildName = child.getName();//child.getName().replaceAll(this.getName() + ".", ""); 
+    	String newChildName = child.getName();
     	child.setName(newChildName);
-    	//child.setSourceFilePath(buildURL+"/"+this.getName().substring(this.getName().lastIndexOf(".")+1)+".html");
         getChildren().put(child.getName(), child);
     }
 	

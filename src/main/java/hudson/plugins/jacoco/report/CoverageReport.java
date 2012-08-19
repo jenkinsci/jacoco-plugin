@@ -37,6 +37,13 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
     	this(action);
     }
     
+    /**
+     * Loads the exec files using JaCoCo API. Creates the reporting objects and the report tree.
+     * 
+     * @param action
+     * @param reports
+     * @throws IOException
+     */
     public CoverageReport(JacocoBuildAction action, ArrayList<ModuleInfo> reports ) throws IOException {
     	this(action);
     	try {
@@ -101,8 +108,6 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	        				  classReport.setParent(packageReport);
 	            			  setCoverage(classReport, classCov);
 	            			  
-	            			  //SourceFileReport sourceFileReport = new SourceFileReport();
-	            			  //sourceFileReport.setName(classReport.getName());
 	            			 
 	            			  ArrayList<IMethodCoverage> methodList = new ArrayList<IMethodCoverage>(classCov.getMethods());
 	            			  ArrayList<MethodReport> methodReportList = new ArrayList<MethodReport>();
@@ -112,10 +117,6 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	            				  methodReport.setParent(classReport);
 	            				  methodReport.setCoverage(methodCov);
 	            				  methodReport.setSrcFileInfo(methodCov, moduleInfo.getSrcDir()+ "/" + packageCov.getName() + "/"+ classCov.getSourceFileName());
-	            				  //methodReport.add(sourceFileReport);
-	            				  //methodReport.readFile(moduleInfo.getClassDir().getRemote()+"/html/Agave.java.html");
-	            				  //sourceFileReport.setParent(methodReport);
-	            				  
 	            				
 	                			  classReport.add(methodReport);
 	                			  methodReportList.add(methodReport);

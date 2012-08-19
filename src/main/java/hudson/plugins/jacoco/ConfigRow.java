@@ -3,9 +3,17 @@ package hudson.plugins.jacoco;
 import hudson.Extension;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
+import hudson.plugins.jacoco.model.CoverageObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 
+
+/**
+ * Represents one row on the configuration page.
+ * 
+ * @author Jonathan Fuerth
+ * @author Ognjen Bubalo
+ */
 public class ConfigRow extends AbstractDescribableImpl<ConfigRow> {
 
 	private String moduleName;

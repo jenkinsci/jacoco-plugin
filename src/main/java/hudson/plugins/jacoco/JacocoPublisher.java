@@ -31,6 +31,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * {@link Publisher} that captures jacoco coverage reports.
  *
  * @author Kohsuke Kawaguchi
+ * @author Jonathan Fuerth
+ * @author Ognjen Bubalo
+ * 
  */
 public class JacocoPublisher extends Recorder {
     /**
@@ -55,8 +58,10 @@ public class JacocoPublisher extends Recorder {
      */
     public JacocoHealthReportThresholds healthReports = new JacocoHealthReportThresholds();
     
-    private int moduleNum;
-    
+    /**
+     * Loads the array of config rows.
+     * @param configRows
+     */
     @DataBoundConstructor
     public JacocoPublisher(ArrayList<ConfigRow> configRows) {
     	this.configRows = configRows != null ? new ArrayList<ConfigRow>(configRows) : new ArrayList<ConfigRow>();
@@ -73,6 +78,11 @@ public class JacocoPublisher extends Recorder {
 	}
 	
 	
+	/* 
+	 * Entry point of this report plugin.
+	 * 
+	 * @see hudson.tasks.BuildStepCompatibilityLayer#perform(hudson.model.AbstractBuild, hudson.Launcher, hudson.model.BuildListener)
+	 */
 	@Override
     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
 	
@@ -110,6 +120,8 @@ public class JacocoPublisher extends Recorder {
         
         Properties props = new Properties();  
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
+        
+        logger.println("[JaCoCo plugin] Saving module data..");
         for (int i=0;i<configRows.size();++i) {
         	ModuleInfo moduleInfo = new ModuleInfo();
         	moduleInfo.setName("module"+i);
@@ -136,14 +148,16 @@ public class JacocoPublisher extends Recorder {
 	        reports.add(moduleInfo);
         }
         	FileOutputStream fos = null;
+        logger.println("[JaCoCo plugin] Storing properties file..");
         	props.store((fos = new FileOutputStream(actualBuildDirRoot+"/Modules.properties")), "List of modules. Generated automatically.");
         
+        logger.println("[JaCoCo plugin] Loading EXEC files..");
         final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
         action.setReports(reports);
-        //logger.println("JaCoCo: " + action.getBuildHealth().getDescription());
 
         build.getActions().add(action);
-
+        
+        logger.println("[JaCoCo plugin] Publishing the results..");
         final CoverageReport result = action.getResult();
         if (result == null) {
             logger.println("JaCoCo: Could not parse coverage results. Setting Build to failure.");
