@@ -1,0 +1,22 @@
+<j:jelly xmlns:j="jelly:core">
+  <j:choose>
+    <j:when test="${it != null}">
+      <j:set var="coverageAmount" value="${it.getLineCoverage(job)}" />
+      <j:set var="coveragePercent" value="${it.getPercent(job)}" />
+      <j:set var="color" value="${it.getLineColor(coverageAmount)}" />
+      <j:set var="backgroundColor" value="${it.getFillColor(coverageAmount)}" />
+    </j:when>
+    <j:otherwise>
+      <j:set var="coverageAmount" value="${null}" />
+    </j:otherwise>
+  </j:choose>
+
+  <j:choose>
+    <j:when test="${coverageAmount != null}">
+      <td style="color:#${color}; background-color:#${backgroundColor};" data="${coverageAmount}" align="center">${coveragePercent}%</td>
+    </j:when>
+    <j:otherwise>
+      <td data="-" align="center"></td>
+    </j:otherwise>
+  </j:choose>
+</j:jelly>
