@@ -137,7 +137,7 @@ public class JacocoPublisher extends Recorder {
 	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), configRows.get(i).getSrcDir())));
 	       
 	        
-	        FilePath execfile = new FilePath(new File(build.getWorkspace().getRemote(), configRows.get(i).getExecFile()));
+	        FilePath execfile = new FilePath(build.getWorkspace(), configRows.get(i).getExecFile());
 	        FilePath seged = actualBuildModuleDir.child("jacoco.exec");
 	        moduleInfo.setExecFile(seged);
 	        execfile.copyTo(seged);
