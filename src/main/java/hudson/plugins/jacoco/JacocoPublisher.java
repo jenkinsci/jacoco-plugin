@@ -130,11 +130,11 @@ public class JacocoPublisher extends Recorder {
         	FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
 	        FilePath actualDestination = new FilePath(actualBuildModuleDir, "classes");
 	        moduleInfo.setClassDir(actualDestination);
-	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), configRows.get(i).getClassDir())));
+	        saveCoverageReports(actualDestination, new FilePath(build.getWorkspace(), configRows.get(i).getClassDir()));
 
 	        actualDestination = new FilePath(actualBuildModuleDir, "src");
 	        moduleInfo.setSrcDir(actualDestination);
-	        saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), configRows.get(i).getSrcDir())));
+	        saveCoverageReports(actualDestination, new FilePath(build.getWorkspace(), configRows.get(i).getSrcDir()));
 	       
 	        
 	        FilePath execfile = new FilePath(build.getWorkspace(), configRows.get(i).getExecFile());
