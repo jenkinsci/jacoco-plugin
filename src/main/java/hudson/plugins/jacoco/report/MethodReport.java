@@ -114,27 +114,6 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
         logger.log(Level.INFO, "SourceFileReport");
     }
 
-	public  void setCoverage(IMethodCoverage covReport) {
-  	  Coverage tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getBranchCounter().getMissedCount(), covReport.getBranchCounter().getCoveredCount());
-		  this.branch = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getLineCounter().getMissedCount(), covReport.getLineCounter().getCoveredCount());
-		  this.line = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getInstructionCounter().getMissedCount(), covReport.getInstructionCounter().getCoveredCount());
-		  this.instruction = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getMethodCounter().getMissedCount(), covReport.getMethodCounter().getCoveredCount());
-		  this.method = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getComplexityCounter().getMissedCount(), covReport.getComplexityCounter().getCoveredCount());
-		  this.complexity = tempCov;
-  }
 	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 
 	public void setSrcFileInfo(IMethodCoverage methodCov, String sourceFilePath) {

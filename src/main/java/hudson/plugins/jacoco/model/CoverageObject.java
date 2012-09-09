@@ -5,7 +5,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.Rule;
-import hudson.plugins.jacoco.report.ReportFactory;
+import hudson.plugins.jacoco.report.AggregatedReport;
 import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.ColorPalette;
@@ -19,11 +19,13 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.analysis.ICoverageNode;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
@@ -40,7 +42,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
-import org.kohsuke.stapler.jelly.ThisTagLibrary;
 
 
 /**
@@ -51,168 +52,170 @@ import org.kohsuke.stapler.jelly.ThisTagLibrary;
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
-    public Coverage clazz = new Coverage();
-    public Coverage method = new Coverage();
-    public Coverage line = new Coverage();
-    public Coverage complexity = new Coverage();
-    public Coverage instruction = new Coverage();
-    public Coverage branch = new Coverage();
-    
-  
+	public Coverage clazz = new Coverage();
+	public Coverage method = new Coverage();
+	public Coverage line = new Coverage();
+	public Coverage complexity = new Coverage();
+	public Coverage instruction = new Coverage();
+	public Coverage branch = new Coverage();
 
-    /**
-     * Variables used to store which child has to highest coverage for each coverage type.
-     */
+
+
+	/**
+	 * Variables used to store which child has to highest coverage for each coverage type.
+	 */
 	public int maxClazz=1;
-    public int maxMethod=1;
-    public int maxLine=1;
-    public int maxComplexity=1;
-    public int maxInstruction=1;
-    public int maxBranch=1;
-    
-    private volatile boolean failed = false;
+	public int maxMethod=1;
+	public int maxLine=1;
+	public int maxComplexity=1;
+	public int maxInstruction=1;
+	public int maxBranch=1;
 
-    public int getMaxClazz() {
-  		return maxClazz;
-  	}
+	private volatile boolean failed = false;
 
-  	public void setMaxClazz(int maxClazz) {
-  		this.maxClazz = maxClazz;
-  	}
+	public int getMaxClazz() {
+		return maxClazz;
+	}
 
-  	public int getMaxMethod() {
-  		return maxMethod;
-  	}
+	public void setMaxClazz(int maxClazz) {
+		this.maxClazz = maxClazz;
+	}
 
-  	public void setMaxMethod(int maxMethod) {
-  		this.maxMethod = maxMethod;
-  	}
+	public int getMaxMethod() {
+		return maxMethod;
+	}
 
-  	public int getMaxLine() {
-  		return maxLine;
-  	}
+	public void setMaxMethod(int maxMethod) {
+		this.maxMethod = maxMethod;
+	}
 
-  	public void setMaxLine(int maxLine) {
-  		this.maxLine = maxLine;
-  	}
+	public int getMaxLine() {
+		return maxLine;
+	}
 
-  	public int getMaxComplexity() {
-  		return maxComplexity;
-  	}
+	public void setMaxLine(int maxLine) {
+		this.maxLine = maxLine;
+	}
 
-  	public void setMaxComplexity(int maxComplexity) {
-  		this.maxComplexity = maxComplexity;
-  	}
+	public int getMaxComplexity() {
+		return maxComplexity;
+	}
 
-  	public int getMaxInstruction() {
-  		return maxInstruction;
-  	}
+	public void setMaxComplexity(int maxComplexity) {
+		this.maxComplexity = maxComplexity;
+	}
 
-  	public void setMaxInstruction(int maxInstruction) {
-  		this.maxInstruction = maxInstruction;
-  	}
+	public int getMaxInstruction() {
+		return maxInstruction;
+	}
 
-  	public int getMaxBranch() {
-  		return maxBranch;
-  	}
+	public void setMaxInstruction(int maxInstruction) {
+		this.maxInstruction = maxInstruction;
+	}
 
-  	public void setMaxBranch(int maxBranch) {
-  		this.maxBranch = maxBranch;
-  	}
-    
-    public boolean isFailed() {
-        return failed;
-    }
+	public int getMaxBranch() {
+		return maxBranch;
+	}
 
-    /**
-     * Marks this coverage object as failed.
-     * @see Rule
-     */
-    public void setFailed() {
-        failed = true;
-    }
+	public void setMaxBranch(int maxBranch) {
+		this.maxBranch = maxBranch;
+	}
 
-    @Exported(inline=true)
-    public Coverage getClassCoverage() {
-        return clazz;
-    }
+	public boolean isFailed() {
+		return failed;
+	}
 
-    @Exported(inline=true)
-    public Coverage getMethodCoverage() {
-        return method;
-    }
+	/**
+	 * Marks this coverage object as failed.
+	 * @see Rule
+	 */
+	public void setFailed() {
+		failed = true;
+	}
 
-    @Exported(inline=true)
-    public Coverage getComplexityScore() {
-        return complexity;
-    }
+	@Exported(inline=true)
+	public Coverage getClassCoverage() {
+		return clazz;
+	}
 
-    @Exported(inline=true)
-    public Coverage getInstructionCoverage() {
-        return instruction;
-    }
+	@Exported(inline=true)
+	public Coverage getMethodCoverage() {
+		return method;
+	}
 
-    @Exported(inline=true)
-    public Coverage getBranchCoverage() {
-        return branch;
-    }
+	@Exported(inline=true)
+	public Coverage getComplexityScore() {
+		return complexity;
+	}
 
-    /**
-     * Line coverage. Can be null if this information is not collected.
-     */
-    @Exported(inline=true)
-    public Coverage getLineCoverage() {
-        return line;
-    }
+	@Exported(inline=true)
+	public Coverage getInstructionCoverage() {
+		return instruction;
+	}
 
-    /**
-     * Gets the build object that owns the whole coverage report tree.
-     */
-    public abstract AbstractBuild<?,?> getBuild();
+	@Exported(inline=true)
+	public Coverage getBranchCoverage() {
+		return branch;
+	}
 
-    /**
-     * Gets the corresponding coverage report object in the previous
-     * run that has the record.
-     *
-     * @return
-     *      null if no earlier record was found.
-     */
-    @Exported
-    public abstract SELF getPreviousResult();
+	/**
+	 * Line coverage. Can be null if this information is not collected.
+	 */
+	@Exported(inline=true)
+	public Coverage getLineCoverage() {
+		return line;
+	}
 
-    /**
-     * Used in the view to print out four table columns with the coverage info.
-     */
-    public String printFourCoverageColumns() {
-        StringBuilder buf = new StringBuilder();
-        instruction.setType(CoverageElement.Type.INSTRUCTION);
-        clazz.setType(CoverageElement.Type.CLASS);
-        complexity.setType(CoverageElement.Type.COMPLEXITY);
-        branch.setType(CoverageElement.Type.BRANCH);
-        line.setType(CoverageElement.Type.LINE);
-        method.setType(CoverageElement.Type.METHOD);
-        printRatioCell(isFailed(), instruction, buf);
-        printRatioCell(isFailed(), branch, buf);
-        printRatioCell(isFailed(), complexity, buf);
-        printRatioCell(isFailed(), line, buf);
-        printRatioCell(isFailed(), method, buf);
-        printRatioCell(isFailed(), clazz, buf);
-        return buf.toString();
-    }
+	/**
+	 * Gets the build object that owns the whole coverage report tree.
+	 */
+	public abstract AbstractBuild<?,?> getBuild();
 
-    public boolean hasLineCoverage() {
-        return line.isInitialized();
-    }
+	/**
+	 * Gets the corresponding coverage report object in the previous
+	 * run that has the record.
+	 *
+	 * @return
+	 *      null if no earlier record was found.
+	 */
+	@Exported
+	public abstract SELF getPreviousResult();
+	
+	public CoverageObject getParent() {return null;}
 
-    public boolean hasClassCoverage() {
-        return clazz.isInitialized();
-    }
+	/**
+	 * Used in the view to print out four table columns with the coverage info.
+	 */
+	public String printFourCoverageColumns() {
+		StringBuilder buf = new StringBuilder();
+		instruction.setType(CoverageElement.Type.INSTRUCTION);
+		clazz.setType(CoverageElement.Type.CLASS);
+		complexity.setType(CoverageElement.Type.COMPLEXITY);
+		branch.setType(CoverageElement.Type.BRANCH);
+		line.setType(CoverageElement.Type.LINE);
+		method.setType(CoverageElement.Type.METHOD);
+		printRatioCell(isFailed(), instruction, buf);
+		printRatioCell(isFailed(), branch, buf);
+		printRatioCell(isFailed(), complexity, buf);
+		printRatioCell(isFailed(), line, buf);
+		printRatioCell(isFailed(), method, buf);
+		printRatioCell(isFailed(), clazz, buf);
+		return buf.toString();
+	}
 
-    
-    static NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
-    static NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
-    static NumberFormat intFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
-    
+	public boolean hasLineCoverage() {
+		return line.isInitialized();
+	}
+
+	public boolean hasClassCoverage() {
+		return clazz.isInitialized();
+	}
+
+
+	static NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
+	static NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
+	static NumberFormat intFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
+
 	protected void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
 		if (ratio != null && ratio.isInitialized()) {
 			String className = "nowrap" + (failed ? " red" : "");
@@ -223,150 +226,196 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			buf.append("</td>\n");
 		}
 	}
-	
+
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getMissed());
 		String denominator = intFormat.format(ratio.getCovered());
-		int maximumCovered = 1;
+		int maximumCovered = 2;
 		if (ratio.getType().equals(CoverageElement.Type.INSTRUCTION)) {
-			maximumCovered = maxInstruction;
+			maximumCovered = getParent().maxInstruction;
 		} else if (ratio.getType().equals(CoverageElement.Type.BRANCH)) {
-			maximumCovered = maxBranch;
+			maximumCovered = getParent().maxBranch;
 		} else if (ratio.getType().equals(CoverageElement.Type.COMPLEXITY)) {
-			maximumCovered = maxComplexity;
+			maximumCovered = getParent().maxComplexity;
 		} else if (ratio.getType().equals(CoverageElement.Type.LINE)) {
-			maximumCovered = maxLine;
+			maximumCovered = getParent().maxLine;
 		} else if (ratio.getType().equals(CoverageElement.Type.METHOD)) {
-			maximumCovered = maxMethod;
+			maximumCovered = getParent().maxMethod;
 		} else if (ratio.getType().equals(CoverageElement.Type.CLASS)) {
-			maximumCovered = maxClazz;
+			maximumCovered = getParent().maxClazz;
 		}
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
-				.append("<td width='64px' class='data'>").append(percent).append("%</td>")
-				.append("<td class='percentgraph'>")
-				.append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>").append("<div class='redbar' style='width: ").append(0 == ratio.getCovered() ? 100 :  ((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
-				.append("<span class='text'>").append("M:"+numerator).append(" ").append("C: "+ denominator)
-				.append("</span></div></div></td></tr></table>") ;
+		.append("<td width='64px' class='data'>").append(maximumCovered).append("%</td>")
+		.append("<td class='percentgraph'>")
+		.append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>").append("<div class='redbar' style='width: ").append(0 == ratio.getCovered() ? 100 :  ((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
+		.append("<span class='text'>").append("M:"+numerator).append(" ").append("C: "+ denominator)
+		.append("</span></div></div></td></tr></table>") ;
 	}
 
-    /**
-     * Generates the graph that shows the coverage trend up to this report.
-     */
-    public void doGraph(StaplerRequest req, StaplerResponse rsp) throws IOException {
-        if(ChartUtil.awtProblemCause != null) {
-            // not available. send out error message
-            rsp.sendRedirect2(req.getContextPath()+"/images/headless.png");
-            return;
-        }
+	public  < ReportType extends AggregatedReport > void setCoverage( ReportType reportToSet, ICoverageNode covReport) {
+		
+		Coverage tempCov = new Coverage();
+		tempCov.accumulate(covReport.getClassCounter().getMissedCount(), covReport.getClassCounter().getCoveredCount());
+		//reportToSet.clazz = tempCov;
+		if (this.maxClazz < tempCov.getCovered()) {
+			this.maxClazz = tempCov.getCovered();
+		}
 
-        AbstractBuild<?,?> build = getBuild();
-        Calendar t = build.getTimestamp();
+		tempCov = new Coverage();
+		tempCov.accumulate(covReport.getBranchCounter().getMissedCount(), covReport.getBranchCounter().getCoveredCount());
+		reportToSet.branch = tempCov;
+		if (this.maxBranch < tempCov.getCovered()) {
+			this.maxBranch = tempCov.getCovered();
+		}
 
-        String w = Util.fixEmptyAndTrim(req.getParameter("width"));
-        String h = Util.fixEmptyAndTrim(req.getParameter("height"));
-        int width = (w != null) ? Integer.valueOf(w) : 500;
-        int height = (h != null) ? Integer.valueOf(h) : 200;
+		tempCov = new Coverage();
+		tempCov.accumulate(covReport.getLineCounter().getMissedCount(), covReport.getLineCounter().getCoveredCount());
+		reportToSet.line = tempCov;
+		if (this.maxLine < tempCov.getCovered()) {
+			this.maxLine = tempCov.getCovered();
+		}
+		
+		tempCov = new Coverage();
+		tempCov.accumulate(covReport.getInstructionCounter().getMissedCount(), covReport.getInstructionCounter().getCoveredCount());
+		reportToSet.instruction = tempCov;
+		if (this.maxInstruction < tempCov.getCovered()) {
+			this.maxInstruction = tempCov.getCovered();
+		}
 
-        new GraphImpl(this, t, width, height) {
+		tempCov = new Coverage();
+		tempCov.accumulate(covReport.getMethodCounter().getMissedCount(), covReport.getMethodCounter().getCoveredCount());
+		reportToSet.method = tempCov;
+		if (this.maxMethod < tempCov.getCovered()) {
+			this.maxMethod = tempCov.getCovered();
+		}
 
-            @Override
-            protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj) {
-                DataSetBuilder<String, NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, NumberOnlyBuildLabel>();
+		tempCov = new Coverage();
+		tempCov.accumulate(covReport.getComplexityCounter().getMissedCount(), covReport.getComplexityCounter().getCoveredCount());
+		reportToSet.complexity = tempCov;
+		if (this.maxComplexity < tempCov.getCovered()) {
+			this.maxComplexity = tempCov.getCovered();
+		}
 
-                for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult()) {
-                    NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
-                    /*dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Instructions(), label);
+	}
+
+	/**
+	 * Generates the graph that shows the coverage trend up to this report.
+	 */
+	public void doGraph(StaplerRequest req, StaplerResponse rsp) throws IOException {
+		if(ChartUtil.awtProblemCause != null) {
+			// not available. send out error message
+			rsp.sendRedirect2(req.getContextPath()+"/images/headless.png");
+			return;
+		}
+
+		AbstractBuild<?,?> build = getBuild();
+		Calendar t = build.getTimestamp();
+
+		String w = Util.fixEmptyAndTrim(req.getParameter("width"));
+		String h = Util.fixEmptyAndTrim(req.getParameter("height"));
+		int width = (w != null) ? Integer.valueOf(w) : 500;
+		int height = (h != null) ? Integer.valueOf(h) : 200;
+
+		new GraphImpl(this, t, width, height) {
+
+			@Override
+			protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj) {
+				DataSetBuilder<String, NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, NumberOnlyBuildLabel>();
+
+				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult()) {
+					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
+					/*dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Instructions(), label);
                     dsb.add(a.branch.getPercentageFloat(), Messages.CoverageObject_Legend_Branch(), label);
                     dsb.add(a.complexity.getPercentageFloat(), Messages.CoverageObject_Legend_Complexity(), label);
                     dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
                     dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);*/
-                    if (a.line != null) {
-                    	dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
-                        dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_LineCovered(), label);
-                    }
-                }
+					if (a.line != null) {
+						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
+						dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_LineCovered(), label);
+					}
+				}
 
-                return dsb;
-            }
-        }.doPng(req, rsp);
-    }
+				return dsb;
+			}
+		}.doPng(req, rsp);
+	}
 
-    public Api getApi() {
-    	return new Api(this);
-    }
+	public Api getApi() {
+		return new Api(this);
+	}
 
-    private abstract class GraphImpl extends Graph {
+	private abstract class GraphImpl extends Graph {
 
-        private CoverageObject<SELF> obj;
+		private CoverageObject<SELF> obj;
 
-        public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH) {
-            super(timestamp, defaultW, defaultH);
-            this.obj = obj;
-        }
+		public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH) {
+			super(timestamp, defaultW, defaultH);
+			this.obj = obj;
+		}
 
-        protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
+		protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
 
-        protected JFreeChart createGraph() {
-            final CategoryDataset dataset = createDataSet(obj).build();
-            final JFreeChart chart = ChartFactory.createLineChart(
-                    null, // chart title
-                    null, // unused
-                    "", // range axis label
-                    dataset, // data
-                    PlotOrientation.VERTICAL, // orientation
-                    true, // include legend
-                    true, // tooltips
-                    false // urls
-                    );
+		protected JFreeChart createGraph() {
+			final CategoryDataset dataset = createDataSet(obj).build();
+			final JFreeChart chart = ChartFactory.createLineChart(
+					null, // chart title
+					null, // unused
+					"", // range axis label
+					dataset, // data
+					PlotOrientation.VERTICAL, // orientation
+					true, // include legend
+					true, // tooltips
+					false // urls
+					);
 
-            // NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
+			// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
 
-            final LegendTitle legend = chart.getLegend();
-            legend.setPosition(RectangleEdge.RIGHT);
+			final LegendTitle legend = chart.getLegend();
+			legend.setPosition(RectangleEdge.RIGHT);
 
-            chart.setBackgroundPaint(Color.white);
+			chart.setBackgroundPaint(Color.white);
 
-            final CategoryPlot plot = chart.getCategoryPlot();
+			final CategoryPlot plot = chart.getCategoryPlot();
 
-            // plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
-            plot.setBackgroundPaint(Color.WHITE);
-            plot.setOutlinePaint(null);
-            plot.setRangeGridlinesVisible(true);
-            plot.setRangeGridlinePaint(Color.black);
+			// plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
+			plot.setBackgroundPaint(Color.WHITE);
+			plot.setOutlinePaint(null);
+			plot.setRangeGridlinesVisible(true);
+			plot.setRangeGridlinePaint(Color.black);
 
-            CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
-            plot.setDomainAxis(domainAxis);
-            domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-            domainAxis.setLowerMargin(0.0);
-            domainAxis.setUpperMargin(0.0);
-            domainAxis.setCategoryMargin(0.0);
+			CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
+			plot.setDomainAxis(domainAxis);
+			domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
+			domainAxis.setLowerMargin(0.0);
+			domainAxis.setUpperMargin(0.0);
+			domainAxis.setCategoryMargin(0.0);
 
-            final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-            rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-            rangeAxis.setUpperBound(maxLine);
-            rangeAxis.setLowerBound(0);
+			final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+			rangeAxis.setUpperBound(maxLine);
+			rangeAxis.setLowerBound(0);
 
-            final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-            renderer.setBaseStroke(new BasicStroke(4.0f));
-            ColorPalette.apply(renderer);
+			final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+			renderer.setBaseStroke(new BasicStroke(4.0f));
+			ColorPalette.apply(renderer);
 
-            // crop extra space around the graph
-            plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
+			// crop extra space around the graph
+			plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
 
-            return chart;
-        }
-    }
+			return chart;
+		}
+	}
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + ":"
-        		+ " instruction=" + instruction
-        		+ " branch=" + branch
-        		+ " complexity=" + complexity
-        		+ " line=" + line
-        		+ " method=" + method
-        		+ " class=" + clazz;
-    }
-    private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ":"
+				+ " instruction=" + instruction
+				+ " branch=" + branch
+				+ " complexity=" + complexity
+				+ " line=" + line
+				+ " method=" + method
+				+ " class=" + clazz;
+	}
+	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 }
