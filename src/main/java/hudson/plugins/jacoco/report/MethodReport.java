@@ -113,7 +113,9 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
         this.hasClassCoverage();
         logger.log(Level.INFO, "SourceFileReport");
     }
-
+	
+	
+	
 	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 
 	public void setSrcFileInfo(IMethodCoverage methodCov, String sourceFilePath) {

@@ -23,7 +23,16 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
     	child.setName(newChildName);
         getChildren().put(child.getName(), child);
     }
-	
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ":"
+				+ " instruction=" + instruction
+				+ " branch=" + branch
+				+ " complexity=" + complexity
+				+ " line=" + line
+				+ " method=" + method;
+	}
 	private static final Logger logger = Logger.getLogger(ClassReport.class.getName());
 
 }

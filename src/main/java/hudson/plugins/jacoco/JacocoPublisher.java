@@ -77,6 +77,15 @@ public class JacocoPublisher extends Recorder {
 		sourceFolder.copyRecursiveTo(folder);
 	}
 	
+	protected static String resolveParametersInString(AbstractBuild<?, ?> build, BuildListener listener, String input) {
+        try {
+            return build.getEnvironment(listener).expand(input);
+        } catch (Exception e) {
+            listener.getLogger().println("Failed to resolve parameters in string \""+
+            input+"\" due to following error:\n"+e.getMessage());
+        }
+        return input;
+    }
 	
 	/* 
 	 * Entry point of this report plugin.
