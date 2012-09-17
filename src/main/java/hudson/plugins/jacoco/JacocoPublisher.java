@@ -101,7 +101,11 @@ public class JacocoPublisher extends Recorder {
 		
 		EnvVars env = build.getEnvironment(listener);
         env.overrideAll(build.getBuildVariables());
+        FilePath[] matches = build.getWorkspace().list(resolveParametersInString(build, listener, configRows.get(0).getClassDir()));
         
+        for (FilePath file : matches) {
+        	logger.println("[JaCoCo plugin] Matched classdirs: " + file.getBaseName()); 	
+        }
        /* try {
 			ReportFactory reportFactory = new ReportFactory(new File(build.getWorkspace().getRemote()), listener); // FIXME probably doesn't work with jenkins remote build slaves
 			reportFactory.createReport();
@@ -131,6 +135,16 @@ public class JacocoPublisher extends Recorder {
         FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
         
         logger.println("[JaCoCo plugin] Saving module data..");
+        
+        
+        //classDirs
+        //srcDirs
+        //execFiles
+        
+        //copyClassDirs in same dir
+        //copySrcDirs in same dir
+        //put execfiles in same dir
+        //iterate through the exec files and put them together
         for (int i=0;i<configRows.size();++i) {
         	ModuleInfo moduleInfo = new ModuleInfo();
         	moduleInfo.setName("module"+i);
