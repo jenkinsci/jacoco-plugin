@@ -15,7 +15,7 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
 	@Override
 	public void setName(String name) {
 		super.setName(name.replaceAll("/", "."));
-		logger.log(Level.INFO, "ClassReport");
+		//logger.log(Level.INFO, "ClassReport");
 	}
 	@Override
 	public void add(MethodReport child) {

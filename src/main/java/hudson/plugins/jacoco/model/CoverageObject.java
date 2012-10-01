@@ -308,73 +308,85 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		}
 		
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
-		.append("<td width='64px' class='data'>").append(ratio.getPercentage()).append("%</td>")
+		.append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
 		.append("<td class='percentgraph'>")
 		.append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>").append("<div class='redbar' style='width: ").append(ratio.getMissed()> ratio.getCovered() ? ((float)ratio.getMissed()/(float)maximumMissed)*100: ((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
 		.append("<span class='text'>").append("M:"+numerator).append(" ").append("C: "+ denominator)
 		.append("</span></div></div></td></tr></table>") ;
 	}
-
-	public  < ReportType extends AggregatedReport > void setCoverage( ReportType reportToSet, ICoverageNode covReport) {
+	
+	protected <ReportLevel extends AggregatedReport > void setAllCovTypes( ReportLevel reportToSet, ICoverageNode covReport) {
 		
 		Coverage tempCov = new Coverage();
 		tempCov.accumulate(covReport.getClassCounter().getMissedCount(), covReport.getClassCounter().getCoveredCount());
 		reportToSet.clazz = tempCov;
-		if (this.maxCoveredClazz < tempCov.getCovered()) {
-			this.maxCoveredClazz = tempCov.getCovered();
-		}
-		if (this.maxMissedClazz < tempCov.getMissed()) {
-			this.maxMissedClazz = tempCov.getMissed();
-		}
-
+		
 		tempCov = new Coverage();
 		tempCov.accumulate(covReport.getBranchCounter().getMissedCount(), covReport.getBranchCounter().getCoveredCount());
 		reportToSet.branch = tempCov;
-		if (this.maxCoveredBranch < tempCov.getCovered()) {
-			this.maxCoveredBranch = tempCov.getCovered();
-		}
-		if (this.maxMissedBranch < tempCov.getMissed()) {
-			this.maxMissedBranch = tempCov.getMissed();
-		}
-
+		
 		tempCov = new Coverage();
 		tempCov.accumulate(covReport.getLineCounter().getMissedCount(), covReport.getLineCounter().getCoveredCount());
 		reportToSet.line = tempCov;
-		if (this.maxCoveredLine < tempCov.getCovered()) {
-			this.maxCoveredLine = tempCov.getCovered();
-		}
-		if (this.maxMissedLine < tempCov.getMissed()) {
-			this.maxMissedLine = tempCov.getMissed();
-		}
 		
 		tempCov = new Coverage();
 		tempCov.accumulate(covReport.getInstructionCounter().getMissedCount(), covReport.getInstructionCounter().getCoveredCount());
 		reportToSet.instruction = tempCov;
-		if (this.maxCoveredInstruction < tempCov.getCovered()) {
-			this.maxCoveredInstruction = tempCov.getCovered();
-		}
-		if (this.maxMissedInstruction < tempCov.getMissed()) {
-			this.maxMissedInstruction = tempCov.getMissed();
-		}
-
+		
 		tempCov = new Coverage();
 		tempCov.accumulate(covReport.getMethodCounter().getMissedCount(), covReport.getMethodCounter().getCoveredCount());
 		reportToSet.method = tempCov;
-		if (this.maxCoveredMethod < tempCov.getCovered()) {
-			this.maxCoveredMethod = tempCov.getCovered();
-		}
-		if (this.maxMissedMethod < tempCov.getMissed()) {
-			this.maxMissedMethod = tempCov.getMissed();
-		}
-
+		
 		tempCov = new Coverage();
 		tempCov.accumulate(covReport.getComplexityCounter().getMissedCount(), covReport.getComplexityCounter().getCoveredCount());
 		reportToSet.complexity = tempCov;
-		if (this.maxCoveredComplexity < tempCov.getCovered()) {
-			this.maxCoveredComplexity = tempCov.getCovered();
+		
+	}
+	
+	public  < ReportLevel extends AggregatedReport > void setCoverage( ReportLevel reportToSet, ICoverageNode covReport) {
+		
+		setAllCovTypes(reportToSet, covReport);
+		
+		if (this.maxCoveredClazz < reportToSet.clazz.getCovered()) {
+			this.maxCoveredClazz = reportToSet.clazz.getCovered();
 		}
-		if (this.maxMissedComplexity < tempCov.getMissed()) {
-			this.maxMissedComplexity = tempCov.getMissed();
+		if (this.maxMissedClazz < reportToSet.clazz.getMissed()) {
+			this.maxMissedClazz =reportToSet.clazz.getMissed();
+		}
+
+		if (this.maxCoveredBranch < reportToSet.branch.getCovered()) {
+			this.maxCoveredBranch = reportToSet.branch.getCovered();
+		}
+		if (this.maxMissedBranch < reportToSet.branch.getMissed()) {
+			this.maxMissedBranch = reportToSet.branch.getMissed();
+		}
+
+		if (this.maxCoveredLine < reportToSet.line.getCovered()) {
+			this.maxCoveredLine = reportToSet.line.getCovered();
+		}
+		if (this.maxMissedLine < reportToSet.line.getMissed()) {
+			this.maxMissedLine = reportToSet.line.getMissed();
+		}
+		
+		if (this.maxCoveredInstruction < reportToSet.instruction.getCovered()) {
+			this.maxCoveredInstruction = reportToSet.instruction.getCovered();
+		}
+		if (this.maxMissedInstruction < reportToSet.instruction.getMissed()) {
+			this.maxMissedInstruction = reportToSet.instruction.getMissed();
+		}
+		
+		if (this.maxCoveredMethod < reportToSet.method.getCovered()) {
+			this.maxCoveredMethod = reportToSet.method.getCovered();
+		}
+		if (this.maxMissedMethod < reportToSet.method.getMissed()) {
+			this.maxMissedMethod = reportToSet.method.getMissed();
+		}
+
+		if (this.maxCoveredComplexity < reportToSet.complexity.getCovered()) {
+			this.maxCoveredComplexity = reportToSet.complexity.getCovered();
+		}
+		if (this.maxMissedComplexity < reportToSet.complexity.getMissed()) {
+			this.maxMissedComplexity = reportToSet.complexity.getMissed();
 		}
 
 	}

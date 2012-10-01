@@ -101,7 +101,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 		printRatioCell(isFailed(), this.complexity, buf);
 		printRatioCell(isFailed(), this.line, buf);
         printRatioCell(isFailed(), this.method, buf);
-        logger.log(Level.INFO, "Printing Ratio cells within MethodReport.");
+        //logger.log(Level.INFO, "Printing Ratio cells within MethodReport.");
 		return buf.toString();
 	}
 	
@@ -111,7 +111,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
     	child.setName(newChildName);
         getChildren().put(child.getName(), child);
         this.hasClassCoverage();
-        logger.log(Level.INFO, "SourceFileReport");
+        //logger.log(Level.INFO, "SourceFileReport");
     }
 	
 	

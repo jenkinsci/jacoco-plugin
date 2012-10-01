@@ -13,7 +13,7 @@ import org.jacoco.core.analysis.ICoverageNode;
  * @author Kohsuke Kawaguchi
  * @author David Carver
  */
-public final class PackageReport extends AggregatedReport<ModuleReport,PackageReport,ClassReport> {
+public final class PackageReport extends AggregatedReport<CoverageReport,PackageReport,ClassReport> {
 
     @Override
     public void setName(String name) {
@@ -25,7 +25,7 @@ public final class PackageReport extends AggregatedReport<ModuleReport,PackageRe
     	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
     	child.setName(newChildName);
         this.getChildren().put(child.getName(), child);
-        logger.log(Level.INFO, "PackageReport");
+        //logger.log(Level.INFO, "PackageReport");
     }
     
     private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());

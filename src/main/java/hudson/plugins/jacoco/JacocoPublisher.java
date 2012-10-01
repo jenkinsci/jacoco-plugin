@@ -9,7 +9,6 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.plugins.jacoco.model.ModuleInfo;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -17,13 +16,13 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Properties;
 import java.util.logging.Logger;
 
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.types.FileSet;
 import org.kohsuke.stapler.DataBoundConstructor;
 
 
@@ -36,16 +35,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * 
  */
 public class JacocoPublisher extends Recorder {
-    /**
-     * Relative path to the jacoco XML file inside the workspace.
-     */
-    public String includes;
     
-    /**
-     * Contains the information of classDir, srcDir, execFile for every module.
-     */
-    private final ArrayList<ConfigRow> configRows;
-	
     /**
      * Rule to be enforced. Can be null.
      *
@@ -57,35 +47,87 @@ public class JacocoPublisher extends Recorder {
      * {@link hudson.model.HealthReport} thresholds to apply.
      */
     public JacocoHealthReportThresholds healthReports = new JacocoHealthReportThresholds();
+
     
     /**
-     * Loads the array of config rows.
-     * @param configRows
+     * Variables containing the configuration set by the user.
+     */
+	private final String execPattern;
+	private final String classPattern;
+	private final String sourcePattern;
+    
+    /**
+     * Loads the configuration set by user.
+     *
      */
     @DataBoundConstructor
-    public JacocoPublisher(ArrayList<ConfigRow> configRows) {
-    	this.configRows = configRows != null ? new ArrayList<ConfigRow>(configRows) : new ArrayList<ConfigRow>();
+    public JacocoPublisher(String execPattern, String classPattern, String sourcePattern) {
+    	this.execPattern = execPattern;
+    	this.classPattern = classPattern;
+    	this.sourcePattern = sourcePattern;
 	}
 
-    public ArrayList<ConfigRow> getConfigRows() {
-		return configRows;
-	}
     
 	
-	protected static void saveCoverageReports(FilePath folder, FilePath sourceFolder) throws IOException, InterruptedException {
-		folder.mkdirs();
-		sourceFolder.copyRecursiveTo(folder);
+	public String getExecPattern() {
+		return execPattern;
+	}
+
+	public String getClassPattern() {
+		return classPattern;
+	}
+
+	public String getSourcePattern() {
+		return sourcePattern;
+	}
+
+
+
+	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
+		destFolder.mkdirs();
+		
+		sourceFolder.copyRecursiveTo(destFolder);
 	}
 	
-	protected static String resolveParametersInString(AbstractBuild<?, ?> build, BuildListener listener, String input) {
+	protected static String resolveFilePaths(AbstractBuild<?, ?> build, BuildListener listener, String input) {
         try {
-            return build.getEnvironment(listener).expand(input);
+           
+        	return build.getEnvironment(listener).expand(input);
+            
         } catch (Exception e) {
             listener.getLogger().println("Failed to resolve parameters in string \""+
             input+"\" due to following error:\n"+e.getMessage());
         }
         return input;
     }
+	
+	protected static FilePath[] resolveDirPaths(AbstractBuild<?, ?> build, BuildListener listener, String input) {
+		ArrayList<FilePath> directoryPaths= null;
+		final PrintStream logger = listener.getLogger();
+		String[] includes = null;
+		
+		try {
+			includes = input.split(",");
+			DirectoryScanner ds = new DirectoryScanner();
+	        
+	        ds.setIncludes(includes);
+	        ds.setCaseSensitive(false);
+	        ds.setBasedir(new File(build.getWorkspace().toURI().getPath()));
+	        ds.scan();
+	        String[] dirs = ds.getIncludedDirectories();
+	        
+	        directoryPaths = new ArrayList<FilePath>();
+	        for (String dir : dirs) {
+	        	directoryPaths.add(new FilePath(new File(dir)));
+	        }
+		} catch(InterruptedException ie) {
+			ie.printStackTrace();
+		} catch(IOException io) {
+			io.printStackTrace();
+		}
+		FilePath[] fp = {}; //trick to have an empty array as a parameter, so the returned array will contain the elements
+		return directoryPaths.toArray(fp);
+	}
 	
 	/* 
 	 * Entry point of this report plugin.
@@ -96,16 +138,62 @@ public class JacocoPublisher extends Recorder {
     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
 	
 		final PrintStream logger = listener.getLogger();
+		FilePath[] matchedExecFiles = null;
+		FilePath[] matchedClassDirs = null;
+		FilePath[] matchedSrcDirs = null;
+		FilePath actualBuildDirRoot = null;
+		FilePath actualBuildClassDir = null;
+		FilePath actualBuildSrcDir = null;
+		FilePath actualBuildExecDir = null;
+		
 		logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
 		
 		
 		EnvVars env = build.getEnvironment(listener);
         env.overrideAll(build.getBuildVariables());
-        FilePath[] matches = build.getWorkspace().list(resolveParametersInString(build, listener, configRows.get(0).getClassDir()));
         
-        for (FilePath file : matches) {
-        	logger.println("[JaCoCo plugin] Matched classdirs: " + file.getBaseName()); 	
+        if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
+            if(build.getResult().isWorseThan(Result.UNSTABLE))
+                return true;
+            
+            logger.println("[JaCoCo plugin] ERROR: Missing configuration!");
+            build.setResult(Result.FAILURE);
+            return true;
+        } else {
+        		logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
         }
+        actualBuildDirRoot = new FilePath(getJacocoReport(build));
+        actualBuildClassDir = new FilePath(actualBuildDirRoot, "classes");
+        actualBuildSrcDir = new FilePath(actualBuildDirRoot, "sources");
+        actualBuildExecDir = new FilePath(actualBuildDirRoot, "execFiles");
+        
+        matchedExecFiles = build.getWorkspace().list(resolveFilePaths(build, listener, execPattern));
+        logger.println("[JaCoCo plugin] Number of found exec files: " + matchedExecFiles.length); 
+        logger.print("[JaCoCo plugin] Saving matched execfiles: ");
+        int i=0;
+        for (FilePath file : matchedExecFiles) {
+        	FilePath separateExecDir = new FilePath(actualBuildExecDir, "exec"+i);
+        	FilePath fullExecName = separateExecDir.child("jacoco.exec");
+        	file.copyTo(fullExecName);
+        	logger.print(" " + file.getRemote());
+        	++i;
+        }
+        matchedClassDirs = resolveDirPaths(build, listener, classPattern);
+        logger.print("\n[JaCoCo plugin] Saving matched class directories: ");
+        for (FilePath file : matchedClassDirs) {
+        	file= new FilePath(build.getWorkspace(), file.getRemote()+"\\");
+        	saveCoverageReports(actualBuildClassDir, file);
+        	logger.print(" " + file.getRemote());
+        }
+        matchedSrcDirs = resolveDirPaths(build, listener, sourcePattern);
+        logger.print("\n[JaCoCo plugin] Saving matched source directories: ");
+        for (FilePath file : matchedSrcDirs) {
+        	file= new FilePath(build.getWorkspace(), file.getRemote());
+        	saveCoverageReports(actualBuildSrcDir, file);
+        	logger.print(" " + file.getRemote());
+        }
+        
+        //logger.println("[JaCoCo plugin] BuildENV: " +build.getEnvironment(listener).toString());
        /* try {
 			ReportFactory reportFactory = new ReportFactory(new File(build.getWorkspace().getRemote()), listener); // FIXME probably doesn't work with jenkins remote build slaves
 			reportFactory.createReport();
@@ -114,69 +202,10 @@ public class JacocoPublisher extends Recorder {
 		} catch (IOException e) {
 			logger.println("ReportFactory failed! WorkspaceDir: "+ build.getWorkspace().getRemote()+ e.getMessage());
 		}*/
-        
-        ArrayList<ModuleInfo> reports = new ArrayList<ModuleInfo>(configRows.size());
-        
-        if (0 == configRows.size()) {
-            if(build.getResult().isWorseThan(Result.UNSTABLE))
-                return true;
-            
-            logger.println("[JaCoCo plugin] ERROR: Missing configuration!");
-            build.setResult(Result.FAILURE);
-            return true;
-        } else {
-        	logger.println("[JaCoCo plugin] Saving "+ configRows.size()+ " module information.");
-        	for (ConfigRow row: configRows) {
-        		logger.println("[JaCoCo plugin] " + row + " locations are configured");
-        	}
-        }
-        
-        Properties props = new Properties();  
-        FilePath actualBuildDirRoot = new FilePath(getJacocoReport(build));
-        
-        logger.println("[JaCoCo plugin] Saving module data..");
-        
-        
-        //classDirs
-        //srcDirs
-        //execFiles
-        
-        //copyClassDirs in same dir
-        //copySrcDirs in same dir
-        //put execfiles in same dir
-        //iterate through the exec files and put them together
-        for (int i=0;i<configRows.size();++i) {
-        	ModuleInfo moduleInfo = new ModuleInfo();
-        	moduleInfo.setName("module"+i);
-	        props.setProperty("module"+i, configRows.get(i).getModuleName());  
-	        
-        	FilePath actualBuildModuleDir = new FilePath(actualBuildDirRoot, "module" + i);
-	        FilePath actualDestination = new FilePath(actualBuildModuleDir, "classes");
-	        moduleInfo.setClassDir(actualDestination);
-	        saveCoverageReports(actualDestination, new FilePath(build.getWorkspace(), configRows.get(i).getClassDir()));
-
-	        actualDestination = new FilePath(actualBuildModuleDir, "src");
-	        moduleInfo.setSrcDir(actualDestination);
-	        saveCoverageReports(actualDestination, new FilePath(build.getWorkspace(), configRows.get(i).getSrcDir()));
-	       
-	        
-	        FilePath execfile = new FilePath(build.getWorkspace(), configRows.get(i).getExecFile());
-	        FilePath seged = actualBuildModuleDir.child("jacoco.exec");
-	        moduleInfo.setExecFile(seged);
-	        execfile.copyTo(seged);
-	        
-	        //actualDestination = new FilePath(actualBuildModuleDir, "jenkins-jacoco");
-	        //saveCoverageReports(actualDestination, new FilePath(new File(build.getWorkspace().getRemote(), "\\target\\jenkins-jacoco")));
-	        //moduleInfo.setGeneratedHTMLsDir(actualDestination);
-	        reports.add(moduleInfo);
-        }
-        	FileOutputStream fos = null;
-        logger.println("[JaCoCo plugin] Storing properties file..");
-        	props.store((fos = new FileOutputStream(actualBuildDirRoot+"/Modules.properties")), "List of modules. Generated automatically.");
-        
-        logger.println("[JaCoCo plugin] Loading EXEC files..");
-        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, reports);
-        action.setReports(reports);
+ 
+	     
+        logger.println("\n[JaCoCo plugin] Loading EXEC files..");
+        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, actualBuildDirRoot);
 
         build.getActions().add(action);
         

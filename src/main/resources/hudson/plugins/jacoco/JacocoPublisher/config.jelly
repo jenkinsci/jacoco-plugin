@@ -11,41 +11,25 @@
       <col width="20%"/>
       <col width="20%"/>
       <tr>
-        <td>Module name</td>
-        <td>Exec file relative path</td>
-        <td>Class directory</td>
-        <td>Source directory</td>
+        <td>Path to exec files</td>
+        <td>Path to class directories</td>
+        <td>Path to source directories</td>
       </tr>
-     </table>
-    <f:repeatable field="configRows">
-     <table width="100%">
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="20%"/>
-      <col width="10%"/>
       
       <tr>
         <td>
-          <f:textbox field="moduleName" default="ModuleName" />
-        </td>
-        <td>
-          <f:textbox field="execFile" default="target/jacoco.exec" />
+          <f:textbox field="execPattern" default="**/**.exec" />
         </td>
       
         <td>
-          <f:textbox field="classDir"  default="target/classes"/>
+          <f:textbox field="classPattern"  default="**/classes"/>
         </td>
         
         <td>
-          <f:textbox field="srcDir" default="src"/>
+          <f:textbox field="sourcePattern" default="**/src/main/java"/>
         </td>
         
-        <td>
-          <f:repeatableDeleteButton/>
-        </td>
       </tr>
       </table>
-     </f:repeatable>
   </f:entry>
 </j:jelly>
