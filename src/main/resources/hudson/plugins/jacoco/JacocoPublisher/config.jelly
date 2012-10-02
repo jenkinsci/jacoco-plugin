@@ -11,9 +11,9 @@
       <col width="20%"/>
       <col width="20%"/>
       <tr>
-        <td>Path to exec files</td>
-        <td>Path to class directories</td>
-        <td>Path to source directories</td>
+        <td>Path to exec files (e.g.: **/target/**.exec, **/jacoco.exec)</td>
+        <td>Path to class directories (e.g.: **/target/classDir, **/classes)</td>
+        <td>Path to source directories (e.g.: **/mySourceFiles)</td>
       </tr>
       
       <tr>
