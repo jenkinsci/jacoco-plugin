@@ -92,16 +92,19 @@
 			<groupId>org.kohsuke</groupId>
 			<artifactId>asm3</artifactId>
 			<version>3.3.0</version>
+			<scope>runtime</scope>
 	  </dependency>
 	  <dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm</artifactId>
 			<version>3.3.1</version>
+			<scope>runtime</scope>
 	  </dependency>
 	  <dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-commons</artifactId>
 			<version>3.3.1</version>
+			<scope>runtime</scope>
 	  </dependency>
    </dependencies>
    
@@ -212,7 +215,26 @@
                </execution>
             </executions>
          </plugin>
-      </plugins>
+		 <plugin>
+			  <groupId>org.jenkins-ci.tools</groupId>
+			  <artifactId>
+				 maven-hpi-plugin
+			  </artifactId>
+			  <executions>
+				 <execution>
+				   <phase>compile</phase>
+				   <goals>
+					 <goal>hpi</goal>
+				   </goals>
+				 </execution>
+			   </executions>
+			
+			  <configuration>
+				<pluginFirstClassLoader>true</pluginFirstClassLoader>
+				<maskClasses>org.objectweb.asm.</maskClasses>
+			  </configuration>
+		</plugin>
+	  </plugins>
       <pluginManagement>
          <plugins>
             <!--This plugin's configuration is used to store Eclipse m2e 
@@ -240,6 +262,11 @@
                                  <goal>test-hpl</goal>
                                  <goal>validate</goal>
                               </goals>
+							  <configuration>
+								<pluginFirstClassLoader>true</pluginFirstClassLoader>
+							  
+							  </configuration>
+							  
 							  
                            </pluginExecutionFilter>
                            <action>
