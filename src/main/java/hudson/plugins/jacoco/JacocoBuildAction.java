@@ -41,7 +41,7 @@ import org.kohsuke.stapler.StaplerProxy;
  */
 public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable {
 
-	public final AbstractBuild<?,?> build;
+	public final AbstractBuild<?,?> owner;
 	public final PrintStream logger;
 	private transient WeakReference<CoverageReport> report;
 
@@ -58,21 +58,21 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	/**
 	 * 
-	 * @param build
+	 * @param owner
 	 * @param rule
 	 * @param ratios
 	 *            The available coverage ratios in the report. Null is treated
 	 *            the same as an empty map.
 	 * @param thresholds
 	 */
-	public JacocoBuildAction(AbstractBuild<?,?> build, Rule rule,
+	public JacocoBuildAction(AbstractBuild<?,?> owner, Rule rule,
 			Map<CoverageElement.Type, Coverage> ratios,
 			JacocoHealthReportThresholds thresholds, BuildListener listener) {
 		logger = listener.getLogger();
 		if (ratios == null) {
 			ratios = Collections.emptyMap();
 		}
-		this.build = build;
+		this.owner = owner;
 		this.rule = rule;
 		this.clazz = getOrCreateRatio(ratios, CoverageElement.Type.CLASS);
 		this.method = getOrCreateRatio(ratios, CoverageElement.Type.METHOD);
@@ -183,7 +183,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	@Override
 	public AbstractBuild<?,?> getBuild() {
-		return build;
+		return owner;
 	}
 
 
@@ -249,7 +249,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			if(r!=null)     return r;
 		}
 
-		final File reportFolder = JacocoPublisher.getJacocoReport(build);
+		final File reportFolder = JacocoPublisher.getJacocoReport(owner);
 
 		try {
 			CoverageReport r = new CoverageReport(this, getJacocoReports(reportFolder));
@@ -264,7 +264,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	@Override
 	public JacocoBuildAction getPreviousResult() {
-		return getPreviousResult(build);
+		return getPreviousResult(owner);
 	}
 
 	/**
@@ -290,12 +290,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * @throws IOException
 	 *      if failed to parse the file.
 	 */
-	public static JacocoBuildAction load(AbstractBuild<?,?> build, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, FilePath actualBuildDirRoot) throws IOException {
+	public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, FilePath actualBuildDirRoot) throws IOException {
 		PrintStream logger = listener.getLogger();
 		Map<CoverageElement.Type,Coverage> ratios = null;
 		
 	    ratios = loadRatios(actualBuildDirRoot, ratios);
-		return new JacocoBuildAction(build, rule, ratios, thresholds, listener);
+		return new JacocoBuildAction(owner, rule, ratios, thresholds, listener);
 	}
 
 

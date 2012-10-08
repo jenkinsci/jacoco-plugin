@@ -123,7 +123,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
 	@Override
 	public AbstractBuild<?,?> getBuild() {
-		return action.build;
+		return action.owner;
 	}
 
 
