@@ -15,7 +15,7 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
 	@Override
 	public void setName(String name) {
 		super.setName(name.replaceAll("/", "."));
-		logger.log(Level.INFO, "ClassReport");
+		//logger.log(Level.INFO, "ClassReport");
 	}
 	@Override
 	public void add(MethodReport child) {
@@ -23,42 +23,16 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
     	child.setName(newChildName);
         getChildren().put(child.getName(), child);
     }
-	
-	public void reSetMaximums(ArrayList<MethodReport> reportList,
-    		ArrayList<IMethodCoverage> coverageList) {
-    	 int maxMethod=1;
-    	 int maxLine=1;
-    	 int maxComplexity=1;
-    	 int maxInstruction=1;
-    	 int maxBranch=1;
-    	 
-    	 for (IMethodCoverage coverageCov: coverageList) {
-    		
-    		 if (maxMethod < coverageCov.getMethodCounter().getCoveredCount()) {
-    			 maxMethod = coverageCov.getMethodCounter().getCoveredCount();
-    		 }
-    		 if (maxLine < coverageCov.getLineCounter().getCoveredCount()) {
-    			 maxLine = coverageCov.getLineCounter().getCoveredCount();
-    		 }
-    		 if (maxComplexity < coverageCov.getComplexityCounter().getCoveredCount()) {
-    			 maxComplexity = coverageCov.getComplexityCounter().getCoveredCount();
-    		 }
-    		 if (maxInstruction < coverageCov.getInstructionCounter().getCoveredCount()) {
-    			 maxInstruction = coverageCov.getInstructionCounter().getCoveredCount();
-    		 }
-    		 if (maxBranch < coverageCov.getBranchCounter().getCoveredCount()) {
-    			 maxBranch = coverageCov.getBranchCounter().getCoveredCount();
-    		 }
-    	 }
-    	 for (MethodReport report:  reportList) {
-    		 report.setMaxBranch(maxBranch);
-    		 report.setMaxMethod(maxMethod);
-    		 report.setMaxLine(maxLine);
-    		 report.setMaxComplexity(maxComplexity);
-    		 report.setMaxInstruction(maxInstruction);
-    	 }
-    }
-	
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + ":"
+				+ " instruction=" + instruction
+				+ " branch=" + branch
+				+ " complexity=" + complexity
+				+ " line=" + line
+				+ " method=" + method;
+	}
 	private static final Logger logger = Logger.getLogger(ClassReport.class.getName());
 
 }

@@ -5,6 +5,7 @@ import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageObject;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -17,6 +18,8 @@ import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.ICounter;
 import org.jacoco.core.analysis.IMethodCoverage;
+
+import com.google.common.io.Files;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -68,7 +71,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
             br = new BufferedReader(new FileReader(filePath));
             String line = null;
             while ((line = br.readLine()) != null) {
-            	aList.add(line.replaceAll("\\t","    ").replaceAll("<", "&lt"));
+            	aList.add(line.replaceAll("\\t","&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -101,7 +104,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 		printRatioCell(isFailed(), this.complexity, buf);
 		printRatioCell(isFailed(), this.line, buf);
         printRatioCell(isFailed(), this.method, buf);
-        logger.log(Level.INFO, "Printing Ratio cells within MethodReport.");
+        //logger.log(Level.INFO, "Printing Ratio cells within MethodReport.");
 		return buf.toString();
 	}
 	
@@ -111,30 +114,11 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
     	child.setName(newChildName);
         getChildren().put(child.getName(), child);
         this.hasClassCoverage();
-        logger.log(Level.INFO, "SourceFileReport");
+        //logger.log(Level.INFO, "SourceFileReport");
     }
-
-	public  void setCoverage(IMethodCoverage covReport) {
-  	  Coverage tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getBranchCounter().getMissedCount(), covReport.getBranchCounter().getCoveredCount());
-		  this.branch = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getLineCounter().getMissedCount(), covReport.getLineCounter().getCoveredCount());
-		  this.line = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getInstructionCounter().getMissedCount(), covReport.getInstructionCounter().getCoveredCount());
-		  this.instruction = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getMethodCounter().getMissedCount(), covReport.getMethodCounter().getCoveredCount());
-		  this.method = tempCov;
-		  
-		  tempCov = new Coverage();
-		  tempCov.accumulate(covReport.getComplexityCounter().getMissedCount(), covReport.getComplexityCounter().getCoveredCount());
-		  this.complexity = tempCov;
-  }
+	
+	
+	
 	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 
 	public void setSrcFileInfo(IMethodCoverage methodCov, String sourceFilePath) {
@@ -147,16 +131,18 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 		try {
 			
 			readFile(sourceFilePath);
-			buf.append(sourceFilePath+" lineSize:  "+this.sourceLines.size()).append("<br>");
+			//buf.append(sourceFilePath+" number of lines:  "+this.sourceLines.size()).append("<br>");
 			buf.append("<code>");
 			for (int i=1;i<=this.sourceLines.size(); ++i) {
 				if ((methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.FULLY_COVERED) || (methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.PARTLY_COVERED)) {
-					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #ffff00\">"+ sourceLines.get(i-1)).append("</SPAN>").append("<br>");
+					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #32cd32\">"+ sourceLines.get(i-1)).append("</SPAN>").append("<br>");
 				} else {
 					buf.append(i + ": ").append(sourceLines.get(i-1)).append("<br>");
 				}
+				
 			}
-			buf.append("</code>");
+			
+			//logger.log(Level.INFO, "lines: " + buf);
 		} catch (FileNotFoundException e) {
 			buf.append("ERROR: Sourcefile does not exist!");
 		} catch (IOException e) {

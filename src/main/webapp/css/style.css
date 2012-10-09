@@ -2,8 +2,8 @@ table.source {
     border-style: solid;
     border-color: #bbb;
     border-spacing: 0;
-    border-collapse: collapse;
-    width: 100%;
+    /*border-collapse: collapse;*/
+    /*width: 100%;*/
 }
 
 table.source .text {
