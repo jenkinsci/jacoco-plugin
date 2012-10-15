@@ -10,6 +10,7 @@ import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.plugins.jacoco.report.CoverageReport;
+import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
@@ -101,32 +102,36 @@ public class JacocoPublisher extends Recorder {
         return input;
     }
 	
-	protected static FilePath[] resolveDirPaths(AbstractBuild<?, ?> build, BuildListener listener, String input) {
-		ArrayList<FilePath> directoryPaths= null;
+	protected static FilePath[] resolveDirPaths(AbstractBuild<?, ?> build, BuildListener listener, final String input) {
 		final PrintStream logger = listener.getLogger();
-		String[] includes = null;
-		
+		FilePath[] directoryPaths = null;
 		try {
-			includes = input.split(",");
-			DirectoryScanner ds = new DirectoryScanner();
-	        
-	        ds.setIncludes(includes);
-	        ds.setCaseSensitive(false);
-	        ds.setBasedir(new File(build.getWorkspace().toURI().getPath()));
-	        ds.scan();
-	        String[] dirs = ds.getIncludedDirectories();
-	        
-	        directoryPaths = new ArrayList<FilePath>();
-	        for (String dir : dirs) {
-	        	directoryPaths.add(new FilePath(new File(dir)));
-	        }
+			directoryPaths = build.getWorkspace().act(new FilePath.FileCallable<FilePath[]>() {
+				public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
+					ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
+					String[] includes = input.split(",");
+					DirectoryScanner ds = new DirectoryScanner();
+			        
+			        ds.setIncludes(includes);
+			        ds.setCaseSensitive(false);
+			        ds.setBasedir(f);
+			        ds.scan();
+			        String[] dirs = ds.getIncludedDirectories();
+			        
+			        for (String dir : dirs) {
+			        	localDirectoryPaths.add(new FilePath(new File(dir)));
+			        }
+			        FilePath[] lfp = {};//trick to have an empty array as a parameter, so the returned array will contain the elements
+			        return localDirectoryPaths.toArray(lfp);
+	            }
+			});
+			
 		} catch(InterruptedException ie) {
 			ie.printStackTrace();
 		} catch(IOException io) {
 			io.printStackTrace();
 		}
-		FilePath[] fp = {}; //trick to have an empty array as a parameter, so the returned array will contain the elements
-		return directoryPaths.toArray(fp);
+		return directoryPaths;
 	}
 	
 	/* 

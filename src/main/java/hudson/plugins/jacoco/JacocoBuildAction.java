@@ -10,13 +10,11 @@ import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
+import hudson.plugins.jacoco.report.ClassReport;
 import hudson.plugins.jacoco.report.CoverageReport;
-import hudson.util.IOException2;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
@@ -24,7 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jvnet.localizer.Localizable;
@@ -338,9 +337,10 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		ratio = new Coverage();
 		ratio.accumulatePP(bundleCoverage.getLineCounter().getMissedCount(), bundleCoverage.getLineCounter().getCoveredCount());
 		ratios.put(CoverageElement.Type.LINE, ratio);
-
+		//logGer.log(Level.INFO, ratios.toString());
 		return ratios;
 
 	}
-
+	
+	private static final Logger logGer = Logger.getLogger(JacocoBuildAction.class.getName());
 }
