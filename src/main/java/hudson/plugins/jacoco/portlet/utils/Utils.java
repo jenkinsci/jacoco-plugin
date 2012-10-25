@@ -63,7 +63,7 @@ public final class Utils {
     // default values
 
     if (attribute != null) {
-      if (attribute.equals("") || attribute.equals("0")) {
+      if (attribute.isEmpty() || attribute.equals("0")) {
         return defaultValue;
       } else {
 
