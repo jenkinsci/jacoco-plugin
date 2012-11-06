@@ -184,6 +184,14 @@
                   <version>1.0</version>
                 </signature>
             </configuration>
+            <executions>
+            	<execution>
+            		<phase>test</phase>
+            		<goals>
+            			<goal>check</goal>
+            		</goals>
+            	</execution>
+            </executions>
         </plugin>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
