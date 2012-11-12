@@ -41,7 +41,11 @@ import org.kohsuke.stapler.StaplerProxy;
 public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable {
 
 	public final AbstractBuild<?,?> owner;
+	
+	@Deprecated public transient AbstractBuild<?,?> build;
+	
 	public final PrintStream logger;
+	@Deprecated private transient ArrayList reports;
 	private transient WeakReference<CoverageReport> report;
 
 	/**

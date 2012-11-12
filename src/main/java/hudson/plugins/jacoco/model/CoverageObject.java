@@ -76,6 +76,13 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	public int maxMissedComplexity=1;
 	public int maxMissedInstruction=1;
 	public int maxMissedBranch=1;
+	
+	@Deprecated public transient int maxClazz=1;
+	@Deprecated public transient int maxMethod=1;
+	@Deprecated public transient int maxLine=1;
+	@Deprecated public transient int maxComplexity=1;
+	@Deprecated public transient int maxInstruction=1;
+	@Deprecated public transient int maxBranch=1;
 
 	private volatile boolean failed = false;
 
@@ -283,8 +290,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
-		String numerator = intFormat.format(ratio.getMissed());
-		String denominator = intFormat.format(ratio.getCovered());
+		String numerator = intFormat.format(ratio.getMissed()+1000000);
+		String denominator = intFormat.format(ratio.getCovered()+1000000);
 		int maximumCovered = 2;
 		int maximumMissed=2;
 		if (ratio.getType().equals(CoverageElement.Type.INSTRUCTION)) {
@@ -306,7 +313,6 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			maximumCovered = getParent().maxCoveredClazz;
 			maximumMissed = getParent().maxMissedClazz;
 		}
-		
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
 		.append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
 		.append("<td class='percentgraph'>")
@@ -353,7 +359,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		if (this.maxMissedClazz < reportToSet.clazz.getMissed()) {
 			this.maxMissedClazz =reportToSet.clazz.getMissed();
 		}
-
+		
 		if (this.maxCoveredBranch < reportToSet.branch.getCovered()) {
 			this.maxCoveredBranch = reportToSet.branch.getCovered();
 		}
@@ -423,8 +429,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
                     dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
                     dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);*/
 					if (a.line != null) {
-						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
 						dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_LineCovered(), label);
+						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
+						
+					} else {
+						dsb.add(0, Messages.CoverageObject_Legend_LineCovered(), label);
+						dsb.add(0, Messages.CoverageObject_Legend_LineMissed(), label);
 					}
 				}
 
@@ -485,7 +495,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 			final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			rangeAxis.setUpperBound(maxCoveredLine);
+			if (line!=null) {
+				rangeAxis.setUpperBound(line.getCovered() > line.getMissed() ? line.getCovered() + 5 : line.getMissed() + 5);
+			}
 			rangeAxis.setLowerBound(0);
 
 			final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();

@@ -43,7 +43,8 @@ public class JacocoPublisher extends Recorder {
      * TODO: define a configuration mechanism.
      */
     public Rule rule;
-
+    @Deprecated public transient String includes;
+    @Deprecated public transient int moduleNum;
     /**
      * {@link hudson.model.HealthReport} thresholds to apply.
      */
