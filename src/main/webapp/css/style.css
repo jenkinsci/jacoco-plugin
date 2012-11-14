@@ -16,7 +16,7 @@ table.source th {
     background-color: #f0f0f0;
 }
 
-.nwrap {
+.nowrap {
   white-space: nowrap;
 }
 .red {
@@ -30,7 +30,7 @@ div.percentgraph {
   height: 1.3em;
   margin: 0px;
   padding: 0px;
-  width: 100px;
+ /* width: 100px;*/
 }
 
 div.percentgraph div.greenbar {
