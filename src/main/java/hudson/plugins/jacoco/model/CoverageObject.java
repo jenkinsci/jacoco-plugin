@@ -290,8 +290,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
-		String numerator = intFormat.format(ratio.getMissed()+1000000);
-		String denominator = intFormat.format(ratio.getCovered()+1000000);
+		String numerator = intFormat.format(ratio.getMissed());
+		String denominator = intFormat.format(ratio.getCovered());
 		int maximumCovered = 2;
 		int maximumMissed=2;
 		if (ratio.getType().equals(CoverageElement.Type.INSTRUCTION)) {
