@@ -19,12 +19,10 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.logging.Logger;
 
-import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -33,7 +31,9 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
+import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
@@ -502,12 +502,23 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			rangeAxis.setLowerBound(0);
 
 			final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+			
+			renderer.setSeriesPaint(0, Color.green);
+			renderer.setSeriesPaint(1, Color.red);
+			
+			renderer.setSeriesItemLabelPaint(0, Color.green);
+			renderer.setSeriesItemLabelPaint(1, Color.red);
+			
+			renderer.setSeriesFillPaint(0, Color.green);
+			renderer.setSeriesFillPaint(1, Color.red);
+			
 			renderer.setBaseStroke(new BasicStroke(4.0f));
-			ColorPalette.apply(renderer);
+			//ColorPalette.apply(renderer);
 
 			// crop extra space around the graph
 			plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
-
+			
+			
 			return chart;
 		}
 	}
