@@ -89,14 +89,7 @@ public class JaCoCoColumn extends ListViewColumn {
 			return new Float(0);
 		}
 
-		final CoverageReport result = action.getResult();
-
-		if(result == null) {
-			return new Float(0);
-		}
-
-		final Coverage ratio = result.getLineCoverage();
-
+		final Coverage ratio = action.getLineCoverage();
 		return ratio.getPercentageFloat();
 	}
 
