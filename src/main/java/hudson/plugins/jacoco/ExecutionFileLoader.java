@@ -9,14 +9,18 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
-import org.apache.tools.ant.util.FileUtils;
+import org.codehaus.plexus.util.FileUtils;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.data.ExecutionDataReader;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
+import org.jacoco.maven.FileFilter;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 
 public class ExecutionFileLoader implements Serializable {
@@ -26,6 +30,8 @@ public class ExecutionFileLoader implements Serializable {
 		private FilePath classDir;
 		private FilePath execFile;
 		private FilePath generatedHTMLsDir;
+		private String[] includes;
+		private String[] excludes;
 		private String title;
 		
 		private ExecutionDataStore executionDataStore;
@@ -97,23 +103,46 @@ public class ExecutionFileLoader implements Serializable {
 	            } catch (final IOException e) {
 	                e.printStackTrace();
 	            } finally {
-	                FileUtils.close(isc);
+	            	org.apache.tools.ant.util.FileUtils.close(isc);
 	            }
 	        }
 		}
 	    private IBundleCoverage analyzeStructure() throws IOException {
+	    	
 			File classDirectory = new File(classDir.getRemote());
 			final CoverageBuilder coverageBuilder = new CoverageBuilder();
 			final Analyzer analyzer = new Analyzer(executionDataStore,
 					coverageBuilder);
 			
-			analyzer.analyzeAll(classDirectory);
-			
+			if ((includes==null)|| ("".equals(includes[0]))) {
+				String[] in = {"**"};
+				includes = in;
+			}
+			if ((excludes==null) || ("".equals(excludes[0]))) {
+				String[] ex = {"{0}"};
+				excludes = ex;
+			}
+			@SuppressWarnings("unchecked")
+			final FileFilter fileFilter = new FileFilter(Arrays.asList(includes), Arrays.asList(excludes));
+			@SuppressWarnings("unchecked")
+			final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, fileFilter.getIncludes(), fileFilter.getExcludes());
+			for (final File file : filesToAnalyze) {
+				analyzer.analyzeAll(file);
+	        }
+	        
 			return coverageBuilder.getBundle(name);
 		}
 	    public IBundleCoverage loadBundleCoverage() throws IOException {
 			loadExecutionData();
 			this.bundleCoverage = analyzeStructure();
 			return this.bundleCoverage;
+		}
+
+		public void setIncludes(String[] includes) {
+			this.includes = includes;
+		}
+
+		public void setExcludes(String[] excludes) {
+			this.excludes = excludes;
 		}
 }
