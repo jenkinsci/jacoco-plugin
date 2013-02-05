@@ -2,6 +2,8 @@ package hudson.plugins.jacoco;
 
 import java.io.Serializable;
 
+import org.kohsuke.stapler.DataBoundConstructor;
+
 /**
  * Holds the configuration details for {@link hudson.model.HealthReport} generation
  *
@@ -24,7 +26,7 @@ public class JacocoHealthReportThresholds implements Serializable {
 
     public JacocoHealthReportThresholds() {
     }
-
+    
     public JacocoHealthReportThresholds(
     		int minClass, int maxClass, int minMethod, int maxMethod, int minLine, int maxLine,
     		int minBranch, int maxBranch, int minInstruction, int maxInstruction, int minComplexity, int maxComplexity) {
@@ -159,5 +161,18 @@ public class JacocoHealthReportThresholds implements Serializable {
 	public void setMaxComplexity(int maxComplexity) {
 		this.maxComplexity = maxComplexity;
 	}
+
+	@Override
+	public String toString() {
+		return "JacocoHealthReportThresholds [minClass=" + minClass
+				+ ", maxClass=" + maxClass + ", minMethod=" + minMethod
+				+ ", maxMethod=" + maxMethod + ", minLine=" + minLine
+				+ ", maxLine=" + maxLine + ", minBranch=" + minBranch
+				+ ", maxBranch=" + maxBranch + ", minInstruction="
+				+ minInstruction + ", maxInstruction=" + maxInstruction
+				+ ", minComplexity=" + minComplexity + ", maxComplexity="
+				+ maxComplexity + "]";
+	}
+	
 
 }
