@@ -132,7 +132,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 			
 			readFile(sourceFilePath);
 			//buf.append(sourceFilePath+" number of lines:  "+this.sourceLines.size()).append("<br>");
-			buf.append("<code>");
+			buf.append("<code style=\"white-space:pre;\">");
 			for (int i=1;i<=this.sourceLines.size(); ++i) {
 				if ((methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.FULLY_COVERED) || (methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.PARTLY_COVERED)) {
 					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #32cd32\">"+ sourceLines.get(i-1)).append("</SPAN>").append("<br>");
