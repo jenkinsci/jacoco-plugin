@@ -289,10 +289,12 @@ public class JacocoPublisher extends Recorder {
 		
 		EnvVars env = build.getEnvironment(listener);
         env.overrideAll(build.getBuildVariables());
-        
-        healthReports = new JacocoHealthReportThresholds(Integer.parseInt(minimumClassCoverage), Integer.parseInt(maximumClassCoverage), Integer.parseInt(minimumMethodCoverage), Integer.parseInt(maximumMethodCoverage), Integer.parseInt(minimumLineCoverage), Integer.parseInt(maximumLineCoverage)
-    			,Integer.parseInt(minimumBranchCoverage), Integer.parseInt(maximumBranchCoverage), Integer.parseInt(minimumInstructionCoverage), Integer.parseInt(maximumInstructionCoverage), Integer.parseInt(minimumComplexityCoverage), Integer.parseInt(maximumComplexityCoverage));
-    			
+        try {
+        	healthReports = new JacocoHealthReportThresholds(Integer.parseInt(minimumClassCoverage), Integer.parseInt(maximumClassCoverage), Integer.parseInt(minimumMethodCoverage), Integer.parseInt(maximumMethodCoverage), Integer.parseInt(minimumLineCoverage), Integer.parseInt(maximumLineCoverage)
+        			,Integer.parseInt(minimumBranchCoverage), Integer.parseInt(maximumBranchCoverage), Integer.parseInt(minimumInstructionCoverage), Integer.parseInt(maximumInstructionCoverage), Integer.parseInt(minimumComplexityCoverage), Integer.parseInt(maximumComplexityCoverage));
+        } catch(NumberFormatException nfe) {
+        	healthReports = new JacocoHealthReportThresholds(0,80,0,80,0,80,0,80,0,80,0,80);
+        }		
         
         if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
             if(build.getResult().isWorseThan(Result.UNSTABLE))
