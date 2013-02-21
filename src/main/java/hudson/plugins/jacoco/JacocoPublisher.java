@@ -85,18 +85,30 @@ public class JacocoPublisher extends Recorder {
     	this.sourcePattern = sourcePattern;
     	this.inclusionPattern = inclusionPattern;
     	this.exclusionPattern = exclusionPattern;
-    	this.minimumInstructionCoverage = minimumInstructionCoverage;
-    	this.minimumBranchCoverage = minimumBranchCoverage;
-    	this.minimumComplexityCoverage = minimumComplexityCoverage;
-    	this.minimumLineCoverage = minimumLineCoverage;
-    	this.minimumMethodCoverage = minimumMethodCoverage;
-    	this.minimumClassCoverage = minimumClassCoverage;
-    	this.maximumInstructionCoverage = maximumInstructionCoverage;
-    	this.maximumBranchCoverage = maximumBranchCoverage;
-    	this.maximumComplexityCoverage = maximumComplexityCoverage;
-    	this.maximumLineCoverage = maximumLineCoverage;
-    	this.maximumMethodCoverage = maximumMethodCoverage;
-    	this.maximumClassCoverage = maximumClassCoverage;
+    	this.minimumInstructionCoverage = checkThresholdInput(minimumInstructionCoverage);
+    	this.minimumBranchCoverage = checkThresholdInput(minimumBranchCoverage);
+    	this.minimumComplexityCoverage = checkThresholdInput(minimumComplexityCoverage);
+    	this.minimumLineCoverage = checkThresholdInput(minimumLineCoverage);
+    	this.minimumMethodCoverage = checkThresholdInput(minimumMethodCoverage);
+    	this.minimumClassCoverage = checkThresholdInput(minimumClassCoverage);
+    	this.maximumInstructionCoverage = checkThresholdInput(maximumInstructionCoverage);
+    	this.maximumBranchCoverage = checkThresholdInput(maximumBranchCoverage);
+    	this.maximumComplexityCoverage = checkThresholdInput(maximumComplexityCoverage);
+    	this.maximumLineCoverage = checkThresholdInput(maximumLineCoverage);
+    	this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
+    	this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
+    }
+    
+    public String checkThresholdInput(String input) {
+    	if ((input == null) || ("".equals(input))) {
+    		return 0+"";
+    	}
+    	try {
+    		Integer.parseInt(input);
+    	} catch(NumberFormatException nfe) {
+    		return  0+"";
+    	}
+    	return input;
     }
 
 
@@ -293,7 +305,7 @@ public class JacocoPublisher extends Recorder {
         	healthReports = new JacocoHealthReportThresholds(Integer.parseInt(minimumClassCoverage), Integer.parseInt(maximumClassCoverage), Integer.parseInt(minimumMethodCoverage), Integer.parseInt(maximumMethodCoverage), Integer.parseInt(minimumLineCoverage), Integer.parseInt(maximumLineCoverage)
         			,Integer.parseInt(minimumBranchCoverage), Integer.parseInt(maximumBranchCoverage), Integer.parseInt(minimumInstructionCoverage), Integer.parseInt(maximumInstructionCoverage), Integer.parseInt(minimumComplexityCoverage), Integer.parseInt(maximumComplexityCoverage));
         } catch(NumberFormatException nfe) {
-        	healthReports = new JacocoHealthReportThresholds(0,80,0,80,0,80,0,80,0,80,0,80);
+        	healthReports = new JacocoHealthReportThresholds(0,0,0,0,0,0,0,0,0,0,0,0);
         }		
         
         if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
@@ -367,11 +379,13 @@ public class JacocoPublisher extends Recorder {
         
         logger.println("[JaCoCo plugin] Publishing the results..");
         final CoverageReport result = action.getResult();
+        
         if (result == null) {
             logger.println("[JaCoCo plugin] Could not parse coverage results. Setting Build to failure.");
             build.setResult(Result.FAILURE);
+        } else {
+        	result.setThresholds(healthReports);
         }
-        build.setResult(checkResult(action));
         return true;
     }
 

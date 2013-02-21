@@ -1,5 +1,9 @@
 package hudson.plugins.jacoco;
 
+import hudson.plugins.jacoco.model.Coverage;
+import hudson.plugins.jacoco.model.CoverageElement.Type;
+import hudson.plugins.jacoco.report.AbstractReport;
+
 import java.io.Serializable;
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -51,6 +55,8 @@ public class JacocoHealthReportThresholds implements Serializable {
         return value;
     }
 
+    public enum RESULT {BELLOWMINIMUM, BETWEENMINMAX, ABOVEMAXIMUM};
+    
     public void ensureValid() {
         maxClass = applyRange(0, maxClass, 100);
         minClass = applyRange(0, minClass, maxClass);
@@ -162,6 +168,51 @@ public class JacocoHealthReportThresholds implements Serializable {
 		this.maxComplexity = maxComplexity;
 	}
 
+	public  RESULT getResultByTypeAndRatio(Coverage ratio) {
+		    RESULT result = RESULT.ABOVEMAXIMUM;
+		    Type covType = ratio.getType();
+		    
+			if (covType == Type.INSTRUCTION) {
+				if (ratio.getPercentage() < minInstruction) {
+					result = RESULT.BELLOWMINIMUM;
+				} else if (ratio.getPercentage() < maxInstruction) {
+					result = RESULT.BETWEENMINMAX;
+				}
+				
+			} else if (covType == Type.BRANCH) {
+				if (ratio.getPercentage() < minBranch) {
+					result = RESULT.BELLOWMINIMUM;
+				} else if (ratio.getPercentage() < maxBranch) {
+					result = RESULT.BETWEENMINMAX;
+				} 
+			} else if (covType == Type.LINE) {
+				if (ratio.getPercentage() < minLine) {
+					result = RESULT.BELLOWMINIMUM;
+				} else if (ratio.getPercentage() < maxLine) {
+					result = RESULT.BETWEENMINMAX;
+				} 
+			} else if (covType == Type.COMPLEXITY) {
+				if (ratio.getPercentage() < minComplexity) {
+					result = RESULT.BELLOWMINIMUM;
+				} else if (ratio.getPercentage() < maxComplexity) {
+					result = RESULT.BETWEENMINMAX;
+				} 
+			} else if (covType == Type.METHOD) {
+				if (ratio.getPercentage() < minMethod) {
+					result = RESULT.BELLOWMINIMUM;
+				} else if (ratio.getPercentage() < maxMethod) {
+					result = RESULT.BETWEENMINMAX;
+				} 
+			} else if (covType == Type.CLASS) {
+				if (ratio.getPercentage() < minClass) {
+					result = RESULT.BELLOWMINIMUM;
+				} else if (ratio.getPercentage() < maxClass) {
+					result = RESULT.BETWEENMINMAX;
+				} 
+			}
+			 
+		return result;
+	}
 	@Override
 	public String toString() {
 		return "JacocoHealthReportThresholds [minClass=" + minClass
