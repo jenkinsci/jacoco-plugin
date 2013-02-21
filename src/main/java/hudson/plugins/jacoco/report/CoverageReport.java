@@ -3,23 +3,17 @@ package hudson.plugins.jacoco.report;
 import hudson.model.AbstractBuild;
 import hudson.plugins.jacoco.ExecutionFileLoader;
 import hudson.plugins.jacoco.JacocoBuildAction;
+import hudson.plugins.jacoco.JacocoHealthReportThresholds;
 import hudson.plugins.jacoco.model.Coverage;
-import hudson.plugins.jacoco.model.CoverageElement;
-import hudson.plugins.jacoco.model.CoverageObject;
-import hudson.util.IOException2;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.analysis.IClassCoverage;
-import org.jacoco.core.analysis.ICoverageNode;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
 
@@ -36,7 +30,14 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		this.action = action;
 		setName("Jacoco");
 	}
-
+	
+	private String instructionColor;
+	private String classColor;
+	private String branchColor;
+	private String complexityColor;
+	private String lineColor;
+	private String methodColor;
+	public JacocoHealthReportThresholds healthReports;
 
 	/**
 	 * Loads the exec files using JaCoCo API. Creates the reporting objects and the report tree.
@@ -92,10 +93,29 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		}
 	}
 
-
 	static NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
 	static NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
 	static NumberFormat intFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
+	
+	@Override
+	protected void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
+		if (ratio != null && ratio.isInitialized()) {
+			//String className = "nowrap" + (failed ? " red" : "");
+			String bgColor = "#FFFFFF";
+			
+			if (JacocoHealthReportThresholds.RESULT.BETWEENMINMAX == healthReports.getResultByTypeAndRatio(ratio)) {
+				bgColor = "#FF8000";
+			} else if (JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == healthReports.getResultByTypeAndRatio(ratio)) {
+				bgColor = "#FF0000";
+			}
+			buf.append("<td bgcolor=\" "+ bgColor +" \" class='").append("").append("'");
+			buf.append(" data='").append(dataFormat.format(ratio.getPercentageFloat()));
+			buf.append("'>\n");
+			printRatioTable(ratio, buf);
+			buf.append("</td>\n");
+		}
+	}
+	
 	@Override
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
 		String percent = percentFormat.format(ratio.getPercentageFloat());
@@ -125,6 +145,19 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	@Override
 	public AbstractBuild<?,?> getBuild() {
 		return action.owner;
+	}
+
+
+	public void setThresholds(JacocoHealthReportThresholds healthReports) {
+		this.healthReports = healthReports;
+		/*if (healthReports.getMaxBranch() < branch.getPercentage()) {
+			branchColor = "#000000";
+		} else if (healthReports.getMinBranch() < branch.getPercentage()) {
+			branchColor = "#FF8000";
+		} else {
+			branchColor = "#FF0000";
+		}
+		*/
 	}
 
 

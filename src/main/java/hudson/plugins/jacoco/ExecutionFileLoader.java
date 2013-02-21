@@ -114,11 +114,20 @@ public class ExecutionFileLoader implements Serializable {
 			final Analyzer analyzer = new Analyzer(executionDataStore,
 					coverageBuilder);
 			
-			if ((includes==null)|| ("".equals(includes[0]))) {
+			if (includes==null) {
 				String[] in = {"**"};
 				includes = in;
-			}
-			if ((excludes==null) || ("".equals(excludes[0]))) {
+			} else if (includes.length == 0) {
+				String[] in = {"**"};
+				includes = in;
+			} else if ((includes.length == 1) && ("".equals(includes[0]))) {
+				String[] in = {"**"};
+				includes = in;
+			} 
+			if (excludes==null) {
+				String[] ex = {"{0}"};
+				excludes = ex;
+			}  else if (excludes.length==0) {
 				String[] ex = {"{0}"};
 				excludes = ex;
 			}

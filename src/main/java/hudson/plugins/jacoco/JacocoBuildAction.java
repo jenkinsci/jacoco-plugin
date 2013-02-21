@@ -270,6 +270,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		try {
 			CoverageReport r = new CoverageReport(this, getJacocoReports(reportFolder, inclusions, exclusions));
 			report = new WeakReference<CoverageReport>(r);
+			r.setThresholds(thresholds);
 			return r;
 		} catch (IOException e) {
 			logger.println("Failed to load " + reportFolder);

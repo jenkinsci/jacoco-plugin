@@ -77,22 +77,22 @@
 	                         title="${%health.100.title}"/>
 	                </th>
 	                <td>
-	                    <f:textbox field="maximumInstructionCoverage" default="80" />
+	                    <f:textbox field="maximumInstructionCoverage" default="0" />
 	                </td>
 	                <td>
-	                    <f:textbox field="maximumBranchCoverage" default="80" />
+	                    <f:textbox field="maximumBranchCoverage" default="0" />
 	                </td>
 	                <td>
-	                    <f:textbox field="maximumComplexityCoverage" default="80" />
+	                    <f:textbox field="maximumComplexityCoverage" default="0" />
 	                </td>
 	                <td>
-	                    <f:textbox field="maximumLineCoverage" default="80" />
+	                    <f:textbox field="maximumLineCoverage" default="0" />
 	                </td>
 	                <td>
-	                    <f:textbox field="maximumMethodCoverage" default="70" />
+	                    <f:textbox field="maximumMethodCoverage" default="0" />
 	                </td>
 	                <td>
-	                    <f:textbox field="maximumClassCoverage" default="100" />
+	                    <f:textbox field="maximumClassCoverage" default="0" />
 	                </td>
 	            </tr>
 	            <tr>
