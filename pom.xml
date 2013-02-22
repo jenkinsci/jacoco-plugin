@@ -221,9 +221,8 @@
          </plugin>
 		 <plugin>
 			  <groupId>org.jenkins-ci.tools</groupId>
-			  <artifactId>
-				 maven-hpi-plugin
-			  </artifactId>
+			  <artifactId>maven-hpi-plugin</artifactId>
+       <version>1.94</version>
 			  <executions>
 				 <execution>
 				   <phase>compile</phase>
@@ -232,7 +231,7 @@
 				   </goals>
 				 </execution>
 			   </executions>
-			
+
 			  <configuration>
 				<pluginFirstClassLoader>true</pluginFirstClassLoader>
 				<maskClasses>org.objectweb.asm.</maskClasses>
