@@ -9,7 +9,8 @@
       <e:breakdownMethodsTable />
 
       <h2>${%Coverage}</h2>
-      ${it.printHighlightedSrcFile()}
+      <st:getOutput var="output"/>
+      ${it.printHighlightedSrcFile(output.asWriter())}
     </l:main-panel>
   </l:layout>
 </j:jelly>
