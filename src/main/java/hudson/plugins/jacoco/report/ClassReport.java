@@ -1,18 +1,19 @@
 package hudson.plugins.jacoco.report;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.jacoco.core.analysis.IClassCoverage;
 
-import org.jacoco.core.analysis.IMethodCoverage;
+import java.io.File;
+import java.util.logging.Logger;
 
 /**
  * @author Kohsuke Kawaguchi
  */
 public final class ClassReport extends AggregatedReport<PackageReport,ClassReport,MethodReport> {
 
-	public String buildURL;
-	@Override
+    private String sourceFilePath;
+    private IClassCoverage classCov;
+
+    @Override
 	public void setName(String name) {
 		super.setName(name.replaceAll("/", "."));
 		//logger.log(Level.INFO, "ClassReport");
@@ -23,6 +24,22 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
     	child.setName(newChildName);
         getChildren().put(child.getName(), child);
     }
+
+    public void setSrcFileInfo(IClassCoverage classCov, String sourceFilePath) {
+   		this.sourceFilePath = sourceFilePath;
+   		this.classCov = classCov;
+   	}
+
+    /**
+     * Read the source Java file for this class.
+     */
+    public File getSourceFilePath() {
+        return new File(sourceFilePath);
+    }
+
+    public String printHighlightedSrcFile() {
+        return new SourceAnnotator(getSourceFilePath()).printHighlightedSrcFile(classCov);
+   	}
 
 	@Override
 	public String toString() {

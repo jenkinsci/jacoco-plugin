@@ -67,6 +67,8 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 						ClassReport classReport = new ClassReport();
 						classReport.setName(classCov.getName());
 						classReport.setParent(packageReport);
+                        classReport.setSrcFileInfo(classCov, executionFileLoader.getSrcDir() + "/" + packageCov.getName() + "/" + classCov.getSourceFileName());
+
 						packageReport.setCoverage(classReport, classCov);
 
 						ArrayList<IMethodCoverage> methodList = new ArrayList<IMethodCoverage>(classCov.getMethods());
@@ -75,7 +77,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 							methodReport.setName(methodCov.getName());
 							methodReport.setParent(classReport);
 							classReport.setCoverage(methodReport, methodCov);
-							methodReport.setSrcFileInfo(methodCov, executionFileLoader.getSrcDir()+ "/" + packageCov.getName() + "/"+ classCov.getSourceFileName());
+							methodReport.setSrcFileInfo(methodCov);
 
 							classReport.add(methodReport);
 						}

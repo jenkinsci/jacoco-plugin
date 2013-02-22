@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,20 +34,8 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 	
 	public String lineNo;
 	
-	public String sourceFilePath;
-	
-	ArrayList<String> sourceLines;
-
 	private IMethodCoverage methodCov;
 	
-	public String getSourceFilePath() {
-		return sourceFilePath;
-	}
-	
-	public void setSourceFilePath(String sourceFilePath) {
-		this.sourceFilePath = sourceFilePath;
-	}
-
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
@@ -54,36 +43,6 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 	public String getDesc(String desc) {
 		return this.desc;
 	}
-	
-	public void readFile(String filePath) throws java.io.FileNotFoundException,
-    java.io.IOException {
-		ArrayList<String> aList = new ArrayList<String>();
-		
-		BufferedReader br = null;
-
-        try {
-            br = new BufferedReader(new FileReader(filePath));
-            String line = null;
-            while ((line = br.readLine()) != null) {
-            	aList.add(line.replaceAll("\\t","&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-		
-		this.sourceLines = aList;
-	}
-	
 	
 	@Override
 	public String printFourCoverageColumns() {
@@ -115,34 +74,11 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 	
 	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 
-	public void setSrcFileInfo(IMethodCoverage methodCov, String sourceFilePath) {
-		this.sourceFilePath = sourceFilePath;
+	public void setSrcFileInfo(IMethodCoverage methodCov) {
 		this.methodCov = methodCov;
 	}
 	
-	public String printHighlightedSrcFile() {
-		StringBuilder buf = new StringBuilder();
-		try {
-			
-			readFile(sourceFilePath);
-			//buf.append(sourceFilePath+" number of lines:  "+this.sourceLines.size()).append("<br>");
-			buf.append("<code style=\"white-space:pre;\">");
-			for (int i=1;i<=this.sourceLines.size(); ++i) {
-				if ((methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.FULLY_COVERED) || (methodCov.getLine(i).getInstructionCounter().getStatus() == ICounter.PARTLY_COVERED)) {
-					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #32cd32\">"+ sourceLines.get(i-1)).append("</SPAN>").append("<br>");
-				} else {
-					buf.append(i + ": ").append(sourceLines.get(i-1)).append("<br>");
-				}
-				
-			}
-			
-			//logger.log(Level.INFO, "lines: " + buf);
-		} catch (FileNotFoundException e) {
-			buf.append("ERROR: Sourcefile does not exist!");
-		} catch (IOException e) {
-			buf.append("ERROR: Error while reading the sourcefile!");
-		}
-		return buf.toString();
-	}
-	
+    public String printHighlightedSrcFile() {
+        return new SourceAnnotator(getParent().getSourceFilePath()).printHighlightedSrcFile(methodCov);
+   	}
 }

@@ -7,6 +7,9 @@
 
       <h3>${it.name}</h3>
       <e:breakdownMethodsTable />
+
+      <h2>${%Coverage}</h2>
+      ${it.printHighlightedSrcFile()}
     </l:main-panel>
   </l:layout>
 </j:jelly>
