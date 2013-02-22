@@ -55,12 +55,6 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 		return this.desc;
 	}
 	
-	@Override
-	public String getDisplayName() {
-		return super.getDisplayName();
-	}
-	
-	
 	public void readFile(String filePath) throws java.io.FileNotFoundException,
     java.io.IOException {
 		ArrayList<String> aList = new ArrayList<String>();
