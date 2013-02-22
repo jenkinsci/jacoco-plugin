@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,27 +55,28 @@ public class SourceAnnotator {
         return aList;
     }
 
-    public String printHighlightedSrcFile(ISourceNode cov) {
-   		StringBuilder buf = new StringBuilder();
-   		try {
-   			List<String> sourceLines = readLines();
-   			buf.append("<code style=\"white-space:pre;\">");
-   			for (int i=1;i<=sourceLines.size(); ++i) {
-                   int status = cov.getLine(i).getInstructionCounter().getStatus();
-                   if ((status == ICounter.FULLY_COVERED) || (status == ICounter.PARTLY_COVERED)) {
-   					buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #32cd32\">"+ sourceLines.get(i-1)).append("</SPAN>").append("<br>");
-   				} else {
-   					buf.append(i + ": ").append(sourceLines.get(i-1)).append("<br>");
-   				}
+    public void printHighlightedSrcFile(ISourceNode cov, Writer output) {
+        StringBuilder buf = new StringBuilder();
+        try {
+            List<String> sourceLines = readLines();
+            output.write("<code style=\"white-space:pre;\">");
+            for (int i = 1; i <= sourceLines.size(); ++i) {
+                buf.setLength(0);
+                int status = cov.getLine(i).getInstructionCounter().getStatus();
+                if ((status == ICounter.FULLY_COVERED) || (status == ICounter.PARTLY_COVERED)) {
+                    buf.append(i + ": ").append("<SPAN style=\"BACKGROUND-COLOR: #32cd32\">" + sourceLines.get(i - 1)).append("</SPAN>").append("<br>");
+                } else {
+                    buf.append(i + ": ").append(sourceLines.get(i - 1)).append("<br>");
+                }
+                output.write(buf.toString());
+            }
+            output.write("</code>");
 
-   			}
-
-   			//logger.log(Level.INFO, "lines: " + buf);
-   		} catch (FileNotFoundException e) {
-   			buf.append("ERROR: Sourcefile does not exist!");
-   		} catch (IOException e) {
-   			buf.append("ERROR: Error while reading the sourcefile!");
-   		}
-   		return buf.toString();
-   	}
+            //logger.log(Level.INFO, "lines: " + buf);
+        } catch (FileNotFoundException e) {
+            buf.append("ERROR: Sourcefile does not exist!");
+        } catch (IOException e) {
+            buf.append("ERROR: Error while reading the sourcefile!");
+        }
+    }
 }

@@ -3,7 +3,8 @@
     <st:include it="${it.build}" page="sidepanel.jelly" />
     <l:main-panel>
       <h2>${%Method}: ${it.name}</h2>
-		${it.printHighlightedSrcFile()}
+      <st:getOutput var="output"/>
+      ${it.printHighlightedSrcFile(output.asWriter())}
     </l:main-panel>
   </l:layout>
 </j:jelly>

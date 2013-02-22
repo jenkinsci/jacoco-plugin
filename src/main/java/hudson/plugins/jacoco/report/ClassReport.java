@@ -3,6 +3,7 @@ package hudson.plugins.jacoco.report;
 import org.jacoco.core.analysis.IClassCoverage;
 
 import java.io.File;
+import java.io.Writer;
 import java.util.logging.Logger;
 
 /**
@@ -37,8 +38,8 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
         return new File(sourceFilePath);
     }
 
-    public String printHighlightedSrcFile() {
-        return new SourceAnnotator(getSourceFilePath()).printHighlightedSrcFile(classCov);
+    public void printHighlightedSrcFile(Writer output) {
+        new SourceAnnotator(getSourceFilePath()).printHighlightedSrcFile(classCov,output);
    	}
 
 	@Override

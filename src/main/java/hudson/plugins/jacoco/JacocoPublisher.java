@@ -4,6 +4,7 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Util;
 import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Result;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.apache.tools.ant.DirectoryScanner;
@@ -252,6 +254,7 @@ public class JacocoPublisher extends Recorder {
 		try {
 			directoryPaths = build.getWorkspace().act(new FilePath.FileCallable<FilePath[]>() {
 				public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
+                    FilePath base = new FilePath(f);
 					ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
 					String[] includes = input.split(",");
 					DirectoryScanner ds = new DirectoryScanner();
@@ -263,7 +266,7 @@ public class JacocoPublisher extends Recorder {
 			        String[] dirs = ds.getIncludedDirectories();
 			        
 			        for (String dir : dirs) {
-			        	localDirectoryPaths.add(new FilePath(new File(dir)));
+                        localDirectoryPaths.add(base.child(dir));
 			        }
 			        FilePath[] lfp = {};//trick to have an empty array as a parameter, so the returned array will contain the elements
 			        return localDirectoryPaths.toArray(lfp);
@@ -287,14 +290,9 @@ public class JacocoPublisher extends Recorder {
     public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
 	
 		final PrintStream logger = listener.getLogger();
-		FilePath[] matchedExecFiles = null;
 		FilePath[] matchedClassDirs = null;
 		FilePath[] matchedSrcDirs = null;
-		FilePath actualBuildDirRoot = null;
-		FilePath actualBuildClassDir = null;
-		FilePath actualBuildSrcDir = null;
-		FilePath actualBuildExecDir = null;
-		
+
 		
 		logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
 		
@@ -318,35 +316,24 @@ public class JacocoPublisher extends Recorder {
         } else {
         		logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
         }
-        actualBuildDirRoot = new FilePath(getJacocoReport(build));
-        actualBuildClassDir = new FilePath(actualBuildDirRoot, "classes");
-        actualBuildSrcDir = new FilePath(actualBuildDirRoot, "sources");
-        actualBuildExecDir = new FilePath(actualBuildDirRoot, "execFiles");
-        
-        matchedExecFiles = build.getWorkspace().list(resolveFilePaths(build, listener, execPattern));
-        logger.println("[JaCoCo plugin] Number of found exec files: " + matchedExecFiles.length); 
+        JacocoReportDir dir = new JacocoReportDir(build);
+
+        List<FilePath> matchedExecFiles = Arrays.asList(build.getWorkspace().list(resolveFilePaths(build, listener, execPattern)));
+        logger.println("[JaCoCo plugin] Number of found exec files: " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
-        int i=0;
-        for (FilePath file : matchedExecFiles) {
-        	FilePath separateExecDir = new FilePath(actualBuildExecDir, "exec"+i);
-        	FilePath fullExecName = separateExecDir.child("jacoco.exec");
-        	file.copyTo(fullExecName);
-        	logger.print(" " + file.getRemote());
-        	++i;
-        }
+        dir.addExecFiles(matchedExecFiles);
+        logger.print(" " + Util.join(matchedExecFiles," "));
         matchedClassDirs = resolveDirPaths(build, listener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories: ");
         for (FilePath file : matchedClassDirs) {
-        	file= new FilePath(build.getWorkspace(), file.getRemote()+"\\");
-        	saveCoverageReports(actualBuildClassDir, file);
-        	logger.print(" " + file.getRemote());
+            dir.saveClassesFrom(file);
+        	logger.print(" " + file);
         }
         matchedSrcDirs = resolveDirPaths(build, listener, sourcePattern);
         logger.print("\n[JaCoCo plugin] Saving matched source directories: ");
         for (FilePath file : matchedSrcDirs) {
-        	file= new FilePath(build.getWorkspace(), file.getRemote());
-        	saveCoverageReports(actualBuildSrcDir, file);
-        	logger.print(" " + file.getRemote());
+            dir.saveSourcesFrom(file);
+        	logger.print(" " + file);
         }
         
         //logger.println("[JaCoCo plugin] BuildENV: " +build.getEnvironment(listener).toString());
@@ -372,7 +359,7 @@ public class JacocoPublisher extends Recorder {
         	logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
         
-        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, actualBuildDirRoot, includes, excludes);
+        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, dir, includes, excludes);
         action.getThresholds().ensureValid();
         logger.println("[JaCoCo plugin] Thresholds: " + action.getThresholds());
         build.getActions().add(action);
@@ -407,13 +394,6 @@ public class JacocoPublisher extends Recorder {
 	@Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.BUILD;
-    }
-
-    /**
-     * Gets the directory to store report files
-     */
-    static File getJacocoReport(AbstractBuild<?,?> build) {
-        return new File(build.getRootDir(), "jacoco");
     }
 
     @Override

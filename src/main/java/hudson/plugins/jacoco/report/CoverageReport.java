@@ -6,16 +6,27 @@ import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.JacocoHealthReportThresholds;
 import hudson.plugins.jacoco.model.Coverage;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import hudson.util.HttpResponses;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
+import org.jacoco.core.data.ExecFileLoader;
+import org.jacoco.core.data.ExecutionDataWriter;
+import org.kohsuke.stapler.HttpResponse;
+import org.kohsuke.stapler.StaplerRequest;
+import org.kohsuke.stapler.StaplerResponse;
+import org.kohsuke.stapler.WebMethod;
+
+import javax.servlet.ServletException;
 
 /**
  * Root object of the coverage report.
@@ -148,6 +159,35 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	public AbstractBuild<?,?> getBuild() {
 		return action.owner;
 	}
+
+    /**
+     * Serves a single jacoco.exec file that merges all that have been recorded.
+     */
+    @WebMethod(name="jacoco.exec")
+    public HttpResponse doJacocoExec() throws IOException {
+        final List<File> files = action.getJacocoReport().getExecFiles();
+
+        switch (files.size()) {
+        case 0:
+            return HttpResponses.error(404, "No jacoco.exec file recorded");
+        case 1:
+            return HttpResponses.staticResource(files.get(0));
+        default:
+            // TODO: perhaps we want to cache the merged result?
+            return new HttpResponse() {
+                public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
+                    ExecFileLoader loader = new ExecFileLoader();
+                    for (File exec : files) {
+                        loader.load(exec);
+                    }
+                    rsp.setContentType("application/octet-stream");
+                    final ExecutionDataWriter dataWriter = new ExecutionDataWriter(rsp.getOutputStream());
+                    loader.getSessionInfoStore().accept(dataWriter);
+                    loader.getExecutionDataStore().accept(dataWriter);
+                }
+            };
+        }
+    }
 
 
 	public void setThresholds(JacocoHealthReportThresholds healthReports) {
