@@ -15,6 +15,15 @@ import org.jacoco.core.analysis.ICoverageNode;
  */
 public final class PackageReport extends AggregatedReport<CoverageReport,PackageReport,ClassReport> {
 
+    /**
+     * Give the default no-name package a non-empty name.
+     */
+    @Override
+    public String getName() {
+        String n = super.getName();
+        return n.length() == 0 ? "(default)" : n;
+    }
+
     @Override
     public void setName(String name) {
         super.setName(name.replaceAll("/", "."));

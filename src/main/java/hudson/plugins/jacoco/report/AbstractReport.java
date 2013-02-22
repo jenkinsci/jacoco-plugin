@@ -33,7 +33,7 @@ public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>
     }
 
     public String getDisplayName() {
-        return name;
+        return getName();
     }
 
     /**
