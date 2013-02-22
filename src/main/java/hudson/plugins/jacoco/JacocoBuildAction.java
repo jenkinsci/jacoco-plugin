@@ -10,7 +10,6 @@ import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
-import hudson.plugins.jacoco.report.ClassReport;
 import hudson.plugins.jacoco.report.CoverageReport;
 
 import java.io.File;
@@ -22,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.IBundleCoverage;
@@ -200,31 +198,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 
 	protected ExecutionFileLoader getJacocoReports(File file, String[] includes, String[] excludes) throws IOException {
-		ExecutionFileLoader efl = null;
-		try {
-			FilePath path = new FilePath(file);
-			FilePath pathToExecFiles = new FilePath(path, "execFiles");
-			
-			efl = new ExecutionFileLoader();
-			
-			int i=0;
-			FilePath checkPath=null;
-			while((checkPath=new FilePath(pathToExecFiles ,"exec"+i)).exists()) {
-						efl.addExecFile(new FilePath(checkPath, "jacoco.exec"));
-						
-				i++;
-			}
-			efl.setIncludes(includes);
-			efl.setExcludes(excludes);
-			efl.setClassDir(new FilePath(path, "classes"));
-			efl.setSrcDir(new FilePath(path, "sources"));
-			efl.loadBundleCoverage();
-			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return efl;
+        return getJacocoReports(new FilePath(file),includes,excludes);
 	}
 	
 	protected static ExecutionFileLoader getJacocoReports(FilePath fp, String[] includes, String[] excludes) throws IOException {
