@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -78,7 +79,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
 		this.methodCov = methodCov;
 	}
 	
-    public String printHighlightedSrcFile() {
-        return new SourceAnnotator(getParent().getSourceFilePath()).printHighlightedSrcFile(methodCov);
+    public void printHighlightedSrcFile(Writer output) {
+        new SourceAnnotator(getParent().getSourceFilePath()).printHighlightedSrcFile(methodCov,output);
    	}
 }

@@ -10,7 +10,6 @@ import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
-import hudson.plugins.jacoco.report.ClassReport;
 import hudson.plugins.jacoco.report.CoverageReport;
 
 import java.io.File;
@@ -22,10 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.IBundleCoverage;
+import org.jacoco.core.data.ExecFileLoader;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
 
@@ -198,62 +197,9 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		return owner;
 	}
 
-
-	protected ExecutionFileLoader getJacocoReports(File file, String[] includes, String[] excludes) throws IOException {
-		ExecutionFileLoader efl = null;
-		try {
-			FilePath path = new FilePath(file);
-			FilePath pathToExecFiles = new FilePath(path, "execFiles");
-			
-			efl = new ExecutionFileLoader();
-			
-			int i=0;
-			FilePath checkPath=null;
-			while((checkPath=new FilePath(pathToExecFiles ,"exec"+i)).exists()) {
-						efl.addExecFile(new FilePath(checkPath, "jacoco.exec"));
-						
-				i++;
-			}
-			efl.setIncludes(includes);
-			efl.setExcludes(excludes);
-			efl.setClassDir(new FilePath(path, "classes"));
-			efl.setSrcDir(new FilePath(path, "sources"));
-			efl.loadBundleCoverage();
-			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return efl;
-	}
-	
-	protected static ExecutionFileLoader getJacocoReports(FilePath fp, String[] includes, String[] excludes) throws IOException {
-		ExecutionFileLoader efl = null;
-		try {
-			FilePath path = fp;
-			FilePath pathToExecFiles = new FilePath(path, "execFiles");
-			
-			efl = new ExecutionFileLoader();
-			
-			int i=0;
-			FilePath checkPath=null;
-			while((checkPath=new FilePath(pathToExecFiles ,"exec"+i)).exists()) {
-						efl.addExecFile(new FilePath(checkPath, "jacoco.exec"));
-						
-				i++;
-			}
-			efl.setIncludes(includes);
-			efl.setExcludes(excludes);
-			efl.setClassDir(new FilePath(path, "classes"));
-			efl.setSrcDir(new FilePath(path, "sources"));
-			efl.loadBundleCoverage();
-			
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return efl;
-	}
+    public JacocoReportDir getJacocoReport() {
+        return new JacocoReportDir(owner);
+    }
 
 	/**
 	 * Obtains the detailed {@link CoverageReport} instance.
@@ -265,10 +211,10 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			if(r!=null)     return r;
 		}
 
-		final File reportFolder = JacocoPublisher.getJacocoReport(owner);
+		final JacocoReportDir reportFolder = getJacocoReport();
 
 		try {
-			CoverageReport r = new CoverageReport(this, getJacocoReports(reportFolder, inclusions, exclusions));
+			CoverageReport r = new CoverageReport(this, reportFolder.parse(inclusions, exclusions));
 			report = new WeakReference<CoverageReport>(r);
 			r.setThresholds(thresholds);
 			return r;
@@ -307,11 +253,11 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * @throws IOException
 	 *      if failed to parse the file.
 	 */
-	public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, FilePath actualBuildDirRoot, String[] includes, String[] excludes) throws IOException {
+	public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, JacocoReportDir layout, String[] includes, String[] excludes) throws IOException {
 		PrintStream logger = listener.getLogger();
 		Map<CoverageElement.Type,Coverage> ratios = null;
 		
-	    ratios = loadRatios(actualBuildDirRoot, ratios, includes, excludes);
+	    ratios = loadRatios(layout, ratios, includes, excludes);
 		return new JacocoBuildAction(owner, rule, ratios, thresholds, listener, includes, excludes);
 	}
 
@@ -319,19 +265,18 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	/**
 	 * Extracts top-level coverage information from the JaCoCo report document.
 	 * 
-	 * @param actualBuildDirRoot
+	 * @param layout
 	 * @param ratios
 	 * @return
 	 * @throws IOException
 	 */
-	private static Map<Type, Coverage> loadRatios(FilePath actualBuildDirRoot, Map<Type, Coverage> ratios, String[] includes, String[] excludes) throws IOException {
+	private static Map<Type, Coverage> loadRatios(JacocoReportDir layout, Map<Type, Coverage> ratios, String[] includes, String[] excludes) throws IOException {
 
 		if (ratios == null) {
 			ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();
 		}
-		IBundleCoverage bundleCoverage = null;
-		ExecutionFileLoader efl = getJacocoReports(actualBuildDirRoot, includes, excludes);
-		bundleCoverage = efl.getBundleCoverage();
+		ExecutionFileLoader efl = layout.parse(includes, excludes);
+        IBundleCoverage bundleCoverage = efl.getBundleCoverage();
 		Coverage ratio = new Coverage();
 		ratio.accumulatePP(bundleCoverage.getClassCounter().getMissedCount(), bundleCoverage.getClassCounter().getCoveredCount());
 		ratios.put(CoverageElement.Type.CLASS, ratio);
