@@ -139,7 +139,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		.append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
 		.append("<td class='percentgraph'>")
 		.append("<div class='percentgraph' style='width: ").append(100).append("px;'>")
-		.append("<div class='redbar' style='width: ").append(100 * (float)ratio.getMissed() / ((float)ratio.getMissed()+(float)ratio.getCovered())).append("px;'>")
+		.append("<div class='redbar' style='width: ").append((ratio.getMissed()+ratio.getCovered()) == 0 ? 0 : 100 * (float)ratio.getMissed() / ((float)ratio.getMissed()+(float)ratio.getCovered())).append("px;'>")
 		.append("</div></div></td></tr>" +
 				"<tr>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></tr>").append("</table>");
 	}
