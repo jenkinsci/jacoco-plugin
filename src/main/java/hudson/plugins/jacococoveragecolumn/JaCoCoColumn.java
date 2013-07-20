@@ -6,7 +6,6 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
-import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.views.ListViewColumn;
 
 import java.awt.Color;
@@ -43,17 +42,37 @@ public class JaCoCoColumn extends ListViewColumn {
 		return stringBuilder.toString();
 	}
 
-	public String getLineColor(final BigDecimal amount) {
+	public String getLineColor(final Job<?, ?> job, final BigDecimal amount) {
 		if (amount == null) {
 			return null;
 		}
+
+		if(job != null) {
+			final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
+			if (lastSuccessfulBuild == null) {
+				return CoverageRange.NA.getLineHexString();
+			} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
+				return CoverageRange.NA.getLineHexString();
+			}
+		}
+
 		return CoverageRange.valueOf(amount.doubleValue()).getLineHexString();
 	}
 
-	public String getFillColor(final BigDecimal amount) {
+	public String getFillColor(final Job<?, ?> job, final BigDecimal amount) {
 		if (amount == null) {
 			return null;
 		}
+
+		if(job != null) {
+			final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
+			if (lastSuccessfulBuild == null) {
+				return CoverageRange.NA.getFillHexString();
+			} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
+				return CoverageRange.NA.getFillHexString();
+			}
+		}
+
 		final Color c = CoverageRange.fillColorOf(amount.doubleValue());
 		return CoverageRange.colorAsHexString(c);
 	}

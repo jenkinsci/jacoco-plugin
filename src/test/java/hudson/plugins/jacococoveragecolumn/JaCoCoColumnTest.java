@@ -58,26 +58,7 @@ public class JaCoCoColumnTest {
 		
 		EasyMock.replay(context);
 
-		final Job<?, ?> mockJob = new ExternalJob("externaljob") {
-			@Override
-			protected void reload() {
-			}
-
-			@Override
-			@Exported
-			@QuickSilver
-			public ExternalRun getLastSuccessfulBuild() {
-				try {
-					return newBuild();
-				} catch (IOException e) {
-					throw new IllegalStateException(e);
-				}
-			}
-
-			@Override
-			protected synchronized void saveNextBuildNumber() throws IOException {
-			}
-		};
+		final Job<?, ?> mockJob = new ExternalJobExtension("externaljob");
 		assertEquals("N/A", jacocoColumn.getPercent(mockJob));
 		assertEquals(new BigDecimal("0.0"), jacocoColumn.getLineCoverage(mockJob));
 
@@ -156,22 +137,44 @@ public class JaCoCoColumnTest {
 	
 	@Test
 	public void testGetLineColorWithNull() throws Exception {
-		assertNull(jacocoColumn.getLineColor(null));
+		assertNull(jacocoColumn.getLineColor(null, null));
 	}
 
 	@Test
 	public void testGetLineColor() throws Exception {
-		assertEquals("EEEEEE", jacocoColumn.getLineColor(BigDecimal.valueOf(100)));
+		assertEquals(CoverageRange.NA.getLineHexString(), jacocoColumn.getLineColor(null, BigDecimal.valueOf(100)));
+		
+		Job<?, ?> mockJob = new ExternalJobExtension("externaljob");
+		assertEquals(CoverageRange.NA.getLineHexString(), jacocoColumn.getLineColor(mockJob, BigDecimal.valueOf(100)));
+
+		mockJob = new ExternalJobExtension("externaljob") {
+			@Override
+			public ExternalRun getLastSuccessfulBuild() {
+				return null;
+			}
+		};
+		assertEquals(CoverageRange.NA.getLineHexString(), jacocoColumn.getLineColor(mockJob, BigDecimal.valueOf(100)));
 	}
 
 	@Test
 	public void testGetFillColorWithNull() throws Exception {
-		assertNull(jacocoColumn.getFillColor(null));
+		assertNull(jacocoColumn.getFillColor(null, null));
 	}
 
 	@Test
 	public void testGetFillColor100() throws Exception {
-		assertEquals("008B00", jacocoColumn.getFillColor(BigDecimal.valueOf(100)));
+		assertEquals(CoverageRange.PERFECT.getFillHexString(), jacocoColumn.getFillColor(null, BigDecimal.valueOf(100)));
+
+		Job<?, ?> mockJob = new ExternalJobExtension("externaljob");
+		assertEquals(CoverageRange.NA.getFillHexString(), jacocoColumn.getFillColor(mockJob, BigDecimal.valueOf(100)));
+
+		mockJob = new ExternalJobExtension("externaljob") {
+			@Override
+			public ExternalRun getLastSuccessfulBuild() {
+				return null;
+			}
+		};
+		assertEquals(CoverageRange.NA.getFillHexString(), jacocoColumn.getFillColor(mockJob, BigDecimal.valueOf(100)));
 	}
 
 	@Test
@@ -179,5 +182,31 @@ public class JaCoCoColumnTest {
 		assertNotNull(jacocoColumn.getDescriptor());
 		assertNotNull(jacocoColumn.getDescriptor().newInstance(null, null));
 		assertNotNull(jacocoColumn.getDescriptor().getDisplayName());
+	}
+
+	private class ExternalJobExtension extends ExternalJob {
+
+		private ExternalJobExtension(String name) {
+			super(name);
+		}
+
+		@Override
+		protected void reload() {
+		}
+
+		@Override
+		@Exported
+		@QuickSilver
+		public ExternalRun getLastSuccessfulBuild() {
+			try {
+				return newBuild();
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}
+
+		@Override
+		protected synchronized void saveNextBuildNumber() throws IOException {
+		}
 	}
 }

@@ -3,8 +3,8 @@
     <j:when test="${it != null}">
       <j:set var="coverageAmount" value="${it.getLineCoverage(job)}" />
       <j:set var="coveragePercent" value="${it.getPercent(job)}" />
-      <j:set var="color" value="${it.getLineColor(coverageAmount)}" />
-      <j:set var="backgroundColor" value="${it.getFillColor(coverageAmount)}" />
+      <j:set var="color" value="${it.getLineColor(job, coverageAmount)}" />
+      <j:set var="backgroundColor" value="${it.getFillColor(job, coverageAmount)}" />
     </j:when>
     <j:otherwise>
       <j:set var="coverageAmount" value="${null}" />
