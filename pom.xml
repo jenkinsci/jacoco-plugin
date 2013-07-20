@@ -86,7 +86,7 @@
       <dependency>
 	    <groupId>org.jacoco</groupId>
 	    <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
-	    <version>0.6.1.201212231917</version>
+	    <version>0.6.3.201306030806</version>
 	  </dependency>
       <dependency>
 			<groupId>org.kohsuke</groupId>
@@ -106,15 +106,22 @@
 			<version>4.1</version>
 			<scope>runtime</scope>
 	  </dependency>
-	<dependency>
-		<groupId>org.easymock</groupId>
-		<artifactId>easymockclassextension</artifactId>
-		<version>2.2</version>
-	</dependency>
+      <dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.0</version>
+			<scope>test</scope>
+      </dependency>
 	<dependency>
 		<groupId>org.jacoco</groupId>
 		<artifactId>jacoco-maven-plugin</artifactId>
-		<version>0.6.1.201212231917</version>
+		<version>0.6.3.201306030806</version>
+	</dependency>
+	<dependency>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-log4j12</artifactId>
+	  <version>1.7.5</version>
+	  <scope>test</scope>
 	</dependency>
    </dependencies>
    
@@ -201,7 +208,7 @@
          <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.5.6.201201232323</version>
+            <version>0.6.3.201306030806</version>
             <executions>
                <execution>
                   <id>jacoco-initialize</id>
@@ -343,7 +350,7 @@
                            <pluginExecutionFilter>
                               <groupId>org.jacoco</groupId>
                               <artifactId>jacoco-maven-plugin</artifactId>
-                              <versionRange>[0.5.6.201201232323,)</versionRange>
+                              <versionRange>[0.6.3.201306030806,)</versionRange>
                               <goals>
                                  <goal>prepare-agent</goal>
                               </goals>
@@ -394,7 +401,7 @@
                <plugin>
                   <groupId>org.jacoco</groupId>
                   <artifactId>jacoco-maven-plugin</artifactId>
-                  <version>0.5.6.201201232323</version>
+                  <version>0.6.3.201306030806</version>
                   <executions>
                      <execution>
                         <goals>
@@ -416,7 +423,7 @@
                      <dependency>
                         <groupId>org.jacoco</groupId>
                         <artifactId>org.jacoco.ant</artifactId>
-                        <version>0.5.6.201201232323</version>
+                        <version>0.6.3.201306030806</version>
                      </dependency>
                      <dependency>
                         <groupId>ant-contrib</groupId>
