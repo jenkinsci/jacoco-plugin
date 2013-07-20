@@ -20,7 +20,7 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.export.Exported;
