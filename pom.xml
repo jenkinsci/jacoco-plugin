@@ -54,7 +54,7 @@
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <jacoco.version>0.6.2.201302030002</jacoco.version>
+      <jacoco.version>0.6.3.201306030806</jacoco.version>
    </properties>
 
    <repositories>
