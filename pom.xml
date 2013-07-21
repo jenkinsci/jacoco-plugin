@@ -238,6 +238,18 @@
 				<maskClasses>org.objectweb.asm.</maskClasses>
 			  </configuration>
 		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-eclipse-plugin</artifactId>
+			<version>2.9</version>
+			<configuration>
+				<excludes>
+					<exclude>asm:asm</exclude>
+					<exclude>asm:commons</exclude>
+					<exclude>asm:tree</exclude>
+				</excludes>
+			</configuration>
+		  </plugin>		
 	  </plugins>
       <pluginManagement>
          <plugins>
