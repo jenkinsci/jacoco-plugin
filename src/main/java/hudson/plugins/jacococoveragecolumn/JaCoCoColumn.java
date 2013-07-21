@@ -26,13 +26,22 @@ public class JaCoCoColumn extends ListViewColumn {
 	public JaCoCoColumn() {
 	}
 
+	public boolean hasCoverage(final Job<?, ?> job) {
+		final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
+		if (lastSuccessfulBuild == null) {
+			return false;
+		} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
+			return false;
+		}
+		
+		return true;
+	}
+
 	public String getPercent(final Job<?, ?> job) {
 		final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
 		final StringBuilder stringBuilder = new StringBuilder();
 
-		if (lastSuccessfulBuild == null) {
-			stringBuilder.append("N/A");
-		} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
+		if (!hasCoverage(job)) {
 			stringBuilder.append("N/A");
 		} else {
 			final Double percent = getLinePercent(lastSuccessfulBuild);
