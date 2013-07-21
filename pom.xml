@@ -54,6 +54,7 @@
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <jacoco.version>0.6.2.201302030002</jacoco.version>
    </properties>
 
    <repositories>
@@ -86,7 +87,7 @@
       <dependency>
 	    <groupId>org.jacoco</groupId>
 	    <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
-	    <version>0.6.1.201212231917</version>
+	    <version>${jacoco.version}</version>
 	  </dependency>
       <dependency>
 			<groupId>org.kohsuke</groupId>
@@ -114,7 +115,7 @@
 	<dependency>
 		<groupId>org.jacoco</groupId>
 		<artifactId>jacoco-maven-plugin</artifactId>
-		<version>0.6.1.201212231917</version>
+		<version>${jacoco.version}</version>
 	</dependency>
    </dependencies>
    
@@ -201,7 +202,7 @@
          <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>0.5.6.201201232323</version>
+            <version>${jacoco.version}</version>
             <executions>
                <execution>
                   <id>jacoco-initialize</id>
@@ -343,7 +344,7 @@
                            <pluginExecutionFilter>
                               <groupId>org.jacoco</groupId>
                               <artifactId>jacoco-maven-plugin</artifactId>
-                              <versionRange>[0.5.6.201201232323,)</versionRange>
+                              <versionRange>[${jacoco.version},)</versionRange>
                               <goals>
                                  <goal>prepare-agent</goal>
                               </goals>
@@ -394,7 +395,7 @@
                <plugin>
                   <groupId>org.jacoco</groupId>
                   <artifactId>jacoco-maven-plugin</artifactId>
-                  <version>0.5.6.201201232323</version>
+                  <version>${jacoco.version}</version>
                   <executions>
                      <execution>
                         <goals>
@@ -416,7 +417,7 @@
                      <dependency>
                         <groupId>org.jacoco</groupId>
                         <artifactId>org.jacoco.ant</artifactId>
-                        <version>0.5.6.201201232323</version>
+                        <version>${jacoco.version}</version>
                      </dependency>
                      <dependency>
                         <groupId>ant-contrib</groupId>
