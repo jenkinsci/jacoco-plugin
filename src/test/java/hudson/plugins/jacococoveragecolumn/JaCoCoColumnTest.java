@@ -6,7 +6,7 @@ import hudson.model.Job;
 
 import java.math.BigDecimal;
 
-import org.easymock.classextension.EasyMock;
+import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
