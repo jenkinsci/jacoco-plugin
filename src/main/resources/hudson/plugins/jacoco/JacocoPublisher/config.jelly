@@ -122,4 +122,7 @@
 	        </tbody>
 	    </table>
   </f:entry>
+  <f:entry>
+   <f:checkbox field="changeBuildStatus" checked="${instance.selected}" title="Change build status according the thresholds"/>
+  </f:entry>
 </j:jelly>
