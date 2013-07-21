@@ -13,7 +13,18 @@
 
   <j:choose>
     <j:when test="${coverageAmount != null}">
-      <td style="color:#${color}; background-color:#${backgroundColor};" data="${coverageAmount}" align="center">${coveragePercent}%</td>
+      <td style="color:#${color}; background-color:#${backgroundColor};" data="${coverageAmount}" align="center">
+        <j:choose>
+          <j:when test="${it.hasCoverage(job)}">
+            <a href="${job.url}lastCompletedBuild/jacoco/">
+              ${coveragePercent}%
+            </a>
+          </j:when>
+          <j:otherwise>
+            N/A
+          </j:otherwise>
+        </j:choose>
+      </td>
     </j:when>
     <j:otherwise>
       <td data="-" align="center"></td>
