@@ -75,13 +75,16 @@ public class JacocoPublisher extends Recorder {
     private final String maximumLineCoverage;
     private final String maximumMethodCoverage;
     private final String maximumClassCoverage;
-    /**
+    private final boolean changeBuildStatus;
+    
+
+	/**
      * Loads the configuration set by user.
      */
     @DataBoundConstructor
     public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, String maximumInstructionCoverage, String maximumBranchCoverage
     		, String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
-    		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage) {
+    		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus) {
     	this.execPattern = execPattern;
     	this.classPattern = classPattern;
     	this.sourcePattern = sourcePattern;
@@ -99,6 +102,7 @@ public class JacocoPublisher extends Recorder {
     	this.maximumLineCoverage = checkThresholdInput(maximumLineCoverage);
     	this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
     	this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
+    	this.changeBuildStatus = changeBuildStatus;
     }
     
     public String checkThresholdInput(String input) {
@@ -229,7 +233,14 @@ public class JacocoPublisher extends Recorder {
 	}
 
 
-
+	public boolean isChangeBuildStatus() {
+		return changeBuildStatus;
+	}
+	
+    public boolean getChangeBuildStatus() {
+		return changeBuildStatus;
+	}
+	
 	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
 		destFolder.mkdirs();
 		
@@ -293,6 +304,10 @@ public class JacocoPublisher extends Recorder {
 		FilePath[] matchedClassDirs = null;
 		FilePath[] matchedSrcDirs = null;
 
+		if (build.getResult().equals(Result.FAILURE)) {
+			return true;
+		}
+		
 		
 		logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
 		
@@ -372,6 +387,9 @@ public class JacocoPublisher extends Recorder {
             build.setResult(Result.FAILURE);
         } else {
         	result.setThresholds(healthReports);
+        	if (changeBuildStatus) {
+        		build.setResult(checkResult(action));
+        	}
         }
         return true;
     }
