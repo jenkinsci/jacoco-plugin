@@ -10,6 +10,8 @@ import hudson.model.ExternalJob;
 import hudson.model.ExternalRun;
 import hudson.model.Job;
 import hudson.plugins.jacoco.JacocoBuildAction;
+import hudson.plugins.jacoco.model.Coverage;
+import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.search.QuickSilver;
 
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 
@@ -24,6 +27,8 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.export.Exported;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class JaCoCoColumnTest {
 
@@ -145,18 +150,25 @@ public class JaCoCoColumnTest {
 
 	@Test
 	public void testGetLineColor() throws Exception {
-		assertEquals(CoverageRange.NA.getLineHexString(), jacocoColumn.getLineColor(null, BigDecimal.valueOf(100)));
+		final BuildListener listener = EasyMock.createNiceMock(BuildListener.class);
+		EasyMock.replay(listener);
 		
+		// without job we cannot check for NA
+		assertEquals(CoverageRange.PERFECT.getLineHexString(), jacocoColumn.getLineColor(null, BigDecimal.valueOf(100)));
+		
+		// with job, we detect that it has a build, but no JaCoCoBuildAction => NA
 		Job<?, ?> mockJob = new ExternalJobExtension("externaljob");
 		assertEquals(CoverageRange.NA.getLineHexString(), jacocoColumn.getLineColor(mockJob, BigDecimal.valueOf(100)));
+		
+		// with job and build and JaCoCoBuildAction we detect correct coverage again
+		mockJob = new ExternalJobExtensionWithBuildAction("externaljob", listener);
+		assertEquals(CoverageRange.PERFECT.getLineHexString(), jacocoColumn.getLineColor(mockJob, BigDecimal.valueOf(100)));
 
-		mockJob = new ExternalJobExtension("externaljob") {
-			@Override
-			public ExternalRun getLastSuccessfulBuild() {
-				return null;
-			}
-		};
+		// finally with job, but no build => NA again
+		mockJob = new ExternalJobExtensionWithNoLastBuild("externaljob");
 		assertEquals(CoverageRange.NA.getLineHexString(), jacocoColumn.getLineColor(mockJob, BigDecimal.valueOf(100)));
+		
+		EasyMock.verify(listener);
 	}
 
 	@Test
@@ -166,18 +178,25 @@ public class JaCoCoColumnTest {
 
 	@Test
 	public void testGetFillColor100() throws Exception {
+		final BuildListener listener = EasyMock.createNiceMock(BuildListener.class);
+		EasyMock.replay(listener);
+		
+		// without job we cannot check for NA
 		assertEquals(CoverageRange.PERFECT.getFillHexString(), jacocoColumn.getFillColor(null, BigDecimal.valueOf(100)));
 
+		// with job, we detect that it has a build, but no JaCoCoBuildAction => NA
 		Job<?, ?> mockJob = new ExternalJobExtension("externaljob");
 		assertEquals(CoverageRange.NA.getFillHexString(), jacocoColumn.getFillColor(mockJob, BigDecimal.valueOf(100)));
 
-		mockJob = new ExternalJobExtension("externaljob") {
-			@Override
-			public ExternalRun getLastSuccessfulBuild() {
-				return null;
-			}
-		};
+		// with job and build and JaCoCoBuildAction we detect correct coverage again
+		mockJob = new ExternalJobExtensionWithBuildAction("externaljob", listener);
+		assertEquals(CoverageRange.PERFECT.getFillHexString(), jacocoColumn.getFillColor(mockJob, BigDecimal.valueOf(100)));
+
+		// finally with job, but no build => NA again
+		mockJob = new ExternalJobExtensionWithNoLastBuild("externaljob");
 		assertEquals(CoverageRange.NA.getFillHexString(), jacocoColumn.getFillColor(mockJob, BigDecimal.valueOf(100)));
+		
+		EasyMock.verify(listener);
 	}
 
 	@Test
@@ -185,6 +204,42 @@ public class JaCoCoColumnTest {
 		assertNotNull(jacocoColumn.getDescriptor());
 		assertNotNull(jacocoColumn.getDescriptor().newInstance(null, null));
 		assertNotNull(jacocoColumn.getDescriptor().getDisplayName());
+	}
+
+	private final class ExternalJobExtensionWithNoLastBuild extends ExternalJobExtension {
+
+		private ExternalJobExtensionWithNoLastBuild(String name) {
+			super(name);
+		}
+
+		@Override
+		public ExternalRun getLastSuccessfulBuild() {
+			return null;
+		}
+	}
+
+	private final class ExternalJobExtensionWithBuildAction extends ExternalJobExtension {
+
+		private final BuildListener listener;
+
+		private ExternalJobExtensionWithBuildAction(String name, BuildListener listener) {
+			super(name);
+			this.listener = listener;
+		}
+
+		@Override
+		@Exported
+		@QuickSilver
+		public ExternalRun getLastSuccessfulBuild() {
+			try {
+				ExternalRun run = newBuild();
+				Map<Type, Coverage> map = Collections.emptyMap();
+				run.addAction(new JacocoBuildAction(null, null, map, null, listener, null, null));
+				return run;
+			} catch (IOException e) {
+				throw new IllegalStateException(e);
+			}
+		}
 	}
 
 	private class ExternalJobExtension extends ExternalJob {
