@@ -409,7 +409,6 @@ public class JacocoPublisher extends Recorder {
         return new JacocoProjectAction(project);
     }
 
-	@Override
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.BUILD;
     }
