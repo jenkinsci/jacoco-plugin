@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
   <j:choose>
     <j:when test="${it != null}">
@@ -13,7 +14,9 @@
 
   <j:choose>
     <j:when test="${coverageAmount != null}">
-      <td style="color:#${color}; background-color:#${backgroundColor};" data="${coverageAmount}" align="center">
+      <td tooltip="${%Percentage of lines of code that are covered in unit tests}" 
+      		style="color:#${color}; background-color:#${backgroundColor};" 
+      		data="${coverageAmount}" align="center">
         <j:choose>
           <j:when test="${it.hasCoverage(job)}">
             <a style="color:#${color}" href="${job.url}lastSuccessfulBuild/jacoco/">
