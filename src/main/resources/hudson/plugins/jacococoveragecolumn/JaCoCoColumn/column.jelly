@@ -16,7 +16,7 @@
       <td style="color:#${color}; background-color:#${backgroundColor};" data="${coverageAmount}" align="center">
         <j:choose>
           <j:when test="${it.hasCoverage(job)}">
-            <a style="color:#${color}" href="${job.url}lastCompletedBuild/jacoco/">
+            <a style="color:#${color}" href="${job.url}lastSuccessfulBuild/jacoco/">
               ${coveragePercent}%
             </a>
           </j:when>
