@@ -6,6 +6,7 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
+import hudson.views.ListViewColumnDescriptor;
 import hudson.views.ListViewColumn;
 
 import java.awt.Color;
@@ -119,11 +120,16 @@ public class JaCoCoColumn extends ListViewColumn {
 		return DESCRIPTOR;
 	}
 
-	private static class DescriptorImpl extends Descriptor<ListViewColumn> {
+	private static class DescriptorImpl extends ListViewColumnDescriptor {
 		@Override
 		public ListViewColumn newInstance(final StaplerRequest req,
 				final JSONObject formData) throws FormException {
 			return new JaCoCoColumn();
+		}
+		
+		@Override
+		public boolean shownByDefault() {
+			return false;
 		}
 
 		@Override
