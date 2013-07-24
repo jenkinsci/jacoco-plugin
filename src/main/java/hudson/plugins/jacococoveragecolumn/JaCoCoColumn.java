@@ -26,15 +26,24 @@ public class JaCoCoColumn extends ListViewColumn {
 	public JaCoCoColumn() {
 	}
 
-	public String getPercent(final Job<?, ?> job) {
+	public boolean hasCoverage(final Job<?, ?> job) {
 		final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
+		if (lastSuccessfulBuild == null) {
+			return false;
+		} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
+			return false;
+		}
+		
+		return true;
+	}
+
+	public String getPercent(final Job<?, ?> job) {
 		final StringBuilder stringBuilder = new StringBuilder();
 
-		if (lastSuccessfulBuild == null) {
-			stringBuilder.append("N/A");
-		} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
+		if (!hasCoverage(job)) {
 			stringBuilder.append("N/A");
 		} else {
+			final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
 			final Double percent = getLinePercent(lastSuccessfulBuild);
 			stringBuilder.append(percent);
 		}
@@ -47,13 +56,8 @@ public class JaCoCoColumn extends ListViewColumn {
 			return null;
 		}
 
-		if(job != null) {
-			final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
-			if (lastSuccessfulBuild == null) {
-				return CoverageRange.NA.getLineHexString();
-			} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
-				return CoverageRange.NA.getLineHexString();
-			}
+		if(job != null && !hasCoverage(job)) {
+			return CoverageRange.NA.getLineHexString();
 		}
 
 		return CoverageRange.valueOf(amount.doubleValue()).getLineHexString();
@@ -64,13 +68,8 @@ public class JaCoCoColumn extends ListViewColumn {
 			return null;
 		}
 
-		if(job != null) {
-			final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
-			if (lastSuccessfulBuild == null) {
-				return CoverageRange.NA.getFillHexString();
-			} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
-				return CoverageRange.NA.getFillHexString();
-			}
+		if(job != null && !hasCoverage(job)) {
+			return CoverageRange.NA.getFillHexString();
 		}
 
 		final Color c = CoverageRange.fillColorOf(amount.doubleValue());
