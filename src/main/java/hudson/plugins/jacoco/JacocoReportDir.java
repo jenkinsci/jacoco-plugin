@@ -21,6 +21,15 @@ public class JacocoReportDir {
     }
 
     /**
+     * Used for testing only!
+     * 
+     * @param build
+     */
+    public JacocoReportDir(File jacocoRoot) {
+        this.root = jacocoRoot;
+    }
+
+    /**
      * Where we store *.class files, honoring package names as directories.
      */
     public File getClassesDir() {
