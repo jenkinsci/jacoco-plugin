@@ -166,7 +166,13 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		// Collect params and replace nulls with empty string
 		//throw new RuntimeException("Jebiga");
 		Object[] args = reports.toArray(new Object[5]);
-		for (int i = 4; i >= 0; i--) if (args[i]==null) args[i] = ""; else break;
+		for (int i = 4; i >= 0; i--) {
+			if (args[i]==null) {
+				args[i] = "";
+			} else {
+				break;
+			}
+		}
 		return new HealthReport(score, Messages._BuildAction_Description(
 				args[0], args[1], args[2], args[3], args[4]));
 	}
@@ -176,11 +182,17 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	}
 
 	private static int updateHealthScore(int score, int min, int value, int max) {
-		if (value >= max) return score;
-		if (value <= min) return 0;
+		if (value >= max) {
+			return score;
+		}
+		if (value <= min) {
+			return 0;
+		}
 		assert max != min;
 		final int scaled = (int) (100.0 * ((float) value - min) / (max - min));
-		if (scaled < score) return scaled;
+		if (scaled < score) {
+			return scaled;
+		}
 		return score;
 	}
 
@@ -197,6 +209,26 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         return new JacocoReportDir(owner);
     }
 
+    public synchronized boolean hasResult() {
+		if(report!=null) {
+			final CoverageReport r = report.get();
+			if(r!=null) {
+				return true;
+			}
+		}
+    	
+		final JacocoReportDir reportFolder = getJacocoReport();
+
+		try {
+			reportFolder.parse(inclusions, exclusions);
+			return true;
+		} catch (IOException e) {
+			logger.println("Failed to load " + reportFolder);
+			e.printStackTrace(logger);
+			return false;
+		}
+    }
+
 	/**
 	 * Obtains the detailed {@link CoverageReport} instance.
 	 */
@@ -204,7 +236,9 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 		if(report!=null) {
 			final CoverageReport r = report.get();
-			if(r!=null)     return r;
+			if(r!=null) {
+				return r;
+			}
 		}
 
 		final JacocoReportDir reportFolder = getJacocoReport();
@@ -233,13 +267,16 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		AbstractBuild<?,?> b = start;
 		while(true) {
 			b = b.getPreviousBuild();
-			if(b==null)
+			if(b==null) {
 				return null;
-			if(b.getResult()== Result.FAILURE || b.getResult() == Result.ABORTED)
+			}
+			if(b.getResult()== Result.FAILURE || b.getResult() == Result.ABORTED) {
 				continue;
+			}
 			JacocoBuildAction r = b.getAction(JacocoBuildAction.class);
-			if(r!=null)
+			if(r!=null) {
 				return r;
+			}
 		}
 	}
 

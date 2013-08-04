@@ -10,7 +10,6 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -324,15 +323,17 @@ public class JacocoPublisher extends Recorder {
         }		
         
         if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
-            if(build.getResult().isWorseThan(Result.UNSTABLE))
-                return true;
+            if(build.getResult().isWorseThan(Result.UNSTABLE)) {
+			    return true;
+            }
             
             logger.println("[JaCoCo plugin] ERROR: Missing configuration!");
             build.setResult(Result.FAILURE);
             return true;
-        } else {
-        		logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
         }
+        
+        logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
+
         JacocoReportDir dir = new JacocoReportDir(build);
 
         List<FilePath> matchedExecFiles = Arrays.asList(build.getWorkspace().list(resolveFilePaths(build, listener, execPattern)));
@@ -371,13 +372,13 @@ public class JacocoPublisher extends Recorder {
         build.getActions().add(action);
         
         logger.println("[JaCoCo plugin] Publishing the results..");
-        final CoverageReport result = action.getResult();
+        boolean hasResult = action.hasResult();
         
-        if (result == null) {
+        if (!hasResult) {
             logger.println("[JaCoCo plugin] Could not parse coverage results. Setting Build to failure.");
             build.setResult(Result.FAILURE);
         } else {
-        	result.setThresholds(healthReports);
+        	//result.setThresholds(healthReports);
         	if (changeBuildStatus) {
         		build.setResult(checkResult(action));
         	}
