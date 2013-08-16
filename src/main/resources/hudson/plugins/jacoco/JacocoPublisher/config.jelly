@@ -34,13 +34,13 @@
       		<col width="39%"/>
       <tr>
         <td>Inclusions (e.g.: **/*.class)</td>
-        <td>Exclusions (e.g.: **/*Test*)</td>
+        <td>Exclusions (e.g.: **/*Test*.class)</td>
       </tr>
       
       <tr>
         
         <td>
-          <f:textbox field="inclusionPattern"  default=""/>
+          <f:textbox field="inclusionPattern" default=""/>
         </td>
         
         <td>
@@ -122,7 +122,7 @@
 	        </tbody>
 	    </table>
   </f:entry>
-  <f:entry>
-   <f:checkbox field="changeBuildStatus" checked="${instance.selected}" title="Change build status according the thresholds"/>
+  <f:entry field="changeBuildStatus">
+   <f:checkbox checked="${instance.selected}" title="Change build status according the thresholds"/>
   </f:entry>
 </j:jelly>
