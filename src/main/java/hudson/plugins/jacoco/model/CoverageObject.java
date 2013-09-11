@@ -315,12 +315,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		}
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'>")
 		.append("<tr>" +
-				"<td class='percentgraph'>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></td></tr>")
+				"<td class='percentgraph' colspan='2'>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></td></tr>")
 		.append("<tr>")
 		    .append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")	
 		    .append("<td>")
-		    .append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>")
-		    .append("<div class='redbar' style='width: ").append(ratio.getMissed()> ratio.getCovered() ? ((float)ratio.getMissed()/(float)maximumMissed)*100: ((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
+		    .append("<div class='percentgraph' style='width: 100px;'>")
+		    .append("<div class='redbar' style='width: ").append((float)ratio.getMissed()/(ratio.getCovered() + ratio.getMissed()) *100.0).append("px;'>")
 		    .append("</td></tr>")
 		    .append("</table>");
 	}

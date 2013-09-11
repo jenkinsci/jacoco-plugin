@@ -44,6 +44,7 @@ div.percentgraph div.redbar {
   height: 1.3em;
   margin: 0px;
   padding: 0px;
+  float: right;
 }
 
 div.percentgraph div.na {
