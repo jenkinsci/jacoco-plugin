@@ -41,7 +41,7 @@ public final class JacocoProjectAction implements Action {
      */
     public JacocoBuildAction getLastResult() {
         for (AbstractBuild<?, ?> b = project.getLastBuild(); b != null; b = b.getPreviousBuild()) {
-            if (b.getResult() == Result.FAILURE)
+            if (b.getResult() == Result.FAILURE || b.getResult() == Result.ABORTED)
                 continue;
             JacocoBuildAction r = b.getAction(JacocoBuildAction.class);
             if (r != null)
