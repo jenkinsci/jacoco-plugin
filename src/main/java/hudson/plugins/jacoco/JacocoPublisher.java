@@ -304,7 +304,7 @@ public class JacocoPublisher extends Recorder {
 		FilePath[] matchedClassDirs = null;
 		FilePath[] matchedSrcDirs = null;
 
-		if (build.getResult().equals(Result.FAILURE)) {
+		if (build.getResult() == Result.FAILURE || build.getResult() == Result.ABORTED) {
 			return true;
 		}
 		
