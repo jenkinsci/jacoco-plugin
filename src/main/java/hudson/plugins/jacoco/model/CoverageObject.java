@@ -64,125 +64,101 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	/**
 	 * Variables used to store which child has to highest coverage for each coverage type.
 	 */
-	public int maxCoveredClazz=1;
-	public int maxCoveredMethod=1;
-	public int maxCoveredLine=1;
-	public int maxCoveredComplexity=1;
-	public int maxCoveredInstruction=1;
-	public int maxCoveredBranch=1;
-	public int maxMissedClazz=1;
-	public int maxMissedMethod=1;
-	public int maxMissedLine=1;
-	public int maxMissedComplexity=1;
-	public int maxMissedInstruction=1;
-	public int maxMissedBranch=1;
-	
-	@Deprecated public transient int maxClazz=1;
-	@Deprecated public transient int maxMethod=1;
-	@Deprecated public transient int maxLine=1;
-	@Deprecated public transient int maxComplexity=1;
-	@Deprecated public transient int maxInstruction=1;
-	@Deprecated public transient int maxBranch=1;
+	public int maxClazz=1;
+	public int maxMethod=1;
+	public int maxLine=1;
+	public int maxComplexity=1;
+	public int maxInstruction=1;
+	public int maxBranch=1;
 
 	private volatile boolean failed = false;
 
-	public int getMaxCoveredClazz() {
-		return maxCoveredClazz;
-	}
 
-	public void setMaxCoveredClazz(int maxClazz) {
-		this.maxCoveredClazz = maxClazz;
-	}
+	/**
+     * @return the maxClazz
+     */
+    public int getMaxClazz() {
+        return maxClazz;
+    }
 
-	public int getMaxCoveredMethod() {
-		return maxCoveredMethod;
-	}
+    /**
+     * @param maxClazz the maxClazz to set
+     */
+    public void setMaxClazz(int maxClazz) {
+        this.maxClazz = maxClazz;
+    }
 
-	public void setMaxCoveredMethod(int maxMethod) {
-		this.maxCoveredMethod = maxMethod;
-	}
+    /**
+     * @return the maxMethod
+     */
+    public int getMaxMethod() {
+        return maxMethod;
+    }
 
-	public int getMaxCoveredLine() {
-		return maxCoveredLine;
-	}
+    /**
+     * @param maxMethod the maxMethod to set
+     */
+    public void setMaxMethod(int maxMethod) {
+        this.maxMethod = maxMethod;
+    }
 
-	public void setMaxCoveredLine(int maxLine) {
-		this.maxCoveredLine = maxLine;
-	}
+    /**
+     * @return the maxLine
+     */
+    public int getMaxLine() {
+        return maxLine;
+    }
 
-	public int getMaxCoveredComplexity() {
-		return maxCoveredComplexity;
-	}
+    /**
+     * @param maxLine the maxLine to set
+     */
+    public void setMaxLine(int maxLine) {
+        this.maxLine = maxLine;
+    }
 
-	public void setMaxCoveredComplexity(int maxComplexity) {
-		this.maxCoveredComplexity = maxComplexity;
-	}
+    /**
+     * @return the maxComplexity
+     */
+    public int getMaxComplexity() {
+        return maxComplexity;
+    }
 
-	public int getMaxCoveredInstruction() {
-		return maxCoveredInstruction;
-	}
+    /**
+     * @param maxComplexity the maxComplexity to set
+     */
+    public void setMaxComplexity(int maxComplexity) {
+        this.maxComplexity = maxComplexity;
+    }
 
-	public void setMaxCoveredInstruction(int maxInstruction) {
-		this.maxCoveredInstruction = maxInstruction;
-	}
+    /**
+     * @return the maxInstruction
+     */
+    public int getMaxInstruction() {
+        return maxInstruction;
+    }
 
-	public int getMaxCoveredBranch() {
-		return maxCoveredBranch;
-	}
+    /**
+     * @param maxInstruction the maxInstruction to set
+     */
+    public void setMaxInstruction(int maxInstruction) {
+        this.maxInstruction = maxInstruction;
+    }
 
-	public void setMaxCoveredBranch(int maxBranch) {
-		this.maxCoveredBranch = maxBranch;
-	}
+    /**
+     * @return the maxBranch
+     */
+    public int getMaxBranch() {
+        return maxBranch;
+    }
 
-	public int getMaxMissedClazz() {
-		return maxMissedClazz;
-	}
+    /**
+     * @param maxBranch the maxBranch to set
+     */
+    public void setMaxBranch(int maxBranch) {
+        this.maxBranch = maxBranch;
+    }
 
-	public void setMaxMissedClazz(int maxMissedClazz) {
-		this.maxMissedClazz = maxMissedClazz;
-	}
-
-	public int getMaxMissedMethod() {
-		return maxMissedMethod;
-	}
-
-	public void setMaxMissedMethod(int maxMissedMethod) {
-		this.maxMissedMethod = maxMissedMethod;
-	}
-
-	public int getMaxMissedLine() {
-		return maxMissedLine;
-	}
-
-	public void setMaxMissedLine(int maxMissedLine) {
-		this.maxMissedLine = maxMissedLine;
-	}
-
-	public int getMaxMissedComplexity() {
-		return maxMissedComplexity;
-	}
-
-	public void setMaxMissedComplexity(int maxMissedComplexity) {
-		this.maxMissedComplexity = maxMissedComplexity;
-	}
-
-	public int getMaxMissedInstruction() {
-		return maxMissedInstruction;
-	}
-
-	public void setMaxMissedInstruction(int maxMissedInstruction) {
-		this.maxMissedInstruction = maxMissedInstruction;
-	}
-
-	public int getMaxMissedBranch() {
-		return maxMissedBranch;
-	}
-
-	public void setMaxMissedBranch(int maxMissedBranch) {
-		this.maxMissedBranch = maxMissedBranch;
-	}
-
-	public boolean isFailed() {
+    public boolean isFailed() {
 		return failed;
 	}
 
@@ -292,35 +268,32 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getMissed());
 		String denominator = intFormat.format(ratio.getCovered());
-		int maximumCovered = 2;
-		int maximumMissed=2;
+		int maximum = 1;
 		if (ratio.getType().equals(CoverageElement.Type.INSTRUCTION)) {
-			maximumCovered = getParent().maxCoveredInstruction;
-			maximumMissed = getParent().maxMissedInstruction;
+			maximum = getParent().maxInstruction;
 		} else if (ratio.getType().equals(CoverageElement.Type.BRANCH)) {
-			maximumCovered = getParent().maxCoveredBranch;
-			maximumMissed = getParent().maxMissedBranch;
+		    maximum = getParent().maxBranch;
 		} else if (ratio.getType().equals(CoverageElement.Type.COMPLEXITY)) {
-			maximumCovered = getParent().maxCoveredComplexity;
-			maximumMissed = getParent().maxMissedComplexity;
+		    maximum = getParent().maxComplexity;
 		} else if (ratio.getType().equals(CoverageElement.Type.LINE)) {
-			maximumCovered = getParent().maxCoveredLine;
-			maximumMissed = getParent().maxMissedLine;
+		    maximum = getParent().maxLine;
 		} else if (ratio.getType().equals(CoverageElement.Type.METHOD)) {
-			maximumCovered = getParent().maxCoveredMethod;
-			maximumMissed = getParent().maxMissedMethod;
+		    maximum = getParent().maxMethod;
 		} else if (ratio.getType().equals(CoverageElement.Type.CLASS)) {
-			maximumCovered = getParent().maxCoveredClazz;
-			maximumMissed = getParent().maxMissedClazz;
+		    maximum = getParent().maxClazz;
 		}
+
+		float redBar = ((float) ratio.getMissed())/maximum*100;
+		float greenBar = ((float)ratio.getTotal())/maximum*100;
+
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'>")
 		.append("<tr>" +
 				"<td class='percentgraph'>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></td></tr>")
 		.append("<tr>")
 		    .append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")	
 		    .append("<td>")
-		    .append("<div class='percentgraph' style='width: ").append(((float)ratio.getCovered()/(float)maximumCovered)*100).append("px;'>")
-		    .append("<div class='redbar' style='width: ").append(ratio.getMissed()> ratio.getCovered() ? ((float)ratio.getMissed()/(float)maximumMissed)*100: ((float)ratio.getMissed()/(float)maximumCovered)*100).append("px;'>")
+		    .append("<div class='percentgraph' style='width: ").append(greenBar).append("px;'>")
+		    .append("<div class='redbar' style='width: ").append(redBar).append("px;'>")
 		    .append("</td></tr>")
 		    .append("</table>");
 	}
@@ -357,48 +330,29 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		
 		setAllCovTypes(reportToSet, covReport);
 		
-		if (this.maxCoveredClazz < reportToSet.clazz.getCovered()) {
-			this.maxCoveredClazz = reportToSet.clazz.getCovered();
-		}
-		if (this.maxMissedClazz < reportToSet.clazz.getMissed()) {
-			this.maxMissedClazz =reportToSet.clazz.getMissed();
+		if (this.maxClazz < reportToSet.clazz.getTotal()) {
+			this.maxClazz = reportToSet.clazz.getTotal();
 		}
 		
-		if (this.maxCoveredBranch < reportToSet.branch.getCovered()) {
-			this.maxCoveredBranch = reportToSet.branch.getCovered();
-		}
-		if (this.maxMissedBranch < reportToSet.branch.getMissed()) {
-			this.maxMissedBranch = reportToSet.branch.getMissed();
+		if (this.maxBranch < reportToSet.branch.getTotal()) {
+			this.maxBranch = reportToSet.branch.getTotal();
 		}
 
-		if (this.maxCoveredLine < reportToSet.line.getCovered()) {
-			this.maxCoveredLine = reportToSet.line.getCovered();
-		}
-		if (this.maxMissedLine < reportToSet.line.getMissed()) {
-			this.maxMissedLine = reportToSet.line.getMissed();
+		if (this.maxLine < reportToSet.line.getTotal()) {
+			this.maxLine = reportToSet.line.getTotal();
 		}
 		
-		if (this.maxCoveredInstruction < reportToSet.instruction.getCovered()) {
-			this.maxCoveredInstruction = reportToSet.instruction.getCovered();
-		}
-		if (this.maxMissedInstruction < reportToSet.instruction.getMissed()) {
-			this.maxMissedInstruction = reportToSet.instruction.getMissed();
-		}
-		
-		if (this.maxCoveredMethod < reportToSet.method.getCovered()) {
-			this.maxCoveredMethod = reportToSet.method.getCovered();
-		}
-		if (this.maxMissedMethod < reportToSet.method.getMissed()) {
-			this.maxMissedMethod = reportToSet.method.getMissed();
+		if (this.maxInstruction < reportToSet.instruction.getTotal()) {
+			this.maxInstruction = reportToSet.instruction.getTotal();
 		}
 
-		if (this.maxCoveredComplexity < reportToSet.complexity.getCovered()) {
-			this.maxCoveredComplexity = reportToSet.complexity.getCovered();
-		}
-		if (this.maxMissedComplexity < reportToSet.complexity.getMissed()) {
-			this.maxMissedComplexity = reportToSet.complexity.getMissed();
+		if (this.maxMethod < reportToSet.method.getTotal()) {
+			this.maxMethod = reportToSet.method.getTotal();
 		}
 
+		if (this.maxComplexity < reportToSet.complexity.getTotal()) {
+			this.maxComplexity = reportToSet.complexity.getTotal();
+		}
 	}
 
 	/**
