@@ -40,7 +40,6 @@
 			<td class="pane-header" colspan="2">% ${%Line}</td>
 			<td class="pane-header" colspan="2">% ${%Method}</td>
             <td class="pane-header" colspan="2">% ${%Class}</td>
-            <td class="pane-header" colspan="2">% ${%Block}</td>
         </tr>
         <j:set var="summary" value="${it.getJaCoCoCoverageResultSummary(jobs)}"/>
         <j:forEach var="tr" items="${summary.jacocoCoverageResults}">
@@ -54,7 +53,6 @@
 				<td colspan="2">${tr.lineCoverage}</td>
 				<td colspan="2">${tr.methodCoverage}</td>
 				<td colspan="2">${tr.classCoverage}</td>
-                <td colspan="2">${tr.blockCoverage}</td>
 			</tr>
         </j:forEach>
         <tr>
@@ -65,7 +63,6 @@
 			<td colspan="2">${summary.totalLineCoverage}</td>
 			<td colspan="2">${summary.totalMethodCoverage}</td>
             <td colspan="2">${summary.totalClassCoverage}</td>
-            <td colspan="2">${summary.totalBlockCoverage}</td>
         </tr>
     </dp:decorate>
 </j:jelly>
