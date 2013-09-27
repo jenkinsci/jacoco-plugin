@@ -70,8 +70,11 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
         this.hasClassCoverage();
         //logger.log(Level.INFO, "SourceFileReport");
     }
-	
-	
+
+    @Override
+    public boolean hasClassCoverage() {
+        return false;
+    }
 	
 	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 
