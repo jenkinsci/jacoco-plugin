@@ -35,6 +35,10 @@ final public class Coverage implements Serializable {
     public int getCovered() {
         return covered;
     }
+    
+    public int getTotal() {
+        return missed + covered;
+    }
 
     /**
      * Gets "missed/covered (%)" representation.
