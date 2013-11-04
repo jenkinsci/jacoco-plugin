@@ -194,8 +194,7 @@ public class JacocoCoverageResultSummary {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
     } else {
-      // FIXME not sure if we should aggregate these by summation or mean
-      float totalComplex = this.getComplexityScore();
+      float totalComplex = this.getComplexityScore() / this.getCoverageResults().size();
       totalComplex = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalComplex);
       return totalComplex;
     }
