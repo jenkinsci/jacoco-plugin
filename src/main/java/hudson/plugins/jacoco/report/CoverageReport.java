@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Locale;
 
 import hudson.util.HttpResponses;
+
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
@@ -25,6 +26,7 @@ import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.WebMethod;
+import org.objectweb.asm.Type;
 
 import javax.servlet.ServletException;
 
@@ -85,7 +87,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 						ArrayList<IMethodCoverage> methodList = new ArrayList<IMethodCoverage>(classCov.getMethods());
 						for (IMethodCoverage methodCov: methodList) {
 							MethodReport methodReport = new MethodReport();
-							methodReport.setName(methodCov.getName());
+							methodReport.setName(getMethodName(classCov, methodCov));
 							methodReport.setParent(classReport);
 							classReport.setCoverage(methodReport, methodCov);
 							methodReport.setSrcFileInfo(methodCov);
@@ -106,7 +108,74 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		}
 	}
 
-	static NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
+    /**
+     * From Jacoco: Checks if a class name is anonymous or not.
+     * 
+     * @param vmname
+     * @return
+     */
+    private boolean isAnonymous(final String vmname) {
+        final int dollarPosition = vmname.lastIndexOf('$');
+        if (dollarPosition == -1) {
+            return false;
+        }
+        final int internalPosition = dollarPosition + 1;
+        if (internalPosition == vmname.length()) {
+            // shouldn't happen for classes compiled from Java source
+            return false;
+        }
+        // assume non-identifier start character for anonymous classes
+        final char start = vmname.charAt(internalPosition);
+        return !Character.isJavaIdentifierStart(start);
+    }
+
+    /**
+     * Returns a method name for the method, including possible parameter names.
+     * 
+     * @param classCov
+     *            Coverage Information about the Class
+     * @param methodCov
+     *            Coverage Information about the Method
+     * @return method name
+     */
+    private String getMethodName(IClassCoverage classCov, IMethodCoverage methodCov) {
+        if ("<clinit>".equals(methodCov.getName()))
+            return "static {...}";
+
+        StringBuilder sb = new StringBuilder();
+        if ("<init>".equals(methodCov.getName())) {
+            if (isAnonymous(classCov.getName())) {
+                return "{...}";
+            } else {
+                int pos = classCov.getName().lastIndexOf('/');
+                String name = pos == -1 ? classCov.getName() : classCov.getName().substring(pos + 1);
+                sb.append(name.replace('$', '.'));
+            }
+        } else {
+            sb.append(methodCov.getName());
+        }
+        
+        sb.append('(');
+        final Type[] arguments = Type.getArgumentTypes(methodCov.getDesc());
+        boolean comma = false;
+        for(final Type arg : arguments) {
+            if(comma) {
+                sb.append(", ");
+            } else {
+                comma = true;
+            }
+            
+            String name = arg.getClassName();
+            int pos = name.lastIndexOf('.');
+            String shortname = pos == -1 ? name : name.substring(pos + 1);
+            sb.append(shortname.replace('$', '.'));
+        }
+        sb.append(')');
+
+        return sb.toString();
+    }
+
+    static NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
 	static NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
 	static NumberFormat intFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
 	
