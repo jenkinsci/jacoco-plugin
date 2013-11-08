@@ -84,7 +84,7 @@ table.percentgraph td.percentgraph {
 }
 
 table.percentgraph td.data {
-    padding-top: 0px;
+    padding-top: 3px;
     padding-bottom: 0px;
     text-align: right;
 }
