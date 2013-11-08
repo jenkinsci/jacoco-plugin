@@ -1,10 +1,8 @@
 package hudson.plugins.jacoco.report;
 
 import hudson.plugins.jacoco.model.CoverageElement;
-import hudson.plugins.jacoco.model.CoverageObject;
 
 import java.io.Writer;
-import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.IMethodCoverage;
 
@@ -61,7 +59,7 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
         return false;
     }
 	
-	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
+	//private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 
 	public void setSrcFileInfo(IMethodCoverage methodCov) {
 		this.methodCov = methodCov;

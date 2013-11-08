@@ -1,6 +1,5 @@
 package hudson.plugins.jacoco.report;
 
-import java.util.logging.Logger;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -12,7 +11,6 @@ public final class SourceFileReport extends AbstractReport<MethodReport,SourceFi
         super.setName(name.replaceAll("/", "."));
     	//logger.log(Level.INFO, "SourceFileReport");
     }
-    	private static final Logger logger = Logger.getLogger(SourceFileReport.class.getName());
-    
-
+    	
+	//private static final Logger logger = Logger.getLogger(SourceFileReport.class.getName());
 }	

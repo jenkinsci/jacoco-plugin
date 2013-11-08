@@ -1,8 +1,5 @@
 package hudson.plugins.jacoco.report;
 
-import hudson.plugins.jacoco.model.CoverageObject;
-
-import java.util.logging.Logger;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -32,6 +29,6 @@ public final class PackageReport extends AggregatedReport<CoverageReport,Package
         //logger.log(Level.INFO, "PackageReport");
     }
     
-    private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
+    //private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
     
 }

@@ -5,6 +5,7 @@ import hudson.plugins.jacoco.ExecutionFileLoader;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.JacocoHealthReportThresholds;
 import hudson.plugins.jacoco.model.Coverage;
+import hudson.util.HttpResponses;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import hudson.util.HttpResponses;
+import javax.servlet.ServletException;
 
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
@@ -27,8 +28,6 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.WebMethod;
 import org.objectweb.asm.Type;
-
-import javax.servlet.ServletException;
 
 /**
  * Root object of the coverage report.
@@ -44,12 +43,12 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		setName("Jacoco");
 	}
 	
-	private String instructionColor;
-	private String classColor;
-	private String branchColor;
-	private String complexityColor;
-	private String lineColor;
-	private String methodColor;
+//	private String instructionColor;
+//	private String classColor;
+//	private String branchColor;
+//	private String complexityColor;
+//	private String lineColor;
+//	private String methodColor;
 	public JacocoHealthReportThresholds healthReports;
 
 	/**
@@ -200,7 +199,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	
 	@Override
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
-		String percent = percentFormat.format(ratio.getPercentageFloat());
+		//String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getMissed());
 		String denominator = intFormat.format(ratio.getCovered());
 

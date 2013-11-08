@@ -11,6 +11,7 @@ import hudson.model.ExternalRun;
 import hudson.model.Job;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
+import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.search.QuickSilver;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +29,6 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.export.Exported;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class JaCoCoColumnTest {
 
@@ -233,7 +233,7 @@ public class JaCoCoColumnTest {
 		public ExternalRun getLastSuccessfulBuild() {
 			try {
 				ExternalRun run = newBuild();
-				Map<Type, Coverage> map = Collections.emptyMap();
+				Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
 				run.addAction(new JacocoBuildAction(null, null, map, null, listener, null, null));
 				return run;
 			} catch (IOException e) {

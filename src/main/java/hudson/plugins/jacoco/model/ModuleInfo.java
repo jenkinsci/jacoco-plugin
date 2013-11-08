@@ -5,6 +5,7 @@ import hudson.FilePath;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
@@ -20,7 +21,7 @@ public class ModuleInfo {
 		private FilePath classDir;
 		private FilePath execFile;
 		private FilePath generatedHTMLsDir;
-		private String title;
+		//private String title;
 
 		private ExecutionDataStore executionDataStore;
 		private SessionInfoStore sessionInfoStore;

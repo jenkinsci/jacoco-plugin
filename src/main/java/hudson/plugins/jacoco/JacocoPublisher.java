@@ -23,7 +23,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 import org.apache.tools.ant.DirectoryScanner;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -260,7 +259,7 @@ public class JacocoPublisher extends Recorder {
     }
 	
 	protected static FilePath[] resolveDirPaths(AbstractBuild<?, ?> build, BuildListener listener, final String input) {
-		final PrintStream logger = listener.getLogger();
+		//final PrintStream logger = listener.getLogger();
 		FilePath[] directoryPaths = null;
 		try {
 			directoryPaths = build.getWorkspace().act(new FilePath.FileCallable<FilePath[]>() 
@@ -476,5 +475,5 @@ public class JacocoPublisher extends Recorder {
 
     }
     
-    private static final Logger logger = Logger.getLogger(JacocoPublisher.class.getName());
+    //private static final Logger logger = Logger.getLogger(JacocoPublisher.class.getName());
 }

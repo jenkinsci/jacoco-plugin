@@ -12,10 +12,10 @@ public class LineCoveragePerSourceFileRule extends Rule {
 
     private static final long serialVersionUID = -2869893039051762047L;
 
-    private final float minPercentage;
+    //private final float minPercentage;
 
     public LineCoveragePerSourceFileRule(float minPercentage) {
-        this.minPercentage = minPercentage;
+        //this.minPercentage = minPercentage;
     }
 
     @Override

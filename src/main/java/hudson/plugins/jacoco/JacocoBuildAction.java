@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jvnet.localizer.Localizable;
@@ -251,7 +250,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 *      if failed to parse the file.
 	 */
 	public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, JacocoReportDir layout, String[] includes, String[] excludes) throws IOException {
-		PrintStream logger = listener.getLogger();
+		//PrintStream logger = listener.getLogger();
 		Map<CoverageElement.Type,Coverage> ratios = null;
 		
 	    ratios = loadRatios(layout, ratios, includes, excludes);
@@ -302,7 +301,5 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	}
 	
-	private static final Logger logGer = Logger.getLogger(JacocoBuildAction.class.getName());
-
-	
+	//private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());	
 }

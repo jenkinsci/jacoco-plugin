@@ -1,10 +1,9 @@
 package hudson.plugins.jacoco.report;
 
-import org.jacoco.core.analysis.IClassCoverage;
-
 import java.io.File;
 import java.io.Writer;
-import java.util.logging.Logger;
+
+import org.jacoco.core.analysis.IClassCoverage;
 
 /**
  * @author Kohsuke Kawaguchi
@@ -51,6 +50,6 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
 				+ " line=" + line
 				+ " method=" + method;
 	}
-	private static final Logger logger = Logger.getLogger(ClassReport.class.getName());
+	//private static final Logger logger = Logger.getLogger(ClassReport.class.getName());
 
 }

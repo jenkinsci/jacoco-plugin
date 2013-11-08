@@ -215,7 +215,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	@Exported
 	public abstract SELF getPreviousResult();
 	
-	public CoverageObject getParent() {return null;}
+	public CoverageObject<?> getParent() {return null;}
 
 	/**
 	 * Used in the view to print out four table columns with the coverage info.
@@ -262,7 +262,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	}
 
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
-		String percent = percentFormat.format(ratio.getPercentageFloat());
+		//String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getMissed());
 		String denominator = intFormat.format(ratio.getCovered());
 		int maximum = 1;

@@ -1,5 +1,7 @@
 package hudson.plugins.jacoco.report;
 
+import hudson.model.BuildListener;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import org.apache.maven.project.MavenProject;
+
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
@@ -27,7 +29,6 @@ import org.jacoco.report.MultiReportVisitor;
 import org.jacoco.report.csv.CSVFormatter;
 import org.jacoco.report.html.HTMLFormatter;
 import org.jacoco.report.xml.XMLFormatter;
-import hudson.model.BuildListener;
 
 public class ReportFactory {
 
@@ -80,7 +81,7 @@ public class ReportFactory {
 	 * 
 	 * @parameter
 	 */
-	private List<String> includes;
+	//private List<String> includes;
 
 	/**
 	 * A list of class files to exclude from instrumentation/analysis/reports.
@@ -88,14 +89,14 @@ public class ReportFactory {
 	 * 
 	 * @parameter
 	 */
-	private List<String> excludes;
+	//private List<String> excludes;
 
 	/**
 	 * Flag used to suppress execution.
 	 * 
 	 * @parameter expression="${jacoco.skip}" default-value="false"
 	 */
-	private boolean skip;
+	//private boolean skip;
 
 	/**
 	 * Maven project.
@@ -103,7 +104,7 @@ public class ReportFactory {
 	 * @parameter expression="${project}"
 	 * @readonly
 	 */
-	private MavenProject project;
+	//private MavenProject project;
 
 	private SessionInfoStore sessionInfoStore;
 
