@@ -1,11 +1,5 @@
 package hudson.plugins.jacoco;
 
-import org.junit.Test;
-
-import hudson.plugins.jacoco.JacocoBuildAction;
-import hudson.plugins.jacoco.JacocoHealthReportThresholds;
-import static org.junit.Assert.*;
-
 
 /**
  * @author Kohsuke Kawaguchi

@@ -1,14 +1,5 @@
 package hudson.plugins.jacoco;
 
-import hudson.FilePath;
-import hudson.plugins.jacoco.JacocoPublisher;
-
-import junit.framework.Assert;
-
-import java.io.File;
-
-import org.junit.Test;
-
 /**
  * 
  * @autor manuel_carrasco

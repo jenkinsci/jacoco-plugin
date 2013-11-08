@@ -43,6 +43,7 @@ final public class Coverage implements Serializable {
     /**
      * Gets "missed/covered (%)" representation.
      */
+    @Override
     public String toString() {
         return missed + "/" + covered;
     }
@@ -66,14 +67,15 @@ final public class Coverage implements Serializable {
     }
 
     public CoverageElement.Type getType() {
-		return type;
-	}
+        return type;
+    }
 
-	public void setType(CoverageElement.Type type) {
-		this.type = type;
-	}
+    public void setType(CoverageElement.Type type) {
+        this.type = type;
+    }
 
-	public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -84,6 +86,7 @@ final public class Coverage implements Serializable {
 
     }
 
+    @Override
     public int hashCode() {
         int result;
         result = missed;
@@ -110,7 +113,7 @@ final public class Coverage implements Serializable {
       }
 
     public boolean isInitialized() {
-    	return initialized;
+        return initialized;
     }
 
     private static final long serialVersionUID = 1L;

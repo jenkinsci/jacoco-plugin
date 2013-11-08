@@ -2,11 +2,7 @@ package hudson.plugins.jacoco;
 
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
-import hudson.plugins.jacoco.report.AbstractReport;
-
 import java.io.Serializable;
-
-import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * Holds the configuration details for {@link hudson.model.HealthReport} generation

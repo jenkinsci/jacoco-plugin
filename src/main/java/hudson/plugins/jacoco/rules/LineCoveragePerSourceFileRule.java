@@ -3,8 +3,6 @@ package hudson.plugins.jacoco.rules;
 import hudson.model.TaskListener;
 import hudson.plugins.jacoco.Rule;
 import hudson.plugins.jacoco.report.CoverageReport;
-import hudson.plugins.jacoco.report.PackageReport;
-import hudson.plugins.jacoco.report.SourceFileReport;
 
 /**
  * Flags a failure if the line coverage of a source file
@@ -20,6 +18,7 @@ public class LineCoveragePerSourceFileRule extends Rule {
         this.minPercentage = minPercentage;
     }
 
+    @Override
     public void enforce(CoverageReport report, TaskListener listener) {
 //        for (PackageReport pack : report.getChildren().values()) {
 //            for (SourceFileReport sfReport : pack.getChildren().values()) {

@@ -8,7 +8,6 @@ import hudson.plugins.jacoco.Rule;
 import hudson.plugins.jacoco.report.AggregatedReport;
 import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
-import hudson.util.ColorPalette;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 import hudson.util.ShiftedCategoryAxis;
@@ -31,9 +30,7 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.chart.renderer.xy.XYLineAndShapeRenderer;
 import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.ui.RectangleEdge;
@@ -416,6 +413,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
 
+		@Override
 		protected JFreeChart createGraph() {
 			final CategoryDataset dataset = createDataSet(obj).build();
 			final JFreeChart chart = ChartFactory.createLineChart(

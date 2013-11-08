@@ -2,21 +2,14 @@ package hudson.plugins.jacoco.portlet;
 
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
 import hudson.model.BuildListener;
-import hudson.model.FreeStyleProject;
-import hudson.model.Job;
-import hudson.plugins.jacoco.JacocoPublisher;
-import hudson.plugins.jacoco.portlet.JacocoLoadData;
+import hudson.model.AbstractBuild;
 import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.tasks.Builder;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import org.joda.time.LocalDate;
+
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 
@@ -170,11 +163,13 @@ public class JacocoLoadDataHudsonTest extends HudsonTestCase {
         // create a result summary with data from the first emma action
         JacocoCoverageResultSummary coverageResultSummary = new JacocoCoverageResultSummary(
         		null, lineCoverage, methodCoverage, classCoverage, branchCoverage, instructionCoverage, complexityScore);
+        assertNotNull(coverageResultSummary);
 
         // create a result summary with data from the second emma action
         JacocoCoverageResultSummary coverageResultSummary2 = new JacocoCoverageResultSummary(
         		null, lineCoverage2, methodCoverage2, classCoverage2, branchCoverage2, instructionCoverage2, complexityScore2);
-
+        assertNotNull(coverageResultSummary2);
+        
         // add both coverage result summaries to the emma result summary
         /*JacocoCoverageResultSummary summary = new JacocoCoverageResultSummary();
         summary.addCoverageResult(coverageResultSummary);

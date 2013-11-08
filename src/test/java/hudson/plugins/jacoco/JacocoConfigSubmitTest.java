@@ -1,13 +1,5 @@
 package hudson.plugins.jacoco;
 
-import static org.junit.Assert.assertTrue;
-
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import hudson.model.FreeStyleProject;
-import hudson.plugins.jacoco.JacocoHealthReportThresholds;
-import hudson.plugins.jacoco.JacocoPublisher;
-
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
 

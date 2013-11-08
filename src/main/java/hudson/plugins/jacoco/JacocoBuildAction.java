@@ -1,6 +1,5 @@
 package hudson.plugins.jacoco;
 
-import hudson.FilePath;
 import hudson.model.BuildListener;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
@@ -12,7 +11,6 @@ import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
 import hudson.plugins.jacoco.report.CoverageReport;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -24,7 +22,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.IBundleCoverage;
-import org.jacoco.core.data.ExecFileLoader;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
 

@@ -2,12 +2,7 @@ package hudson.plugins.jacoco.report;
 
 import hudson.plugins.jacoco.model.CoverageObject;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.jacoco.core.analysis.IClassCoverage;
-import org.jacoco.core.analysis.ICoverageNode;
 
 /**
  * @author Kohsuke Kawaguchi

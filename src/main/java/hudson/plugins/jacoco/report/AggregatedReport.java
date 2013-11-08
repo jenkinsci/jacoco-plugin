@@ -27,6 +27,7 @@ public abstract class AggregatedReport<PARENT extends AggregatedReport<?,PARENT,
         return children;
     }
 
+    @Override
     protected void setParent(PARENT p) {
         super.setParent(p);
         for (CHILD c : children.values())

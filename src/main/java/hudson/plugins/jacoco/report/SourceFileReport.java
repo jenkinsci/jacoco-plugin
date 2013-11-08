@@ -1,8 +1,5 @@
 package hudson.plugins.jacoco.report;
 
-import hudson.plugins.jacoco.model.CoverageObject;
-
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**

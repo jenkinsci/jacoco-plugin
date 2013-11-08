@@ -47,6 +47,7 @@ public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>
     /**
      * Gets the back pointer to the parent coverage object.
      */
+    @Override
     public PARENT getParent() {
         return parent;
     }
