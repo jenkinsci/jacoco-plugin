@@ -113,6 +113,7 @@
 			<version>3.0</version>
             <scope>test</scope>
 	</dependency>
+	<!-- Add newer version to avoid pulling in 1.6 which breaks as Stapler already uses stuff from 1.7 -->
 	<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -125,6 +126,13 @@
             <version>1.8</version>
             <scope>test</scope>
     </dependency>   
+	<!-- Add slf4j implementation to avoid warnings during test execution -->
+	<dependency>
+	  <groupId>org.slf4j</groupId>
+	  <artifactId>slf4j-log4j12</artifactId>
+	  <version>1.7.5</version>
+	  <scope>test</scope>
+	</dependency>
 	<dependency>
 		<groupId>org.jacoco</groupId>
 		<artifactId>jacoco-maven-plugin</artifactId>
