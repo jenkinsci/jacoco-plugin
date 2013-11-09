@@ -10,14 +10,22 @@ import org.junit.Test;
  * @author David Carver - Refactored for cleaner seperation of tests
  */
 public class CoverageReportTest extends AbstractJacocoTestBase {
+    //private Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
 	
 	@Test
     public void testLoad() throws Exception {
-        /*CoverageReport r = new CoverageReport(null, null);
+        /*final BuildListener listener = EasyMock.createNiceMock(BuildListener.class);
+        EasyMock.replay(listener);
+
+        JacocoBuildAction action = new JacocoBuildAction(null, null, map, null, listener, null, null);
+        
+        CoverageReport r = new CoverageReport(action, new ExecutionFileLoader());
         PackageReport pkg = r.getChildren().get("hudson.plugins.jacoco");
         System.out.println(pkg);
         assertCoverage(pkg.getLineCoverage(), 393, 196);
-        assertEquals(595, r.getLineCoverage().getMissed());*/
+        assertEquals(595, r.getLineCoverage().getMissed());
+        
+        EasyMock.verify(listener);*/
     }
 
     /**
