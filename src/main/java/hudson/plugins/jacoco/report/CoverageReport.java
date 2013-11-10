@@ -131,17 +131,19 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	
 	@Override
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
-		String percent = percentFormat.format(ratio.getPercentageFloat());
 		String numerator = intFormat.format(ratio.getMissed());
 		String denominator = intFormat.format(ratio.getCovered());
 
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
-		.append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
+		.append("<td style='width:40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
 		.append("<td class='percentgraph'>")
-		.append("<div class='percentgraph' style='width: ").append(100).append("px;'>")
-		.append("<div class='redbar' style='width: ").append(ratio.getMissed() > ratio.getCovered() ? 100 :  ((float)ratio.getMissed()/(float)ratio.getCovered())*100).append("px;'>")
-		.append("</div></div></td></tr>" +
-				"<tr>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></tr>").append("</table>");
+		.append("<div class='percentgraph' style='width: 100px;'>")
+		.append("<div class='redbar' style='width: ")
+		.append((ratio.getMissed()+ratio.getCovered()) == 0 ? 0 : 
+			100 * (float)ratio.getMissed() / ((float)ratio.getMissed()+(float)ratio.getCovered())).append("px;'>")
+		.append("</div></div></td></tr><tr><td colspan='2'>")
+		.append("<span class='text'><b>M:</b> ").append(numerator).append(" <b>C:</b> ").append(denominator)
+		.append("</span></td></tr></table>");
 	}
 
 
