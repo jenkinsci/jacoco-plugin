@@ -14,19 +14,9 @@ import org.jacoco.core.analysis.IMethodCoverage;
 //AggregatedReport<PackageReport,ClassReport,MethodReport>  -  AbstractReport<ClassReport,MethodReport>
 public final class MethodReport extends AggregatedReport<ClassReport,MethodReport, SourceFileReport> {
 	
-	public String desc;
-	
 	public String lineNo;
 	
 	private IMethodCoverage methodCov;
-	
-	public void setDesc(String desc) {
-		this.desc = desc;
-	}
-	
-	public String getDesc(String desc) {
-		return this.desc;
-	}
 	
 	@Override
 	public String printFourCoverageColumns() {
