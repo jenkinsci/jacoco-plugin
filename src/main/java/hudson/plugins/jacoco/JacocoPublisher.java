@@ -352,17 +352,6 @@ public class JacocoPublisher extends Recorder {
             dir.saveSourcesFrom(file);
         	logger.print(" " + file);
         }
-        
-        //logger.println("[JaCoCo plugin] BuildENV: " +build.getEnvironment(listener).toString());
-       /* try {
-			ReportFactory reportFactory = new ReportFactory(new File(build.getWorkspace().getRemote()), listener); // FIXME probably doesn't work with jenkins remote build slaves
-			reportFactory.createReport();
-			logger.println("ReportFactory lunched!");
-			
-		} catch (IOException e) {
-			logger.println("ReportFactory failed! WorkspaceDir: "+ build.getWorkspace().getRemote()+ e.getMessage());
-		}*/
- 
 	     
         logger.println("\n[JaCoCo plugin] Loading inclusions files..");
         String[] includes = {};

@@ -123,48 +123,54 @@ public class ReportFactory {
 	protected void executeReport(Locale locale) throws IOException {
 		final PrintStream logger = listener.getLogger();
 		try {
-			
-			logger.println("Executing loadExecutionData..");
-			loadExecutionData();
-		} catch (final IOException e) {
-			logger.println("NO EXEC FILE!");
-			//logger.log(Level.WARNING, "NO EXEC FILE!");
-			// TODO is there a better exception type for jenkins plugins to throw?
-			throw new RuntimeException(
-					"Unable to read execution data file " + dataFile + ": "
-							+ e.getMessage(), e);
-			
+    		try {
+    			logger.println("Executing loadExecutionData..");
+    			loadExecutionData();
+    		} catch (final IOException e) {
+    			logger.println("NO EXEC FILE!");
+    			//logger.log(Level.WARNING, "NO EXEC FILE!");
+    			// TODO is there a better exception type for jenkins plugins to throw?
+    			throw new RuntimeException(
+    					"Unable to read execution data file " + dataFile + ": "
+    							+ e.getMessage(), e);
+    		}
+    		logger.println("Executing createVisitor()");
+    		final IReportVisitor visitor = createVisitor();
+    		logger.println("Executing visitInfo");
+    		visitor.visitInfo(sessionInfoStore.getInfos(),
+    				executionDataStore.getContents());
+    		logger.println("Executing createReport(visitor)");
+    		createReport(visitor);
+    		logger.println("Executing visitEnd()..");
+    		visitor.visitEnd();
+		} finally {
+		    logger.close();
 		}
-		logger.println("Executing createVisitor()");
-		final IReportVisitor visitor = createVisitor();
-		logger.println("Executing visitInfo");
-		visitor.visitInfo(sessionInfoStore.getInfos(),
-				executionDataStore.getContents());
-		logger.println("Executing createReport(visitor)");
-		createReport(visitor);
-		logger.println("Executing visitEnd()..");
-		visitor.visitEnd();
 	}
 
 	private void loadExecutionData() throws IOException {
 		final PrintStream logger = listener.getLogger();
-		logger.println("Executing sessionInfoStore..");
-		sessionInfoStore = new SessionInfoStore();
-		logger.println("Executing executionDataStore..");
-		executionDataStore = new ExecutionDataStore();
-		FileInputStream in = null;
 		try {
-			logger.println("Executing newFileInputStream..");
-			in = new FileInputStream(dataFile);
-			logger.println("Executing ExecutionDataReader..");
-			final ExecutionDataReader reader = new ExecutionDataReader(in);
-			reader.setSessionInfoVisitor(sessionInfoStore);
-			reader.setExecutionDataVisitor(executionDataStore);
-			reader.read();
+    		logger.println("Executing sessionInfoStore..");
+    		sessionInfoStore = new SessionInfoStore();
+    		logger.println("Executing executionDataStore..");
+    		executionDataStore = new ExecutionDataStore();
+    		FileInputStream in = null;
+    		try {
+    			logger.println("Executing newFileInputStream..");
+    			in = new FileInputStream(dataFile);
+    			logger.println("Executing ExecutionDataReader..");
+    			final ExecutionDataReader reader = new ExecutionDataReader(in);
+    			reader.setSessionInfoVisitor(sessionInfoStore);
+    			reader.setExecutionDataVisitor(executionDataStore);
+    			reader.read();
+    		} finally {
+    			if (in != null) {
+    				in.close();
+    			}
+    		}
 		} finally {
-			if (in != null) {
-				in.close();
-			}
+		    logger.close();
 		}
 	}
 
@@ -275,17 +281,22 @@ public class ReportFactory {
 		// TODO use jenkins file pattern matching (ant-style, like "**/classes") saves time :), right
 		return Collections.singletonList(rootDir);
 	}
+
 	public void createReport() throws IOException {
 		final PrintStream logger = listener.getLogger();
-		this.dataFile = new File(workspaceDir, "\\target\\jacoco.exec").getAbsoluteFile();
-		logger.println("Execfile should be here: "+workspaceDir+ "\\target\\jacoco.exec");
-		this.outputDirectory = new File(workspaceDir, "\\target\\jenkins-jacoco").getAbsoluteFile(); // this is not permanent; we will not be creating the report just like this
-		this.outputEncoding = "UTF-8";
-		this.sourceEncoding = "UTF-8"; // TODO user preference (UTF-8 is actually often wrong, since javac default is platform default encoding)
-		logger.println("Executin executeReport..");
-		this.executeReport(Locale.ENGLISH);
-		
+		try {
+    		this.dataFile = new File(workspaceDir, "\\target\\jacoco.exec").getAbsoluteFile();
+    		logger.println("Execfile should be here: "+workspaceDir+ "\\target\\jacoco.exec");
+    		this.outputDirectory = new File(workspaceDir, "\\target\\jenkins-jacoco").getAbsoluteFile(); // this is not permanent; we will not be creating the report just like this
+    		this.outputEncoding = "UTF-8";
+    		this.sourceEncoding = "UTF-8"; // TODO user preference (UTF-8 is actually often wrong, since javac default is platform default encoding)
+    		logger.println("Executin executeReport..");
+    		this.executeReport(Locale.ENGLISH);
+		} finally {
+		    logger.close();
+		}
 	}
+
 	public static void main(String[] args) throws IOException {
 		ReportFactory rf = new ReportFactory(new File("."), null);
 		rf.dataFile = new File("target/jacoco.exec");

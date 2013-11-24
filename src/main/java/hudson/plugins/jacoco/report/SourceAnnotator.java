@@ -1,9 +1,5 @@
 package hudson.plugins.jacoco.report;
 
-import org.jacoco.core.analysis.ICounter;
-import org.jacoco.core.analysis.ILine;
-import org.jacoco.core.analysis.ISourceNode;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,6 +8,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jacoco.core.analysis.ICounter;
+import org.jacoco.core.analysis.ILine;
+import org.jacoco.core.analysis.ISourceNode;
 
 /**
  * Parses source file and annotates that with the coverage information.
@@ -29,7 +29,7 @@ public class SourceAnnotator {
     /**
      * Parses the source file into individual lines.
      */
-    private List<String> readLines() throws IOException {
+    private List<String> readLines() {
         ArrayList<String> aList = new ArrayList<String>();
 
         BufferedReader br = null;
@@ -78,8 +78,6 @@ public class SourceAnnotator {
             output.write("</code>");
 
             //logger.log(Level.INFO, "lines: " + buf);
-        } catch (FileNotFoundException e) {
-            buf.append("ERROR: Sourcefile does not exist!");
         } catch (IOException e) {
             buf.append("ERROR: Error while reading the sourcefile!");
         }
