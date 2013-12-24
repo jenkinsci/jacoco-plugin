@@ -2,6 +2,7 @@ package hudson.plugins.jacoco;
 
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
+
 import java.io.Serializable;
 
 /**
@@ -51,7 +52,7 @@ public class JacocoHealthReportThresholds implements Serializable {
         return value;
     }
 
-    public enum RESULT {BELLOWMINIMUM, BETWEENMINMAX, ABOVEMAXIMUM};
+    public enum RESULT {BELLOWMINIMUM, BETWEENMINMAX, ABOVEMAXIMUM}
     
     public void ensureValid() {
         maxClass = applyRange(0, maxClass, 100);

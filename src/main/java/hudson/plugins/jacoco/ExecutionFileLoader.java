@@ -5,7 +5,6 @@ import hudson.FilePath;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,20 +81,20 @@ public class ExecutionFileLoader implements Serializable {
 			sessionInfoStore = new SessionInfoStore();
 			
 			for (FilePath filePath : execFiles) {
-				InputStream isc = null;
 				File executionDataFile = new File(filePath.getRemote());
 				try {
 					final FileInputStream fis = new FileInputStream(executionDataFile);
-	                final ExecutionDataReader reader = new ExecutionDataReader(fis);
-	                reader.setSessionInfoVisitor(sessionInfoStore);
-	                reader.setExecutionDataVisitor(executionDataStore);
-	                reader.read();
-	                isc = fis;
+					try {
+	                    final ExecutionDataReader reader = new ExecutionDataReader(fis);
+	                    reader.setSessionInfoVisitor(sessionInfoStore);
+	                    reader.setExecutionDataVisitor(executionDataStore);
+	                    reader.read();
+					} finally {
+					    fis.close();
+					}
 	            } catch (final IOException e) {
 	            	System.out.println("While reading execution data-file: " + executionDataFile);
 	                e.printStackTrace();
-	            } finally {
-	            	org.apache.tools.ant.util.FileUtils.close(isc);
 	            }
 	        }
 		}

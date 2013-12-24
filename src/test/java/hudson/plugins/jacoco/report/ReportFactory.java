@@ -206,7 +206,9 @@ public class ReportFactory {
 		return builder.getBundle("projectName"); // FIXME: need to know how to determine bundle name
 	}
 
-	private IReportVisitor createVisitor() throws IOException {
+	// closing is done in end-handling of the visitor
+	@SuppressWarnings("resource")
+    private IReportVisitor createVisitor() throws IOException {
 		final List<IReportVisitor> visitors = new ArrayList<IReportVisitor>();
 
 		outputDirectory.mkdirs();

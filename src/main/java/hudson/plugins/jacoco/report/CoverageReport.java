@@ -58,7 +58,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	 * @param reports
 	 * @throws IOException
 	 */
-	public CoverageReport(JacocoBuildAction action, ExecutionFileLoader executionFileLoader ) throws IOException {
+	public CoverageReport(JacocoBuildAction action, ExecutionFileLoader executionFileLoader ) {
 		this(action);
 		try {
 
@@ -145,11 +145,11 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         if ("<init>".equals(methodCov.getName())) {
             if (isAnonymous(classCov.getName())) {
                 return "{...}";
-            } else {
-                int pos = classCov.getName().lastIndexOf('/');
-                String name = pos == -1 ? classCov.getName() : classCov.getName().substring(pos + 1);
-                sb.append(name.replace('$', '.'));
             }
+            
+            int pos = classCov.getName().lastIndexOf('/');
+            String name = pos == -1 ? classCov.getName() : classCov.getName().substring(pos + 1);
+            sb.append(name.replace('$', '.'));
         } else {
             sb.append(methodCov.getName());
         }
@@ -217,10 +217,11 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	@Override
 	public CoverageReport getPreviousResult() {
 		JacocoBuildAction prev = action.getPreviousResult();
-		if(prev!=null)
+		if(prev!=null) {
 			return prev.getResult();
-		else
-			return null;
+		}
+		
+		return null;
 	}
 
 	@Override

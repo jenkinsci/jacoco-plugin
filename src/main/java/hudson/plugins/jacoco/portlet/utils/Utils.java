@@ -31,6 +31,7 @@ package hudson.plugins.jacoco.portlet.utils;
 
 import hudson.model.Job;
 import hudson.model.Run;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -65,23 +66,22 @@ public final class Utils {
     if (attribute != null) {
       if (attribute.equals("") || attribute.equals("0")) {
         return defaultValue;
-      } else {
+      } 
 
-        // Check if attribute value is a number
-        try {
-          int validAttributeValue = Integer.parseInt(attribute);
-          // Attribute value is a number - check if it is negative
-          if (validAttributeValue < 0) {
-            return defaultValue;
-          }
-          return validAttributeValue;
-        } catch (NumberFormatException exception) {
+      // Check if attribute value is a number
+      try {
+        int validAttributeValue = Integer.parseInt(attribute);
+        // Attribute value is a number - check if it is negative
+        if (validAttributeValue < 0) {
           return defaultValue;
         }
+        return validAttributeValue;
+      } catch (NumberFormatException exception) {
+        return defaultValue;
       }
-    } else {
-      return defaultValue;
-    }
+    } 
+
+    return defaultValue;
   }
 
   /**
@@ -95,8 +95,8 @@ public final class Utils {
    */
   public static LocalDate getLastDate(List<Job> jobs) {
     LocalDate lastDate = null;
-    for (Job job : jobs) {
-      Run lastRun = job.getLastBuild();
+    for (Job<?,?> job : jobs) {
+      Run<?,?> lastRun = job.getLastBuild();
       if (lastRun != null) {
         LocalDate date = new LocalDate(lastRun.getTimestamp());
         if (lastDate == null) {

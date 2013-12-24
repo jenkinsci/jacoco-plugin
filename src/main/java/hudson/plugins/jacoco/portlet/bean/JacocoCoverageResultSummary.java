@@ -44,7 +44,7 @@ public class JacocoCoverageResultSummary {
   /**
    * The related job.
    */
-  private Job job;
+  private Job<?,?> job;
 
   /**
    * Line coverage percentage.
@@ -98,7 +98,7 @@ public class JacocoCoverageResultSummary {
    * @param classCoverage
    *          coverage percentage
    */
-  public JacocoCoverageResultSummary(Job job, float lineCoverage, float methodCoverage,
+  public JacocoCoverageResultSummary(Job<?,?> job, float lineCoverage, float methodCoverage,
     float classCoverage, float branchCoverage, float instructionCoverage, float complexityScore) {
     this.job = job;
     this.lineCoverage = lineCoverage;
@@ -148,11 +148,11 @@ public class JacocoCoverageResultSummary {
   public float getTotalClassCoverage() {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
-    } else {
-      float totalClass = this.getClassCoverage() / this.getCoverageResults().size();
-      totalClass = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalClass);
-      return totalClass;
     }
+
+    float totalClass = this.getClassCoverage() / this.getCoverageResults().size();
+    totalClass = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalClass);
+    return totalClass;
   }
 
   /**
@@ -163,11 +163,11 @@ public class JacocoCoverageResultSummary {
   public float getTotalBranchCoverage() {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
-    } else {
-      float totalBranch = this.getBranchCoverage() / this.getCoverageResults().size();
-      totalBranch = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalBranch);
-      return totalBranch;
-    }
+    } 
+    
+    float totalBranch = this.getBranchCoverage() / this.getCoverageResults().size();
+    totalBranch = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalBranch);
+    return totalBranch;
   }
 
   /**
@@ -178,11 +178,11 @@ public class JacocoCoverageResultSummary {
   public float getTotalInstructionCoverage() {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
-    } else {
-      float totalInstr = this.getInstructionCoverage() / this.getCoverageResults().size();
-      totalInstr = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalInstr);
-      return totalInstr;
     }
+     
+    float totalInstr = this.getInstructionCoverage() / this.getCoverageResults().size();
+    totalInstr = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalInstr);
+    return totalInstr;
   }
 
   /**
@@ -193,11 +193,11 @@ public class JacocoCoverageResultSummary {
   public float getTotalComplexityScore() {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
-    } else {
-      float totalComplex = this.getComplexityScore() / this.getCoverageResults().size();
-      totalComplex = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalComplex);
-      return totalComplex;
     }
+     
+    float totalComplex = this.getComplexityScore() / this.getCoverageResults().size();
+    totalComplex = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalComplex);
+    return totalComplex;
   }
 
   /**
@@ -208,11 +208,11 @@ public class JacocoCoverageResultSummary {
   public float getTotalLineCoverage() {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
-    } else {
-      float totalLine = this.getLineCoverage() / this.getCoverageResults().size();
-      totalLine = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalLine);
-      return totalLine;
-    }
+    } 
+      
+    float totalLine = this.getLineCoverage() / this.getCoverageResults().size();
+    totalLine = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalLine);
+    return totalLine;
   }
 
   /**
@@ -223,17 +223,17 @@ public class JacocoCoverageResultSummary {
   public float getTotalMethodCoverage() {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
-    } else {
-      float totalMethod = this.getMethodCoverage() / this.getCoverageResults().size();
-      totalMethod = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalMethod);
-      return totalMethod;
     }
+    
+    float totalMethod = this.getMethodCoverage() / this.getCoverageResults().size();
+    totalMethod = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalMethod);
+    return totalMethod;
   }
 
   /**
    * @return Job a job
    */
-  public Job getJob() {
+  public Job<?,?> getJob() {
     return job;
   }
 
@@ -274,7 +274,7 @@ public class JacocoCoverageResultSummary {
    * @param job
    *          the job to set
    */
-  public void setJob(Job job) {
+  public void setJob(Job<?,?> job) {
     this.job = job;
   }
 
