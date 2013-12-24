@@ -6,7 +6,7 @@ import hudson.plugins.jacoco.report.CoverageReport;
 
 /**
  * Flags a failure if the line coverage of a source file
- * goes below a certain threashold.
+ * goes below a certain threshold.
  */
 public class LineCoveragePerSourceFileRule extends Rule {
 

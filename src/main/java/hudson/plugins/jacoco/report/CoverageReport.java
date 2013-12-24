@@ -58,7 +58,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	 * @param reports
 	 * @throws IOException
 	 */
-	public CoverageReport(JacocoBuildAction action, ExecutionFileLoader executionFileLoader ) throws IOException {
+	public CoverageReport(JacocoBuildAction action, ExecutionFileLoader executionFileLoader ) {
 		this(action);
 		try {
 
@@ -217,10 +217,11 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	@Override
 	public CoverageReport getPreviousResult() {
 		JacocoBuildAction prev = action.getPreviousResult();
-		if(prev!=null)
+		if(prev!=null) {
 			return prev.getResult();
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override

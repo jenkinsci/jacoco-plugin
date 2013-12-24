@@ -324,15 +324,17 @@ public class JacocoPublisher extends Recorder {
         }		
         
         if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
-            if(build.getResult().isWorseThan(Result.UNSTABLE))
+            if(build.getResult().isWorseThan(Result.UNSTABLE)) {
                 return true;
+            }
             
             logger.println("[JaCoCo plugin] ERROR: Missing configuration!");
             build.setResult(Result.FAILURE);
             return true;
-        } else {
-        		logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
         }
+        
+        logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
+
         JacocoReportDir dir = new JacocoReportDir(build);
 
         List<FilePath> matchedExecFiles = Arrays.asList(build.getWorkspace().list(resolveFilePaths(build, listener, execPattern)));

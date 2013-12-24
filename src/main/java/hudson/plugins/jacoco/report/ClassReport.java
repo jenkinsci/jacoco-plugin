@@ -50,6 +50,4 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
 				+ " line=" + line
 				+ " method=" + method;
 	}
-	//private static final Logger logger = Logger.getLogger(ClassReport.class.getName());
-
 }
