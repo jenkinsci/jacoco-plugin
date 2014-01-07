@@ -1,0 +1,26 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+   <f:entry>
+   
+   	 <table width="78%">
+      <col width="26%"/>
+      <col width="26%"/>
+      <col width="26%"/>
+      <tr>
+        <td>Path to exec files (e.g.: **/target/**.exec, **/jacoco.exec)</td>
+        <td>Path to report directories (e.g.: **/target/report, **/report)</td>
+      </tr>
+      
+      <tr>
+        <td>
+          <f:textbox field="execPattern" default="**/**.exec" />
+        </td>
+      
+        <td>
+          <f:textbox field="reportPattern"  default="**/report"/>
+        </td>
+        
+        
+      </tr>
+      </table>
+    </f:entry>
+</j:jelly>
