@@ -9,7 +9,7 @@
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>1.0.15-SNAPSHOT</version>
+   <version>1.0.14a</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
@@ -108,9 +108,10 @@
 			<scope>runtime</scope>
 	  </dependency>
 	<dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>3.0</version>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>3.0</version>
+			<scope>test</scope>
 	</dependency>
 	<dependency>
 		<groupId>org.jacoco</groupId>
