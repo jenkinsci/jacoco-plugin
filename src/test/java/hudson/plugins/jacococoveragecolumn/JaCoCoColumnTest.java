@@ -3,12 +3,12 @@ package hudson.plugins.jacococoveragecolumn;
 import static org.junit.Assert.*;
 import hudson.console.ConsoleNote;
 import hudson.model.BuildListener;
+import hudson.model.ItemGroup;
 import hudson.model.Result;
 import hudson.model.Cause;
 import hudson.model.Descriptor.FormException;
-import hudson.model.ExternalJob;
-import hudson.model.ExternalRun;
 import hudson.model.Job;
+import hudson.model.Run;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import javax.servlet.ServletContext;
 
@@ -35,9 +36,12 @@ public class JaCoCoColumnTest {
 	protected Float percentFloat;
 	private JaCoCoColumn jacocoColumn;
 
-	@Before
-	public void setUp() {
+	//@Override
+    @Before
+	public void setUp() throws Exception {
 		jacocoColumn = new JaCoCoColumn();
+		
+		//super.setUp();
 	}
 
 	@Test
@@ -46,11 +50,7 @@ public class JaCoCoColumnTest {
 		
 		EasyMock.replay(context);
 
-		final Job<?, ?> mockJob = new ExternalJob("externaljob") {
-			@Override
-			protected void reload() {
-			}
-		};
+		final Job<?, ?> mockJob = new ExternalJobExtensionWithNoLastBuild("externaljob");
 		assertFalse(jacocoColumn.hasCoverage(mockJob));
 		assertEquals("N/A", jacocoColumn.getPercent(mockJob));
 		assertEquals(new BigDecimal("0.0"), jacocoColumn.getLineCoverage(mockJob));
@@ -78,17 +78,13 @@ public class JaCoCoColumnTest {
 		
 		EasyMock.replay(context);
 
-		final Job<?, ?> mockJob = new ExternalJob("externaljob") {
-			@Override
-			protected void reload() {
-			}
-
+		final Job<?, ?> mockJob = new MyJob("externaljob") {
 			@Override
 			@Exported
 			@QuickSilver
-			public ExternalRun getLastSuccessfulBuild() {
+			public Run getLastSuccessfulBuild() {
 				try {
-					ExternalRun newBuild = newBuild();
+				    Run newBuild = newBuild();
 					newBuild.getActions().add(new JacocoBuildAction(null, null, null, null, new BuildListener() {
 						private static final long serialVersionUID = 1L;
 
@@ -208,12 +204,12 @@ public class JaCoCoColumnTest {
 
 	private final class ExternalJobExtensionWithNoLastBuild extends ExternalJobExtension {
 
-		private ExternalJobExtensionWithNoLastBuild(String name) {
-			super(name);
-		}
+        public ExternalJobExtensionWithNoLastBuild(String name) {
+            super(name);
+        }
 
 		@Override
-		public ExternalRun getLastSuccessfulBuild() {
+		public Run getLastSuccessfulBuild() {
 			return null;
 		}
 	}
@@ -222,17 +218,17 @@ public class JaCoCoColumnTest {
 
 		private final BuildListener listener;
 
-		private ExternalJobExtensionWithBuildAction(String name, BuildListener listener) {
-			super(name);
+        public ExternalJobExtensionWithBuildAction(String name, BuildListener listener) {
+            super(name);
 			this.listener = listener;
 		}
 
 		@Override
 		@Exported
 		@QuickSilver
-		public ExternalRun getLastSuccessfulBuild() {
+		public Run getLastSuccessfulBuild() {
 			try {
-				ExternalRun run = newBuild();
+			    Run run = newBuild();
 				Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
 				run.addAction(new JacocoBuildAction(null, null, map, null, listener, null, null));
 				return run;
@@ -242,29 +238,61 @@ public class JaCoCoColumnTest {
 		}
 	}
 
-	private class ExternalJobExtension extends ExternalJob {
+	private class ExternalJobExtension extends MyJob {
 
-		private ExternalJobExtension(String name) {
-			super(name);
-		}
+	    public ExternalJobExtension(String name) {
+	        super(name);
+	    }
 
-		@Override
-		protected void reload() {
-		}
+        @Override
+        @Exported
+        @QuickSilver
+        public Run getLastSuccessfulBuild() {
+            try {
+                return newBuild();
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
+        }
 
-		@Override
-		@Exported
-		@QuickSilver
-		public ExternalRun getLastSuccessfulBuild() {
-			try {
-				return newBuild();
-			} catch (IOException e) {
-				throw new IllegalStateException(e);
-			}
-		}
-
-		@Override
+        @Override
 		protected synchronized void saveNextBuildNumber() throws IOException {
 		}
+	}
+	
+	private class MyJob extends Job {
+
+        public MyJob(String name) {
+            super((ItemGroup<?>)null, name);
+        }
+
+        @Override
+        public boolean isBuildable() {
+            return false;
+        }
+
+        @Override
+        protected SortedMap _getRuns() {
+            return null;
+        }
+
+        @Override
+        protected void removeRun(Run run) {
+        }
+
+        protected synchronized Run newBuild() throws IOException {
+            return new MyRun(this);
+        }
+	}
+	
+	private class MyRun extends Run {
+
+        public MyRun(Job job) throws IOException {
+            super(job);
+        }
+
+        public int compareTo(MyRun o) {
+            return 0;
+        }
 	}
 }
