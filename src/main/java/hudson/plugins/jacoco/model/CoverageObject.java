@@ -451,9 +451,6 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 			final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			if (line!=null) {
-				rangeAxis.setUpperBound(line.getCovered() > line.getMissed() ? line.getCovered() + 5 : line.getMissed() + 5);
-			}
 			rangeAxis.setLowerBound(0);
 
 			final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
