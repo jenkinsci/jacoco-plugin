@@ -28,14 +28,17 @@ final public class Coverage implements Serializable {
     public Coverage() {
     }
 
+    @Exported
     public int getMissed() {
         return missed;
     }
 
+    @Exported
     public int getCovered() {
         return covered;
     }
     
+    @Exported
     public int getTotal() {
         return missed + covered;
     }
