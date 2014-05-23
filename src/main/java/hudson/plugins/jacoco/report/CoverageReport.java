@@ -21,7 +21,7 @@ import javax.servlet.ServletException;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
-import org.jacoco.core.data.ExecFileLoader;
+import org.jacoco.core.tools.ExecFileLoader;
 import org.jacoco.core.data.ExecutionDataWriter;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
