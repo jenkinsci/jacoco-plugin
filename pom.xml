@@ -42,6 +42,10 @@
          <id>ognjenb</id>
          <name>Ognjen Bubalo</name>
       </developer>
+      <developer>
+         <id>centic</id>
+         <name>Dominik Stadler</name>
+      </developer>
    </developers>
 
    <scm>
