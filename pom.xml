@@ -9,7 +9,7 @@
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>1.0.15-SNAPSHOT</version>
+   <version>1.0.15</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
