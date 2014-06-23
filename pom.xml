@@ -9,7 +9,7 @@
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>1.0.15-SNAPSHOT</version>
+   <version>1.0.16-SNAPSHOT</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
@@ -41,6 +41,10 @@
       <developer>
          <id>ognjenb</id>
          <name>Ognjen Bubalo</name>
+      </developer>
+      <developer>
+         <id>centic</id>
+         <name>Dominik Stadler</name>
       </developer>
    </developers>
 
