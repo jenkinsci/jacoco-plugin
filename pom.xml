@@ -95,8 +95,8 @@
 	  </dependency>
       <dependency>
 			<groupId>org.kohsuke</groupId>
-			<artifactId>asm4</artifactId>
-			<version>4.0</version>
+			<artifactId>asm5</artifactId>
+			<version>5.0.1</version>
 			<scope>runtime</scope>
 	  </dependency>
 	  <dependency>
