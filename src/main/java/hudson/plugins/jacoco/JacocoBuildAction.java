@@ -250,7 +250,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			if(b==null) {
 				return null;
 			}
-			if(b.getResult()== Result.FAILURE || b.getResult() == Result.ABORTED) {
+			if (b.isBuilding() || b.getResult() == Result.FAILURE || b.getResult() == Result.ABORTED) {
 				continue;
 			}
 			JacocoBuildAction r = b.getAction(JacocoBuildAction.class);

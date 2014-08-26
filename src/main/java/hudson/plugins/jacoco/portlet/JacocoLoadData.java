@@ -84,7 +84,7 @@ public final class JacocoLoadData {
     // date range (last build date minus number of days)
     for (Job job : jobs) {
 
-      Run run = job.getLastBuild();
+      Run run = job.getLastCompletedBuild();
 
       if (null != run) {
         LocalDate runDate = new LocalDate(run.getTimestamp());
@@ -94,6 +94,9 @@ public final class JacocoLoadData {
           summarize(summaries, run, runDate, job);
 
           run = run.getPreviousBuild();
+          while (run != null && run.isBuilding()) {
+            run = run.getPreviousBuild();
+          }
 
           if (null == run) {
             break;
