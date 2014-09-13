@@ -174,14 +174,12 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         return sb.toString();
     }
 
-    static NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
-	static NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
-	static NumberFormat intFormat = new DecimalFormat("0", new DecimalFormatSymbols(Locale.US));
+    static final NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
+    static final NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
 	
 	@Override
 	protected void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
 		if (ratio != null && ratio.isInitialized()) {
-			//String className = "nowrap" + (failed ? " red" : "");
 			String bgColor = "#FFFFFF";
 			
 			if (JacocoHealthReportThresholds.RESULT.BETWEENMINMAX == healthReports.getResultByTypeAndRatio(ratio)) {
@@ -189,7 +187,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 			} else if (JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == healthReports.getResultByTypeAndRatio(ratio)) {
 				bgColor = "#FF0000";
 			}
-			buf.append("<td bgcolor=\" "+ bgColor +" \" class='").append("").append("'");
+			buf.append("<td bgcolor='").append(bgColor).append("'");
 			buf.append(" data='").append(dataFormat.format(ratio.getPercentageFloat()));
 			buf.append("'>\n");
 			printRatioTable(ratio, buf);
@@ -199,20 +197,16 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	
 	@Override
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
-		//String percent = percentFormat.format(ratio.getPercentageFloat());
-		String numerator = intFormat.format(ratio.getMissed());
-		String denominator = intFormat.format(ratio.getCovered());
-
-		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'><tr class='percentgraph'>")
-		.append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
+		buf.append("<table class='percentgraph' cellpadding='0' cellspacing='0'><tr class='percentgraph'>")
+		.append("<td style='width:40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
 		.append("<td class='percentgraph'>")
-		.append("<div class='percentgraph' style='width: ").append(100).append("px;'>")
-		.append("<div class='redbar' style='width: ").append(((float)ratio.getMissed()/(float)(ratio.getMissed() + ratio.getCovered()))*100).append("px;'>")
-		.append("</div></div></td></tr>" +
-				"<tr>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></tr>").append("</table>");
+		.append("<div class='percentgraph' style='width:100px'>")
+		.append("<div class='redbar' style='width:")
+		.append(100 - ratio.getPercentage()).append("px'>")
+		.append("</div></div></td></tr><tr><td colspan='2'>")
+		.append("<span class='text'><b>M:</b> ").append(ratio.getMissed())
+		.append(" <b>C:</b> ").append(ratio.getCovered()).append("</span></td></tr></table>\n");
 	}
-
-
 
 	@Override
 	public CoverageReport getPreviousResult() {
