@@ -96,7 +96,7 @@ public final class Utils {
   public static LocalDate getLastDate(List<Job> jobs) {
     LocalDate lastDate = null;
     for (Job<?,?> job : jobs) {
-      Run<?,?> lastRun = job.getLastBuild();
+      Run<?,?> lastRun = job.getLastCompletedBuild();
       if (lastRun != null) {
         LocalDate date = new LocalDate(lastRun.getTimestamp());
         if (lastDate == null) {
