@@ -38,7 +38,7 @@ public class SourceAnnotator {
             br = new BufferedReader(new FileReader(src));
             String line;
             while ((line = br.readLine()) != null) {
-                aList.add(line.replaceAll("\\t", "&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
+                aList.add(line.replaceAll("\\t", "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
