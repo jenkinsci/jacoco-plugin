@@ -339,18 +339,18 @@ public class JacocoPublisher extends Recorder {
         JacocoReportDir dir = new JacocoReportDir(build);
 
         List<FilePath> matchedExecFiles = Arrays.asList(build.getWorkspace().list(resolveFilePaths(build, listener, execPattern)));
-        logger.println("[JaCoCo plugin] Number of found exec files: " + matchedExecFiles.size());
+        logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
         matchedClassDirs = resolveDirPaths(build, listener, classPattern);
-        logger.print("\n[JaCoCo plugin] Saving matched class directories: ");
+        logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
         	logger.print(" " + file);
         }
         matchedSrcDirs = resolveDirPaths(build, listener, sourcePattern);
-        logger.print("\n[JaCoCo plugin] Saving matched source directories: ");
+        logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
         for (FilePath file : matchedSrcDirs) {
             dir.saveSourcesFrom(file);
         	logger.print(" " + file);
