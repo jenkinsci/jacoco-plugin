@@ -19,7 +19,7 @@
       		data="${coverageAmount}" align="center">
         <j:choose>
           <j:when test="${it.hasCoverage(job)}">
-            <a style="color:#${color}" href="${jobBaseUrl}${job.shortUrl}lastSuccessfulBuild/jacoco/">
+            <a style="color:#${color}" href="${rootURL}/${job.url}lastSuccessfulBuild/jacoco/">
               ${coveragePercent}%
             </a>
           </j:when>
