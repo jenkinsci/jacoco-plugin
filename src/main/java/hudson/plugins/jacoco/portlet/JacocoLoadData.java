@@ -82,9 +82,9 @@ public final class JacocoLoadData {
 
     // For each job, get JaCoCo coverage results according with
     // date range (last build date minus number of days)
-    for (Job job : jobs) {
+    for (Job<?,?> job : jobs) {
 
-      Run run = job.getLastCompletedBuild();
+      Run<?,?> run = job.getLastCompletedBuild();
 
       if (null != run) {
         LocalDate runDate = new LocalDate(run.getTimestamp());
@@ -129,7 +129,7 @@ public final class JacocoLoadData {
    * @param job
    *          job from the DashBoard Portlet view
    */
-  private static void summarize(Map<LocalDate, JacocoCoverageResultSummary> summaries, Run run, LocalDate runDate, Job job) {
+  private static void summarize(Map<LocalDate, JacocoCoverageResultSummary> summaries, Run<?,?> run, LocalDate runDate, Job<?,?> job) {
 
     JacocoCoverageResultSummary jacocoCoverageResult = getResult(run);
 
@@ -176,7 +176,7 @@ public final class JacocoLoadData {
    *          a job execution
    * @return JaCoCoCoverageTestResult the coverage result
    */
-  private static JacocoCoverageResultSummary getResult(Run run) {
+  private static JacocoCoverageResultSummary getResult(Run<?,?> run) {
     JacocoBuildAction jacocoAction = run.getAction(JacocoBuildAction.class);
 
     float classCoverage = 0.0f;
@@ -219,10 +219,10 @@ public final class JacocoLoadData {
    *          a final Collection of Job objects
    * @return JacocoCoverageResultSummary the result summary
    */
-  public static JacocoCoverageResultSummary getResultSummary(final Collection<Job> jobs) {
+  public static JacocoCoverageResultSummary getResultSummary(final Collection<Job<?,?>> jobs) {
     JacocoCoverageResultSummary summary = new JacocoCoverageResultSummary();
 
-    for (Job job : jobs) {
+    for (Job<?,?> job : jobs) {
 
       float classCoverage = 0.0f;
       float lineCoverage = 0.0f;
@@ -231,7 +231,7 @@ public final class JacocoLoadData {
       float instructionCoverage = 0.0f;
       float complexityScore = 0.0f;
 
-      Run run = job.getLastSuccessfulBuild();
+      Run<?,?> run = job.getLastSuccessfulBuild();
 
       if (run != null) {
 

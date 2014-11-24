@@ -2,11 +2,11 @@ package hudson.plugins.jacoco.portlet.utils;
 
 import hudson.model.FreeStyleProject;
 import hudson.model.Job;
-import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.joda.time.LocalDate;
 import org.jvnet.hudson.test.HudsonTestCase;
 

@@ -82,9 +82,9 @@ public class JaCoCoColumnTest {
 			@Override
 			@Exported
 			@QuickSilver
-			public Run getLastSuccessfulBuild() {
+			public Run<?,?> getLastSuccessfulBuild() {
 				try {
-				    Run newBuild = newBuild();
+				    Run<?,?> newBuild = newBuild();
 					newBuild.getActions().add(new JacocoBuildAction(null, null, null, null, new BuildListener() {
 						private static final long serialVersionUID = 1L;
 
@@ -209,7 +209,7 @@ public class JaCoCoColumnTest {
         }
 
 		@Override
-		public Run getLastSuccessfulBuild() {
+		public Run<?,?> getLastSuccessfulBuild() {
 			return null;
 		}
 	}
@@ -226,9 +226,9 @@ public class JaCoCoColumnTest {
 		@Override
 		@Exported
 		@QuickSilver
-		public Run getLastSuccessfulBuild() {
+		public Run<?,?> getLastSuccessfulBuild() {
 			try {
-			    Run run = newBuild();
+			    Run<?,?> run = newBuild();
 				Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
 				run.addAction(new JacocoBuildAction(null, null, map, null, listener, null, null));
 				return run;
@@ -247,7 +247,7 @@ public class JaCoCoColumnTest {
         @Override
         @Exported
         @QuickSilver
-        public Run getLastSuccessfulBuild() {
+        public Run<?,?> getLastSuccessfulBuild() {
             try {
                 return newBuild();
             } catch (IOException e) {
@@ -289,10 +289,6 @@ public class JaCoCoColumnTest {
 
         public MyRun(Job job) throws IOException {
             super(job);
-        }
-
-        public int compareTo(MyRun o) {
-            return 0;
         }
 	}
 }

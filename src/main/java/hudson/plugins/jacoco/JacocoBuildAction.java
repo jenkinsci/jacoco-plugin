@@ -40,7 +40,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	@Deprecated public transient AbstractBuild<?,?> build;
 	
 	public final transient PrintStream logger;
-	@Deprecated private transient ArrayList reports;
+	@Deprecated private transient ArrayList<?> reports;
 	private transient WeakReference<CoverageReport> report;
 	private final String[] inclusions;
 	private final String[] exclusions;

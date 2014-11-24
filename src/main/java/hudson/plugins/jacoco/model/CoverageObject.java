@@ -20,7 +20,6 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Locale;
-import java.util.logging.Logger;
 
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jfree.chart.ChartFactory;
@@ -48,6 +47,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  */
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
+    //private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 
 	public Coverage clazz = new Coverage();
 	public Coverage method = new Coverage();
@@ -295,7 +295,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		    .append("</table>");
 	}
 	
-	protected <ReportLevel extends AggregatedReport > void setAllCovTypes( ReportLevel reportToSet, ICoverageNode covReport) {
+	protected <ReportLevel extends AggregatedReport<?,?,?> > void setAllCovTypes( ReportLevel reportToSet, ICoverageNode covReport) {
 		
 		Coverage tempCov = new Coverage();
 		tempCov.accumulate(covReport.getClassCounter().getMissedCount(), covReport.getClassCounter().getCoveredCount());
@@ -323,7 +323,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		
 	}
 	
-	public  < ReportLevel extends AggregatedReport > void setCoverage( ReportLevel reportToSet, ICoverageNode covReport) {
+	public  < ReportLevel extends AggregatedReport<?,?,?> > void setCoverage( ReportLevel reportToSet, ICoverageNode covReport) {
 		
 		setAllCovTypes(reportToSet, covReport);
 		
@@ -485,5 +485,4 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				+ " method=" + method
 				+ " class=" + clazz;
 	}
-	private static final Logger logger = Logger.getLogger(CoverageObject.class.getName());
 }
