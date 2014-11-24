@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.plexus.util.FileUtils;
@@ -18,11 +19,11 @@ import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.maven.FileFilter;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-
 
 public class ExecutionFileLoader implements Serializable {
-	 
+    private final static String[] STARSTAR = {"**"};
+    private final static String[] ITEM_ZERO = {"{0}"};
+    
 		private String name;
 		private FilePath srcDir;
 		private FilePath classDir;
@@ -106,23 +107,18 @@ public class ExecutionFileLoader implements Serializable {
 					coverageBuilder);
 			
 			if (includes==null) {
-				String[] in = {"**"};
-				includes = in;
+				includes = STARSTAR;
 			} else if (includes.length == 0) {
-				String[] in = {"**"};
-				includes = in;
+				includes = STARSTAR;
 			} else if ((includes.length == 1) && ("".equals(includes[0]))) {
-				String[] in = {"**"};
-				includes = in;
+				includes = STARSTAR;
 			} 
 			if (excludes==null) {
-				String[] ex = {"{0}"};
-				excludes = ex;
+				excludes = ITEM_ZERO;
 			}  else if (excludes.length==0) {
-				String[] ex = {"{0}"};
-				excludes = ex;
+				excludes = ITEM_ZERO;
 			}
-			@SuppressWarnings("unchecked")
+
 			final FileFilter fileFilter = new FileFilter(Arrays.asList(includes), Arrays.asList(excludes));
 			@SuppressWarnings("unchecked")
 			final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, fileFilter.getIncludes(), fileFilter.getExcludes());
