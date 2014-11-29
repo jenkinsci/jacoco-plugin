@@ -39,7 +39,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	
 	@Deprecated public transient AbstractBuild<?,?> build;
 	
-	public final transient PrintStream logger;
+	private final transient PrintStream logger;
 	@Deprecated private transient ArrayList<?> reports;
 	private transient WeakReference<CoverageReport> report;
 	private final String[] inclusions;
@@ -229,8 +229,8 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			r.setThresholds(thresholds);
 			return r;
 		} catch (IOException e) {
-			logger.println("Failed to load " + reportFolder);
-			e.printStackTrace(logger);
+			getLogger().println("Failed to load " + reportFolder);
+			e.printStackTrace(getLogger());
 			return null;
 		}
 	}
@@ -318,5 +318,14 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	}
 	
-	//private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());	
+	//private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
+	public final PrintStream getLogger() {
+	    if(logger != null) {
+	        return logger;
+	    }
+
+	    // use System.out as a fallback if the BuildAction was de-serialized which
+	    // does not run the construct and thus leaves the transient variables empty
+	    return System.out;
+	}
 }

@@ -21,8 +21,8 @@ import javax.servlet.ServletException;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
-import org.jacoco.core.tools.ExecFileLoader;
 import org.jacoco.core.data.ExecutionDataWriter;
+import org.jacoco.core.tools.ExecFileLoader;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -62,7 +62,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		this(action);
 		try {
 
-			action.logger.println("[JaCoCo plugin] Loading packages..");
+			action.getLogger().println("[JaCoCo plugin] Loading packages..");
 
 			if (executionFileLoader.getBundleCoverage() !=null ) {
 				setAllCovTypes(this, executionFileLoader.getBundleCoverage());
@@ -100,7 +100,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 					this.add(packageReport);
 				}
 			}
-			action.logger.println("[JaCoCo plugin] Done.");
+			action.getLogger().println("[JaCoCo plugin] Done.");
 			
 		} catch (Exception e) {
 			e.printStackTrace();
