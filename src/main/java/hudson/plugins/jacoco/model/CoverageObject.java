@@ -44,6 +44,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * Base class of all coverage objects.
  *
  * @author Kohsuke Kawaguchi
+ * @author Martin Heinzerling
  */
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
@@ -370,8 +371,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		int width = (w != null) ? Integer.valueOf(w) : 500;
 		int height = (h != null) ? Integer.valueOf(h) : 200;
 
-		new GraphImpl(this, t, width, height) {
+		createGraph(t, width, height).doPng(req, rsp);
+	}
 
+	GraphImpl createGraph(final Calendar t, final int width, final int height) throws IOException
+	{
+		return new GraphImpl(this, t, width, height) {
 			@Override
 			protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj) {
 				DataSetBuilder<String, NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, NumberOnlyBuildLabel>();
@@ -386,7 +391,6 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 					if (a.line != null) {
 						dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_LineCovered(), label);
 						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
-						
 					} else {
 						dsb.add(0, Messages.CoverageObject_Legend_LineCovered(), label);
 						dsb.add(0, Messages.CoverageObject_Legend_LineMissed(), label);
@@ -395,14 +399,14 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 				return dsb;
 			}
-		}.doPng(req, rsp);
+		};
 	}
 
 	public Api getApi() {
 		return new Api(this);
 	}
 
-	private abstract class GraphImpl extends Graph {
+	abstract class GraphImpl extends Graph {
 
 		private CoverageObject<SELF> obj;
 
@@ -412,6 +416,11 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		}
 
 		protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
+
+		public JFreeChart getGraph( )
+		{
+			return createGraph();
+		}
 
 		@Override
 		protected JFreeChart createGraph() {
