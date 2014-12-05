@@ -1,6 +1,5 @@
 package hudson.plugins.jacoco.model;
 
-
 import static org.junit.Assert.assertArrayEquals;
 
 import hudson.plugins.jacoco.AbstractJacocoTestBase;
@@ -56,8 +55,14 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 
 	}
 
-	private void assertGraph(JFreeChart chart, String file) throws IOException
+	private void assertGraph(JFreeChart chart, String file, boolean writeFile) throws IOException
 	{
+		if (writeFile)
+		{
+			File f = new File(file);
+			ChartUtilities.saveChartAsPNG(f, chart, WIDTH, HEIGHT);
+			System.out.println("Stored graph file to " + f.getAbsolutePath());
+		}
 		byte[] expected = FileUtils.readFileToByteArray(new File("resources/test/" + file));
 		byte[] actual;
 
@@ -82,6 +87,10 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 			System.err.println("Stored wrong graph file to " + f.getAbsolutePath());
 			throw e;
 		}
+	}
 
+	private void assertGraph(JFreeChart chart, String file) throws IOException
+	{
+		assertGraph(chart, file, !new File("resources/test/" + file).exists());
 	}
 }

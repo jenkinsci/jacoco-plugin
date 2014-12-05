@@ -76,7 +76,6 @@ public class TestCoverageObject extends CoverageObject<TestCoverageObject>
 		return this;
 	}
 
-
 	public TestCoverageObject branch(int missed, int covered)
 	{
 		branch = new Coverage(missed, covered);
@@ -96,6 +95,4 @@ public class TestCoverageObject extends CoverageObject<TestCoverageObject>
 		}
 		return this;
 	}
-
-
 }
