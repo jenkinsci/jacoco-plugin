@@ -65,6 +65,14 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	@Test
 	public void simpleLineCoverage() throws IOException
 	{
+		CoverageGraphLayout layout = new CoverageGraphLayout();
+
+		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
+		assertGraph(chart, "simple.png");
+	}
+
+	private TestCoverageObject createTestCoverage()
+	{
 		TestCoverageObject t5 = new TestCoverageObject().line(5000, 19000);
 		TestCoverageObject t4 = new TestCoverageObject().line(5000, 19000).previous(t5);
 		TestCoverageObject t3 = new TestCoverageObject().line(5000, 19000).previous(t4);
@@ -72,10 +80,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 		TestCoverageObject t1 = new TestCoverageObject().line(12000, 18000).previous(t2);
 		TestCoverageObject t0 = new TestCoverageObject().previous(t1);
 		ctl.replay();
-
-		JFreeChart chart = t0.createGraph(new GregorianCalendar(), WIDTH, HEIGHT).getGraph();
-		assertGraph(chart, "simple.png");
-
+		return t0;
 	}
 
 	private void assertGraph(JFreeChart chart, String file, boolean writeFile) throws IOException

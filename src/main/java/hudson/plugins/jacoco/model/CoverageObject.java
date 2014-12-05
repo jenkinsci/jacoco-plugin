@@ -11,16 +11,12 @@ import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 import hudson.util.ShiftedCategoryAxis;
-
-import java.awt.BasicStroke;
-import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Locale;
-
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -29,11 +25,7 @@ import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.ui.RectangleEdge;
-import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -371,12 +363,14 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		int width = (w != null) ? Integer.valueOf(w) : 500;
 		int height = (h != null) ? Integer.valueOf(h) : 200;
 
-		createGraph(t, width, height).doPng(req, rsp);
+		CoverageGraphLayout layout = new CoverageGraphLayout();
+
+		createGraph(t, width, height,layout).doPng(req, rsp);
 	}
 
-	GraphImpl createGraph(final Calendar t, final int width, final int height) throws IOException
+	GraphImpl createGraph(final Calendar t, final int width, final int height, final CoverageGraphLayout layout) throws IOException
 	{
-		return new GraphImpl(this, t, width, height) {
+		return new GraphImpl(this, t, width, height, layout) {
 			@Override
 			protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj) {
 				DataSetBuilder<String, NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, NumberOnlyBuildLabel>();
@@ -409,10 +403,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	abstract class GraphImpl extends Graph {
 
 		private CoverageObject<SELF> obj;
+		private CoverageGraphLayout layout;
 
-		public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH) {
+		public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH, CoverageGraphLayout layout) {
 			super(timestamp, defaultW, defaultH);
 			this.obj = obj;
+			this.layout =layout;
 		}
 
 		protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
@@ -434,22 +430,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 					true, // include legend
 					true, // tooltips
 					false // urls
-					);
-
-			// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-
-			final LegendTitle legend = chart.getLegend();
-			legend.setPosition(RectangleEdge.RIGHT);
-
-			chart.setBackgroundPaint(Color.white);
+			);
 
 			final CategoryPlot plot = chart.getCategoryPlot();
-
-			// plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
-			plot.setBackgroundPaint(Color.WHITE);
-			plot.setOutlinePaint(null);
-			plot.setRangeGridlinesVisible(true);
-			plot.setRangeGridlinePaint(Color.black);
 
 			CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
 			plot.setDomainAxis(domainAxis);
@@ -462,24 +445,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 			rangeAxis.setLowerBound(0);
 
-			final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-			
-			renderer.setSeriesPaint(0, Color.green);
-			renderer.setSeriesPaint(1, Color.red);
-			
-			renderer.setSeriesItemLabelPaint(0, Color.green);
-			renderer.setSeriesItemLabelPaint(1, Color.red);
-			
-			renderer.setSeriesFillPaint(0, Color.green);
-			renderer.setSeriesFillPaint(1, Color.red);
-			
-			renderer.setBaseStroke(new BasicStroke(4.0f));
-			//ColorPalette.apply(renderer);
-
-			// crop extra space around the graph
-			plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
-			
-			
+			layout.apply(chart);
 			return chart;
 		}
 	}
