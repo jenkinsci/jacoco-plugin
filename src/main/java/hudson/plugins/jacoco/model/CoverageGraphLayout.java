@@ -169,6 +169,7 @@ public class CoverageGraphLayout
 		private CoverageValue value;
 		private CoverageType type;
 		private Axis axis;
+		private Color color;
 
 		public Plot(Axis axis)
 		{
@@ -193,7 +194,7 @@ public class CoverageGraphLayout
 		@Override
 		public String toString()
 		{
-			return axis + " " + type + " " + value;
+			return axis + " " + type + " " + value + " " + color;
 		}
 	}
 
@@ -251,6 +252,13 @@ public class CoverageGraphLayout
 		return this;
 	}
 
+	public CoverageGraphLayout color(Color color)
+	{
+		assurePlot();
+		plots.peek().color = color;
+		return this;
+	}
+
 	public List<Axis> getAxes()
 	{
 		return Collections.unmodifiableList(axes);
@@ -281,12 +289,9 @@ public class CoverageGraphLayout
 			axisId = axisIds.get(p.axis);
 			int lineIdPerAxis = plot.getDataset(axisId).getRowIndex(p.getMessage());
 			LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer(axisId);
-
-			Color color = lineIdPerAxis == 0 ? Color.GREEN : Color.RED; //TODO
-
-			renderer.setSeriesPaint(lineIdPerAxis, color);
-			renderer.setSeriesItemLabelPaint(lineIdPerAxis, color);
-			renderer.setSeriesFillPaint(lineIdPerAxis, color);
+			renderer.setSeriesPaint(lineIdPerAxis, p.color);
+			renderer.setSeriesItemLabelPaint(lineIdPerAxis, p.color);
+			renderer.setSeriesFillPaint(lineIdPerAxis, p.color);
 			//add line layout here
 		}
 

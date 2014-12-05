@@ -14,6 +14,7 @@ import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 import hudson.util.ShiftedCategoryAxis;
+import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -375,8 +376,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		CoverageGraphLayout layout = new CoverageGraphLayout()
 				.baseStroke(4f)
 				.axis()
-				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
-				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED);
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED).color(Color.RED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED).color(Color.GREEN);
 
 		createGraph(t, width, height,layout).doPng(req, rsp);
 	}

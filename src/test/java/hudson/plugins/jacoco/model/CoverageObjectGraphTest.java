@@ -2,6 +2,7 @@ package hudson.plugins.jacoco.model;
 
 import static org.junit.Assert.assertArrayEquals;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.ByteArrayOutputStream;
@@ -68,8 +69,8 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	{
 		CoverageGraphLayout layout = new CoverageGraphLayout()
 				/*.baseStroke(4f)*/
-				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
-				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED);
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED).color(Color.RED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED).color(Color.GREEN);
 
 		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
 		assertGraph(chart, "simple.png");
@@ -80,8 +81,8 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	{
 		CoverageGraphLayout layout = new CoverageGraphLayout().
 				baseStroke(2.0f)
-				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
-				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED);
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED).color(Color.RED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED).color(Color.GREEN);
 
 		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
 		assertGraph(chart, "baseStroke.png");
@@ -93,12 +94,12 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 		CoverageGraphLayout layout = new CoverageGraphLayout()
 				.baseStroke(2f)
 				.axis().label("M")
-				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED).color(Color.RED)
 				.axis().label("C")
-				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED).color(Color.GREEN)
 				.axis().label("%")
-				.plot().type(CoverageType.BRANCH).value(CoverageValue.PERCENTAGE)
-				.plot().type(CoverageType.LINE).value(CoverageValue.PERCENTAGE);
+				.plot().type(CoverageType.BRANCH).value(CoverageValue.PERCENTAGE).color(Color.BLUE)
+				.plot().type(CoverageType.LINE).value(CoverageValue.PERCENTAGE).color(Color.YELLOW);
 
 		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
 		assertGraph(chart, "multiple.png");
