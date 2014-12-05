@@ -383,11 +383,11 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
                     dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
                     dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);*/
 					if (a.line != null) {
-						dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_LineCovered(), label);
-						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
+						dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_Covered(Messages.CoverageObject_Legend_Line()), label);
+						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_Missed(Messages.CoverageObject_Legend_Line()), label);
 					} else {
-						dsb.add(0, Messages.CoverageObject_Legend_LineCovered(), label);
-						dsb.add(0, Messages.CoverageObject_Legend_LineMissed(), label);
+						dsb.add(0, Messages.CoverageObject_Legend_Covered(Messages.CoverageObject_Legend_Line()), label);
+						dsb.add(0, Messages.CoverageObject_Legend_Missed(Messages.CoverageObject_Legend_Line()), label);
 					}
 				}
 
