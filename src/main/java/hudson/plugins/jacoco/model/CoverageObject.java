@@ -33,6 +33,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.CategoryDataset;
@@ -393,6 +394,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				for (Axis axis : layout.getAxes())
 				{
 					builders.put(axis, new DataSetBuilder<String, NumberOnlyBuildLabel>());
+					if (axis.isCrop()) bounds.put(axis, new Bounds());
 				}
 
 				Map<Plot, Number> last = new HashMap<Plot, Number>();
@@ -406,6 +408,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 						if (axis.isSkipZero() && (value == null || value.floatValue() == 0f)) value = null;
 						if (value != null)
 						{
+							if (axis.isCrop()) bounds.get(axis).update(value);
 							last.put(plot, value);
 						}
 						else
@@ -428,6 +431,20 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		private CoverageObject<SELF> obj;
 		private CoverageGraphLayout layout;
+		protected Map<Axis,Bounds> bounds=new HashMap<Axis, Bounds>();
+
+		protected class Bounds
+		{
+			float min=Float.MAX_VALUE;
+			float max=Float.MIN_VALUE;
+
+			public void update(Number value)
+			{
+				float v=value.floatValue();
+				if (min>v) min=v;
+				if (max<v) max=v+1;
+			}
+		}
 
 		public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH, CoverageGraphLayout layout) {
 			super(timestamp, defaultW, defaultH);
@@ -481,11 +498,21 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				NumberAxis numberAxis = new NumberAxis(axis.getLabel());
 				plot.setRangeAxis(axisId, numberAxis);
 				numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits()); //TODO
+				setBounds(axis, numberAxis);
 				axisId++;
 			}
 
 			layout.apply(chart);
 			return chart;
+		}
+
+		private void setBounds(Axis a, ValueAxis axis)
+		{
+			if (!a.isCrop()) return;
+			Bounds bounds = this.bounds.get(a);
+			float border = (bounds.max - bounds.min) / 100 * a.getCrop();
+			axis.setUpperBound(bounds.max + border);
+			axis.setLowerBound(Math.max(0, bounds.min - border));
 		}
 	}
 

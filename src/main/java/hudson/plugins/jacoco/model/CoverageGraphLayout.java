@@ -157,7 +157,13 @@ public class CoverageGraphLayout
 	static class Axis
 	{
 		private String label = null;
+		private int crop = -1;
 		private boolean skipZero = false;
+
+		public boolean isCrop()
+		{
+			return crop != -1;
+		}
 
 		public boolean isSkipZero()
 		{
@@ -167,6 +173,11 @@ public class CoverageGraphLayout
 		public String getLabel()
 		{
 			return label;
+		}
+
+		public int getCrop()
+		{
+			return crop;
 		}
 	}
 
@@ -223,6 +234,18 @@ public class CoverageGraphLayout
 	private void assureAxis()
 	{
 		if (axes.isEmpty()) axis();
+	}
+
+	public CoverageGraphLayout crop()
+	{
+		return crop(5);
+	}
+
+	public CoverageGraphLayout crop(int marginInPercent)
+	{
+		assureAxis();
+		axes.peek().crop = marginInPercent;
+		return this;
 	}
 
 	public CoverageGraphLayout label(String label)
