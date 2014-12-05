@@ -470,6 +470,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				dataSets.put(e.getKey(), e.getValue().build());
 			}
 			List<Axis> axes = new ArrayList<>(dataSets.keySet());
+			boolean onlyOneBuild = dataSets.entrySet().iterator().next().getValue().getColumnCount() < 2;
 
 			final JFreeChart chart = ChartFactory.createLineChart(
 					null, // chart title
@@ -487,7 +488,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
 			plot.setDomainAxis(domainAxis);
 			domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-			domainAxis.setLowerMargin(0.0);
+			domainAxis.setLowerMargin(onlyOneBuild ? 0.5 : 0.0);
 			domainAxis.setUpperMargin(0.0);
 			domainAxis.setCategoryMargin(0.0);
 
@@ -504,7 +505,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				axisId++;
 			}
 
-			layout.apply(chart);
+			layout.apply(chart, onlyOneBuild);
 			return chart;
 		}
 

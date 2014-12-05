@@ -305,14 +305,15 @@ public class CoverageGraphLayout
 		return Collections.unmodifiableList(plots);
 	}
 
-	public void apply(JFreeChart chart)
+	public void apply(JFreeChart chart, boolean onlyOneBuild)
 	{
 		final CategoryPlot plot = chart.getCategoryPlot();
 		Map<Axis, Integer> axisIds = new HashMap<>();
 		int axisId = 0;
 		for (Axis axis : axes)
 		{
-			LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, false);
+			LineAndShapeRenderer renderer = new LineAndShapeRenderer(true, onlyOneBuild);
+			if (onlyOneBuild) renderer.setUseOutlinePaint(true);
 			renderer.setBaseStroke(new BasicStroke(baseStroke));
 			//add axis layout here
 			plot.setRenderer(axisId, renderer);

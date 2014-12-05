@@ -74,6 +74,19 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	}
 
 	@Test
+	public void singeBuildCoverage() throws IOException
+	{
+		CoverageGraphLayout layout = new CoverageGraphLayout()
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED).color(Color.RED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED).color(Color.GREEN);
+
+		TestCoverageObject t = new TestCoverageObject().branch(6, 30).line(5000, 19000);
+		ctl.replay();
+		JFreeChart chart = t.createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
+		assertGraph(chart, "singleBuild.png");
+	}
+
+	@Test
 	public void baseStroke() throws IOException
 	{
 		CoverageGraphLayout layout = new CoverageGraphLayout().
