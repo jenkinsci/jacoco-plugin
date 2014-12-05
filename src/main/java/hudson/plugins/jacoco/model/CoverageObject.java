@@ -3,8 +3,11 @@ package hudson.plugins.jacoco.model;
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
-import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.Rule;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.Axis;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.Plot;
 import hudson.plugins.jacoco.report.AggregatedReport;
 import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
@@ -15,8 +18,14 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -363,35 +372,39 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		int width = (w != null) ? Integer.valueOf(w) : 500;
 		int height = (h != null) ? Integer.valueOf(h) : 200;
 
-		CoverageGraphLayout layout = new CoverageGraphLayout();
+		CoverageGraphLayout layout = new CoverageGraphLayout()
+				.baseStroke(4f)
+				.axis()
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED);
 
 		createGraph(t, width, height,layout).doPng(req, rsp);
 	}
 
 	GraphImpl createGraph(final Calendar t, final int width, final int height, final CoverageGraphLayout layout) throws IOException
 	{
-		return new GraphImpl(this, t, width, height, layout) {
+		return new GraphImpl(this, t, width, height, layout)
+		{
 			@Override
-			protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj) {
-				DataSetBuilder<String, NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, NumberOnlyBuildLabel>();
-
-				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult()) {
-					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
-					/*dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Instructions(), label);
-                    dsb.add(a.branch.getPercentageFloat(), Messages.CoverageObject_Legend_Branch(), label);
-                    dsb.add(a.complexity.getPercentageFloat(), Messages.CoverageObject_Legend_Complexity(), label);
-                    dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
-                    dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);*/
-					if (a.line != null) {
-						dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_Covered(Messages.CoverageObject_Legend_Line()), label);
-						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_Missed(Messages.CoverageObject_Legend_Line()), label);
-					} else {
-						dsb.add(0, Messages.CoverageObject_Legend_Covered(Messages.CoverageObject_Legend_Line()), label);
-						dsb.add(0, Messages.CoverageObject_Legend_Missed(Messages.CoverageObject_Legend_Line()), label);
-					}
+			protected Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> createDataSetBuilder(CoverageObject<SELF> obj)
+			{
+				Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> builders = new LinkedHashMap<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>>();
+				for (Axis axis : layout.getAxes())
+				{
+					builders.put(axis, new DataSetBuilder<String, NumberOnlyBuildLabel>());
 				}
 
-				return dsb;
+				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult())
+				{
+					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
+					for (Plot plot : layout.getPlots())
+					{
+						Number value = plot.getValue(a);
+						Axis axis = plot.getAxis();
+						builders.get(axis).add(value, plot.getMessage(), label);
+					}
+				}
+				return builders;
 			}
 		};
 	}
@@ -411,7 +424,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			this.layout =layout;
 		}
 
-		protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
+		protected abstract Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> createDataSetBuilder(CoverageObject<SELF> obj);
 
 		public JFreeChart getGraph( )
 		{
@@ -420,12 +433,19 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		@Override
 		protected JFreeChart createGraph() {
-			final CategoryDataset dataset = createDataSet(obj).build();
+			Map<Axis, CategoryDataset> dataSets = new LinkedHashMap<Axis, CategoryDataset>();
+			Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> dataSetBuilders = createDataSetBuilder(obj);
+			for (Entry<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> e : dataSetBuilders.entrySet())
+			{
+				dataSets.put(e.getKey(), e.getValue().build());
+			}
+			List<Axis> axes = new ArrayList<Axis>(dataSets.keySet());
+
 			final JFreeChart chart = ChartFactory.createLineChart(
 					null, // chart title
 					null, // unused
-					"", // range axis label
-					dataset, // data
+					null, // range axis label
+					dataSets.get(axes.get(0)), // data
 					PlotOrientation.VERTICAL, // orientation
 					true, // include legend
 					true, // tooltips
@@ -441,9 +461,17 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			domainAxis.setUpperMargin(0.0);
 			domainAxis.setCategoryMargin(0.0);
 
-			final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			rangeAxis.setLowerBound(0);
+			int axisId = 0;
+			for (Axis axis : axes)
+			{
+				int di = axisId;
+				plot.setDataset(di, dataSets.get(axis));
+				plot.mapDatasetToRangeAxis(di, axisId);
+				NumberAxis numberAxis = new NumberAxis(axis.getLabel());
+				plot.setRangeAxis(axisId, numberAxis);
+				numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits()); //TODO
+				axisId++;
+			}
 
 			layout.apply(chart);
 			return chart;

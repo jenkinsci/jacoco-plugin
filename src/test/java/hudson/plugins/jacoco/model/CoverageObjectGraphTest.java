@@ -2,10 +2,6 @@ package hudson.plugins.jacoco.model;
 
 import static org.junit.Assert.assertArrayEquals;
 
-import hudson.plugins.jacoco.AbstractJacocoTestBase;
-import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
-import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -24,6 +21,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import hudson.plugins.jacoco.AbstractJacocoTestBase;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
 
 /**
  * @author Martin Heinzerling
@@ -66,7 +67,9 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	public void simpleLineCoverage() throws IOException
 	{
 		CoverageGraphLayout layout = new CoverageGraphLayout()
-				/*.baseStroke(4f)*/;
+				/*.baseStroke(4f)*/
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED);
 
 		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
 		assertGraph(chart, "simple.png");
@@ -76,19 +79,38 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	public void baseStroke() throws IOException
 	{
 		CoverageGraphLayout layout = new CoverageGraphLayout().
-				baseStroke(2.0f);
+				baseStroke(2.0f)
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED);
 
 		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
 		assertGraph(chart, "baseStroke.png");
 	}
 
+	@Test
+	public void multipleAccessAndDifferentCoverageType() throws IOException
+	{
+		CoverageGraphLayout layout = new CoverageGraphLayout()
+				.baseStroke(2f)
+				.axis().label("M")
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED)
+				.axis().label("C")
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED)
+				.axis().label("%")
+				.plot().type(CoverageType.BRANCH).value(CoverageValue.PERCENTAGE)
+				.plot().type(CoverageType.LINE).value(CoverageValue.PERCENTAGE);
+
+		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
+		assertGraph(chart, "multiple.png");
+	}
+
 	private TestCoverageObject createTestCoverage()
 	{
-		TestCoverageObject t5 = new TestCoverageObject().line(5000, 19000);
-		TestCoverageObject t4 = new TestCoverageObject().line(5000, 19000).previous(t5);
-		TestCoverageObject t3 = new TestCoverageObject().line(5000, 19000).previous(t4);
-		TestCoverageObject t2 = new TestCoverageObject().line(10000, 15000).previous(t3);
-		TestCoverageObject t1 = new TestCoverageObject().line(12000, 18000).previous(t2);
+		TestCoverageObject t5 = new TestCoverageObject().branch(6, 30).line(5000, 19000);
+		TestCoverageObject t4 = new TestCoverageObject().branch(6, 0).line(5000, 19000).previous(t5);
+		TestCoverageObject t3 = new TestCoverageObject().branch(6, 35).line(5000, 19000).previous(t4);
+		TestCoverageObject t2 = new TestCoverageObject().branch(15, 23).line(10000, 15000).previous(t3);
+		TestCoverageObject t1 = new TestCoverageObject().branch(27, 13).line(12000, 18000).previous(t2);
 		TestCoverageObject t0 = new TestCoverageObject().previous(t1);
 		ctl.replay();
 		return t0;
