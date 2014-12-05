@@ -65,10 +65,21 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	@Test
 	public void simpleLineCoverage() throws IOException
 	{
-		CoverageGraphLayout layout = new CoverageGraphLayout();
+		CoverageGraphLayout layout = new CoverageGraphLayout()
+				/*.baseStroke(4f)*/;
 
 		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
 		assertGraph(chart, "simple.png");
+	}
+
+	@Test
+	public void baseStroke() throws IOException
+	{
+		CoverageGraphLayout layout = new CoverageGraphLayout().
+				baseStroke(2.0f);
+
+		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
+		assertGraph(chart, "baseStroke.png");
 	}
 
 	private TestCoverageObject createTestCoverage()

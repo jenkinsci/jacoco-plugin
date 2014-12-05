@@ -13,6 +13,14 @@ import org.jfree.ui.RectangleInsets;
  */
 public class CoverageGraphLayout
 {
+	private float baseStroke = 4f;
+
+	public CoverageGraphLayout baseStroke(float baseStroke)
+	{
+		this.baseStroke = baseStroke;
+		return this;
+	}
+
 	public void apply(JFreeChart chart)
 	{
 		final CategoryPlot plot = chart.getCategoryPlot();
@@ -26,7 +34,7 @@ public class CoverageGraphLayout
 		renderer.setSeriesFillPaint(0, Color.green);
 		renderer.setSeriesFillPaint(1, Color.red);
 
-		renderer.setBaseStroke(new BasicStroke(4.0f));
+		renderer.setBaseStroke(new BasicStroke(baseStroke));
 
 		chart.getLegend().setPosition(RectangleEdge.RIGHT);
 		chart.setBackgroundPaint(Color.white);
