@@ -157,6 +157,12 @@ public class CoverageGraphLayout
 	static class Axis
 	{
 		private String label = null;
+		private boolean skipZero = false;
+
+		public boolean isSkipZero()
+		{
+			return skipZero;
+		}
 
 		public String getLabel()
 		{
@@ -223,6 +229,13 @@ public class CoverageGraphLayout
 	{
 		assureAxis();
 		axes.peek().label = label;
+		return this;
+	}
+
+	public CoverageGraphLayout skipZero()
+	{
+		assureAxis();
+		axes.peek().skipZero = true;
 		return this;
 	}
 

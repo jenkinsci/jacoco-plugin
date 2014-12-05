@@ -105,6 +105,17 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 		assertGraph(chart, "multiple.png");
 	}
 
+	@Test
+	public void skipZero() throws IOException
+	{
+		CoverageGraphLayout layout = new CoverageGraphLayout()
+				.skipZero()
+				.plot().type(CoverageType.BRANCH).value(CoverageValue.PERCENTAGE).color(Color.RED);
+
+		JFreeChart chart = createTestCoverage().createGraph(new GregorianCalendar(), WIDTH, HEIGHT, layout).getGraph();
+		assertGraph(chart, "skipzero.png");
+	}
+
 	private TestCoverageObject createTestCoverage()
 	{
 		TestCoverageObject t5 = new TestCoverageObject().branch(6, 30).line(5000, 19000);

@@ -395,6 +395,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 					builders.put(axis, new DataSetBuilder<String, NumberOnlyBuildLabel>());
 				}
 
+				Map<Plot, Number> last = new HashMap<Plot, Number>();
 				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult())
 				{
 					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
@@ -402,6 +403,15 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 					{
 						Number value = plot.getValue(a);
 						Axis axis = plot.getAxis();
+						if (axis.isSkipZero() && (value == null || value.floatValue() == 0f)) value = null;
+						if (value != null)
+						{
+							last.put(plot, value);
+						}
+						else
+						{
+							value = last.get(plot);
+						}
 						builders.get(axis).add(value, plot.getMessage(), label);
 					}
 				}
