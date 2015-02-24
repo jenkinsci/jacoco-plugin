@@ -87,7 +87,7 @@ THE SOFTWARE.
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <jacoco.version>0.7.1.201405082137</jacoco.version>
+      <jacoco.version>0.7.3.201502191951</jacoco.version>
    </properties>
 
    <repositories>
