@@ -16,35 +16,15 @@ import java.util.List;
 public class JacocoReportDir {
     private final File root;
 
-    public JacocoReportDir(AbstractBuild<?,?> build) {
-        root = new File(build.getRootDir(), "jacoco");
-    }
-
     /**
      * Where we store *.class files, honoring package names as directories.
      */
-    public File getClassesDir() {
-        return new File(root,"classes");
-    }
-
-    public void saveClassesFrom(FilePath dir) throws IOException, InterruptedException {
-        FilePath d = new FilePath(getClassesDir());
-        d.mkdirs();
-        dir.copyRecursiveTo(d);
-    }
+    private final FilePath classesDir;
 
     /**
      * Where we store *.java files, honoring package names as directories.
      */
-    public File getSourcesDir() {
-        return new File(root,"sources");
-    }
-
-    public void saveSourcesFrom(FilePath dir) throws IOException, InterruptedException {
-        FilePath d = new FilePath(getSourcesDir());
-        d.mkdirs();
-        dir.copyRecursiveTo(d);
-    }
+    private final FilePath sourcesDir;
 
     /**
      * Root directory that stores jacoco.exec files.
@@ -52,8 +32,27 @@ public class JacocoReportDir {
      *
      * @see #getExecFiles()
      */
-    public File getExecFilesDir() {
-        return new File(root,"execFiles");
+    private final FilePath execFilesDir;
+
+    public JacocoReportDir(AbstractBuild<?,?> build) {
+        root = new File(build.getRootDir(), "jacoco");
+        classesDir = new FilePath(new File(root,"classes"));
+        sourcesDir = new FilePath(new File(root,"sources"));
+        execFilesDir = new FilePath(new File(root,"execFiles"));
+    }
+
+    public void createDirs() throws IOException, InterruptedException {
+        classesDir.mkdirs();
+        sourcesDir.mkdirs();
+        execFilesDir.mkdirs();
+    }
+
+    public void saveClassesFrom(FilePath dir) throws IOException, InterruptedException {
+        dir.copyRecursiveTo(classesDir);
+    }
+
+    public void saveSourcesFrom(FilePath dir) throws IOException, InterruptedException {
+        dir.copyRecursiveTo(sourcesDir);
     }
 
     /**
@@ -62,7 +61,7 @@ public class JacocoReportDir {
     public List<File> getExecFiles() {
         List<File> r = new ArrayList<File>();
         int i = 0;
-        File root = getExecFilesDir();
+        File root = new File(execFilesDir.getRemote());
         File checkPath;
         while ((checkPath = new File(root, "exec" + i)).exists()) {
             r.add(new File(checkPath,"jacoco.exec"));
@@ -73,12 +72,11 @@ public class JacocoReportDir {
     }
 
     public void addExecFiles(Iterable<FilePath> execFiles) throws IOException, InterruptedException {
-        FilePath root = new FilePath(getExecFilesDir());
         int i=0;
         for (FilePath file : execFiles) {
             FilePath separateExecDir;
             do {
-                separateExecDir = new FilePath(root, "exec"+(i++));
+                separateExecDir = new FilePath(execFilesDir, "exec"+(i++));
             } while (separateExecDir.exists());
 
         	FilePath fullExecName = separateExecDir.child("jacoco.exec");
@@ -97,8 +95,8 @@ public class JacocoReportDir {
 
         efl.setIncludes(includes);
         efl.setExcludes(excludes);
-        efl.setClassDir(new FilePath(getClassesDir()));
-        efl.setSrcDir(new FilePath(getSourcesDir()));
+        efl.setClassDir(classesDir);
+        efl.setSrcDir(sourcesDir);
         efl.loadBundleCoverage();
 
         return efl;

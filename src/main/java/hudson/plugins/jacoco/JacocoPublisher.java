@@ -337,6 +337,7 @@ public class JacocoPublisher extends Recorder {
         logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
 
         JacocoReportDir dir = new JacocoReportDir(build);
+        dir.createDirs();
 
         List<FilePath> matchedExecFiles = Arrays.asList(build.getWorkspace().list(resolveFilePaths(build, listener, execPattern)));
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
