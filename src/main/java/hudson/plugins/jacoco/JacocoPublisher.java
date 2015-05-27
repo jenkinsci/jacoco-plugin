@@ -380,6 +380,11 @@ public class JacocoPublisher extends Recorder {
             logger.println("[JaCoCo plugin] Could not parse coverage results. Setting Build to failure.");
             build.setResult(Result.FAILURE);
         } else {
+            logger.println("[JaCoCo plugin] Overall coverage: class: " + result.getClassCoverage().getPercentage()
+                    + ", method: " + result.getMethodCoverage().getPercentage()
+                    + ", line: " + result.getLineCoverage().getPercentage()
+                    + ", branch: " + result.getBranchCoverage().getPercentage()
+                    + ", instruction: " + result.getInstructionCoverage().getPercentage());
         	result.setThresholds(healthReports);
         	if (changeBuildStatus) {
         		build.setResult(checkResult(action));
