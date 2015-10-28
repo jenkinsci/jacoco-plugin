@@ -1,0 +1,17 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+	xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"
+	xmlns:f="/lib/form" xmlns:i="jelly:fmt">
+	<link rel="stylesheet" href="${rootURL}/plugin/jacoco/css/style.css"/>
+	<t:summary icon="/plugin/jacoco/icons/jacoco-48x48.png">
+	 	<b>Jacoco - ${%Overall Coverage Summary}</b>
+	 	<table class="pane" border="1" style="width: 95%;margin-left: 5%;">
+	 		<j:forEach var="coverageRatio" items="${it.coverageRatios}">
+	 		<tr>
+	 			<th style="background-color:#e0e0e0;width:30%">${coverageRatio.key.type}</th>
+	 			<td style="width:15%;text-align:center" class="${coverageRatio.value ? 'red':''}">${coverageRatio.key.percentage}%</td>
+	 			<td><div class="percentgraph"><div style="width:${100 - coverageRatio.key.percentage}%" class="redbar"></div></div></td>
+	 		</tr>
+	 		</j:forEach>
+	 	</table>		
+	</t:summary>
+</j:jelly>
