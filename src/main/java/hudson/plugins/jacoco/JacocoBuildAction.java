@@ -241,6 +241,37 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	}
 
 	/**
+	 * @return Map<CoverageRatio,Failed?> to represents coverage objects and its status to show on build status page (summary.jelly).
+	 */
+	public Map<Coverage,Boolean> getCoverageRatios(){
+		CoverageReport result = getResult();
+		Map<Coverage,Boolean> ratios = new LinkedHashMap<Coverage,Boolean>();
+		if( result != null ) {
+			Coverage instructionCoverage = result.getInstructionCoverage();
+			Coverage classCoverage = result.getClassCoverage();
+			Coverage complexityScore = result.getComplexityScore();
+			Coverage branchCoverage = result.getBranchCoverage();
+			Coverage lineCoverage = result.getLineCoverage();
+			Coverage methodCoverage = result.getMethodCoverage();
+
+			instructionCoverage.setType(CoverageElement.Type.INSTRUCTION);			
+			classCoverage.setType(CoverageElement.Type.CLASS);
+			complexityScore.setType(CoverageElement.Type.COMPLEXITY);			
+			branchCoverage.setType(CoverageElement.Type.BRANCH);			
+			lineCoverage.setType(CoverageElement.Type.LINE);
+			methodCoverage.setType(CoverageElement.Type.METHOD);
+			
+			ratios.put(instructionCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(instructionCoverage));
+			ratios.put(branchCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(branchCoverage));
+			ratios.put(complexityScore,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(complexityScore));
+			ratios.put(lineCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(lineCoverage));
+			ratios.put(methodCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(methodCoverage));
+			ratios.put(classCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(classCoverage));
+		}
+		return ratios;
+	}
+	
+	/**
 	 * Gets the previous {@link JacocoBuildAction} of the given build.
 	 */
 	/*package*/ static JacocoBuildAction getPreviousResult(AbstractBuild<?,?> start) {
