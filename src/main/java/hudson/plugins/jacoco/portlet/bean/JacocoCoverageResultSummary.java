@@ -29,12 +29,12 @@
  */
 package hudson.plugins.jacoco.portlet.bean;
 
-import hudson.model.Job;
-import hudson.plugins.jacoco.portlet.utils.Utils;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
+import hudson.model.Job;
+import hudson.plugins.jacoco.portlet.utils.Utils;
 
 /**
  * Summary of the Jacoco Coverage result.
@@ -89,8 +89,6 @@ public class JacocoCoverageResultSummary {
    *
    * @param job
    *          the related Job
-   * @param blockCoverage
-   *          block coverage percentage
    * @param lineCoverage
    *          line coverage percentage
    * @param methodCoverage

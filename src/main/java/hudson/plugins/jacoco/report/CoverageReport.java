@@ -1,12 +1,5 @@
 package hudson.plugins.jacoco.report;
 
-import hudson.model.AbstractBuild;
-import hudson.plugins.jacoco.ExecutionFileLoader;
-import hudson.plugins.jacoco.JacocoBuildAction;
-import hudson.plugins.jacoco.JacocoHealthReportThresholds;
-import hudson.plugins.jacoco.model.Coverage;
-import hudson.util.HttpResponses;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -28,6 +21,13 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.WebMethod;
 import org.objectweb.asm.Type;
+
+import hudson.model.AbstractBuild;
+import hudson.plugins.jacoco.ExecutionFileLoader;
+import hudson.plugins.jacoco.JacocoBuildAction;
+import hudson.plugins.jacoco.JacocoHealthReportThresholds;
+import hudson.plugins.jacoco.model.Coverage;
+import hudson.util.HttpResponses;
 
 /**
  * Root object of the coverage report.
@@ -55,8 +55,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	 * Loads the exec files using JaCoCo API. Creates the reporting objects and the report tree.
 	 * 
 	 * @param action
-	 * @param reports
-	 * @throws IOException
+	 * @param executionFileLoader
 	 */
 	public CoverageReport(JacocoBuildAction action, ExecutionFileLoader executionFileLoader ) {
 		this(action);

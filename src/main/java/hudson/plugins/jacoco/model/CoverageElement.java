@@ -1,8 +1,8 @@
 package hudson.plugins.jacoco.model;
 
-import hudson.plugins.jacoco.report.AbstractReport;
-
 import java.io.IOException;
+
+import hudson.plugins.jacoco.report.AbstractReport;
 
 /**
  * This is a transitive object used during the parsing, but not a part of
@@ -15,7 +15,7 @@ public final class CoverageElement {
     /**
      * Enumeration of coverage types that appear in a JaCoCo report.
      * 
-     * @author Jonathan Fuerth <jfuerth@gmail.com>
+     * @author Jonathan Fuerth &lt;jfuerth@gmail.com&gt;
      */
     public enum Type {
       INSTRUCTION {

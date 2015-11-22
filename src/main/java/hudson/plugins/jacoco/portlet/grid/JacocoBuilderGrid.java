@@ -29,6 +29,10 @@
  */
 package hudson.plugins.jacoco.portlet.grid;
 
+import java.util.Collection;
+
+import org.kohsuke.stapler.DataBoundConstructor;
+
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.Job;
@@ -37,14 +41,10 @@ import hudson.plugins.jacoco.portlet.Messages;
 import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.plugins.view.dashboard.DashboardPortlet;
 
-import java.util.Collection;
-
-import org.kohsuke.stapler.DataBoundConstructor;
-
 /**
  * A portlet for JaCoCo Coverage results - Grid data.
  *
- * @see http://wiki.hudson-ci.org/display/HUDSON/Dashboard+View
+ * See http://wiki.hudson-ci.org/display/HUDSON/Dashboard+View
  */
 public class JacocoBuilderGrid extends DashboardPortlet {
 
