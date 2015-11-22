@@ -27,6 +27,7 @@
  @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
 -->
 
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:dp="/hudson/plugins/view/dashboard" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <j:new className="java.text.DecimalFormat" var="format">
         <j:arg type="java.lang.String" value="0%" />
