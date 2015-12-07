@@ -7,7 +7,7 @@
         <td class="nowrap ${h.ifThenElse(c.failed,' red','')}" >
           <a href="${h.ifThenElse(nolink!=null,null,c.name+'/')}"><st:out value="${c.name}"/></a>
         </td>	      
-        ${c.printFourCoverageColumns()}
+        <j:out value="${c.printFourCoverageColumns()}"/>
       </tr>
     </j:forEach>
   </table>
