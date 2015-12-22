@@ -247,8 +247,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         return changeBuildStatus;
     }
 
-    /** Setters for Workflow **/
-
     @DataBoundSetter
     public void setExecPattern(String execPattern) {
         this.execPattern = execPattern;
@@ -338,8 +336,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     public void setExclusionPattern(String exclusionPattern) {
         this.exclusionPattern = exclusionPattern;
     }
-
-    /** End Setters for Workflow **/
 
     protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
         destFolder.mkdirs();
