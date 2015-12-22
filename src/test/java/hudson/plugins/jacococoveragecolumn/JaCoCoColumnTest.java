@@ -9,6 +9,7 @@ import hudson.model.Cause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
@@ -85,7 +86,7 @@ public class JaCoCoColumnTest {
 			public Run<?,?> getLastSuccessfulBuild() {
 				try {
 				    Run<?,?> newBuild = newBuild();
-					newBuild.getActions().add(new JacocoBuildAction(null, null, null, null, new BuildListener() {
+					newBuild.getActions().add(new JacocoBuildAction(null, null, null, new TaskListener() {
 						private static final long serialVersionUID = 1L;
 
 						public void hyperlink(String url, String text) throws IOException {
@@ -230,7 +231,7 @@ public class JaCoCoColumnTest {
 			try {
 			    Run<?,?> run = newBuild();
 				Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
-				run.addAction(new JacocoBuildAction(null, null, map, null, listener, null, null));
+				run.addAction(new JacocoBuildAction(null, map, null, listener, null, null));
 				return run;
 			} catch (IOException e) {
 				throw new IllegalStateException(e);

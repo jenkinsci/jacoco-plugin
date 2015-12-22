@@ -5,6 +5,7 @@ import hudson.console.ConsoleNote;
 import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.Cause;
+import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 
 import java.io.IOException;
@@ -26,41 +27,38 @@ public class AbstractReportTest {
         
         report.setParent(new ClassReport());
         report.getParent().setParent(new PackageReport());
-        
-        JacocoBuildAction action = new JacocoBuildAction(null, null, null, null, new BuildListener() {
-            
-            public void hyperlink(String url, String text) throws IOException {
-            }
-            
+
+        TaskListener taskListener = new TaskListener() {
             public PrintStream getLogger() {
                 return null;
             }
-            
-            public PrintWriter fatalError(String format, Object... args) {
+
+            public void annotate(ConsoleNote consoleNote) throws IOException {
+
+            }
+
+            public void hyperlink(String s, String s1) throws IOException {
+
+            }
+
+            public PrintWriter error(String s) {
                 return null;
             }
-            
-            public PrintWriter fatalError(String msg) {
+
+            public PrintWriter error(String s, Object... objects) {
                 return null;
             }
-            
-            public PrintWriter error(String format, Object... args) {
+
+            public PrintWriter fatalError(String s) {
                 return null;
             }
-            
-            public PrintWriter error(String msg) {
+
+            public PrintWriter fatalError(String s, Object... objects) {
                 return null;
             }
-            
-            public void annotate(@SuppressWarnings("rawtypes") ConsoleNote ann) throws IOException {
-            }
-            
-            public void started(List<Cause> causes) {
-            }
-            
-            public void finished(Result result) {
-            }
-        }, null, null);
+        };
+
+        JacocoBuildAction action = new JacocoBuildAction(null, null, null, taskListener, null, null);
         report.getParent().getParent().setParent(new CoverageReport(action, null));
         assertNull(report.getBuild());
 

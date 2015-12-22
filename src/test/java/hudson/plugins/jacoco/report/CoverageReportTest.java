@@ -5,6 +5,7 @@ import hudson.console.ConsoleNote;
 import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.Cause;
+import hudson.model.TaskListener;
 import hudson.plugins.jacoco.ExecutionFileLoader;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.JacocoHealthReportThresholds;
@@ -44,7 +45,7 @@ public class CoverageReportTest {
         report.setThresholds(new JacocoHealthReportThresholds());
     }
 
-    private JacocoBuildAction action = new JacocoBuildAction(null, null, null, null, new BuildListener() {
+    private JacocoBuildAction action = new JacocoBuildAction(null, null, null, new TaskListener() {
         
         public void hyperlink(String url, String text) throws IOException {
         }
