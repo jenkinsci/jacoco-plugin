@@ -187,6 +187,7 @@ THE SOFTWARE.
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
             <version>3.0.15</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -225,8 +226,8 @@ THE SOFTWARE.
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
             <plugin>

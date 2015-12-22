@@ -349,9 +349,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input) {
         try {
-
             return build.getEnvironment(listener).expand(input);
-
         } catch (Exception e) {
             listener.getLogger().println("Failed to resolve parameters in string \"" +
                     input + "\" due to following error:\n" + e.getMessage());
@@ -363,33 +361,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         //final PrintStream logger = listener.getLogger();
         FilePath[] directoryPaths = null;
         try {
-            directoryPaths = workspace.act(new FilePath.FileCallable<FilePath[]>()
-            {
-                public void checkRoles(RoleChecker checker) throws SecurityException {
-                }
-
-                static final long serialVersionUID = 1552178457453558870L;
-
-                public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
-                    FilePath base = new FilePath(f);
-                    ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
-                    String[] includes = input.split(",");
-                    DirectoryScanner ds = new DirectoryScanner();
-
-                    ds.setIncludes(includes);
-                    ds.setCaseSensitive(false);
-                    ds.setBasedir(f);
-                    ds.scan();
-                    String[] dirs = ds.getIncludedDirectories();
-
-                    for (String dir : dirs) {
-                        localDirectoryPaths.add(base.child(dir));
-                    }
-                    FilePath[] lfp = {};//trick to have an empty array as a parameter, so the returned array will contain the elements
-                    return localDirectoryPaths.toArray(lfp);
-                }
-            });
-
+            directoryPaths = workspace.act(new ResolveDirPaths(input));
         } catch(InterruptedException ie) {
             ie.printStackTrace();
         } catch(IOException io) {
@@ -410,6 +382,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         return publishReports(build, build.getBuildVariables(), build.getRootDir(), build.getWorkspace(), launcher, listener);
     }
 
+    @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
         publishReports(run, new HashMap<String, String>(), run.getRootDir(), filePath, launcher, taskListener);
     }
@@ -587,6 +560,39 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             // end ugly hack
             return pub;
         }*/
+
+    }
+
+    private static class ResolveDirPaths implements FilePath.FileCallable<FilePath[]> {
+        static final long serialVersionUID = 1552178457453558870L;
+        private final String input;
+
+        public ResolveDirPaths(String input) {
+            this.input = input;
+        }
+        
+        public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
+            FilePath base = new FilePath(f);
+            ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
+            String[] includes = input.split(",");
+            DirectoryScanner ds = new DirectoryScanner();
+    
+            ds.setIncludes(includes);
+            ds.setCaseSensitive(false);
+            ds.setBasedir(f);
+            ds.scan();
+            String[] dirs = ds.getIncludedDirectories();
+    
+            for (String dir : dirs) {
+                localDirectoryPaths.add(base.child(dir));
+            }
+            FilePath[] lfp = {};//trick to have an empty array as a parameter, so the returned array will contain the elements
+            return localDirectoryPaths.toArray(lfp);
+        }
+        
+        public void checkRoles(RoleChecker checker) throws SecurityException {
+
+        }
 
     }
 
