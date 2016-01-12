@@ -291,6 +291,7 @@ THE SOFTWARE.
                               </artifactId>
                               <versionRange>[1.64,)</versionRange>
                               <goals>
+                                 <goal>hpi</goal>
                                  <goal>apt-compile</goal>
                                  <goal>insert-test</goal>
                                  <goal>
@@ -299,12 +300,6 @@ THE SOFTWARE.
                                  <goal>test-hpl</goal>
                                  <goal>validate</goal>
                               </goals>
-							  <configuration>
-								<pluginFirstClassLoader>true</pluginFirstClassLoader>
-							  
-							  </configuration>
-							  
-							  
                            </pluginExecutionFilter>
                            <action>
                               <ignore />
