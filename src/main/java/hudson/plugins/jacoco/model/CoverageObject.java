@@ -3,6 +3,7 @@ package hudson.plugins.jacoco.model;
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
+import hudson.model.Run;
 import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.Rule;
 import hudson.plugins.jacoco.report.AggregatedReport;
@@ -203,7 +204,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	/**
 	 * Gets the build object that owns the whole coverage report tree.
 	 */
-	public abstract AbstractBuild<?,?> getBuild();
+	public abstract Run<?,?> getBuild();
 
 	/**
 	 * Gets the corresponding coverage report object in the previous
@@ -362,7 +363,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			return;
 		}
 
-		AbstractBuild<?,?> build = getBuild();
+		Run<?,?> build = getBuild();
 		Calendar t = build.getTimestamp();
 
 		String w = Util.fixEmptyAndTrim(req.getParameter("width"));
