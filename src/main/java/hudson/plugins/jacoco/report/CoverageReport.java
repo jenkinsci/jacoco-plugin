@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import javax.servlet.ServletException;
 
+import hudson.model.Run;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
@@ -218,7 +219,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	}
 
 	@Override
-	public AbstractBuild<?,?> getBuild() {
+	public Run<?,?> getBuild() {
 		return action.owner;
 	}
 
