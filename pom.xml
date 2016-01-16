@@ -75,6 +75,10 @@ THE SOFTWARE.
          <id>centic</id>
          <name>Dominik Stadler</name>
       </developer>
+      <developer>
+         <id>csimons</id>
+         <name>Christopher Simons</name>
+      </developer>
    </developers>
 
    <scm>
