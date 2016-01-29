@@ -113,4 +113,27 @@ public class ExecutionFileLoaderTest {
 				coverage.getClassCounter().getMissedCount() > 0 ||
 				coverage.getClassCounter().getCoveredCount() > 0);
 	}
+	
+	@Test
+	public void testLoadBundleWithoutClasses() throws IOException {
+		// Special Jenkins publisher case to handle empty classes dir
+		ExecutionFileLoader loader = new ExecutionFileLoader();
+		
+		assertTrue("This test requires that a jacoco.exec file exists in the target-directory", 
+				new File("target/jacoco.exec").exists());
+		File noClasses = new File("target/noclasses");
+		noClasses.mkdir();
+		assertTrue("This test requires that noclasses dir exists", 
+				noClasses.exists() && noClasses.isDirectory());
+		loader.setClassDir(new FilePath(noClasses));
+		loader.setExcludes(new String[] {"excludme.test"});
+		loader.addExecFile(new FilePath(new File("target/jacoco.exec")));
+		
+		// handles empty classes dir gracefully
+		IBundleCoverage coverage = loader.loadBundleCoverage();
+		assertNotNull(coverage);
+		assertTrue("Expect to have no lines found, but had: " + coverage.getClassCounter(), 
+				coverage.getClassCounter().getMissedCount() == 0 ||
+				coverage.getClassCounter().getCoveredCount() == 0);
+	}
 }
