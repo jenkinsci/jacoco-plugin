@@ -14,8 +14,7 @@ the plugin will not display any code-coverage numbers any more! In this case ple
 Looking for ways to contribute?
 ===============================
 
-When looking for things to work at there are the [GitHub issues](https://github.com/jenkinsci/jacoco-plugin/issues), 
-[pull requests](https://github.com/jenkinsci/jacoco-plugin/pulls) and a 
+When looking for things to work at there are [pull requests](https://github.com/jenkinsci/jacoco-plugin/pulls) and a 
 list of [Jenkins Issues](https://issues.jenkins-ci.org/secure/IssueNavigator.jspa?reset=true&jqlQuery=project+%3D+JENKINS+AND+status+in+%28Open%2C+%22In+Progress%22%2C+Reopened%29+AND+%28component+%3D+jacoco-plugin%29&tempMax=1000).
 
 Discussion list
