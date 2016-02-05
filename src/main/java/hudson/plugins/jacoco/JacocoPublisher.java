@@ -72,7 +72,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String inclusionPattern;
     private String exclusionPattern;
 
-
     private String minimumInstructionCoverage;
     private String minimumBranchCoverage;
     private String minimumComplexityCoverage;
@@ -86,6 +85,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumMethodCoverage;
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
+    
+	private static final String DIR_SEP = "\\s*,\\s*";
 
     @DataBoundConstructor
     public JacocoPublisher() {
@@ -462,12 +463,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.println("\n[JaCoCo plugin] Loading inclusions files..");
         String[] includes = {};
         if (inclusionPattern != null) {
-        	includes = inclusionPattern.split(",");
+        	includes = inclusionPattern.split(DIR_SEP);
         	logger.println("[JaCoCo plugin] inclusions: " + Arrays.toString(includes));
         }
         String[] excludes = {};
         if (exclusionPattern != null) {
-        	excludes = exclusionPattern.split(",");
+        	excludes = exclusionPattern.split(DIR_SEP);
         	logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
         
@@ -596,7 +597,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
             FilePath base = new FilePath(f);
             ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
-            String[] includes = input.split(",");
+            String[] includes = input.split(DIR_SEP);
             DirectoryScanner ds = new DirectoryScanner();
     
             ds.setIncludes(includes);
