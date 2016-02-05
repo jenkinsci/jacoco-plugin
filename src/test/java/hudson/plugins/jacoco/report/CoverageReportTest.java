@@ -45,7 +45,7 @@ public class CoverageReportTest {
         report.setThresholds(new JacocoHealthReportThresholds());
     }
 
-    private JacocoBuildAction action = new JacocoBuildAction(null, null, null, new TaskListener() {
+    private JacocoBuildAction action = new JacocoBuildAction(null, null, new TaskListener() {
         
         public void hyperlink(String url, String text) throws IOException {
         }
