@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -397,7 +398,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
-        Map<String, String> envs = new HashMap<String, String>();
+        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild) run).getBuildVariables() : Collections.<String, String>emptyMap();
 
         healthReports = createJacocoHealthReportThresholds();
 
