@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jenkins.MasterToSlaveFileCallable;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.tools.ant.DirectoryScanner;
 import org.jenkinsci.remoting.RoleChecker;
@@ -392,109 +393,96 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		}
 		return directoryPaths;
 	}
-	
-	/* 
-	 * Entry point of this report plugin.
-	 * 
-	 * @see hudson.tasks.BuildStepCompatibilityLayer#perform(hudson.model.AbstractBuild, hudson.Launcher, hudson.model.BuildListener)
-	 */
-    @SuppressWarnings("resource")
-    @Override
-    public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-        return publishReports(build, build.getBuildVariables(), build.getRootDir(), build.getWorkspace(), launcher, listener);
-    }
+
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
-        publishReports(run, new HashMap<String, String>(), run.getRootDir(), filePath, launcher, taskListener);
-    }
-
-    private boolean publishReports(Run<?, ?> build, Map<String, String> envs, File rootDir, FilePath workspace, Launcher launcher, TaskListener listener) throws IOException, InterruptedException {
+        Map<String, String> envs = new HashMap<String, String>();
 
         healthReports = createJacocoHealthReportThresholds();
 
-		final PrintStream logger = listener.getLogger();
-		FilePath[] matchedClassDirs = null;
-		FilePath[] matchedSrcDirs = null;
+        final PrintStream logger = taskListener.getLogger();
+        FilePath[] matchedClassDirs = null;
+        FilePath[] matchedSrcDirs = null;
 
-		if (build.getResult() == Result.FAILURE || build.getResult() == Result.ABORTED) {
-			return true;
-		}
-		
-		
-		logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
-		
-		
-		EnvVars env = build.getEnvironment(listener);
+        if (run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) {
+            return;
+        }
+
+
+        logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
+
+
+        EnvVars env = run.getEnvironment(taskListener);
         env.overrideAll(envs);
 
         if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
-            if(build.getResult().isWorseThan(Result.UNSTABLE)) {
-                return true;
+            if(run.getResult().isWorseThan(Result.UNSTABLE)) {
+                return;
             }
-            
+
             logger.println("[JaCoCo plugin] ERROR: Missing configuration!");
-            build.setResult(Result.FAILURE);
-            return true;
+            run.setResult(Result.FAILURE);
+            return;
         }
-        
+
         logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
 
-        JacocoReportDir dir = new JacocoReportDir(rootDir);
+        JacocoReportDir dir = new JacocoReportDir(run.getRootDir());
 
-        List<FilePath> matchedExecFiles = Arrays.asList(workspace.list(resolveFilePaths(build, listener, execPattern)));
+        List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern)));
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
-        matchedClassDirs = resolveDirPaths(workspace, listener, classPattern);
+        matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
-        	logger.print(" " + file);
+            logger.print(" " + file);
         }
-        matchedSrcDirs = resolveDirPaths(workspace, listener, sourcePattern);
+        matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
         logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
         for (FilePath file : matchedSrcDirs) {
             dir.saveSourcesFrom(file);
-        	logger.print(" " + file);
+            logger.print(" " + file);
         }
-	     
+
         logger.println("\n[JaCoCo plugin] Loading inclusions files..");
         String[] includes = {};
         if (inclusionPattern != null) {
-        	includes = inclusionPattern.split(DIR_SEP);
-        	logger.println("[JaCoCo plugin] inclusions: " + Arrays.toString(includes));
+            includes = inclusionPattern.split(DIR_SEP);
+            logger.println("[JaCoCo plugin] inclusions: " + Arrays.toString(includes));
         }
         String[] excludes = {};
         if (exclusionPattern != null) {
-        	excludes = exclusionPattern.split(DIR_SEP);
-        	logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
+            excludes = exclusionPattern.split(DIR_SEP);
+            logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
-        
-        final JacocoBuildAction action = JacocoBuildAction.load(build, healthReports, listener, dir, includes, excludes);
+
+        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, dir, includes, excludes);
         action.getThresholds().ensureValid();
         logger.println("[JaCoCo plugin] Thresholds: " + action.getThresholds());
-        build.getActions().add(action);
-        
+        run.getActions().add(action);
+
         logger.println("[JaCoCo plugin] Publishing the results..");
         final CoverageReport result = action.getResult();
-        
+
         if (result == null) {
             logger.println("[JaCoCo plugin] Could not parse coverage results. Setting Build to failure.");
-            build.setResult(Result.FAILURE);
+            run.setResult(Result.FAILURE);
         } else {
             logger.println("[JaCoCo plugin] Overall coverage: class: " + result.getClassCoverage().getPercentage()
                     + ", method: " + result.getMethodCoverage().getPercentage()
                     + ", line: " + result.getLineCoverage().getPercentage()
                     + ", branch: " + result.getBranchCoverage().getPercentage()
                     + ", instruction: " + result.getInstructionCoverage().getPercentage());
-        	result.setThresholds(healthReports);
-        	if (changeBuildStatus) {
-        		build.setResult(checkResult(action));
-        	}
+            result.setThresholds(healthReports);
+            if (changeBuildStatus) {
+                run.setResult(checkResult(action));
+            }
         }
-        return true;
+        return;
     }
 
     private JacocoHealthReportThresholds createJacocoHealthReportThresholds() {
@@ -586,7 +574,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     }
 
-    private static class ResolveDirPaths implements FilePath.FileCallable<FilePath[]> {
+    private static class ResolveDirPaths extends MasterToSlaveFileCallable<FilePath[]> {
         static final long serialVersionUID = 1552178457453558870L;
         private final String input;
 
@@ -611,10 +599,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             }
             FilePath[] lfp = {};//trick to have an empty array as a parameter, so the returned array will contain the elements
             return localDirectoryPaths.toArray(lfp);
-        }
-        
-        public void checkRoles(RoleChecker checker) throws SecurityException {
-
         }
 
     }

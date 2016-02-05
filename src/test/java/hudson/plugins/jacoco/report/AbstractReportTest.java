@@ -58,7 +58,7 @@ public class AbstractReportTest {
             }
         };
 
-        JacocoBuildAction action = new JacocoBuildAction(null, null, null, taskListener, null, null);
+        JacocoBuildAction action = new JacocoBuildAction(null, null, taskListener, null, null);
         report.getParent().getParent().setParent(new CoverageReport(action, null));
         assertNull(report.getBuild());
 

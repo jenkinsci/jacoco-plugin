@@ -56,13 +56,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	/**
 	 * 
-	 * @param owner
 	 * @param ratios
 	 *            The available coverage ratios in the report. Null is treated
 	 *            the same as an empty map.
 	 * @param thresholds
 	 */
-	public JacocoBuildAction(Run<?,?> owner,
+	public JacocoBuildAction(
 			Map<CoverageElement.Type, Coverage> ratios,
 			JacocoHealthReportThresholds thresholds, TaskListener listener, String[] inclusions, String[] exclusions) {
 		logger = listener.getLogger();
@@ -71,7 +70,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		}
 		this.inclusions = inclusions;
 		this.exclusions = exclusions;
-		this.owner = owner;
 		this.clazz = getOrCreateRatio(ratios, CoverageElement.Type.CLASS);
 		this.method = getOrCreateRatio(ratios, CoverageElement.Type.METHOD);
 		this.line = getOrCreateRatio(ratios, CoverageElement.Type.LINE);
@@ -298,7 +296,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		Map<CoverageElement.Type,Coverage> ratios = null;
 		
 	    ratios = loadRatios(layout, ratios, includes, excludes);
-		return new JacocoBuildAction(owner, ratios, thresholds, listener, includes, excludes);
+		return new JacocoBuildAction(ratios, thresholds, listener, includes, excludes);
 	}
 
 
