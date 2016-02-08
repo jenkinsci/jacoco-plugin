@@ -92,7 +92,6 @@ THE SOFTWARE.
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <jacoco.version>0.7.5.201505241946</jacoco.version>
-        <workflow.version>1.12</workflow.version>
    </properties>
 
    <repositories>
