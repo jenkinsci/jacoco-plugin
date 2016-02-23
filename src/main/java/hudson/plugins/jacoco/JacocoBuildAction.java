@@ -262,12 +262,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			lineCoverage.setType(CoverageElement.Type.LINE);
 			methodCoverage.setType(CoverageElement.Type.METHOD);
 			
-			ratios.put(instructionCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(instructionCoverage));
-			ratios.put(branchCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(branchCoverage));
-			ratios.put(complexityScore,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(complexityScore));
-			ratios.put(lineCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(lineCoverage));
-			ratios.put(methodCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(methodCoverage));
-			ratios.put(classCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(classCoverage));
+			ratios.put(instructionCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(instructionCoverage));
+			ratios.put(branchCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(branchCoverage));
+			ratios.put(complexityScore,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(complexityScore));
+			ratios.put(lineCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(lineCoverage));
+			ratios.put(methodCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(methodCoverage));
+			ratios.put(classCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(classCoverage));
 		}
 		return ratios;
 	}

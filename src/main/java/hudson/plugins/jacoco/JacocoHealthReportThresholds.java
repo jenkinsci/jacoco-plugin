@@ -52,7 +52,7 @@ public class JacocoHealthReportThresholds implements Serializable {
         return value;
     }
 
-    public enum RESULT {BELLOWMINIMUM, BETWEENMINMAX, ABOVEMAXIMUM}
+    public enum RESULT {BELOWMINIMUM, BETWEENMINMAX, ABOVEMAXIMUM}
     
     public void ensureValid() {
         maxClass = applyRange(0, maxClass, 100);
@@ -171,38 +171,38 @@ public class JacocoHealthReportThresholds implements Serializable {
 		    
 			if (covType == Type.INSTRUCTION) {
 				if (ratio.getPercentageFloat() < minInstruction) {
-					result = RESULT.BELLOWMINIMUM;
+					result = RESULT.BELOWMINIMUM;
 				} else if (ratio.getPercentageFloat() < maxInstruction) {
 					result = RESULT.BETWEENMINMAX;
 				}
 				
 			} else if (covType == Type.BRANCH) {
 				if (ratio.getPercentageFloat() < minBranch) {
-					result = RESULT.BELLOWMINIMUM;
+					result = RESULT.BELOWMINIMUM;
 				} else if (ratio.getPercentageFloat() < maxBranch) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.LINE) {
 				if (ratio.getPercentageFloat() < minLine) {
-					result = RESULT.BELLOWMINIMUM;
+					result = RESULT.BELOWMINIMUM;
 				} else if (ratio.getPercentageFloat() < maxLine) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.COMPLEXITY) {
 				if (ratio.getPercentageFloat() < minComplexity) {
-					result = RESULT.BELLOWMINIMUM;
+					result = RESULT.BELOWMINIMUM;
 				} else if (ratio.getPercentageFloat() < maxComplexity) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.METHOD) {
 				if (ratio.getPercentageFloat() < minMethod) {
-					result = RESULT.BELLOWMINIMUM;
+					result = RESULT.BELOWMINIMUM;
 				} else if (ratio.getPercentageFloat() < maxMethod) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.CLASS) {
 				if (ratio.getPercentageFloat() < minClass) {
-					result = RESULT.BELLOWMINIMUM;
+					result = RESULT.BELOWMINIMUM;
 				} else if (ratio.getPercentageFloat() < maxClass) {
 					result = RESULT.BETWEENMINMAX;
 				} 
