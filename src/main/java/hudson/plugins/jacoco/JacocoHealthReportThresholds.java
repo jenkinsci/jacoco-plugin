@@ -170,40 +170,40 @@ public class JacocoHealthReportThresholds implements Serializable {
 		    Type covType = ratio.getType();
 		    
 			if (covType == Type.INSTRUCTION) {
-				if (ratio.getPercentage() < minInstruction) {
+				if (ratio.getPercentageFloat() < minInstruction) {
 					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxInstruction) {
+				} else if (ratio.getPercentageFloat() < maxInstruction) {
 					result = RESULT.BETWEENMINMAX;
 				}
 				
 			} else if (covType == Type.BRANCH) {
-				if (ratio.getPercentage() < minBranch) {
+				if (ratio.getPercentageFloat() < minBranch) {
 					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxBranch) {
+				} else if (ratio.getPercentageFloat() < maxBranch) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.LINE) {
-				if (ratio.getPercentage() < minLine) {
+				if (ratio.getPercentageFloat() < minLine) {
 					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxLine) {
+				} else if (ratio.getPercentageFloat() < maxLine) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.COMPLEXITY) {
-				if (ratio.getPercentage() < minComplexity) {
+				if (ratio.getPercentageFloat() < minComplexity) {
 					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxComplexity) {
+				} else if (ratio.getPercentageFloat() < maxComplexity) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.METHOD) {
-				if (ratio.getPercentage() < minMethod) {
+				if (ratio.getPercentageFloat() < minMethod) {
 					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxMethod) {
+				} else if (ratio.getPercentageFloat() < maxMethod) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.CLASS) {
-				if (ratio.getPercentage() < minClass) {
+				if (ratio.getPercentageFloat() < minClass) {
 					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxClass) {
+				} else if (ratio.getPercentageFloat() < maxClass) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			}
