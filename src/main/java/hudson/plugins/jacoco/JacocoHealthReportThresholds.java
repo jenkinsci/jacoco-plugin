@@ -52,7 +52,7 @@ public class JacocoHealthReportThresholds implements Serializable {
         return value;
     }
 
-    public enum RESULT {BELLOWMINIMUM, BETWEENMINMAX, ABOVEMAXIMUM}
+    public enum RESULT {BELOWMINIMUM, BETWEENMINMAX, ABOVEMAXIMUM}
     
     public void ensureValid() {
         maxClass = applyRange(0, maxClass, 100);
@@ -170,40 +170,40 @@ public class JacocoHealthReportThresholds implements Serializable {
 		    Type covType = ratio.getType();
 		    
 			if (covType == Type.INSTRUCTION) {
-				if (ratio.getPercentage() < minInstruction) {
-					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxInstruction) {
+				if (ratio.getPercentageFloat() < minInstruction) {
+					result = RESULT.BELOWMINIMUM;
+				} else if (ratio.getPercentageFloat() < maxInstruction) {
 					result = RESULT.BETWEENMINMAX;
 				}
 				
 			} else if (covType == Type.BRANCH) {
-				if (ratio.getPercentage() < minBranch) {
-					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxBranch) {
+				if (ratio.getPercentageFloat() < minBranch) {
+					result = RESULT.BELOWMINIMUM;
+				} else if (ratio.getPercentageFloat() < maxBranch) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.LINE) {
-				if (ratio.getPercentage() < minLine) {
-					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxLine) {
+				if (ratio.getPercentageFloat() < minLine) {
+					result = RESULT.BELOWMINIMUM;
+				} else if (ratio.getPercentageFloat() < maxLine) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.COMPLEXITY) {
-				if (ratio.getPercentage() < minComplexity) {
-					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxComplexity) {
+				if (ratio.getPercentageFloat() < minComplexity) {
+					result = RESULT.BELOWMINIMUM;
+				} else if (ratio.getPercentageFloat() < maxComplexity) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.METHOD) {
-				if (ratio.getPercentage() < minMethod) {
-					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxMethod) {
+				if (ratio.getPercentageFloat() < minMethod) {
+					result = RESULT.BELOWMINIMUM;
+				} else if (ratio.getPercentageFloat() < maxMethod) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			} else if (covType == Type.CLASS) {
-				if (ratio.getPercentage() < minClass) {
-					result = RESULT.BELLOWMINIMUM;
-				} else if (ratio.getPercentage() < maxClass) {
+				if (ratio.getPercentageFloat() < minClass) {
+					result = RESULT.BELOWMINIMUM;
+				} else if (ratio.getPercentageFloat() < maxClass) {
 					result = RESULT.BETWEENMINMAX;
 				} 
 			}
