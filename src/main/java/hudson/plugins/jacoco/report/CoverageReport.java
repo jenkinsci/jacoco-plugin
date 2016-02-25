@@ -184,7 +184,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 			
 			if (JacocoHealthReportThresholds.RESULT.BETWEENMINMAX == healthReports.getResultByTypeAndRatio(ratio)) {
 				bgColor = "#FF8000";
-			} else if (JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == healthReports.getResultByTypeAndRatio(ratio)) {
+			} else if (JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == healthReports.getResultByTypeAndRatio(ratio)) {
 				bgColor = "#FF0000";
 			}
 			buf.append("<td bgcolor='").append(bgColor).append("'");

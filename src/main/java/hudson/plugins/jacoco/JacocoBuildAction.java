@@ -112,10 +112,11 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			return null;
 		}
 		thresholds.ensureValid();
-		int score = 100, percent;
+		int score = 100;
+		float percent;
 		ArrayList<Localizable> reports = new ArrayList<Localizable>(5);
 		if (clazz != null && thresholds.getMaxClass() > 0) {
-			percent = clazz.getPercentage();
+			percent = clazz.getPercentageFloat();
 			if (percent < thresholds.getMaxClass()) {
 				reports.add(Messages._BuildAction_Classes(clazz, percent));
 			}
@@ -123,7 +124,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 					percent, thresholds.getMaxClass());
 		}
 		if (method != null && thresholds.getMaxMethod() > 0) {
-			percent = method.getPercentage();
+			percent = method.getPercentageFloat();
 			if (percent < thresholds.getMaxMethod()) {
 				reports.add(Messages._BuildAction_Methods(method, percent));
 			}
@@ -131,7 +132,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 					percent, thresholds.getMaxMethod());
 		}
 		if (line != null && thresholds.getMaxLine() > 0) {
-			percent = line.getPercentage();
+			percent = line.getPercentageFloat();
 			if (percent < thresholds.getMaxLine()) {
 				reports.add(Messages._BuildAction_Lines(line, percent));
 			}
@@ -139,7 +140,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 					percent, thresholds.getMaxLine());
 		}
 		if (branch != null && thresholds.getMaxBranch() > 0) {
-			percent = branch.getPercentage();
+			percent = branch.getPercentageFloat();
 			if (percent < thresholds.getMaxBranch()) {
 				reports.add(Messages._BuildAction_Branches(branch, percent));
 			}
@@ -147,7 +148,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 					percent, thresholds.getMaxBranch());
 		}
 		if (instruction != null && thresholds.getMaxInstruction() > 0) {
-			percent = instruction.getPercentage();
+			percent = instruction.getPercentageFloat();
 			if (percent < thresholds.getMaxInstruction()) {
 				reports.add(Messages._BuildAction_Instructions(instruction, percent));
 			}
@@ -175,7 +176,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		return thresholds;
 	}
 
-	private static int updateHealthScore(int score, int min, int value, int max) {
+	private static int updateHealthScore(int score, int min, float value, int max) {
 		if (value >= max) {
 			return score;
 		}
@@ -183,7 +184,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			return 0;
 		}
 		assert max != min;
-		final int scaled = (int) (100.0 * ((float) value - min) / (max - min));
+		final int scaled = (int) (100.0 * (value - min) / (max - min));
 		if (scaled < score) {
 			return scaled;
 		}
@@ -255,12 +256,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			lineCoverage.setType(CoverageElement.Type.LINE);
 			methodCoverage.setType(CoverageElement.Type.METHOD);
 			
-			ratios.put(instructionCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(instructionCoverage));
-			ratios.put(branchCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(branchCoverage));
-			ratios.put(complexityScore,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(complexityScore));
-			ratios.put(lineCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(lineCoverage));
-			ratios.put(methodCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(methodCoverage));
-			ratios.put(classCoverage,JacocoHealthReportThresholds.RESULT.BELLOWMINIMUM == thresholds.getResultByTypeAndRatio(classCoverage));
+			ratios.put(instructionCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(instructionCoverage));
+			ratios.put(branchCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(branchCoverage));
+			ratios.put(complexityScore,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(complexityScore));
+			ratios.put(lineCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(lineCoverage));
+			ratios.put(methodCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(methodCoverage));
+			ratios.put(classCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(classCoverage));
 		}
 		return ratios;
 	}

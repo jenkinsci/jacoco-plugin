@@ -120,12 +120,16 @@ public class ExecutionFileLoader implements Serializable {
 			}
 
 			final FileFilter fileFilter = new FileFilter(Arrays.asList(includes), Arrays.asList(excludes));
-			@SuppressWarnings("unchecked")
-			final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, fileFilter.getIncludes(), fileFilter.getExcludes());
-			for (final File file : filesToAnalyze) {
-				analyzer.analyzeAll(file);
-	        }
-	        
+			try {
+				@SuppressWarnings("unchecked")
+				final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, fileFilter.getIncludes(), fileFilter.getExcludes());
+				for (final File file : filesToAnalyze) {
+					analyzer.analyzeAll(file);
+				}
+			} catch (final Exception e) {
+				System.out.println("While reading class directory: " + classDirectory);
+				e.printStackTrace();
+			}
 			return coverageBuilder.getBundle(name);
 		}
 	    public IBundleCoverage loadBundleCoverage() throws IOException {
