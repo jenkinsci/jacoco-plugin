@@ -13,6 +13,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+import hudson.util.StreamTaskListener;
 import org.junit.Test;
 
 
@@ -28,35 +29,8 @@ public class AbstractReportTest {
         report.setParent(new ClassReport());
         report.getParent().setParent(new PackageReport());
 
-        TaskListener taskListener = new TaskListener() {
-            public PrintStream getLogger() {
-                return null;
-            }
 
-            public void annotate(ConsoleNote consoleNote) throws IOException {
-
-            }
-
-            public void hyperlink(String s, String s1) throws IOException {
-
-            }
-
-            public PrintWriter error(String s) {
-                return null;
-            }
-
-            public PrintWriter error(String s, Object... objects) {
-                return null;
-            }
-
-            public PrintWriter fatalError(String s) {
-                return null;
-            }
-
-            public PrintWriter fatalError(String s, Object... objects) {
-                return null;
-            }
-        };
+        TaskListener taskListener = StreamTaskListener.fromStdout();
 
         JacocoBuildAction action = new JacocoBuildAction(null, null, taskListener, null, null);
         report.getParent().getParent().setParent(new CoverageReport(action, null));

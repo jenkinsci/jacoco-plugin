@@ -15,6 +15,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+import hudson.util.StreamTaskListener;
 import org.junit.Test;
 
 
@@ -45,38 +46,5 @@ public class CoverageReportTest {
         report.setThresholds(new JacocoHealthReportThresholds());
     }
 
-    private JacocoBuildAction action = new JacocoBuildAction(null, null, new TaskListener() {
-        
-        public void hyperlink(String url, String text) throws IOException {
-        }
-        
-        public PrintStream getLogger() {
-            return System.out;
-        }
-        
-        public PrintWriter fatalError(String format, Object... args) {
-            return null;
-        }
-        
-        public PrintWriter fatalError(String msg) {
-            return null;
-        }
-        
-        public PrintWriter error(String format, Object... args) {
-            return null;
-        }
-        
-        public PrintWriter error(String msg) {
-            return null;
-        }
-        
-        public void annotate(@SuppressWarnings("rawtypes") ConsoleNote ann) throws IOException {
-        }
-        
-        public void started(List<Cause> causes) {
-        }
-        
-        public void finished(Result result) {
-        }
-    }, null, null);
+    private JacocoBuildAction action = new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null);
 }
