@@ -27,6 +27,7 @@ import java.util.SortedMap;
 
 import javax.servlet.ServletContext;
 
+import hudson.util.StreamTaskListener;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -86,42 +87,7 @@ public class JaCoCoColumnTest {
 			public Run<?,?> getLastSuccessfulBuild() {
 				try {
 				    Run<?,?> newBuild = newBuild();
-					newBuild.getActions().add(new JacocoBuildAction(null, null, new TaskListener() {
-						private static final long serialVersionUID = 1L;
-
-						public void hyperlink(String url, String text) throws IOException {
-						}
-						
-						public PrintStream getLogger() {
-							return null;
-						}
-						
-						public PrintWriter fatalError(String format, Object... args) {
-							return null;
-						}
-						
-						public PrintWriter fatalError(String msg) {
-							return null;
-						}
-						
-						public PrintWriter error(String format, Object... args) {
-							return null;
-						}
-						
-						public PrintWriter error(String msg) {
-							return null;
-						}
-						
-						public void annotate(@SuppressWarnings("rawtypes") ConsoleNote ann) throws IOException {
-							
-						}
-						
-						public void started(List<Cause> causes) {
-						}
-						
-						public void finished(Result result) {
-						}
-					}, null, null));
+					newBuild.getActions().add(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
 					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
 				} catch (IOException e) {

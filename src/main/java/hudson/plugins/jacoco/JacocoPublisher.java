@@ -370,10 +370,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		sourceFolder.copyRecursiveTo(destFolder);
 	}
 	
-    protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input) {
+    protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env) {
         try {
-           
-        	return build.getEnvironment(listener).expand(input);
+
+            final EnvVars environment = build.getEnvironment(listener);
+            environment.overrideAll(env);
+            return environment.expand(input);
             
         } catch (Exception e) {
             listener.getLogger().println("Failed to resolve parameters in string \""+
@@ -381,7 +383,21 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
         return input;
     }
-	
+
+    protected String resolveFilePaths(AbstractBuild<?, ?> build, TaskListener listener, String input) {
+        try {
+
+            final EnvVars environment = build.getEnvironment(listener);
+            environment.overrideAll(build.getBuildVariables());
+            return environment.expand(input);
+
+        } catch (Exception e) {
+            listener.getLogger().println("Failed to resolve parameters in string \""+
+                    input+"\" due to following error:\n"+e.getMessage());
+        }
+        return input;
+    }
+
     protected static FilePath[] resolveDirPaths(FilePath workspace, TaskListener listener, final String input) {
 		//final PrintStream logger = listener.getLogger();
 		FilePath[] directoryPaths = null;
@@ -431,7 +447,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         JacocoReportDir dir = new JacocoReportDir(run.getRootDir());
 
-        List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern)));
+        if (run instanceof AbstractBuild) {
+            execPattern = resolveFilePaths((AbstractBuild) run, taskListener, execPattern);
+        }
+
+        List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
