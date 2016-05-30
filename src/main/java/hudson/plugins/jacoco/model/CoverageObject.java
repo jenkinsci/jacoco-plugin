@@ -3,37 +3,40 @@ package hudson.plugins.jacoco.model;
 import hudson.Util;
 import hudson.model.AbstractBuild;
 import hudson.model.Api;
-import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.Rule;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.Axis;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.Plot;
 import hudson.plugins.jacoco.report.AggregatedReport;
 import hudson.util.ChartUtil;
 import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 import hudson.util.ShiftedCategoryAxis;
-
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
-
+import java.util.Map;
+import java.util.Map.Entry;
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.CategoryLabelPositions;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.renderer.category.LineAndShapeRenderer;
-import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.CategoryDataset;
-import org.jfree.ui.RectangleEdge;
-import org.jfree.ui.RectangleInsets;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.export.Exported;
@@ -44,6 +47,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  * Base class of all coverage objects.
  *
  * @author Kohsuke Kawaguchi
+ * @author Martin Heinzerling
  */
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
@@ -370,77 +374,113 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		int width = (w != null) ? Integer.valueOf(w) : 500;
 		int height = (h != null) ? Integer.valueOf(h) : 200;
 
-		new GraphImpl(this, t, width, height) {
+		CoverageGraphLayout layout = new CoverageGraphLayout()
+				.baseStroke(4f)
+				.axis()
+				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED).color(Color.RED)
+				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED).color(Color.GREEN);
 
+		createGraph(t, width, height,layout).doPng(req, rsp);
+	}
+
+	GraphImpl createGraph(final Calendar t, final int width, final int height, final CoverageGraphLayout layout) throws IOException
+	{
+		return new GraphImpl(this, t, width, height, layout)
+		{
 			@Override
-			protected DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj) {
-				DataSetBuilder<String, NumberOnlyBuildLabel> dsb = new DataSetBuilder<String, NumberOnlyBuildLabel>();
-
-				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult()) {
-					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
-					/*dsb.add(a.instruction.getPercentageFloat(), Messages.CoverageObject_Legend_Instructions(), label);
-                    dsb.add(a.branch.getPercentageFloat(), Messages.CoverageObject_Legend_Branch(), label);
-                    dsb.add(a.complexity.getPercentageFloat(), Messages.CoverageObject_Legend_Complexity(), label);
-                    dsb.add(a.method.getPercentageFloat(), Messages.CoverageObject_Legend_Method(), label);
-                    dsb.add(a.clazz.getPercentageFloat(), Messages.CoverageObject_Legend_Class(), label);*/
-					if (a.line != null) {
-						dsb.add(a.line.getCovered(), Messages.CoverageObject_Legend_LineCovered(), label);
-						dsb.add(a.line.getMissed(), Messages.CoverageObject_Legend_LineMissed(), label);
-						
-					} else {
-						dsb.add(0, Messages.CoverageObject_Legend_LineCovered(), label);
-						dsb.add(0, Messages.CoverageObject_Legend_LineMissed(), label);
-					}
+			protected Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> createDataSetBuilder(CoverageObject<SELF> obj)
+			{
+				Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> builders = new LinkedHashMap<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>>();
+				for (Axis axis : layout.getAxes())
+				{
+					builders.put(axis, new DataSetBuilder<String, NumberOnlyBuildLabel>());
+					if (axis.isCrop()) bounds.put(axis, new Bounds());
 				}
 
-				return dsb;
+				Map<Plot, Number> last = new HashMap<Plot, Number>();
+				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult())
+				{
+					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
+					for (Plot plot : layout.getPlots())
+					{
+						Number value = plot.getValue(a);
+						Axis axis = plot.getAxis();
+						if (axis.isSkipZero() && (value == null || value.floatValue() == 0f)) value = null;
+						if (value != null)
+						{
+							if (axis.isCrop()) bounds.get(axis).update(value);
+							last.put(plot, value);
+						}
+						else
+						{
+							value = last.get(plot);
+						}
+						builders.get(axis).add(value, plot.getMessage(), label);
+					}
+				}
+				return builders;
 			}
-		}.doPng(req, rsp);
+		};
 	}
 
 	public Api getApi() {
 		return new Api(this);
 	}
 
-	private abstract class GraphImpl extends Graph {
+	abstract class GraphImpl extends Graph {
 
 		private CoverageObject<SELF> obj;
+		private CoverageGraphLayout layout;
+		protected Map<Axis,Bounds> bounds=new HashMap<Axis, Bounds>();
 
-		public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH) {
-			super(timestamp, defaultW, defaultH);
-			this.obj = obj;
+		protected class Bounds
+		{
+			float min=Float.MAX_VALUE;
+			float max=Float.MIN_VALUE;
+
+			public void update(Number value)
+			{
+				float v=value.floatValue();
+				if (min>v) min=v;
+				if (max<v) max=v+1;
+			}
 		}
 
-		protected abstract DataSetBuilder<String, NumberOnlyBuildLabel> createDataSet(CoverageObject<SELF> obj);
+		public GraphImpl(CoverageObject<SELF> obj, Calendar timestamp, int defaultW, int defaultH, CoverageGraphLayout layout) {
+			super(timestamp, defaultW, defaultH);
+			this.obj = obj;
+			this.layout =layout;
+		}
+
+		protected abstract Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> createDataSetBuilder(CoverageObject<SELF> obj);
+
+		public JFreeChart getGraph( )
+		{
+			return createGraph();
+		}
 
 		@Override
 		protected JFreeChart createGraph() {
-			final CategoryDataset dataset = createDataSet(obj).build();
+			Map<Axis, CategoryDataset> dataSets = new LinkedHashMap<Axis, CategoryDataset>();
+			Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> dataSetBuilders = createDataSetBuilder(obj);
+			for (Entry<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> e : dataSetBuilders.entrySet())
+			{
+				dataSets.put(e.getKey(), e.getValue().build());
+			}
+			List<Axis> axes = new ArrayList<Axis>(dataSets.keySet());
+
 			final JFreeChart chart = ChartFactory.createLineChart(
 					null, // chart title
 					null, // unused
-					"", // range axis label
-					dataset, // data
+					null, // range axis label
+					dataSets.get(axes.get(0)), // data
 					PlotOrientation.VERTICAL, // orientation
 					true, // include legend
 					true, // tooltips
 					false // urls
-					);
-
-			// NOW DO SOME OPTIONAL CUSTOMISATION OF THE CHART...
-
-			final LegendTitle legend = chart.getLegend();
-			legend.setPosition(RectangleEdge.RIGHT);
-
-			chart.setBackgroundPaint(Color.white);
+			);
 
 			final CategoryPlot plot = chart.getCategoryPlot();
-
-			// plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
-			plot.setBackgroundPaint(Color.WHITE);
-			plot.setOutlinePaint(null);
-			plot.setRangeGridlinesVisible(true);
-			plot.setRangeGridlinePaint(Color.black);
 
 			CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
 			plot.setDomainAxis(domainAxis);
@@ -449,29 +489,30 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			domainAxis.setUpperMargin(0.0);
 			domainAxis.setCategoryMargin(0.0);
 
-			final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-			rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-			rangeAxis.setLowerBound(0);
+			int axisId = 0;
+			for (Axis axis : axes)
+			{
+				int di = axisId;
+				plot.setDataset(di, dataSets.get(axis));
+				plot.mapDatasetToRangeAxis(di, axisId);
+				NumberAxis numberAxis = new NumberAxis(axis.getLabel());
+				plot.setRangeAxis(axisId, numberAxis);
+				numberAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits()); //TODO
+				setBounds(axis, numberAxis);
+				axisId++;
+			}
 
-			final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
-			
-			renderer.setSeriesPaint(0, Color.green);
-			renderer.setSeriesPaint(1, Color.red);
-			
-			renderer.setSeriesItemLabelPaint(0, Color.green);
-			renderer.setSeriesItemLabelPaint(1, Color.red);
-			
-			renderer.setSeriesFillPaint(0, Color.green);
-			renderer.setSeriesFillPaint(1, Color.red);
-			
-			renderer.setBaseStroke(new BasicStroke(4.0f));
-			//ColorPalette.apply(renderer);
-
-			// crop extra space around the graph
-			plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
-			
-			
+			layout.apply(chart);
 			return chart;
+		}
+
+		private void setBounds(Axis a, ValueAxis axis)
+		{
+			if (!a.isCrop()) return;
+			Bounds bounds = this.bounds.get(a);
+			float border = (bounds.max - bounds.min) / 100 * a.getCrop();
+			axis.setUpperBound(bounds.max + border);
+			axis.setLowerBound(Math.max(0, bounds.min - border));
 		}
 	}
 

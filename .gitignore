@@ -13,5 +13,8 @@ work
 .project
 build
 
+# Generated images from CoverageObjectGraphTest
+/*.png
+
 # other
 *~
