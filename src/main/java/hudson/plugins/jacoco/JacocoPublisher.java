@@ -484,7 +484,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, dir, includes, excludes);
         action.getThresholds().ensureValid();
         logger.println("[JaCoCo plugin] Thresholds: " + action.getThresholds());
-        run.getActions().add(action);
+        run.addAction(action);
 
         logger.println("[JaCoCo plugin] Publishing the results..");
         final CoverageReport result = action.getResult();

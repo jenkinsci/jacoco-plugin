@@ -87,7 +87,7 @@ public class JaCoCoColumnTest {
 			public Run<?,?> getLastSuccessfulBuild() {
 				try {
 				    Run<?,?> newBuild = newBuild();
-					newBuild.getActions().add(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
+					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
 					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
 				} catch (IOException e) {
