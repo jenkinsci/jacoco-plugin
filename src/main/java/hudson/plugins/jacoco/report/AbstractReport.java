@@ -2,6 +2,7 @@ package hudson.plugins.jacoco.report;
 
 import hudson.model.AbstractBuild;
 import hudson.model.ModelObject;
+import hudson.model.Run;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageObject;
 
@@ -66,7 +67,7 @@ public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>
     }
 
     @Override
-    public AbstractBuild<?,?> getBuild() {
+    public Run<?,?> getBuild() {
     	return parent.getBuild();
     }
     

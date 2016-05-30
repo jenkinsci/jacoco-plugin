@@ -9,6 +9,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import hudson.model.Run;
+import hudson.model.TaskListener;
+import jenkins.model.RunAction2;
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
@@ -33,9 +36,9 @@ import hudson.plugins.jacoco.report.CoverageReport;
  * @author Jonathan Fuerth
  * @author Ognjen Bubalo
  */
-public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable {
+public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable, RunAction2 {
 
-	public final AbstractBuild<?,?> owner;
+	public transient Run<?,?> owner;
 	
 	@Deprecated public transient AbstractBuild<?,?> build;
 	
@@ -46,11 +49,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	private final String[] exclusions;
  
 	/**
-	 * Non-null if the coverage has pass/fail rules.
-	 */
-	private final Rule rule;
-
-	/**
 	 * The thresholds that applied when this build was built.
 	 * TODO: add ability to trend thresholds on the graph
 	 */
@@ -58,24 +56,20 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	/**
 	 * 
-	 * @param owner
-	 * @param rule
 	 * @param ratios
 	 *            The available coverage ratios in the report. Null is treated
 	 *            the same as an empty map.
 	 * @param thresholds
 	 */
-	public JacocoBuildAction(AbstractBuild<?,?> owner, Rule rule,
+	public JacocoBuildAction(
 			Map<CoverageElement.Type, Coverage> ratios,
-			JacocoHealthReportThresholds thresholds, BuildListener listener, String[] inclusions, String[] exclusions) {
+			JacocoHealthReportThresholds thresholds, TaskListener listener, String[] inclusions, String[] exclusions) {
 		logger = listener.getLogger();
 		if (ratios == null) {
 			ratios = Collections.emptyMap();
 		}
 		this.inclusions = inclusions;
 		this.exclusions = exclusions;
-		this.owner = owner;
-		this.rule = rule;
 		this.clazz = getOrCreateRatio(ratios, CoverageElement.Type.CLASS);
 		this.method = getOrCreateRatio(ratios, CoverageElement.Type.METHOD);
 		this.line = getOrCreateRatio(ratios, CoverageElement.Type.LINE);
@@ -202,12 +196,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	}
 
 	@Override
-	public AbstractBuild<?,?> getBuild() {
+	public Run<?,?> getBuild() {
 		return owner;
 	}
 
     public JacocoReportDir getJacocoReport() {
-        return new JacocoReportDir(owner);
+        return new JacocoReportDir(owner.getRootDir());
     }
 
 	/**
@@ -275,8 +269,8 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	/**
 	 * Gets the previous {@link JacocoBuildAction} of the given build.
 	 */
-	/*package*/ static JacocoBuildAction getPreviousResult(AbstractBuild<?,?> start) {
-		AbstractBuild<?,?> b = start;
+	/*package*/ static JacocoBuildAction getPreviousResult(Run<?,?> start) {
+		Run<?,?> b = start;
 		while(true) {
 			b = b.getPreviousBuild();
 			if(b==null) {
@@ -298,12 +292,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * @throws IOException
 	 *      if failed to parse the file.
 	 */
-	public static JacocoBuildAction load(AbstractBuild<?,?> owner, Rule rule, JacocoHealthReportThresholds thresholds, BuildListener listener, JacocoReportDir layout, String[] includes, String[] excludes) throws IOException {
+	public static JacocoBuildAction load(Run<?,?> owner, JacocoHealthReportThresholds thresholds, TaskListener listener, JacocoReportDir layout, String[] includes, String[] excludes) throws IOException {
 		//PrintStream logger = listener.getLogger();
 		Map<CoverageElement.Type,Coverage> ratios = null;
 		
 	    ratios = loadRatios(layout, ratios, includes, excludes);
-		return new JacocoBuildAction(owner, rule, ratios, thresholds, listener, includes, excludes);
+		return new JacocoBuildAction(ratios, thresholds, listener, includes, excludes);
 	}
 
 
@@ -359,5 +353,15 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	    // use System.out as a fallback if the BuildAction was de-serialized which
 	    // does not run the construct and thus leaves the transient variables empty
 	    return System.out;
+	}
+
+	@Override
+	public void onAttached(Run<?, ?> run) {
+		this.owner = run;
+	}
+
+	@Override
+	public void onLoad(Run<?, ?> run) {
+		this.owner = run;
 	}
 }

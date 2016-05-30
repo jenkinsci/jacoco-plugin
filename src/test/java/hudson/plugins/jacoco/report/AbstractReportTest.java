@@ -5,6 +5,7 @@ import hudson.console.ConsoleNote;
 import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.Cause;
+import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.List;
 
+import hudson.util.StreamTaskListener;
 import org.junit.Test;
 
 
@@ -26,41 +28,11 @@ public class AbstractReportTest {
         
         report.setParent(new ClassReport());
         report.getParent().setParent(new PackageReport());
-        
-        JacocoBuildAction action = new JacocoBuildAction(null, null, null, null, new BuildListener() {
-            
-            public void hyperlink(String url, String text) throws IOException {
-            }
-            
-            public PrintStream getLogger() {
-                return null;
-            }
-            
-            public PrintWriter fatalError(String format, Object... args) {
-                return null;
-            }
-            
-            public PrintWriter fatalError(String msg) {
-                return null;
-            }
-            
-            public PrintWriter error(String format, Object... args) {
-                return null;
-            }
-            
-            public PrintWriter error(String msg) {
-                return null;
-            }
-            
-            public void annotate(@SuppressWarnings("rawtypes") ConsoleNote ann) throws IOException {
-            }
-            
-            public void started(List<Cause> causes) {
-            }
-            
-            public void finished(Result result) {
-            }
-        }, null, null);
+
+
+        TaskListener taskListener = StreamTaskListener.fromStdout();
+
+        JacocoBuildAction action = new JacocoBuildAction(null, null, taskListener, null, null);
         report.getParent().getParent().setParent(new CoverageReport(action, null));
         assertNull(report.getBuild());
 

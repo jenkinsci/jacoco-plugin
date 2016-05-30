@@ -16,8 +16,8 @@ import java.util.List;
 public class JacocoReportDir {
     private final File root;
 
-    public JacocoReportDir(AbstractBuild<?,?> build) {
-        root = new File(build.getRootDir(), "jacoco");
+    public JacocoReportDir(File rootDir) {
+        root = new File(rootDir, "jacoco");
     }
 
     /**

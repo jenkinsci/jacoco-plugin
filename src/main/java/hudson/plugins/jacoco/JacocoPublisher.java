@@ -10,6 +10,8 @@ import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
@@ -22,11 +24,20 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import jenkins.MasterToSlaveFileCallable;
+import jenkins.tasks.SimpleBuildStep;
 import org.apache.tools.ant.DirectoryScanner;
+import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 /**
  * {@link Publisher} that captures jacoco coverage reports.
@@ -36,16 +47,18 @@ import org.kohsuke.stapler.DataBoundConstructor;
  * @author Ognjen Bubalo
  * 
  */
-public class JacocoPublisher extends Recorder {
-    
+public class JacocoPublisher extends Recorder implements SimpleBuildStep {
+
     /**
      * Rule to be enforced. Can be null.
-     *
+     * <p>
      * TODO: define a configuration mechanism.
      */
     public Rule rule;
-    @Deprecated public transient String includes;
-    @Deprecated public transient int moduleNum;
+    @Deprecated
+    public transient String includes;
+    @Deprecated
+    public transient int moduleNum;
     /**
      * {@link hudson.model.HealthReport} thresholds to apply.
      */
@@ -55,33 +68,54 @@ public class JacocoPublisher extends Recorder {
     /**
      * Variables containing the configuration set by the user.
      */
-	private final String execPattern;
-	private final String classPattern;
-	private final String sourcePattern;
-	private final String inclusionPattern;
-	private final String exclusionPattern;
-	
-    
-    private final String minimumInstructionCoverage;
-    private final String minimumBranchCoverage;
-    private final String minimumComplexityCoverage;
-    private final String minimumLineCoverage;
-    private final String minimumMethodCoverage;
-    private final String minimumClassCoverage;
-    private final String maximumInstructionCoverage;
-    private final String maximumBranchCoverage;
-    private final String maximumComplexityCoverage;
-    private final String maximumLineCoverage;
-    private final String maximumMethodCoverage;
-    private final String maximumClassCoverage;
-    private final boolean changeBuildStatus;
+    private String execPattern;
+    private String classPattern;
+    private String sourcePattern;
+    private String inclusionPattern;
+    private String exclusionPattern;
+
+    private String minimumInstructionCoverage;
+    private String minimumBranchCoverage;
+    private String minimumComplexityCoverage;
+    private String minimumLineCoverage;
+    private String minimumMethodCoverage;
+    private String minimumClassCoverage;
+    private String maximumInstructionCoverage;
+    private String maximumBranchCoverage;
+    private String maximumComplexityCoverage;
+    private String maximumLineCoverage;
+    private String maximumMethodCoverage;
+    private String maximumClassCoverage;
+    private boolean changeBuildStatus;
     
 	private static final String DIR_SEP = "\\s*,\\s*";
+
+    @DataBoundConstructor
+    public JacocoPublisher() {
+        this.execPattern = "**/**.exec";
+        this.classPattern = "**/classes";
+        this.sourcePattern = "**/src/main/java";
+        this.inclusionPattern = "";
+        this.exclusionPattern = "";
+        this.minimumInstructionCoverage = "0";
+        this.minimumBranchCoverage = "0";
+        this.minimumComplexityCoverage = "0";
+        this.minimumLineCoverage = "0";
+        this.minimumMethodCoverage = "0";
+        this.minimumClassCoverage = "0";
+        this.maximumInstructionCoverage = "0";
+        this.maximumBranchCoverage = "0";
+        this.maximumComplexityCoverage = "0";
+        this.maximumLineCoverage = "0";
+        this.maximumMethodCoverage = "0";
+        this.maximumClassCoverage = "0";
+        this.changeBuildStatus = false;
+    }
 
 	/**
      * Loads the configuration set by user.
      */
-    @DataBoundConstructor
+    @Deprecated
     public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, String maximumInstructionCoverage, String maximumBranchCoverage
     		, String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
     		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus) {
@@ -240,17 +274,108 @@ public class JacocoPublisher extends Recorder {
     public boolean getChangeBuildStatus() {
 		return changeBuildStatus;
 	}
-	
+    @DataBoundSetter
+    public void setExecPattern(String execPattern) {
+        this.execPattern = execPattern;
+    }
+
+    @DataBoundSetter
+    public void setClassPattern(String classPattern) {
+        this.classPattern = classPattern;
+    }
+
+    @DataBoundSetter
+    public void setSourcePattern(String sourcePattern) {
+        this.sourcePattern = sourcePattern;
+    }
+
+    @DataBoundSetter
+    public void setMinimumInstructionCoverage(String minimumInstructionCoverage) {
+        this.minimumInstructionCoverage = checkThresholdInput(minimumInstructionCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMinimumBranchCoverage(String minimumBranchCoverage) {
+        this.minimumBranchCoverage = checkThresholdInput(minimumBranchCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMinimumComplexityCoverage(String minimumComplexityCoverage) {
+        this.minimumComplexityCoverage = checkThresholdInput(minimumComplexityCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMinimumLineCoverage(String minimumLineCoverage) {
+        this.minimumLineCoverage = checkThresholdInput(minimumLineCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMinimumMethodCoverage(String minimumMethodCoverage) {
+        this.minimumMethodCoverage = checkThresholdInput(minimumMethodCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMinimumClassCoverage(String minimumClassCoverage) {
+        this.minimumClassCoverage = checkThresholdInput(minimumClassCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMaximumInstructionCoverage(String maximumInstructionCoverage) {
+        this.maximumInstructionCoverage = checkThresholdInput(maximumInstructionCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMaximumBranchCoverage(String maximumBranchCoverage) {
+        this.maximumBranchCoverage = checkThresholdInput(maximumBranchCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMaximumComplexityCoverage(String maximumComplexityCoverage) {
+        this.maximumComplexityCoverage = checkThresholdInput(maximumComplexityCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMaximumLineCoverage(String maximumLineCoverage) {
+        this.maximumLineCoverage = checkThresholdInput(maximumLineCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMaximumMethodCoverage(String maximumMethodCoverage) {
+        this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
+    }
+
+    @DataBoundSetter
+    public void setMaximumClassCoverage(String maximumClassCoverage) {
+        this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
+    }
+
+    @DataBoundSetter
+    public void setChangeBuildStatus(boolean changeBuildStatus) {
+        this.changeBuildStatus = changeBuildStatus;
+    }
+
+    @DataBoundSetter
+    public void setInclusionPattern(String inclusionPattern) {
+        this.inclusionPattern = inclusionPattern;
+    }
+
+    @DataBoundSetter
+    public void setExclusionPattern(String exclusionPattern) {
+        this.exclusionPattern = exclusionPattern;
+    }
+
 	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
 		destFolder.mkdirs();
 		
 		sourceFolder.copyRecursiveTo(destFolder);
 	}
 	
-	protected static String resolveFilePaths(AbstractBuild<?, ?> build, BuildListener listener, String input) {
+    protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env) {
         try {
-           
-        	return build.getEnvironment(listener).expand(input);
+
+            final EnvVars environment = build.getEnvironment(listener);
+            environment.overrideAll(env);
+            return environment.expand(input);
             
         } catch (Exception e) {
             listener.getLogger().println("Failed to resolve parameters in string \""+
@@ -258,35 +383,26 @@ public class JacocoPublisher extends Recorder {
         }
         return input;
     }
-	
-	protected static FilePath[] resolveDirPaths(AbstractBuild<?, ?> build, BuildListener listener, final String input) {
+
+    protected String resolveFilePaths(AbstractBuild<?, ?> build, TaskListener listener, String input) {
+        try {
+
+            final EnvVars environment = build.getEnvironment(listener);
+            environment.overrideAll(build.getBuildVariables());
+            return environment.expand(input);
+
+        } catch (Exception e) {
+            listener.getLogger().println("Failed to resolve parameters in string \""+
+                    input+"\" due to following error:\n"+e.getMessage());
+        }
+        return input;
+    }
+
+    protected static FilePath[] resolveDirPaths(FilePath workspace, TaskListener listener, final String input) {
 		//final PrintStream logger = listener.getLogger();
 		FilePath[] directoryPaths = null;
 		try {
-			directoryPaths = build.getWorkspace().act(new FilePath.FileCallable<FilePath[]>() 
-			{
-				static final long serialVersionUID = 1552178457453558870L;
-
-				public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
-					FilePath base = new FilePath(f);
-					ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
-					String[] includes = input.split(DIR_SEP);
-					DirectoryScanner ds = new DirectoryScanner();
-			        
-			        ds.setIncludes(includes);
-			        ds.setCaseSensitive(false);
-			        ds.setBasedir(f);
-			        ds.scan();
-			        String[] dirs = ds.getIncludedDirectories();
-			        
-			        for (String dir : dirs) {
-                        localDirectoryPaths.add(base.child(dir));
-			        }
-			        FilePath[] lfp = {};//trick to have an empty array as a parameter, so the returned array will contain the elements
-			        return localDirectoryPaths.toArray(lfp);
-	            }
-			});
-			
+            directoryPaths = workspace.act(new ResolveDirPaths(input));
 		} catch(InterruptedException ie) {
 			ie.printStackTrace();
 		} catch(IOException io) {
@@ -294,107 +410,113 @@ public class JacocoPublisher extends Recorder {
 		}
 		return directoryPaths;
 	}
-	
-	/* 
-	 * Entry point of this report plugin.
-	 * 
-	 * @see hudson.tasks.BuildStepCompatibilityLayer#perform(hudson.model.AbstractBuild, hudson.Launcher, hudson.model.BuildListener)
-	 */
-    @SuppressWarnings("resource")
-    @Override
-    public boolean perform(AbstractBuild<?,?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-	
-		final PrintStream logger = listener.getLogger();
-		FilePath[] matchedClassDirs = null;
-		FilePath[] matchedSrcDirs = null;
 
-		if (build.getResult() == Result.FAILURE || build.getResult() == Result.ABORTED) {
-			return true;
-		}
-		
-		
-		logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
-		
-		
-		EnvVars env = build.getEnvironment(listener);
-        env.overrideAll(build.getBuildVariables());
-        try {
-        	healthReports = new JacocoHealthReportThresholds(Integer.parseInt(minimumClassCoverage), Integer.parseInt(maximumClassCoverage), Integer.parseInt(minimumMethodCoverage), Integer.parseInt(maximumMethodCoverage), Integer.parseInt(minimumLineCoverage), Integer.parseInt(maximumLineCoverage)
-        			,Integer.parseInt(minimumBranchCoverage), Integer.parseInt(maximumBranchCoverage), Integer.parseInt(minimumInstructionCoverage), Integer.parseInt(maximumInstructionCoverage), Integer.parseInt(minimumComplexityCoverage), Integer.parseInt(maximumComplexityCoverage));
-        } catch(NumberFormatException nfe) {
-        	healthReports = new JacocoHealthReportThresholds(0,0,0,0,0,0,0,0,0,0,0,0);
-        }		
-        
-        if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
-            if(build.getResult().isWorseThan(Result.UNSTABLE)) {
-                return true;
-            }
-            
-            logger.println("[JaCoCo plugin] ERROR: Missing configuration!");
-            build.setResult(Result.FAILURE);
-            return true;
+
+    @Override
+    public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
+        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild) run).getBuildVariables() : Collections.<String, String>emptyMap();
+
+        healthReports = createJacocoHealthReportThresholds();
+
+        final PrintStream logger = taskListener.getLogger();
+        FilePath[] matchedClassDirs = null;
+        FilePath[] matchedSrcDirs = null;
+
+        if (run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) {
+            return;
         }
-        
+
+
+        logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
+
+
+        EnvVars env = run.getEnvironment(taskListener);
+        env.overrideAll(envs);
+
+        if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
+            if(run.getResult().isWorseThan(Result.UNSTABLE)) {
+                return;
+            }
+
+            logger.println("[JaCoCo plugin] ERROR: Missing configuration!");
+            run.setResult(Result.FAILURE);
+            return;
+        }
+
         logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
 
-        JacocoReportDir dir = new JacocoReportDir(build);
+        JacocoReportDir dir = new JacocoReportDir(run.getRootDir());
 
-        List<FilePath> matchedExecFiles = Arrays.asList(build.getWorkspace().list(resolveFilePaths(build, listener, execPattern)));
+        if (run instanceof AbstractBuild) {
+            execPattern = resolveFilePaths((AbstractBuild) run, taskListener, execPattern);
+        }
+
+        List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
-        matchedClassDirs = resolveDirPaths(build, listener, classPattern);
+        matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
-        	logger.print(" " + file);
+            logger.print(" " + file);
         }
-        matchedSrcDirs = resolveDirPaths(build, listener, sourcePattern);
+        matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
         logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
         for (FilePath file : matchedSrcDirs) {
             dir.saveSourcesFrom(file);
-        	logger.print(" " + file);
+            logger.print(" " + file);
         }
-	     
+
         logger.println("\n[JaCoCo plugin] Loading inclusions files..");
         String[] includes = {};
         if (inclusionPattern != null) {
-        	includes = inclusionPattern.split(DIR_SEP);
-        	logger.println("[JaCoCo plugin] inclusions: " + Arrays.toString(includes));
+            includes = inclusionPattern.split(DIR_SEP);
+            logger.println("[JaCoCo plugin] inclusions: " + Arrays.toString(includes));
         }
         String[] excludes = {};
         if (exclusionPattern != null) {
-        	excludes = exclusionPattern.split(DIR_SEP);
-        	logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
+            excludes = exclusionPattern.split(DIR_SEP);
+            logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
-        
-        final JacocoBuildAction action = JacocoBuildAction.load(build, rule, healthReports, listener, dir, includes, excludes);
+
+        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, dir, includes, excludes);
         action.getThresholds().ensureValid();
         logger.println("[JaCoCo plugin] Thresholds: " + action.getThresholds());
-        build.getActions().add(action);
-        
+        run.addAction(action);
+
         logger.println("[JaCoCo plugin] Publishing the results..");
         final CoverageReport result = action.getResult();
-        
+
         if (result == null) {
             logger.println("[JaCoCo plugin] Could not parse coverage results. Setting Build to failure.");
-            build.setResult(Result.FAILURE);
+            run.setResult(Result.FAILURE);
         } else {
             logger.println("[JaCoCo plugin] Overall coverage: class: " + result.getClassCoverage().getPercentage()
                     + ", method: " + result.getMethodCoverage().getPercentage()
                     + ", line: " + result.getLineCoverage().getPercentage()
                     + ", branch: " + result.getBranchCoverage().getPercentage()
                     + ", instruction: " + result.getInstructionCoverage().getPercentage());
-        	result.setThresholds(healthReports);
-        	if (changeBuildStatus) {
-        		build.setResult(checkResult(action));
-        	}
+            result.setThresholds(healthReports);
+            if (changeBuildStatus) {
+                run.setResult(checkResult(action));
+            }
         }
-        return true;
+        return;
     }
 
-	public Result checkResult(JacocoBuildAction action) {
+    private JacocoHealthReportThresholds createJacocoHealthReportThresholds() {
+        try {
+            return healthReports = new JacocoHealthReportThresholds(Integer.parseInt(minimumClassCoverage), Integer.parseInt(maximumClassCoverage), Integer.parseInt(minimumMethodCoverage), Integer.parseInt(maximumMethodCoverage), Integer.parseInt(minimumLineCoverage), Integer.parseInt(maximumLineCoverage)
+                    , Integer.parseInt(minimumBranchCoverage), Integer.parseInt(maximumBranchCoverage), Integer.parseInt(minimumInstructionCoverage), Integer.parseInt(maximumInstructionCoverage), Integer.parseInt(minimumComplexityCoverage), Integer.parseInt(maximumComplexityCoverage));
+        } catch (NumberFormatException nfe) {
+            return healthReports = new JacocoHealthReportThresholds(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+        }
+    }
+
+
+    public static Result checkResult(JacocoBuildAction action) {
 		if ((action.getBranchCoverage().getPercentageFloat() < action.getThresholds().getMinBranch()) || (action.getInstructionCoverage().getPercentageFloat() < action.getThresholds().getMinInstruction())  || (action.getClassCoverage().getPercentageFloat() < action.getThresholds().getMinClass())  || (action.getLineCoverage().getPercentageFloat() < action.getThresholds().getMinLine())  || (action.getComplexityScore().getPercentageFloat() < action.getThresholds().getMinComplexity())  || (action.getMethodCoverage().getPercentageFloat() < action.getThresholds().getMinMethod())) {
 			return Result.FAILURE;
 		}
@@ -472,6 +594,35 @@ public class JacocoPublisher extends Recorder {
         }*/
 
     }
-    
+
+    private static class ResolveDirPaths extends MasterToSlaveFileCallable<FilePath[]> {
+        static final long serialVersionUID = 1552178457453558870L;
+        private final String input;
+
+        public ResolveDirPaths(String input) {
+            this.input = input;
+        }
+
+        public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
+            FilePath base = new FilePath(f);
+            ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
+            String[] includes = input.split(DIR_SEP);
+            DirectoryScanner ds = new DirectoryScanner();
+
+            ds.setIncludes(includes);
+            ds.setCaseSensitive(false);
+            ds.setBasedir(f);
+            ds.scan();
+            String[] dirs = ds.getIncludedDirectories();
+
+            for (String dir : dirs) {
+                localDirectoryPaths.add(base.child(dir));
+            }
+            FilePath[] lfp = {};//trick to have an empty array as a parameter, so the returned array will contain the elements
+            return localDirectoryPaths.toArray(lfp);
+        }
+
+    }
+
     //private static final Logger logger = Logger.getLogger(JacocoPublisher.class.getName());
 }

@@ -9,6 +9,7 @@ import hudson.model.Cause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
@@ -26,6 +27,7 @@ import java.util.SortedMap;
 
 import javax.servlet.ServletContext;
 
+import hudson.util.StreamTaskListener;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -85,42 +87,7 @@ public class JaCoCoColumnTest {
 			public Run<?,?> getLastSuccessfulBuild() {
 				try {
 				    Run<?,?> newBuild = newBuild();
-					newBuild.getActions().add(new JacocoBuildAction(null, null, null, null, new BuildListener() {
-						private static final long serialVersionUID = 1L;
-
-						public void hyperlink(String url, String text) throws IOException {
-						}
-						
-						public PrintStream getLogger() {
-							return null;
-						}
-						
-						public PrintWriter fatalError(String format, Object... args) {
-							return null;
-						}
-						
-						public PrintWriter fatalError(String msg) {
-							return null;
-						}
-						
-						public PrintWriter error(String format, Object... args) {
-							return null;
-						}
-						
-						public PrintWriter error(String msg) {
-							return null;
-						}
-						
-						public void annotate(@SuppressWarnings("rawtypes") ConsoleNote ann) throws IOException {
-							
-						}
-						
-						public void started(List<Cause> causes) {
-						}
-						
-						public void finished(Result result) {
-						}
-					}, null, null));
+					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
 					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
 				} catch (IOException e) {
@@ -230,7 +197,7 @@ public class JaCoCoColumnTest {
 			try {
 			    Run<?,?> run = newBuild();
 				Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
-				run.addAction(new JacocoBuildAction(null, null, map, null, listener, null, null));
+				run.addAction(new JacocoBuildAction(map, null, listener, null, null));
 				return run;
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
