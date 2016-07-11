@@ -519,11 +519,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		return Result.SUCCESS;
 	}
 	
-    @Override
-    public Action getProjectAction(AbstractProject<?, ?> project) {
-        return new JacocoProjectAction(project);
-    }
-
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
     }
@@ -532,7 +527,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     public BuildStepDescriptor<Publisher> getDescriptor() {
         return DESCRIPTOR;
     }
-
 
 	@Extension
     public static final BuildStepDescriptor<Publisher> DESCRIPTOR = new DescriptorImpl();

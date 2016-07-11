@@ -5,19 +5,22 @@ import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
+import hudson.model.Action;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import jenkins.model.RunAction2;
+import jenkins.tasks.SimpleBuildStep.LastBuildAction;
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
 
 import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.model.Result;
@@ -36,9 +39,9 @@ import hudson.plugins.jacoco.report.CoverageReport;
  * @author Jonathan Fuerth
  * @author Ognjen Bubalo
  */
-public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable, RunAction2 {
+public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable, RunAction2, LastBuildAction {
 
-	public transient Run<?,?> owner;
+	private transient Run<?,?> owner;
 	
 	@Deprecated public transient AbstractBuild<?,?> build;
 	
@@ -53,6 +56,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * TODO: add ability to trend thresholds on the graph
 	 */
 	private final JacocoHealthReportThresholds thresholds;
+	private transient List<JacocoProjectAction> jacocoProjectActions=Collections.emptyList();
 
 	/**
 	 * 
@@ -355,13 +359,27 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	    return System.out;
 	}
 
+	public Run<?, ?> getOwner() {
+		return owner;
+	}
+
+	private void setOwner(Run<?, ?> owner) {
+		jacocoProjectActions = Collections.singletonList(new JacocoProjectAction(owner.getParent()));
+		this.owner = owner;
+	}
+
 	@Override
 	public void onAttached(Run<?, ?> run) {
-		this.owner = run;
+		setOwner(run);
 	}
 
 	@Override
 	public void onLoad(Run<?, ?> run) {
-		this.owner = run;
+		setOwner(run);
+	}
+
+	@Override
+	public Collection<? extends Action> getProjectActions() {
+		return jacocoProjectActions;
 	}
 }
