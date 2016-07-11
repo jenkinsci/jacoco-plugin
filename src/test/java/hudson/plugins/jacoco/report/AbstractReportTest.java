@@ -1,21 +1,15 @@
 package hudson.plugins.jacoco.report;
 
-import static org.junit.Assert.*;
-import hudson.console.ConsoleNote;
-import hudson.model.BuildListener;
-import hudson.model.Result;
-import hudson.model.Cause;
 import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.List;
-
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.util.StreamTaskListener;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class AbstractReportTest {
 
@@ -32,7 +26,7 @@ public class AbstractReportTest {
 
         TaskListener taskListener = StreamTaskListener.fromStdout();
 
-        JacocoBuildAction action = new JacocoBuildAction(null, null, taskListener, null, null);
+        JacocoBuildAction action = new JacocoBuildAction(null, null, taskListener, null, null, new CoverageGraphLayout());
         report.getParent().getParent().setParent(new CoverageReport(action, null));
         assertNull(report.getBuild());
 
