@@ -36,6 +36,7 @@ import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -65,9 +66,9 @@ public final class JacocoLoadData {
    *          number of days
    * @return Map The sorted summaries
    */
-  public static Map<LocalDate, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job> jobs, int daysNumber) {
+  public static Map<LocalDate, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job<?,?>> jobs, int daysNumber) {
 
-    Map<LocalDate, JacocoCoverageResultSummary> summaries = new HashMap<LocalDate, JacocoCoverageResultSummary>();
+    Map<LocalDate, JacocoCoverageResultSummary> summaries = new HashMap<>();
 
     // Get the last build (last date) of the all jobs
     LocalDate lastDate = Utils.getLastDate(jobs);
@@ -109,7 +110,7 @@ public final class JacocoLoadData {
     }
 
     // Sorting by date, ascending order
-    Map<LocalDate, JacocoCoverageResultSummary> sortedSummaries = new TreeMap<LocalDate, JacocoCoverageResultSummary>(summaries);
+    Map<LocalDate, JacocoCoverageResultSummary> sortedSummaries = new TreeMap<>(summaries);
 
     return sortedSummaries;
 
@@ -241,41 +242,41 @@ public final class JacocoLoadData {
           if (null != jacocoAction.getClassCoverage()) {
             classCoverage = jacocoAction.getClassCoverage().getPercentageFloat();
             BigDecimal bigClassCoverage = new BigDecimal(classCoverage);
-            bigClassCoverage = bigClassCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            bigClassCoverage = bigClassCoverage.setScale(1, RoundingMode.HALF_EVEN);
             classCoverage = bigClassCoverage.floatValue();
           }
           if (null != jacocoAction.getLineCoverage()) {
             lineCoverage = jacocoAction.getLineCoverage().getPercentageFloat();
             BigDecimal bigLineCoverage = new BigDecimal(lineCoverage);
-            bigLineCoverage = bigLineCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            bigLineCoverage = bigLineCoverage.setScale(1, RoundingMode.HALF_EVEN);
             lineCoverage = bigLineCoverage.floatValue();
           }
 
           if (null != jacocoAction.getMethodCoverage()) {
             methodCoverage = jacocoAction.getMethodCoverage().getPercentageFloat();
             BigDecimal bigMethodCoverage = new BigDecimal(methodCoverage);
-            bigMethodCoverage = bigMethodCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            bigMethodCoverage = bigMethodCoverage.setScale(1, RoundingMode.HALF_EVEN);
             methodCoverage = bigMethodCoverage.floatValue();
           }
 
           if (null != jacocoAction.getBranchCoverage()) {
             branchCoverage = jacocoAction.getBranchCoverage().getPercentageFloat();
             BigDecimal bigBranchCoverage = new BigDecimal(branchCoverage);
-            bigBranchCoverage = bigBranchCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            bigBranchCoverage = bigBranchCoverage.setScale(1, RoundingMode.HALF_EVEN);
             branchCoverage = bigBranchCoverage.floatValue();
           }
 
           if (null != jacocoAction.getInstructionCoverage()) {
             instructionCoverage = jacocoAction.getInstructionCoverage().getPercentageFloat();
             BigDecimal bigInstructionCoverage = new BigDecimal(instructionCoverage);
-            bigInstructionCoverage = bigInstructionCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            bigInstructionCoverage = bigInstructionCoverage.setScale(1, RoundingMode.HALF_EVEN);
             instructionCoverage = bigInstructionCoverage.floatValue();
           }
 
           if (null != jacocoAction.getComplexityScore()) {
             complexityScore = jacocoAction.getComplexityScore().getPercentageFloat();
             BigDecimal bigComplexityCoverage = new BigDecimal(complexityScore);
-            bigComplexityCoverage = bigComplexityCoverage.setScale(1, BigDecimal.ROUND_HALF_EVEN);
+            bigComplexityCoverage = bigComplexityCoverage.setScale(1, RoundingMode.HALF_EVEN);
             complexityScore = bigComplexityCoverage.floatValue();
           }
         }

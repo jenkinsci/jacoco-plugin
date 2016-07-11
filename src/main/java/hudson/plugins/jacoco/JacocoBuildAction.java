@@ -118,7 +118,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		thresholds.ensureValid();
 		int score = 100;
 		float percent;
-		ArrayList<Localizable> reports = new ArrayList<Localizable>(5);
+		ArrayList<Localizable> reports = new ArrayList<>(5);
 		if (clazz != null && thresholds.getMaxClass() > 0) {
 			percent = clazz.getPercentageFloat();
 			if (percent < thresholds.getMaxClass()) {
@@ -224,7 +224,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 		try {
 			CoverageReport r = new CoverageReport(this, reportFolder.parse(inclusions, exclusions));
-			report = new WeakReference<CoverageReport>(r);
+			report = new WeakReference<>(r);
 			r.setThresholds(thresholds);
 			return r;
 		} catch (IOException e) {
@@ -244,7 +244,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 */
 	public Map<Coverage,Boolean> getCoverageRatios(){
 		CoverageReport result = getResult();
-		Map<Coverage,Boolean> ratios = new LinkedHashMap<Coverage,Boolean>();
+		Map<Coverage,Boolean> ratios = new LinkedHashMap<>();
 		if( result != null ) {
 			Coverage instructionCoverage = result.getInstructionCoverage();
 			Coverage classCoverage = result.getClassCoverage();
@@ -313,7 +313,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * @return
 	 * @throws IOException
 	 */
-	private static Map<Type, Coverage> loadRatios(JacocoReportDir layout, Map<Type, Coverage> ratios, String[] includes, String[] excludes) throws IOException {
+	private static Map<Type, Coverage> loadRatios(JacocoReportDir layout, Map<Type, Coverage> ratios, String[] includes, String... excludes) throws IOException {
 
 		if (ratios == null) {
 			ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();

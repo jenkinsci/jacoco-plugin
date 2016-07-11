@@ -11,6 +11,7 @@ import hudson.views.ListViewColumn;
 
 import java.awt.Color;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import net.sf.json.JSONObject;
 
@@ -79,8 +80,7 @@ public class JaCoCoColumn extends ListViewColumn {
 
 	public BigDecimal getLineCoverage(final Job<?, ?> job) {
 		final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
-		return BigDecimal.valueOf(getLinePercent(lastSuccessfulBuild)
-				.doubleValue());
+		return BigDecimal.valueOf(getLinePercent(lastSuccessfulBuild));
 	}
 
 	private Double getLinePercent(final Run<?, ?> lastSuccessfulBuild) {
@@ -92,20 +92,20 @@ public class JaCoCoColumn extends ListViewColumn {
 
 		// setScale is immutable
 		bigDecimal = bigDecimal.setScale(decimalPlaces,
-				BigDecimal.ROUND_HALF_UP);
+				RoundingMode.HALF_UP);
 		return bigDecimal.doubleValue();
 	}
 
 	private Float getPercentageFloat(final Run<?, ?> lastSuccessfulBuild) {
 		if(lastSuccessfulBuild == null) {
-			return new Float(0);
+			return 0f;
 		}
 
 		final JacocoBuildAction action = lastSuccessfulBuild
 				.getAction(JacocoBuildAction.class);
 
 		if(action == null) {
-			return new Float(0);
+			return 0f;
 		}
 
 		final Coverage ratio = action.getLineCoverage();

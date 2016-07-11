@@ -60,7 +60,7 @@ public class JacocoReportDir {
      * Lists up existing jacoco.exec files.
      */
     public List<File> getExecFiles() {
-        List<File> r = new ArrayList<File>();
+        List<File> r = new ArrayList<>();
         int i = 0;
         File root = getExecFilesDir();
         File checkPath;
@@ -89,7 +89,7 @@ public class JacocoReportDir {
     /**
      * Parses the saved "jacoco.exec" files into an {@link ExecutionFileLoader}.
      */
-    public ExecutionFileLoader parse(String[] includes, String[] excludes) throws IOException {
+    public ExecutionFileLoader parse(String[] includes, String... excludes) throws IOException {
         ExecutionFileLoader efl = new ExecutionFileLoader();
         for (File exec : getExecFiles()) {
             efl.addExecFile(new FilePath(exec));

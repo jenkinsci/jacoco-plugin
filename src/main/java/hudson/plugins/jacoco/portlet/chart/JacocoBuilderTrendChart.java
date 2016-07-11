@@ -37,6 +37,8 @@ import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -116,7 +118,8 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
     Map<LocalDate, JacocoCoverageResultSummary> summaries;
 
     // Retrieve Dashboard View jobs
-    List<Job> jobs = getDashboard().getJobs();
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    List<Job<?,?>> jobs = (List) getDashboard().getJobs();
 
     // Fill a HashMap with the data will be showed in the chart
     summaries = JacocoLoadData.loadChartDataWithinRange(jobs, daysNumber);
@@ -203,7 +206,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
    */
   private static CategoryDataset buildDataSet(Map<LocalDate, JacocoCoverageResultSummary> summaries) {
 
-    DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<String, LocalDate>();
+    DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<>();
 
     for (Map.Entry<LocalDate, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
       float classCoverage = 0;
