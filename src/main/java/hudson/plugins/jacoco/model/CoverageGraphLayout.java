@@ -3,6 +3,7 @@ package hudson.plugins.jacoco.model;
 import hudson.plugins.jacoco.Messages;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,9 +18,11 @@ import org.jfree.ui.RectangleInsets;
 /**
  * @author Martin Heinzerling
  */
-public class CoverageGraphLayout
+public class CoverageGraphLayout implements Serializable
 {
-	enum CoverageType
+	static final long serialVersionUID = 1L;
+
+	public enum CoverageType
 	{
 		INSTRUCTION(Messages.CoverageObject_Legend_Instructions())
 				{
@@ -101,7 +104,7 @@ public class CoverageGraphLayout
 
 	}
 
-	enum CoverageValue
+	public enum CoverageValue
 	{
 		MISSED
 				{
@@ -154,8 +157,10 @@ public class CoverageGraphLayout
 		public abstract Number getValue(Coverage c);
 	}
 
-	static class Axis
+	static class Axis implements Serializable
 	{
+		static final long serialVersionUID = 1L;
+
 		private String label = null;
 		private int crop = -1;
 		private boolean skipZero = false;
@@ -181,8 +186,10 @@ public class CoverageGraphLayout
 		}
 	}
 
-	static class Plot
+	static class Plot implements Serializable
 	{
+		static final long serialVersionUID = 1L;
+
 		private CoverageValue value;
 		private CoverageType type;
 		private Axis axis;

@@ -1,14 +1,11 @@
 package hudson.plugins.jacoco.model;
 
 import hudson.Util;
-import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.model.Run;
-import hudson.plugins.jacoco.Messages;
+import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.Rule;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.Axis;
-import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
-import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.Plot;
 import hudson.plugins.jacoco.report.AggregatedReport;
 import hudson.util.ChartUtil;
@@ -16,7 +13,7 @@ import hudson.util.ChartUtil.NumberOnlyBuildLabel;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 import hudson.util.ShiftedCategoryAxis;
-import java.awt.Color;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -29,6 +26,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import javax.annotation.Nonnull;
+
 import org.jacoco.core.analysis.ICoverageNode;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -62,8 +62,6 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	public Coverage instruction = new Coverage();
 	public Coverage branch = new Coverage();
 
-
-
 	/**
 	 * Variables used to store which child has to highest coverage for each coverage type.
 	 */
@@ -75,7 +73,6 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	public int maxBranch=1;
 
 	private volatile boolean failed = false;
-
 
 	/**
      * @return the maxClazz
@@ -376,13 +373,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		int width = (w != null) ? Integer.valueOf(w) : 500;
 		int height = (h != null) ? Integer.valueOf(h) : 200;
 
-		CoverageGraphLayout layout = new CoverageGraphLayout()
-				.baseStroke(4f)
-				.axis()
-				.plot().type(CoverageType.LINE).value(CoverageValue.MISSED).color(Color.RED)
-				.plot().type(CoverageType.LINE).value(CoverageValue.COVERED).color(Color.GREEN);
-
-		createGraph(t, width, height,layout).doPng(req, rsp);
+		createGraph(t, width, height, build.getAction(JacocoBuildAction.class).getCoverageGraphLayout()).doPng(req, rsp);
 	}
 
 	GraphImpl createGraph(final Calendar t, final int width, final int height, final CoverageGraphLayout layout) throws IOException

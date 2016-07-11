@@ -1,5 +1,6 @@
 package hudson.plugins.jacoco;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.Serializable;
@@ -10,7 +11,9 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nonnull;
 
+import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -20,13 +23,13 @@ import org.jacoco.core.analysis.IBundleCoverage;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
 
-import hudson.model.AbstractBuild;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.model.Result;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.plugins.jacoco.model.CoverageObject;
 import hudson.plugins.jacoco.report.CoverageReport;
 
@@ -50,13 +53,15 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	private transient WeakReference<CoverageReport> report;
 	private final String[] inclusions;
 	private final String[] exclusions;
- 
+
 	/**
 	 * The thresholds that applied when this build was built.
 	 * TODO: add ability to trend thresholds on the graph
 	 */
 	private final JacocoHealthReportThresholds thresholds;
 	private transient List<JacocoProjectAction> jacocoProjectActions=Collections.emptyList();
+
+	private CoverageGraphLayout coverageGraphLayout;
 
 	/**
 	 * 
@@ -67,7 +72,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 */
 	public JacocoBuildAction(
 			Map<CoverageElement.Type, Coverage> ratios,
-			JacocoHealthReportThresholds thresholds, TaskListener listener, String[] inclusions, String[] exclusions) {
+			JacocoHealthReportThresholds thresholds, TaskListener listener, String[] inclusions, String[] exclusions, CoverageGraphLayout coverageGraphLayout) {
 		logger = listener.getLogger();
 		if (ratios == null) {
 			ratios = Collections.emptyMap();
@@ -81,6 +86,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		this.branch = getOrCreateRatio(ratios, CoverageElement.Type.BRANCH);
 		this.instruction = getOrCreateRatio(ratios, CoverageElement.Type.INSTRUCTION);
 		this.complexity = getOrCreateRatio(ratios, CoverageElement.Type.COMPLEXITY);
+		this.coverageGraphLayout = coverageGraphLayout;
 	}
 
 	private Coverage getOrCreateRatio(Map<CoverageElement.Type, Coverage> ratios, CoverageElement.Type type) {
@@ -296,12 +302,12 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * @throws IOException
 	 *      if failed to parse the file.
 	 */
-	public static JacocoBuildAction load(Run<?,?> owner, JacocoHealthReportThresholds thresholds, TaskListener listener, JacocoReportDir layout, String[] includes, String[] excludes) throws IOException {
+	public static JacocoBuildAction load(Run<?,?> owner, JacocoHealthReportThresholds thresholds, TaskListener listener, JacocoReportDir layout, String[] includes, String[] excludes, @Nonnull CoverageGraphLayout coverageGraphLayout) throws IOException {
 		//PrintStream logger = listener.getLogger();
 		Map<CoverageElement.Type,Coverage> ratios = null;
 		
 	    ratios = loadRatios(layout, ratios, includes, excludes);
-		return new JacocoBuildAction(ratios, thresholds, listener, includes, excludes);
+		return new JacocoBuildAction(ratios, thresholds, listener, includes, excludes, coverageGraphLayout);
 	}
 
 
@@ -376,6 +382,19 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	@Override
 	public void onLoad(Run<?, ?> run) {
 		setOwner(run);
+	}
+
+	public CoverageGraphLayout getCoverageGraphLayout() {
+		if (coverageGraphLayout == null) coverageGraphLayout = createDefaultCoverageGraphLayout();
+		return coverageGraphLayout;
+	}
+
+	private CoverageGraphLayout createDefaultCoverageGraphLayout() {
+		return new CoverageGraphLayout()
+				.baseStroke(4f)
+				.axis()
+				.plot().type(CoverageGraphLayout.CoverageType.LINE).value(CoverageGraphLayout.CoverageValue.MISSED).color(Color.RED)
+				.plot().type(CoverageGraphLayout.CoverageType.LINE).value(CoverageGraphLayout.CoverageValue.COVERED).color(Color.GREEN);
 	}
 
 	@Override

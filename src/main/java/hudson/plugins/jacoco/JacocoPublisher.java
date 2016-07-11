@@ -11,6 +11,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
@@ -83,6 +84,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumMethodCoverage;
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
+    private CoverageGraphLayout coverageGraphLayout;
     
 	private static final String DIR_SEP = "\\s*,\\s*";
 
@@ -108,6 +110,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.maximumMethodCoverage = "0";
         this.maximumClassCoverage = "0";
         this.changeBuildStatus = false;
+        this.coverageGraphLayout = null;
     }
 
 	/**
@@ -269,10 +272,14 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 	public boolean isChangeBuildStatus() {
 		return changeBuildStatus;
 	}
-	
+
     public boolean getChangeBuildStatus() {
 		return changeBuildStatus;
 	}
+    public CoverageGraphLayout getCoverageGraphLayout() {
+        return coverageGraphLayout;
+    }
+
     @DataBoundSetter
     public void setExecPattern(String execPattern) {
         this.execPattern = execPattern;
@@ -363,7 +370,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.exclusionPattern = exclusionPattern;
     }
 
-	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
+    @DataBoundSetter
+    public void setCoverageGraphLayout(CoverageGraphLayout coverageGraphLayout) {
+        this.coverageGraphLayout = coverageGraphLayout;
+    }
+
+    protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
 		destFolder.mkdirs();
 		
 		sourceFolder.copyRecursiveTo(destFolder);
@@ -475,7 +487,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
 
-        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, dir, includes, excludes);
+        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, dir, includes, excludes, getCoverageGraphLayout());
         action.getThresholds().ensureValid();
         logger.println("[JaCoCo plugin] Thresholds: " + action.getThresholds());
         run.addAction(action);

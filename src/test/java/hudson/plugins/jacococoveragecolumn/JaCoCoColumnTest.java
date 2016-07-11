@@ -1,27 +1,20 @@
 package hudson.plugins.jacococoveragecolumn;
 
-import static org.junit.Assert.*;
-import hudson.console.ConsoleNote;
 import hudson.model.BuildListener;
 import hudson.model.ItemGroup;
-import hudson.model.Result;
-import hudson.model.Cause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.search.QuickSilver;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 
@@ -33,9 +26,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.export.Exported;
 
-public class JaCoCoColumnTest {
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-	protected Float percentFloat;
+public class JaCoCoColumnTest {
 	private JaCoCoColumn jacocoColumn;
 
 	//@Override
@@ -87,7 +84,7 @@ public class JaCoCoColumnTest {
 			public MyRun getLastSuccessfulBuild() {
 				try {
 				    MyRun newBuild = newBuild();
-					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
+					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null, new CoverageGraphLayout()));
 					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
 				} catch (IOException e) {
@@ -197,7 +194,7 @@ public class JaCoCoColumnTest {
 			try {
 				MyRun run = newBuild();
 				Map<Type, Coverage> map = Collections.emptyMap();
-				run.addAction(new JacocoBuildAction(map, null, listener, null, null));
+				run.addAction(new JacocoBuildAction(map, null, listener, null, null, new CoverageGraphLayout()));
 				return run;
 			} catch (IOException e) {
 				throw new IllegalStateException(e);
