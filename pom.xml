@@ -28,8 +28,8 @@ THE SOFTWARE.
    <parent>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>1.609.3</version>
-      <relativePath />
+      <version>1.614</version>
+      <relativePath/>
    </parent>
 
    <artifactId>jacoco</artifactId>
@@ -79,6 +79,11 @@ THE SOFTWARE.
          <id>csimons</id>
          <name>Christopher Simons</name>
       </developer>
+      <developer>
+         <id>mheinzerling</id>
+         <name>Martin Heinzerling</name>
+         <email>webmaster@mheinzerling.de</email>
+      </developer>
    </developers>
 
    <scm>
@@ -86,7 +91,7 @@ THE SOFTWARE.
       <developerConnection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</developerConnection>
 	  <url>https://github.com/jenkinsci/jacoco-plugin</url>
      <tag>HEAD</tag>
-  </scm>
+   </scm>
 
    <properties>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -146,9 +151,9 @@ THE SOFTWARE.
 			<scope>runtime</scope>
 	  </dependency>
 	<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>3.4</version>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>3.4</version>
 	</dependency>
 	<dependency>
 		<groupId>org.jacoco</groupId>
@@ -227,8 +232,8 @@ THE SOFTWARE.
             <artifactId>maven-compiler-plugin</artifactId>
             <version>2.3.2</version>
             <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
+               <source>1.7</source>
+               <target>1.7</target>
             </configuration>
          </plugin>
          <plugin>
@@ -238,7 +243,7 @@ THE SOFTWARE.
             <configuration>
                 <signature>
                   <groupId>org.codehaus.mojo.signature</groupId>
-                  <artifactId>java15</artifactId>
+                  <artifactId>java17</artifactId>
                   <version>1.0</version>
                 </signature>
             </configuration>
