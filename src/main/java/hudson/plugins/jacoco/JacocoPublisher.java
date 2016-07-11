@@ -10,6 +10,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.remoting.VirtualChannel;
@@ -65,7 +66,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     // Delta coverage thresholds to apply
     public JacocoHealthReportDeltaThresholds deltaHealthReport;
-
+    
     
     /**
      * Variables containing the configuration set by the user.
@@ -90,7 +91,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumMethodCoverage;
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
-
+    private CoverageGraphLayout coverageGraphLayout;
+    
     /**
      * Following variables contain delta coverage thresholds as configured by the user
      * Delta coverage = | Last Successful Coverage - Current Coverage |
@@ -135,6 +137,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.deltaMethodCoverage = "0";
         this.deltaClassCoverage = "0";
         this.buildOverBuild = false;
+        this.coverageGraphLayout = null;
     }
 
 	/**
@@ -348,6 +351,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         return buildOverBuild;
     }
 
+    public CoverageGraphLayout getCoverageGraphLayout() {
+        return coverageGraphLayout;
+    }
+
     @DataBoundSetter
     public void setExecPattern(String execPattern) {
         this.execPattern = execPattern;
@@ -479,7 +486,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.buildOverBuild = buildOverBuild;
     }
 
-	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
+    @DataBoundSetter
+    public void setCoverageGraphLayout(CoverageGraphLayout coverageGraphLayout) {
+        this.coverageGraphLayout = coverageGraphLayout;
+    }
+
+    protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
 		destFolder.mkdirs();
 		
 		sourceFolder.copyRecursiveTo(destFolder);
@@ -607,7 +619,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
 
-        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, reportDir, includes, excludes);
+        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, reportDir, includes, excludes, getCoverageGraphLayout());
         action.getThresholds().ensureValid();
         logger.println("[JaCoCo plugin] Thresholds: " + action.getThresholds());
         run.addAction(action);
@@ -639,10 +651,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                 applyDeltaTh = checkBuildOverBuildResult(run, logger); // Compute delta coverage of current build and compare with delta thresholds
                 logger.println("[JaCoCo plugin] Delta thresholds: " + deltaHealthReport.toString());
                 logger.println("[JaCoCo plugin] Results of delta thresholds check: "+ applyDeltaTh.toString());
-            }
+        }
             if(changeBuildStatus || buildOverBuild) {
                 run.setResult(Utils.applyLogicalAnd(applyMinMaxTh, applyDeltaTh));
-            }
+    }
         }
     }
 
@@ -696,7 +708,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		}
 		return Result.SUCCESS;
 	}
-
+	
     // Calculates actual delta coverage of the current build by subtracting it's coverage from coverage of last successful build
     // and compares if the delta coverage is less than or equal to user-configured delta thresholds
     // Returns success (if delta coverage is equal to or less than delta thresholds) OR (if delta coverage is bigger than delta thresholds AND current coverage is bigger than last successful coverage)

@@ -23,6 +23,7 @@ import hudson.model.Action;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.plugins.jacoco.report.ClassReport;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
@@ -359,7 +360,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 	@Test
 	public void testCheckResult() throws Exception {
 		TaskListener listener = TaskListener.NULL;
-		JacocoBuildAction action = new JacocoBuildAction(null, new JacocoHealthReportThresholds(), listener, null, null);
+		JacocoBuildAction action = new JacocoBuildAction(null, new JacocoHealthReportThresholds(), listener, null, null, new CoverageGraphLayout());
 
 		ICoverageNode covReport = new ClassCoverageImpl("name", 1, false);
 
