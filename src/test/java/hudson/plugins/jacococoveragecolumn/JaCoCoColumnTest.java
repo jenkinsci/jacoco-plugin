@@ -7,21 +7,27 @@ import hudson.model.Run;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.search.QuickSilver;
 import hudson.util.StreamTaskListener;
-import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
-import org.kohsuke.stapler.export.Exported;
 
-import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
 import java.util.SortedMap;
+import javax.servlet.ServletContext;
 
-import static org.junit.Assert.*;
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
+import org.kohsuke.stapler.export.Exported;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class JaCoCoColumnTest {
 	private JaCoCoColumn jacocoColumn;
@@ -75,7 +81,7 @@ public class JaCoCoColumnTest {
 			public MyRun getLastSuccessfulBuild() {
 				try {
 				    MyRun newBuild = newBuild();
-					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
+					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null, new CoverageGraphLayout()));
 					assertEquals(1, newBuild.getAllActions().size());
 					return newBuild;
 				} catch (IOException e) {
@@ -185,7 +191,7 @@ public class JaCoCoColumnTest {
 			try {
 				MyRun run = newBuild();
 				Map<Type, Coverage> map = Collections.emptyMap();
-				run.addAction(new JacocoBuildAction(map, null, listener, null, null));
+				run.addAction(new JacocoBuildAction(map, null, listener, null, null, new CoverageGraphLayout()));
 				return run;
 			} catch (IOException e) {
 				throw new IllegalStateException(e);

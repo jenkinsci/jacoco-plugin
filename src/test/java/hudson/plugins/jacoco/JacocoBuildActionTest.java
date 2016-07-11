@@ -1,12 +1,14 @@
 package hudson.plugins.jacoco;
 
 
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.util.LogTaskListener;
-import org.junit.Test;
 
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -20,7 +22,7 @@ public class JacocoBuildActionTest extends AbstractJacocoTestBase {
         JacocoBuildAction r = JacocoBuildAction.load(null,
                 new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
                 new LogTaskListener(logger, Level.INFO),
-                new JacocoReportDir(new File(".")), null, null);
+                new JacocoReportDir(new File(".")), null, null, new CoverageGraphLayout());
         assertNotNull(r);
     }
 

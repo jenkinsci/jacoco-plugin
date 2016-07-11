@@ -1,13 +1,16 @@
 package hudson.plugins.jacoco.report;
 
-import static org.junit.Assert.*;
 import hudson.plugins.jacoco.ExecutionFileLoader;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.JacocoHealthReportThresholds;
 
+import hudson.plugins.jacoco.model.CoverageGraphLayout;
 import hudson.util.StreamTaskListener;
 import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 public class CoverageReportTest {
     @Test
@@ -36,5 +39,5 @@ public class CoverageReportTest {
         report.setThresholds(new JacocoHealthReportThresholds());
     }
 
-    private JacocoBuildAction action = new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null);
+    private JacocoBuildAction action = new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null, new CoverageGraphLayout());
 }
