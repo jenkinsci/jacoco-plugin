@@ -7,15 +7,23 @@ import hudson.model.Action;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import org.easymock.IAnswer;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.easymock.EasyMock.*;
+import org.easymock.IAnswer;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.mock;
+import static org.easymock.EasyMock.niceMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -89,6 +97,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		final Run run = mock(Run.class);
 		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
 		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
+		expect(run.getParent()).andReturn(null).anyTimes();
 		Action action = anyObject();
 		run.addAction(action);
 		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<JacocoBuildAction>();
