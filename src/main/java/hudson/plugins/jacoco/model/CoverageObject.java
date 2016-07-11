@@ -392,14 +392,14 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			@Override
 			protected Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> createDataSetBuilder(CoverageObject<SELF> obj)
 			{
-				Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> builders = new LinkedHashMap<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>>();
+				Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> builders = new LinkedHashMap<>();
 				for (Axis axis : layout.getAxes())
 				{
 					builders.put(axis, new DataSetBuilder<String, NumberOnlyBuildLabel>());
 					if (axis.isCrop()) bounds.put(axis, new Bounds());
 				}
 
-				Map<Plot, Number> last = new HashMap<Plot, Number>();
+				Map<Plot, Number> last = new HashMap<>();
 				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult())
 				{
 					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
@@ -463,13 +463,13 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		@Override
 		protected JFreeChart createGraph() {
-			Map<Axis, CategoryDataset> dataSets = new LinkedHashMap<Axis, CategoryDataset>();
+			Map<Axis, CategoryDataset> dataSets = new LinkedHashMap<>();
 			Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> dataSetBuilders = createDataSetBuilder(obj);
 			for (Entry<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> e : dataSetBuilders.entrySet())
 			{
 				dataSets.put(e.getKey(), e.getValue().build());
 			}
-			List<Axis> axes = new ArrayList<Axis>(dataSets.keySet());
+			List<Axis> axes = new ArrayList<>(dataSets.keySet());
 
 			final JFreeChart chart = ChartFactory.createLineChart(
 					null, // chart title

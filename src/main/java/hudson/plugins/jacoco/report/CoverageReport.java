@@ -67,14 +67,14 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 			if (executionFileLoader.getBundleCoverage() !=null ) {
 				setAllCovTypes(this, executionFileLoader.getBundleCoverage());
 				
-				ArrayList<IPackageCoverage> packageList = new ArrayList<IPackageCoverage>(executionFileLoader.getBundleCoverage().getPackages());
+				ArrayList<IPackageCoverage> packageList = new ArrayList<>(executionFileLoader.getBundleCoverage().getPackages());
 				for (IPackageCoverage packageCov: packageList) {
 					PackageReport packageReport = new PackageReport();
 					packageReport.setName(packageCov.getName());
 					packageReport.setParent(this);
 					this.setCoverage(packageReport, packageCov);
 
-					ArrayList<IClassCoverage> classList = new ArrayList<IClassCoverage>(packageCov.getClasses());
+					ArrayList<IClassCoverage> classList = new ArrayList<>(packageCov.getClasses());
 					for (IClassCoverage classCov: classList) {
 						ClassReport classReport = new ClassReport();
 						classReport.setName(classCov.getName());
@@ -83,7 +83,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
 						packageReport.setCoverage(classReport, classCov);
 
-						ArrayList<IMethodCoverage> methodList = new ArrayList<IMethodCoverage>(classCov.getMethods());
+						ArrayList<IMethodCoverage> methodList = new ArrayList<>(classCov.getMethods());
 						for (IMethodCoverage methodCov: methodList) {
 							MethodReport methodReport = new MethodReport();
 							methodReport.setName(getMethodName(classCov, methodCov));

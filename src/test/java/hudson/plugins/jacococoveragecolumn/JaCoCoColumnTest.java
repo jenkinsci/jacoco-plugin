@@ -84,9 +84,9 @@ public class JaCoCoColumnTest {
 			@Override
 			@Exported
 			@QuickSilver
-			public Run<?,?> getLastSuccessfulBuild() {
+			public MyRun getLastSuccessfulBuild() {
 				try {
-				    Run<?,?> newBuild = newBuild();
+				    MyRun newBuild = newBuild();
 					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
 					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
@@ -176,7 +176,7 @@ public class JaCoCoColumnTest {
         }
 
 		@Override
-		public Run<?,?> getLastSuccessfulBuild() {
+		public MyRun getLastSuccessfulBuild() {
 			return null;
 		}
 	}
@@ -193,10 +193,10 @@ public class JaCoCoColumnTest {
 		@Override
 		@Exported
 		@QuickSilver
-		public Run<?,?> getLastSuccessfulBuild() {
+		public MyRun getLastSuccessfulBuild() {
 			try {
-			    Run<?,?> run = newBuild();
-				Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
+				MyRun run = newBuild();
+				Map<Type, Coverage> map = Collections.emptyMap();
 				run.addAction(new JacocoBuildAction(map, null, listener, null, null));
 				return run;
 			} catch (IOException e) {
@@ -214,7 +214,7 @@ public class JaCoCoColumnTest {
         @Override
         @Exported
         @QuickSilver
-        public Run<?,?> getLastSuccessfulBuild() {
+        public MyRun getLastSuccessfulBuild() {
             try {
                 return newBuild();
             } catch (IOException e) {
@@ -227,10 +227,10 @@ public class JaCoCoColumnTest {
 		}
 	}
 	
-	private class MyJob extends Job {
+	private class MyJob extends Job<MyJob,MyRun> {
 
         public MyJob(String name) {
-            super((ItemGroup<?>)null, name);
+            super(null, name);
         }
 
         @Override
@@ -239,22 +239,22 @@ public class JaCoCoColumnTest {
         }
 
         @Override
-        protected SortedMap _getRuns() {
+        protected SortedMap<Integer, MyRun> _getRuns() {
             return null;
         }
 
         @Override
-        protected void removeRun(Run run) {
+        protected void removeRun(MyRun run) {
         }
 
-        protected synchronized Run newBuild() throws IOException {
+        protected synchronized MyRun newBuild() throws IOException {
             return new MyRun(this);
         }
 	}
 	
-	private class MyRun extends Run {
+	private class MyRun extends Run<MyJob,MyRun> {
 
-        public MyRun(Job job) throws IOException {
+        public MyRun(MyJob job) throws IOException {
             super(job);
         }
 	}

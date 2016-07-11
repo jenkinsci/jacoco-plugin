@@ -216,8 +216,8 @@ public class CoverageGraphLayout
 	}
 
 	private float baseStroke = 4f;
-	private Stack<Axis> axes = new Stack<Axis>();
-	private Stack<Plot> plots = new Stack<Plot>();
+	private Stack<Axis> axes = new Stack<>();
+	private Stack<Plot> plots = new Stack<>();
 
 	public CoverageGraphLayout baseStroke(float baseStroke)
 	{
@@ -308,7 +308,7 @@ public class CoverageGraphLayout
 	public void apply(JFreeChart chart)
 	{
 		final CategoryPlot plot = chart.getCategoryPlot();
-		Map<Axis, Integer> axisIds = new HashMap<Axis, Integer>();
+		Map<Axis, Integer> axisIds = new HashMap<>();
 		int axisId = 0;
 		for (Axis axis : axes)
 		{

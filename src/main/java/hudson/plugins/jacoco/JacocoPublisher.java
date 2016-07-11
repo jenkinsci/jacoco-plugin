@@ -402,18 +402,16 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		FilePath[] directoryPaths = null;
 		try {
             directoryPaths = workspace.act(new ResolveDirPaths(input));
-		} catch(InterruptedException ie) {
+		} catch(InterruptedException | IOException ie) {
 			ie.printStackTrace();
-		} catch(IOException io) {
-			io.printStackTrace();
 		}
-		return directoryPaths;
+        return directoryPaths;
 	}
 
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
-        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild) run).getBuildVariables() : Collections.<String, String>emptyMap();
+        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild<?,?>) run).getBuildVariables() : Collections.<String, String>emptyMap();
 
         EnvVars env = run.getEnvironment(taskListener);
         env.overrideAll(envs);
@@ -442,7 +440,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         JacocoReportDir dir = new JacocoReportDir(run.getRootDir());
 
         if (run instanceof AbstractBuild) {
-            execPattern = resolveFilePaths((AbstractBuild) run, taskListener, execPattern);
+            execPattern = resolveFilePaths((AbstractBuild<?,?>) run, taskListener, execPattern);
         }
 
         List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
@@ -556,6 +554,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
 
 		@Override
+        @SuppressWarnings("rawtypes")
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
@@ -606,7 +605,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
             FilePath base = new FilePath(f);
-            ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
+            ArrayList<FilePath> localDirectoryPaths= new ArrayList<>();
             String[] includes = input.split(DIR_SEP);
             DirectoryScanner ds = new DirectoryScanner();
 

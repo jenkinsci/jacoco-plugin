@@ -40,8 +40,8 @@ public class ExecutionFileLoaderTest {
 		loader.setClassDir(new FilePath(new File("class")));
 		assertNotNull(loader.getClassDir());
 		
-		loader.setIncludes(new String[] {});
-		loader.setExcludes(new String[] {});
+		loader.setIncludes();
+		loader.setExcludes();
 	}
 	
 	@Test
@@ -59,8 +59,8 @@ public class ExecutionFileLoaderTest {
 		ExecutionFileLoader loader = new ExecutionFileLoader();
 		
 		loader.setClassDir(new FilePath(new File("target/classes")));
-		loader.setIncludes(new String[] {});
-		loader.setExcludes(new String[] {"excludme.test", "excludeme2.test"});
+		loader.setIncludes();
+		loader.setExcludes("excludme.test", "excludeme2.test");
 
 		IBundleCoverage coverage = loader.loadBundleCoverage();
 		assertNotNull(coverage);
@@ -72,8 +72,8 @@ public class ExecutionFileLoaderTest {
 		ExecutionFileLoader loader = new ExecutionFileLoader();
 		
 		loader.setClassDir(new FilePath(new File("target/classes")));
-		loader.setIncludes(new String[] {""});
-		loader.setExcludes(new String[] {});
+		loader.setIncludes("");
+		loader.setExcludes();
 		IBundleCoverage coverage = loader.loadBundleCoverage();
 		assertNotNull(coverage);
 		assertNotNull(coverage.getClassCounter());
@@ -87,8 +87,8 @@ public class ExecutionFileLoaderTest {
 		ExecutionFileLoader loader = new ExecutionFileLoader();
 		
 		loader.setClassDir(new FilePath(new File("target/classes")));
-		loader.setIncludes(new String[] {"noexisting.test"});
-		loader.setExcludes(new String[] {""});		
+		loader.setIncludes("noexisting.test");
+		loader.setExcludes("");
 		IBundleCoverage coverage = loader.loadBundleCoverage();
 		assertNotNull(coverage);
 		assertEquals(0, coverage.getClassCounter().getCoveredCount());
@@ -101,7 +101,7 @@ public class ExecutionFileLoaderTest {
 		assertTrue("This test requires that a jacoco.exec file exists in the target-directory", 
 				new File("target/jacoco.exec").exists());
 		loader.setClassDir(new FilePath(new File("target/classes")));
-		loader.setExcludes(new String[] {"excludme.test"});
+		loader.setExcludes("excludme.test");
 		loader.addExecFile(new FilePath(new File("target/jacoco.exec")));
 		
 		// handles invalid files gracefully
@@ -126,7 +126,7 @@ public class ExecutionFileLoaderTest {
 		assertTrue("This test requires that noclasses dir exists", 
 				noClasses.exists() && noClasses.isDirectory());
 		loader.setClassDir(new FilePath(noClasses));
-		loader.setExcludes(new String[] {"excludme.test"});
+		loader.setExcludes("excludme.test");
 		loader.addExecFile(new FilePath(new File("target/jacoco.exec")));
 		
 		// handles empty classes dir gracefully

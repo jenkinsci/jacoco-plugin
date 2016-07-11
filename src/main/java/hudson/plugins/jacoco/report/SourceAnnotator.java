@@ -30,7 +30,7 @@ public class SourceAnnotator {
      * Parses the source file into individual lines.
      */
     private List<String> readLines() {
-        ArrayList<String> aList = new ArrayList<String>();
+        ArrayList<String> aList = new ArrayList<>();
 
         BufferedReader br = null;
 
@@ -40,8 +40,6 @@ public class SourceAnnotator {
             while ((line = br.readLine()) != null) {
                 aList.add(line.replaceAll("\\t", "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

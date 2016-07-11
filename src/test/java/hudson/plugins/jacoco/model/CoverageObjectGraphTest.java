@@ -27,13 +27,10 @@ import hudson.plugins.jacoco.AbstractJacocoTestBase;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
 
-/**
- * @author Martin Heinzerling
- */
 public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 {
-	public static final int WIDTH = 500;
-	public static final int HEIGHT = 200;
+	private static final int WIDTH = 500;
+	private static final int HEIGHT = 200;
 	private static Font font;
 	private IMocksControl ctl;
 	private Locale localeBackup;
@@ -42,7 +39,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	public static void loadFont() throws IOException, FontFormatException
 	{
 		// just a free font nobody has on their system, but different enough to default sans-serif,
-		// that you will see missing system font replacement in the outbut. See #replaceFonts()
+		// that you will see missing system font replacement in the output. See #replaceFonts()
 		InputStream is = new FileInputStream("resources/test/belligerent.ttf");
 		font=Font.createFont(Font.TRUETYPE_FONT, is);
 	}
@@ -164,15 +161,9 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 		byte[] expected = FileUtils.readFileToByteArray(new File("resources/test/" + file));
 		byte[] actual;
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try
-		{
+		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 			ChartUtilities.writeChartAsPNG(out, chart, WIDTH, HEIGHT, null);
 			actual = out.toByteArray();
-		}
-		finally
-		{
-			out.close();
 		}
 		try
 		{

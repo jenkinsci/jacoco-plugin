@@ -4,6 +4,7 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Job;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class UtilsHudsonTest extends HudsonTestCase {
     FreeStyleProject prj2 = createFreeStyleProject("prj2");
     prj2.scheduleBuild2(0).get();
 
-    List<Job> jobs = new ArrayList<Job>();
+    List<Job<?,?>> jobs = new ArrayList<>();
     jobs.add(prj);
     jobs.add(prj2);
 
@@ -38,14 +39,14 @@ public class UtilsHudsonTest extends HudsonTestCase {
   }
 
   /**
-   * Tests {@link hudson.plugins.jacoco.portlet.utils.Utils#roundFLoat(int scale, int roundingMode, float value) }.
+   * Tests {@link hudson.plugins.jacoco.portlet.utils.Utils#roundFloat(int scale, RoundingMode roundingMode, float value) }.
    */
   public void testRoundFloat() {
     int scale = 1;
-    int roundingMode = BigDecimal.ROUND_HALF_EVEN;
+    RoundingMode roundingMode = RoundingMode.HALF_EVEN;
     final float value = 9.987f;
     final float roundedAs = 10f;
 
-    assertEquals(roundedAs, Utils.roundFLoat(scale, roundingMode, value));
+    assertEquals(roundedAs, Utils.roundFloat(scale, roundingMode, value));
   }
 }
