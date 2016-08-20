@@ -472,12 +472,14 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.println("\n[JaCoCo plugin] Loading inclusions files..");
         String[] includes = {};
         if (inclusionPattern != null) {
-            includes = inclusionPattern.split(DIR_SEP);
+            String expandedInclusion = env.expand(inclusionPattern);
+            includes = expandedInclusion.split(DIR_SEP);
             logger.println("[JaCoCo plugin] inclusions: " + Arrays.toString(includes));
         }
         String[] excludes = {};
         if (exclusionPattern != null) {
-            excludes = exclusionPattern.split(DIR_SEP);
+            String expandedExclusion = env.expand(exclusionPattern);
+            excludes = expandedExclusion.split(DIR_SEP);
             logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
 
