@@ -6,7 +6,6 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Util;
 import hudson.model.Action;
-import hudson.model.BuildListener;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -25,18 +24,15 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import jenkins.MasterToSlaveFileCallable;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.tools.ant.DirectoryScanner;
-import org.jenkinsci.remoting.RoleChecker;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -144,7 +140,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     		return 0+"";
     	}
     	try {
-    		Integer.parseInt(input);
+            //noinspection ResultOfMethodCallIgnored
+            Integer.parseInt(input);
     	} catch(NumberFormatException nfe) {
     		return  0+"";
     	}
@@ -418,17 +415,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         healthReports = createJacocoHealthReportThresholds();
 
-        final PrintStream logger = taskListener.getLogger();
-        FilePath[] matchedClassDirs = null;
-        FilePath[] matchedSrcDirs = null;
-
         if (run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) {
             return;
         }
 
-
+        final PrintStream logger = taskListener.getLogger();
         logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
-
 
         EnvVars env = run.getEnvironment(taskListener);
         env.overrideAll(envs);
@@ -456,13 +448,13 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
-        matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
+        FilePath[] matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
             logger.print(" " + file);
         }
-        matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
+        FilePath[] matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
         logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
         for (FilePath file : matchedSrcDirs) {
             dir.saveSourcesFrom(file);
@@ -505,7 +497,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                 run.setResult(checkResult(action));
             }
         }
-        return;
     }
 
     private JacocoHealthReportThresholds createJacocoHealthReportThresholds() {

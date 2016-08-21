@@ -8,15 +8,26 @@ import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import org.easymock.IAnswer;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class JacocoPublisherTest extends AbstractJacocoTestBase {
+    private final TaskListener taskListener = niceMock(TaskListener.class);
+    private final Launcher launcher = niceMock(Launcher.class);
+
+    @Before
+    public void setUp() {
+        expect(taskListener.getLogger()).andReturn(System.out).anyTimes();
+    }
 
 	@Test
 	public void testLocateReports() throws Exception {
@@ -74,39 +85,43 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 	@Test
 	public void testPerformWithDefaultSettings() throws IOException, InterruptedException {
-		// when
-		TaskListener taskListener = niceMock(TaskListener.class);
-		expect(taskListener.getLogger()).andReturn(System.out).anyTimes();
-
-		Launcher launcher = niceMock(Launcher.class);
-
-		final Run run = createNiceMock(Run.class);
+		// expect
+		final Run run = mock(Run.class);
 		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
-		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars());
+		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
 		Action action = anyObject();
 		run.addAction(action);
+		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<JacocoBuildAction>();
 		expectLastCall().andAnswer(new IAnswer<Void>() {
 			@Override
 			public Void answer() throws Throwable {
-				JacocoBuildAction buildAction = (JacocoBuildAction) getCurrentArguments()[0];
-				buildAction.onAttached(run);
+				buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
+				buildAction.get().onAttached(run);
 
 				return null;
 			}
 		});
 
-		replay(taskListener, run);
+        File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
+        assertTrue(dir.delete());
+        assertTrue(dir.mkdirs());
+        assertTrue(new File(dir, "jacoco/classes").mkdirs());
+        FilePath filePath = new FilePath(dir);
 
-		File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
-		assertTrue(dir.delete());
-		assertTrue(dir.mkdirs());
-		assertTrue(new File(dir, "jacoco/classes").mkdirs());
-		FilePath filePath = new FilePath(dir);
+        expect(run.getRootDir()).andReturn(dir).anyTimes();
+
+		replay(taskListener, run);
 
 		// execute
 		JacocoPublisher publisher = new JacocoPublisher();
 		publisher.perform(run, filePath, launcher, taskListener);
 
+		assertNotNull(buildAction.get());
+		assertEquals(Result.SUCCESS, JacocoPublisher.checkResult(buildAction.get()));
+
+        assertNotNull(run.toString());
+
+        // verify
 		verify(taskListener, run);
 	}
 }
