@@ -41,7 +41,6 @@ import javax.annotation.Nonnull;
  * @author Kohsuke Kawaguchi
  * @author Jonathan Fuerth
  * @author Ognjen Bubalo
- * 
  */
 public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
@@ -58,9 +57,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     /**
      * {@link hudson.model.HealthReport} thresholds to apply.
      */
-    public JacocoHealthReportThresholds healthReports;
+    private JacocoHealthReportThresholds healthReports;
 
-    
     /**
      * Variables containing the configuration set by the user.
      */
@@ -83,8 +81,9 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumMethodCoverage;
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
-    
-	private static final String DIR_SEP = "\\s*,\\s*";
+    private boolean canRunOnFailed;
+
+    private static final String DIR_SEP = "\\s*,\\s*";
 
     @DataBoundConstructor
     public JacocoPublisher() {
@@ -106,171 +105,157 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.maximumMethodCoverage = "0";
         this.maximumClassCoverage = "0";
         this.changeBuildStatus = false;
+        this.canRunOnFailed = false;
     }
 
-	/**
+    /**
      * Loads the configuration set by user.
      */
     @Deprecated
     public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, String maximumInstructionCoverage, String maximumBranchCoverage
-    		, String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
-    		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus) {
-    	this.execPattern = execPattern;
-    	this.classPattern = classPattern;
-    	this.sourcePattern = sourcePattern;
-    	this.inclusionPattern = inclusionPattern;
-    	this.exclusionPattern = exclusionPattern;
-    	this.minimumInstructionCoverage = checkThresholdInput(minimumInstructionCoverage);
-    	this.minimumBranchCoverage = checkThresholdInput(minimumBranchCoverage);
-    	this.minimumComplexityCoverage = checkThresholdInput(minimumComplexityCoverage);
-    	this.minimumLineCoverage = checkThresholdInput(minimumLineCoverage);
-    	this.minimumMethodCoverage = checkThresholdInput(minimumMethodCoverage);
-    	this.minimumClassCoverage = checkThresholdInput(minimumClassCoverage);
-    	this.maximumInstructionCoverage = checkThresholdInput(maximumInstructionCoverage);
-    	this.maximumBranchCoverage = checkThresholdInput(maximumBranchCoverage);
-    	this.maximumComplexityCoverage = checkThresholdInput(maximumComplexityCoverage);
-    	this.maximumLineCoverage = checkThresholdInput(maximumLineCoverage);
-    	this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
-    	this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
-    	this.changeBuildStatus = changeBuildStatus;
+            , String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
+            , String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus, boolean canRunOnFailed) {
+        this.execPattern = execPattern;
+        this.classPattern = classPattern;
+        this.sourcePattern = sourcePattern;
+        this.inclusionPattern = inclusionPattern;
+        this.exclusionPattern = exclusionPattern;
+        this.minimumInstructionCoverage = checkThresholdInput(minimumInstructionCoverage);
+        this.minimumBranchCoverage = checkThresholdInput(minimumBranchCoverage);
+        this.minimumComplexityCoverage = checkThresholdInput(minimumComplexityCoverage);
+        this.minimumLineCoverage = checkThresholdInput(minimumLineCoverage);
+        this.minimumMethodCoverage = checkThresholdInput(minimumMethodCoverage);
+        this.minimumClassCoverage = checkThresholdInput(minimumClassCoverage);
+        this.maximumInstructionCoverage = checkThresholdInput(maximumInstructionCoverage);
+        this.maximumBranchCoverage = checkThresholdInput(maximumBranchCoverage);
+        this.maximumComplexityCoverage = checkThresholdInput(maximumComplexityCoverage);
+        this.maximumLineCoverage = checkThresholdInput(maximumLineCoverage);
+        this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
+        this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
+        this.changeBuildStatus = changeBuildStatus;
+        this.canRunOnFailed = canRunOnFailed;
     }
-    
-    public String checkThresholdInput(String input) {
-    	if ((input == null) || ("".equals(input))) {
-    		return 0+"";
-    	}
-    	try {
+
+    private String checkThresholdInput(String input) {
+        if ((input == null) || ("".equals(input))) {
+            return 0 + "";
+        }
+        try {
             //noinspection ResultOfMethodCallIgnored
             Integer.parseInt(input);
-    	} catch(NumberFormatException nfe) {
-    		return  0+"";
-    	}
-    	return input;
+        } catch (NumberFormatException nfe) {
+            return 0 + "";
+        }
+        return input;
     }
 
+    @Override
+    public String toString() {
+        return "JacocoPublisher [execPattern=" + execPattern
+                + ", classPattern=" + classPattern + ", sourcePattern="
+                + sourcePattern + ", inclusionPattern=" + inclusionPattern
+                + ", exclusionPattern=" + exclusionPattern
+                + ", minimumInstructionCoverage=" + minimumInstructionCoverage
+                + ", minimumBranchCoverage=" + minimumBranchCoverage
+                + ", minimumComplexityCoverage=" + minimumComplexityCoverage
+                + ", minimumLineCoverage=" + minimumLineCoverage
+                + ", minimumMethodCoverage=" + minimumMethodCoverage
+                + ", minimumClassCoverage=" + minimumClassCoverage
+                + ", maximumInstructionCoverage=" + maximumInstructionCoverage
+                + ", maximumBranchCoverage=" + maximumBranchCoverage
+                + ", maximumComplexityCoverage=" + maximumComplexityCoverage
+                + ", maximumLineCoverage=" + maximumLineCoverage
+                + ", maximumMethodCoverage=" + maximumMethodCoverage
+                + ", maximumClassCoverage=" + maximumClassCoverage
+                + ", changeBuildStatus=" + changeBuildStatus
+                + ", canRunOnFailed=" + canRunOnFailed
+                + "]";
+    }
 
-	@Override
-	public String toString() {
-		return "JacocoPublisher [execPattern=" + execPattern
-				+ ", classPattern=" + classPattern + ", sourcePattern="
-				+ sourcePattern + ", inclusionPattern=" + inclusionPattern
-				+ ", exclusionPattern=" + exclusionPattern
-				+ ", minimumInstructionCoverage=" + minimumInstructionCoverage
-				+ ", minimumBranchCoverage=" + minimumBranchCoverage
-				+ ", minimumComplexityCoverage=" + minimumComplexityCoverage
-				+ ", minimumLineCoverage=" + minimumLineCoverage
-				+ ", minimumMethodCoverage=" + minimumMethodCoverage
-				+ ", minimumClassCoverage=" + minimumClassCoverage
-				+ ", maximumInstructionCoverage=" + maximumInstructionCoverage
-				+ ", maximumBranchCoverage=" + maximumBranchCoverage
-				+ ", maximumComplexityCoverage=" + maximumComplexityCoverage
-				+ ", maximumLineCoverage=" + maximumLineCoverage
-				+ ", maximumMethodCoverage=" + maximumMethodCoverage
-				+ ", maximumClassCoverage=" + maximumClassCoverage + "]";
-	}
+    public String getExecPattern() {
+        return execPattern;
+    }
 
+    public String getClassPattern() {
+        return classPattern;
+    }
 
+    public String getSourcePattern() {
+        return sourcePattern;
+    }
 
-	public String getExecPattern() {
-		return execPattern;
-	}
+    public String getInclusionPattern() {
+        return inclusionPattern;
+    }
 
-	public String getClassPattern() {
-		return classPattern;
-	}
+    public String getExclusionPattern() {
+        return exclusionPattern;
+    }
 
-	public String getSourcePattern() {
-		return sourcePattern;
-	}
-	
-	public String getInclusionPattern() {
-		return inclusionPattern;
-	}
+    public String getMinimumInstructionCoverage() {
+        return minimumInstructionCoverage;
+    }
 
-	public String getExclusionPattern() {
-		return exclusionPattern;
-	}
+    public String getMinimumBranchCoverage() {
+        return minimumBranchCoverage;
+    }
 
+    public String getMinimumComplexityCoverage() {
+        return minimumComplexityCoverage;
+    }
 
+    public String getMinimumLineCoverage() {
+        return minimumLineCoverage;
+    }
 
-	public String getMinimumInstructionCoverage() {
-		return minimumInstructionCoverage;
-	}
+    public String getMinimumMethodCoverage() {
+        return minimumMethodCoverage;
+    }
 
+    public String getMinimumClassCoverage() {
+        return minimumClassCoverage;
+    }
 
+    public String getMaximumInstructionCoverage() {
+        return maximumInstructionCoverage;
+    }
 
-	public String getMinimumBranchCoverage() {
-		return minimumBranchCoverage;
-	}
+    public String getMaximumBranchCoverage() {
+        return maximumBranchCoverage;
+    }
 
+    public String getMaximumComplexityCoverage() {
+        return maximumComplexityCoverage;
+    }
 
+    public String getMaximumLineCoverage() {
+        return maximumLineCoverage;
+    }
 
-	public String getMinimumComplexityCoverage() {
-		return minimumComplexityCoverage;
-	}
+    public String getMaximumMethodCoverage() {
+        return maximumMethodCoverage;
+    }
 
+    public String getMaximumClassCoverage() {
+        return maximumClassCoverage;
+    }
 
+    public boolean isChangeBuildStatus() {
+        return changeBuildStatus;
+    }
 
-	public String getMinimumLineCoverage() {
-		return minimumLineCoverage;
-	}
-
-
-
-	public String getMinimumMethodCoverage() {
-		return minimumMethodCoverage;
-	}
-
-
-
-	public String getMinimumClassCoverage() {
-		return minimumClassCoverage;
-	}
-
-
-
-	public String getMaximumInstructionCoverage() {
-		return maximumInstructionCoverage;
-	}
-
-
-
-	public String getMaximumBranchCoverage() {
-		return maximumBranchCoverage;
-	}
-
-
-
-	public String getMaximumComplexityCoverage() {
-		return maximumComplexityCoverage;
-	}
-
-
-
-	public String getMaximumLineCoverage() {
-		return maximumLineCoverage;
-	}
-
-
-
-	public String getMaximumMethodCoverage() {
-		return maximumMethodCoverage;
-	}
-
-
-
-	public String getMaximumClassCoverage() {
-		return maximumClassCoverage;
-	}
-
-
-	public boolean isChangeBuildStatus() {
-		return changeBuildStatus;
-	}
-	
     public boolean getChangeBuildStatus() {
-		return changeBuildStatus;
-	}
+        return changeBuildStatus;
+    }
+
+    public boolean getCanRunOnFailed() {
+        return changeBuildStatus;
+    }
+
+    public boolean isCanRunOnFailed() {
+        return changeBuildStatus;
+    }
+
     @DataBoundSetter
     public void setExecPattern(String execPattern) {
         this.execPattern = execPattern;
@@ -352,6 +337,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
+    public void setCanRunOnFailed(boolean canRunOnFailed) {
+        this.canRunOnFailed = canRunOnFailed;
+    }
+
+    @DataBoundSetter
     public void setInclusionPattern(String inclusionPattern) {
         this.inclusionPattern = inclusionPattern;
     }
@@ -361,52 +351,48 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.exclusionPattern = exclusionPattern;
     }
 
-	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
-		destFolder.mkdirs();
-		
-		sourceFolder.copyRecursiveTo(destFolder);
-	}
-	
-    protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env) {
-        try {
+    protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
+        destFolder.mkdirs();
 
+        sourceFolder.copyRecursiveTo(destFolder);
+    }
+
+    private String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env) {
+        try {
             final EnvVars environment = build.getEnvironment(listener);
             environment.overrideAll(env);
             return environment.expand(input);
-            
         } catch (Exception e) {
-            listener.getLogger().println("Failed to resolve parameters in string \""+
-            input+"\" due to following error:\n"+e.getMessage());
+            listener.getLogger().printf("Failed to resolve parameters in string \"%s\" due to following error:\n%s%n",
+                    input, e.getMessage());
+            return input;
         }
-        return input;
     }
 
-    protected String resolveFilePaths(AbstractBuild<?, ?> build, TaskListener listener, String input) {
+    private String resolveFilePaths(AbstractBuild<?, ?> build, TaskListener listener, String input) {
         try {
-
             final EnvVars environment = build.getEnvironment(listener);
             environment.overrideAll(build.getBuildVariables());
             return environment.expand(input);
-
         } catch (Exception e) {
-            listener.getLogger().println("Failed to resolve parameters in string \""+
-                    input+"\" due to following error:\n"+e.getMessage());
+            listener.getLogger().printf("Failed to resolve parameters in string \"%s\" due to following error:\n%s%n",
+                    input, e.getMessage());
+            return input;
         }
-        return input;
     }
 
-    protected static FilePath[] resolveDirPaths(FilePath workspace, TaskListener listener, final String input) {
-		//final PrintStream logger = listener.getLogger();
-		FilePath[] directoryPaths = null;
-		try {
+    private static FilePath[] resolveDirPaths(FilePath workspace, TaskListener listener, final String input) {
+        //final PrintStream logger = listener.getLogger();
+        FilePath[] directoryPaths = null;
+        try {
             directoryPaths = workspace.act(new ResolveDirPaths(input));
-		} catch(InterruptedException ie) {
-			ie.printStackTrace();
-		} catch(IOException io) {
-			io.printStackTrace();
-		}
-		return directoryPaths;
-	}
+        } catch (InterruptedException ie) {
+            ie.printStackTrace();
+        } catch (IOException io) {
+            io.printStackTrace();
+        }
+        return directoryPaths;
+    }
 
 
     @Override
@@ -415,7 +401,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         healthReports = createJacocoHealthReportThresholds();
 
-        if (run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) {
+        if ((run.getResult() == Result.FAILURE && !canRunOnFailed) || run.getResult() == Result.ABORTED) {
             return;
         }
 
@@ -425,8 +411,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         EnvVars env = run.getEnvironment(taskListener);
         env.overrideAll(envs);
 
-        if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
-            if(run.getResult().isWorseThan(Result.UNSTABLE)) {
+        if ((execPattern == null) || (classPattern == null) || (sourcePattern == null)) {
+            if (run.getResult().isWorseThan(Result.UNSTABLE)) {
                 return;
             }
 
@@ -435,7 +421,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             return;
         }
 
-        logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
+        logger.printf("[JaCoCo plugin] %s;%s;%s; locations are configured%n", execPattern, classPattern, sourcePattern);
 
         JacocoReportDir dir = new JacocoReportDir(run.getRootDir());
 
@@ -444,10 +430,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
 
         List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
-        logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
+        logger.printf("[JaCoCo plugin] Number of found exec files for pattern %s: %d%n",
+                execPattern, matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
-        logger.print(" " + Util.join(matchedExecFiles," "));
+        logger.print(" " + Util.join(matchedExecFiles, " "));
         FilePath[] matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
@@ -493,7 +480,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                     + ", branch: " + result.getBranchCoverage().getPercentage()
                     + ", instruction: " + result.getInstructionCoverage().getPercentage());
             result.setThresholds(healthReports);
-            if (changeBuildStatus) {
+            if (run.getResult() != Result.FAILURE && changeBuildStatus) {
                 run.setResult(checkResult(action));
             }
         }
@@ -510,15 +497,25 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
 
     public static Result checkResult(JacocoBuildAction action) {
-		if ((action.getBranchCoverage().getPercentageFloat() < action.getThresholds().getMinBranch()) || (action.getInstructionCoverage().getPercentageFloat() < action.getThresholds().getMinInstruction())  || (action.getClassCoverage().getPercentageFloat() < action.getThresholds().getMinClass())  || (action.getLineCoverage().getPercentageFloat() < action.getThresholds().getMinLine())  || (action.getComplexityScore().getPercentageFloat() < action.getThresholds().getMinComplexity())  || (action.getMethodCoverage().getPercentageFloat() < action.getThresholds().getMinMethod())) {
-			return Result.FAILURE;
-		}
-		if ((action.getBranchCoverage().getPercentageFloat() < action.getThresholds().getMaxBranch()) || (action.getInstructionCoverage().getPercentageFloat() < action.getThresholds().getMaxInstruction())  || (action.getClassCoverage().getPercentageFloat() < action.getThresholds().getMaxClass())  || (action.getLineCoverage().getPercentageFloat() < action.getThresholds().getMaxLine())  || (action.getComplexityScore().getPercentageFloat() < action.getThresholds().getMaxComplexity())  || (action.getMethodCoverage().getPercentageFloat() < action.getThresholds().getMaxMethod())) {
-			return Result.UNSTABLE;
-		}
-		return Result.SUCCESS;
-	}
-	
+        if ((action.getBranchCoverage().getPercentageFloat() < action.getThresholds().getMinBranch())
+                || (action.getInstructionCoverage().getPercentageFloat() < action.getThresholds().getMinInstruction())
+                || (action.getClassCoverage().getPercentageFloat() < action.getThresholds().getMinClass())
+                || (action.getLineCoverage().getPercentageFloat() < action.getThresholds().getMinLine())
+                || (action.getComplexityScore().getPercentageFloat() < action.getThresholds().getMinComplexity())
+                || (action.getMethodCoverage().getPercentageFloat() < action.getThresholds().getMinMethod())) {
+            return Result.FAILURE;
+        }
+        if ((action.getBranchCoverage().getPercentageFloat() < action.getThresholds().getMaxBranch())
+                || (action.getInstructionCoverage().getPercentageFloat() < action.getThresholds().getMaxInstruction())
+                || (action.getClassCoverage().getPercentageFloat() < action.getThresholds().getMaxClass())
+                || (action.getLineCoverage().getPercentageFloat() < action.getThresholds().getMaxLine())
+                || (action.getComplexityScore().getPercentageFloat() < action.getThresholds().getMaxComplexity())
+                || (action.getMethodCoverage().getPercentageFloat() < action.getThresholds().getMaxMethod())) {
+            return Result.UNSTABLE;
+        }
+        return Result.SUCCESS;
+    }
+
     @Override
     public Action getProjectAction(AbstractProject<?, ?> project) {
         return new JacocoProjectAction(project);
@@ -533,8 +530,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         return DESCRIPTOR;
     }
 
-
-	@Extension
+    @Extension
     public static final BuildStepDescriptor<Publisher> DESCRIPTOR = new DescriptorImpl();
 
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
@@ -542,16 +538,16 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             super(JacocoPublisher.class);
         }
 
-		@Override
+        @Override
         public String getDisplayName() {
             return Messages.JacocoPublisher_DisplayName();
         }
 
-		@Override
+        @Override
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
-		
+
 		/*@Override
         public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
             JacocoPublisher pub = new JacocoPublisher();
@@ -598,7 +594,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
             FilePath base = new FilePath(f);
-            ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
+            ArrayList<FilePath> localDirectoryPaths = new ArrayList<FilePath>();
             String[] includes = input.split(DIR_SEP);
             DirectoryScanner ds = new DirectoryScanner();
 
@@ -616,6 +612,4 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
 
     }
-
-    //private static final Logger logger = Logger.getLogger(JacocoPublisher.class.getName());
 }
