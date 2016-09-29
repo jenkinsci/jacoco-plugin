@@ -29,7 +29,7 @@ THE SOFTWARE.
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>plugin</artifactId>
       <version>1.609.3</version>
-      <relativePath/>
+      <relativePath />
    </parent>
 
    <artifactId>jacoco</artifactId>
@@ -85,7 +85,8 @@ THE SOFTWARE.
       <connection>scm:git:ssh://github.com/jenkinsci/jacoco-plugin.git</connection>
       <developerConnection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</developerConnection>
 	  <url>https://github.com/jenkinsci/jacoco-plugin</url>
-   </scm>
+     <tag>HEAD</tag>
+  </scm>
 
    <properties>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -191,17 +192,12 @@ THE SOFTWARE.
         </dependency>
    </dependencies>
    
-   <distributionManagement>
-      <repository>
-         <uniqueVersion>false</uniqueVersion>
-         <id>maven.jenkins-ci.org</id>
-         <url>https://repo.jenkins-ci.org/releases/</url>
-      </repository>
-      <snapshotRepository>
-         <id>maven.jenkins-ci.org</id>
-         <url>https://repo.jenkins-ci.org/snapshots/</url>
-      </snapshotRepository>
-   </distributionManagement>
+	<distributionManagement>
+		<repository>
+		  <id>maven.jenkins-ci.org</id>
+		  <url>https://repo.jenkins-ci.org/releases</url>
+		</repository>
+	 </distributionManagement>
 
    <build>
       <plugins>
