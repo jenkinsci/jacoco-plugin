@@ -28,7 +28,8 @@ THE SOFTWARE.
    <parent>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>1.609.3</version>
+      <!-- This is the version of the parent-pom. The version of Jenkins that is supported is set below in the properties-section! -->
+      <version>2.15</version>
       <relativePath />
    </parent>
 
@@ -89,6 +90,8 @@ THE SOFTWARE.
   </scm>
 
    <properties>
+      <!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
+      <jenkins.version>1.609.3</jenkins.version>
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -121,6 +124,12 @@ THE SOFTWARE.
          <artifactId>dashboard-view</artifactId>
          <version>2.1</version>
          <optional>true</optional>
+         <exclusions>
+            <exclusion>
+                <groupId>org.sonatype.sisu</groupId>
+                <artifactId>sisu-guice</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
       <dependency>
 	    <groupId>org.jacoco</groupId>
@@ -166,6 +175,12 @@ THE SOFTWARE.
             <artifactId>maven-plugin-api</artifactId>
             <version>3.3.9</version>
             <scope>test</scope>
+           <exclusions>
+              <exclusion>
+                 <groupId>org.sonatype.sisu</groupId>
+                 <artifactId>sisu-guice</artifactId>
+              </exclusion>
+           </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
