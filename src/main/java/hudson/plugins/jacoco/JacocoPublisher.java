@@ -395,7 +395,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         return input;
     }
 
-    protected static FilePath[] resolveDirPaths(FilePath workspace, TaskListener listener, final String input) {
+    protected static FilePath[] resolveDirPaths(AbstractBuild<?, ?> build, FilePath workspace, TaskListener listener, final String input) {
 		//final PrintStream logger = listener.getLogger();
 		FilePath[] directoryPaths = null;
 		try {
@@ -450,13 +450,13 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
-        FilePath[] matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
+        FilePath[] matchedClassDirs = resolveDirPaths((AbstractBuild) run, filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
             logger.print(" " + file);
         }
-        FilePath[] matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
+        FilePath[] matchedSrcDirs = resolveDirPaths((AbstractBuild) run, filePath, taskListener, sourcePattern);
         logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
         for (FilePath file : matchedSrcDirs) {
             dir.saveSourcesFrom(file);
