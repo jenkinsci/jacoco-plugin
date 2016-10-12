@@ -450,13 +450,19 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         dir.addExecFiles(matchedExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
-        FilePath[] matchedClassDirs = resolveDirPaths((AbstractBuild) run, filePath, taskListener, classPattern);
+        FilePath[] matchedClassDirs = {};
+        if (run instanceof AbstractBuild) {
+            matchedClassDirs = resolveDirPaths((AbstractBuild) run, filePath, taskListener, classPattern);
+        }
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
             logger.print(" " + file);
         }
-        FilePath[] matchedSrcDirs = resolveDirPaths((AbstractBuild) run, filePath, taskListener, sourcePattern);
+        FilePath[] matchedSrcDirs = {};
+        if (run instanceof AbstractBuild) {
+            matchedSrcDirs = resolveDirPaths((AbstractBuild) run, filePath, taskListener, sourcePattern);
+        }
         logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
         for (FilePath file : matchedSrcDirs) {
             dir.saveSourcesFrom(file);
