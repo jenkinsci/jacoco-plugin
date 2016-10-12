@@ -399,7 +399,9 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		//final PrintStream logger = listener.getLogger();
 		FilePath[] directoryPaths = null;
 		try {
-            directoryPaths = workspace.act(new ResolveDirPaths(input));
+			final EnvVars environment = build.getEnvironment(listener);
+			environment.overrideAll(build.getBuildVariables());
+			directoryPaths = workspace.act(new ResolveDirPaths(environment.expand(input)));
 		} catch(InterruptedException ie) {
 			ie.printStackTrace();
 		} catch(IOException io) {
