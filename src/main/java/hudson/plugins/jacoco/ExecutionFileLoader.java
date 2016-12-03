@@ -2,9 +2,11 @@ package hudson.plugins.jacoco;
 
 import hudson.FilePath;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -84,14 +86,15 @@ public class ExecutionFileLoader implements Serializable {
 			for (FilePath filePath : execFiles) {
 				File executionDataFile = new File(filePath.getRemote());
 				try {
-					final FileInputStream fis = new FileInputStream(executionDataFile);
+					final InputStream inputStream = new BufferedInputStream(
+							new FileInputStream(executionDataFile));
 					try {
-	                    final ExecutionDataReader reader = new ExecutionDataReader(fis);
+	                    final ExecutionDataReader reader = new ExecutionDataReader(inputStream);
 	                    reader.setSessionInfoVisitor(sessionInfoStore);
 	                    reader.setExecutionDataVisitor(executionDataStore);
 	                    reader.read();
 					} finally {
-					    fis.close();
+					    inputStream.close();
 					}
 	            } catch (final IOException e) {
 	            	System.out.println("While reading execution data-file: " + executionDataFile);
