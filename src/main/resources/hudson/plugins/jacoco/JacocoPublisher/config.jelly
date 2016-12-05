@@ -1,126 +1,127 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-   <f:entry>
-   
-   	 <table width="78%">
-      <col width="26%"/>
-      <col width="26%"/>
-      <col width="26%"/>
-      <tr>
-        <td>Path to exec files (e.g.: **/target/**.exec, **/jacoco.exec)</td>
-        <td>Path to class directories (e.g.: **/target/classDir, **/classes)</td>
-        <td>Path to source directories (e.g.: **/mySourceFiles)</td>
-      </tr>
-      
-      <tr>
-        <td>
-          <f:textbox field="execPattern" default="**/**.exec" />
-        </td>
-      
-        <td>
-          <f:textbox field="classPattern"  default="**/classes"/>
-        </td>
-        
-        <td>
-          <f:textbox field="sourcePattern" default="**/src/main/java"/>
-        </td>
-        
-      </tr>
-      </table>
-      <table width="78%">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <f:entry>
+        <table width="78%">
+            <col width="26%"/>
+            <col width="26%"/>
+            <col width="26%"/>
+            <tr>
+                <td>Path to exec files (e.g.: **/target/**.exec, **/jacoco.exec)</td>
+                <td>Path to class directories (e.g.: **/target/classDir, **/classes)</td>
+                <td>Path to source directories (e.g.: **/mySourceFiles)</td>
+            </tr>
+
+            <tr>
+                <td>
+                    <f:textbox field="execPattern" default="**/**.exec"/>
+                </td>
+
+                <td>
+                    <f:textbox field="classPattern" default="**/classes"/>
+                </td>
+
+                <td>
+                    <f:textbox field="sourcePattern" default="**/src/main/java"/>
+                </td>
+            </tr>
+        </table>
+        <table width="78%">
             <col width="39%"/>
-      		<col width="39%"/>
-      <tr>
-        <td>Inclusions (e.g.: **/*.class)</td>
-        <td>Exclusions (e.g.: **/*Test*.class)</td>
-      </tr>
-      
-      <tr>
-        
-        <td>
-          <f:textbox field="inclusionPattern" default=""/>
-        </td>
-        
-        <td>
-          <f:textbox field="exclusionPattern" default=""/>
-        </td>
-        
-      </tr>
-      </table>
+            <col width="39%"/>
+            <tr>
+                <td>Inclusions (e.g.: **/*.class)</td>
+                <td>Exclusions (e.g.: **/*Test*.class)</td>
+            </tr>
+
+            <tr>
+
+                <td>
+                    <f:textbox field="inclusionPattern" default=""/>
+                </td>
+
+                <td>
+                    <f:textbox field="exclusionPattern" default=""/>
+                </td>
+
+            </tr>
+        </table>
     </f:entry>
     <f:entry>
-	  <table width="78%">
-	      <col width="12%"/>
-	      <col width="11%"/>
-	      <col width="11%"/>
-	      <col width="11%"/>
-	      <col width="11%"/>
-	      <col width="11%"/>
-	      <col width="11%"/>
-	        <thead>
-	            <tr>
-	                <td width="12%"></td>
-	                <td width="11%">${%Instruction}</td>
-	                <td width="11%">${%Branch}</td>
-	                <td width="11%">${%Complexity}</td>
-	                <td width="11%">${%Line}</td>
-	                <td width="11%">${%Method}</td>
-	                <td width="11%">${%Class}</td>
-	            </tr>
-	        </thead>
-	        <tbody>
-	            <tr>
-	                <th>
-	                    <img src="${rootURL}/images/16x16/health-80plus.gif" alt="100%"
-	                         title="${%health.100.title}"/>
-	                </th>
-	                <td>
-	                    <f:textbox field="maximumInstructionCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="maximumBranchCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="maximumComplexityCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="maximumLineCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="maximumMethodCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="maximumClassCoverage" default="0" />
-	                </td>
-	            </tr>
-	            <tr>
-	                <th>
-	                    <img src="${rootURL}/images/16x16/health-00to19.gif" alt="0%"
-	                         title="${%health.0.title}"/>
-	                </th>
-	                <td>
-	                    <f:textbox field="minimumInstructionCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="minimumBranchCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="minimumComplexityCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="minimumLineCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="minimumMethodCoverage" default="0" />
-	                </td>
-	                <td>
-	                    <f:textbox field="minimumClassCoverage" default="0" />
-	                </td>
-	            </tr>
-	        </tbody>
-	    </table>
-  </f:entry>
-  <f:entry field="changeBuildStatus">
-   <f:checkbox checked="${instance.selected}" title="Change build status according the thresholds"/>
-  </f:entry>
+        <table width="78%">
+            <col width="12%"/>
+            <col width="11%"/>
+            <col width="11%"/>
+            <col width="11%"/>
+            <col width="11%"/>
+            <col width="11%"/>
+            <col width="11%"/>
+            <thead>
+                <tr>
+                    <td width="12%"></td>
+                    <td width="11%">${%Instruction}</td>
+                    <td width="11%">${%Branch}</td>
+                    <td width="11%">${%Complexity}</td>
+                    <td width="11%">${%Line}</td>
+                    <td width="11%">${%Method}</td>
+                    <td width="11%">${%Class}</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>
+                        <img src="${rootURL}/images/16x16/health-80plus.gif" alt="100%"
+                             title="${%health.100.title}"/>
+                    </th>
+                    <td>
+                        <f:textbox field="maximumInstructionCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="maximumBranchCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="maximumComplexityCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="maximumLineCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="maximumMethodCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="maximumClassCoverage" default="0"/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <img src="${rootURL}/images/16x16/health-00to19.gif" alt="0%" title="${%health.0.title}"/>
+                    </th>
+                    <td>
+                        <f:textbox field="minimumInstructionCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="minimumBranchCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="minimumComplexityCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="minimumLineCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="minimumMethodCoverage" default="0"/>
+                    </td>
+                    <td>
+                        <f:textbox field="minimumClassCoverage" default="0"/>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </f:entry>
+    <f:entry field="changeBuildStatus">
+        <f:checkbox checked="${instance.selected}" title="Change build status according the thresholds"/>
+    </f:entry>
+    <f:entry field="canRunOnFailed">
+        <f:checkbox checked="${instance.selected}" title="If set, also runs when the build has failed. Defaults to false."/>
+    </f:entry>
 </j:jelly>
