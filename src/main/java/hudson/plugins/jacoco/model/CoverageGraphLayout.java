@@ -220,6 +220,10 @@ public class CoverageGraphLayout implements Serializable
 		{
 			return axis + " " + type + " " + value + " " + color;
 		}
+
+		public Color getColor() {
+			return color;
+		}
 	}
 
 	private float baseStroke = 4f;
