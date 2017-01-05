@@ -2,8 +2,8 @@ package hudson.plugins.jacoco.portlet;
 
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
 import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.tasks.Builder;
 
@@ -11,7 +11,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.junit.Test;
-import org.jvnet.hudson.test.HudsonTestCase;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link hudson.plugins.jacoco.portlet.JacocoLoadData} in a Hudson environment.
@@ -19,7 +21,7 @@ import org.jvnet.hudson.test.HudsonTestCase;
  * @author Robert Sandell &lt;robert.sandell@sonyericsson.com&gt;
  * @author Mauro Durante Junior (Mauro.Durantejunior@sonyericsson.com)
  */
-public class JacocoLoadDataHudsonTest extends HudsonTestCase {
+public class JacocoLoadDataHudsonTest{
 
     /**
      * This method tests loadChartDataWithinRange() when it has positive number of days.
