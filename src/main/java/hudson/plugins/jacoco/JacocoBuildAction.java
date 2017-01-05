@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
@@ -72,7 +72,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 */
 	public JacocoBuildAction(
 			Map<CoverageElement.Type, Coverage> ratios,
-			JacocoHealthReportThresholds thresholds, TaskListener listener, String[] inclusions, String[] exclusions, CoverageGraphLayout coverageGraphLayout) {
+			JacocoHealthReportThresholds thresholds, TaskListener listener, String[] inclusions, String[] exclusions, @Nullable CoverageGraphLayout coverageGraphLayout) {
 		logger = listener.getLogger();
 		if (ratios == null) {
 			ratios = Collections.emptyMap();
@@ -302,7 +302,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * @throws IOException
 	 *      if failed to parse the file.
 	 */
-	public static JacocoBuildAction load(Run<?,?> owner, JacocoHealthReportThresholds thresholds, TaskListener listener, JacocoReportDir layout, String[] includes, String[] excludes, @Nonnull CoverageGraphLayout coverageGraphLayout) throws IOException {
+	public static JacocoBuildAction load(Run<?,?> owner, JacocoHealthReportThresholds thresholds, TaskListener listener, JacocoReportDir layout, String[] includes, String[] excludes, @Nullable CoverageGraphLayout coverageGraphLayout) throws IOException {
 		//PrintStream logger = listener.getLogger();
 		Map<CoverageElement.Type,Coverage> ratios = null;
 		
