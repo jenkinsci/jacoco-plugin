@@ -1,6 +1,8 @@
 package hudson.plugins.jacoco.model;
 
-import static org.junit.Assert.assertArrayEquals;
+import hudson.plugins.jacoco.AbstractJacocoTestBase;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
+import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -23,14 +25,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import hudson.plugins.jacoco.AbstractJacocoTestBase;
-import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
-import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue;
+import static org.junit.Assert.assertArrayEquals;
 
 public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 {
 	private static final int WIDTH = 500;
 	private static final int HEIGHT = 200;
+	private static final String TEST_RESOURCES = "src/test/resources/";
 	private static Font font;
 	private IMocksControl ctl;
 	private Locale localeBackup;
@@ -40,7 +41,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 	{
 		// just a free font nobody has on their system, but different enough to default sans-serif,
 		// that you will see missing system font replacement in the output. See #replaceFonts()
-		InputStream is = new FileInputStream("resources/test/belligerent.ttf");
+		InputStream is = new FileInputStream("src/test/resources/belligerent.ttf");
 		font=Font.createFont(Font.TRUETYPE_FONT, is);
 	}
 
@@ -171,7 +172,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 			ChartUtilities.saveChartAsPNG(f, chart, WIDTH, HEIGHT);
 			System.out.println("Stored graph file to " + f.getAbsolutePath());
 		}
-		byte[] expected = FileUtils.readFileToByteArray(new File("resources/test/" + file));
+		byte[] expected = FileUtils.readFileToByteArray(new File(TEST_RESOURCES + file));
 		byte[] actual;
 
 		try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
@@ -193,7 +194,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 
 	private void assertGraph(JFreeChart chart, String file) throws IOException
 	{
-		assertGraph(chart, file, !new File("resources/test/" + file).exists());
+		assertGraph(chart, file, !new File(TEST_RESOURCES + file).exists());
 	}
 
 	private void replaceFonts(JFreeChart chart)
