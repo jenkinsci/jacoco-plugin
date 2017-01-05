@@ -3,12 +3,15 @@ package hudson.plugins.jacoco.portlet.utils;
 import hudson.model.FreeStyleProject;
 import hudson.model.Job;
 
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.jvnet.hudson.test.HudsonTestCase;
+import org.junit.Rule;
+import org.junit.Test;
+import org.jvnet.hudson.test.JenkinsRule;
+
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test {@link hudson.plugins.jacoco.portlet.utils.Utils}
@@ -16,17 +19,20 @@ import org.jvnet.hudson.test.HudsonTestCase;
  *
  * @author Mauro Durante Junior &lt;Mauro.Durantejunior@sonyericsson.com&gt;
  */
-public class UtilsHudsonTest extends HudsonTestCase {
+public class UtilsHudsonTest {
 
+  @Rule
+  public JenkinsRule j = new JenkinsRule();
   /**
    * Tests {@link hudson.plugins.jacoco.portlet.utils.Utils#getLastDate(java.util.List) }.
    * @throws Exception on any exception occurrence.
    */
+  @Test
   public void testGetLastDate() throws Exception {
 
-    FreeStyleProject prj = createFreeStyleProject("prj1");
+    FreeStyleProject prj = j.createFreeStyleProject("prj1");
     prj.scheduleBuild2(0).get();
-    FreeStyleProject prj2 = createFreeStyleProject("prj2");
+    FreeStyleProject prj2 = j.createFreeStyleProject("prj2");
     prj2.scheduleBuild2(0).get();
 
     List<Job<?,?>> jobs = new ArrayList<>();
@@ -37,15 +43,4 @@ public class UtilsHudsonTest extends HudsonTestCase {
     assertNotNull(lastDate);
   }
 
-  /**
-   * Tests {@link hudson.plugins.jacoco.portlet.utils.Utils#roundFloat(int scale, RoundingMode roundingMode, float value) }.
-   */
-  public void testRoundFloat() {
-    int scale = 1;
-    RoundingMode roundingMode = RoundingMode.HALF_EVEN;
-    final float value = 9.987f;
-    final float roundedAs = 10f;
-
-    assertEquals(roundedAs, Utils.roundFloat(scale, roundingMode, value));
-  }
 }
