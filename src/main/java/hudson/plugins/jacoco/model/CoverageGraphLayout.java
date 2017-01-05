@@ -2,7 +2,7 @@ package hudson.plugins.jacoco.model;
 
 import hudson.plugins.jacoco.Messages;
 import java.awt.BasicStroke;
-import java.awt.Color;
+import java.awt.Paint;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +21,24 @@ import org.jfree.ui.RectangleInsets;
 public class CoverageGraphLayout implements Serializable
 {
 	static final long serialVersionUID = 1L;
+
+	public static class Color implements Serializable{
+		int red;
+		int green;
+		int blue;
+		int alpha;
+
+		public Color(java.awt.Color color) {
+			red = color.getRed();
+			green = color.getGreen();
+			blue = color.getBlue();
+			alpha = color.getAlpha();
+		}
+
+		Paint toPaint() {
+			return new java.awt.Color(red, green, blue, alpha);
+		}
+	}
 
 	public enum CoverageType
 	{
@@ -313,10 +331,10 @@ public class CoverageGraphLayout implements Serializable
 		return this;
 	}
 
-	public CoverageGraphLayout color(Color color)
+	public CoverageGraphLayout color(java.awt.Color color)
 	{
 		assurePlot();
-		plots.peek().color = color;
+		plots.peek().color = new Color(color);
 		return this;
 	}
 
@@ -351,19 +369,19 @@ public class CoverageGraphLayout implements Serializable
 			axisId = axisIds.get(p.axis);
 			int lineIdPerAxis = plot.getDataset(axisId).getRowIndex(p.getMessage());
 			LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer(axisId);
-			renderer.setSeriesPaint(lineIdPerAxis, p.color);
-			renderer.setSeriesItemLabelPaint(lineIdPerAxis, p.color);
-			renderer.setSeriesFillPaint(lineIdPerAxis, p.color);
+			renderer.setSeriesPaint(lineIdPerAxis, p.color.toPaint());
+			renderer.setSeriesItemLabelPaint(lineIdPerAxis, p.color.toPaint());
+			renderer.setSeriesFillPaint(lineIdPerAxis, p.color.toPaint());
 			//add line layout here
 		}
 
 		chart.getLegend().setPosition(RectangleEdge.RIGHT);
-		chart.setBackgroundPaint(Color.white);
+		chart.setBackgroundPaint(java.awt.Color.white);
 		// plot.setAxisOffset(new Spacer(Spacer.ABSOLUTE, 5.0, 5.0, 5.0, 5.0));
-		plot.setBackgroundPaint(Color.WHITE);
+		plot.setBackgroundPaint(java.awt.Color.WHITE);
 		plot.setOutlinePaint(null);
 		plot.setRangeGridlinesVisible(true);
-		plot.setRangeGridlinePaint(Color.black);
+		plot.setRangeGridlinePaint(java.awt.Color.black);
 		plot.setInsets(new RectangleInsets(5.0, 0, 0, 5.0));
 		// add common layout here
 	}

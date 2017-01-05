@@ -93,7 +93,7 @@ public class CoverageGraphLayoutTest extends AbstractJacocoTestBase {
         new XmlFile(Run.XSTREAM, new File(TEST_RESOURCES + "jacocobuildaction.xml")).unmarshal(action);
 
         assertEquals(3, action.getCoverageGraphLayout().getPlots().size());
-        assertEquals(Color.orange, action.getCoverageGraphLayout().getPlots().get(2).getColor());
+        assertEquals(Color.orange, action.getCoverageGraphLayout().getPlots().get(2).getColor().toPaint());
 
         assertEquals(getExpected(), Run.XSTREAM.toXML(action));
         //same except of xml header and whitespace
