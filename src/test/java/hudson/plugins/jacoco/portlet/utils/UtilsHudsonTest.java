@@ -3,7 +3,6 @@ package hudson.plugins.jacoco.portlet.utils;
 import hudson.model.FreeStyleProject;
 import hudson.model.Job;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;

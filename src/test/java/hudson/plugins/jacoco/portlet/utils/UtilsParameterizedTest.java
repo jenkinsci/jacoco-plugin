@@ -1,7 +1,5 @@
 package hudson.plugins.jacoco.portlet.utils;
 
-import hudson.plugins.jacoco.portlet.utils.Utils;
-
 import java.util.Arrays;
 import java.util.Collection;
 import org.junit.Test;
@@ -32,7 +30,7 @@ public class UtilsParameterizedTest {
 
   /**
    * The object containing the input and output parameters.
-   * @return Collection<Object[]> a Collection containing pairs of
+   * @return Collection&lt;Object[]> a Collection containing pairs of
    * input values and the respective expected value
    * returned by the method under test.
    */

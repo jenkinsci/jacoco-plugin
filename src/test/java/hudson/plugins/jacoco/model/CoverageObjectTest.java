@@ -1,7 +1,6 @@
 package hudson.plugins.jacoco.model;
 
 import hudson.plugins.jacoco.AbstractJacocoTestBase;
-import hudson.plugins.jacoco.JacocoBuildAction;
 import org.junit.Test;
 
 /**

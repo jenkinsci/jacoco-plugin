@@ -24,8 +24,6 @@ import java.util.SortedMap;
 import static org.junit.Assert.*;
 
 public class JaCoCoColumnTest {
-
-	protected Float percentFloat;
 	private JaCoCoColumn jacocoColumn;
 
 	//@Override
