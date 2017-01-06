@@ -22,14 +22,13 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
  */
 package hudson.plugins.jacoco.portlet.bean;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;

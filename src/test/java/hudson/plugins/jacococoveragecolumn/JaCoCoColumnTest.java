@@ -1,37 +1,27 @@
 package hudson.plugins.jacococoveragecolumn;
 
-import static org.junit.Assert.*;
-import hudson.console.ConsoleNote;
 import hudson.model.BuildListener;
-import hudson.model.ItemGroup;
-import hudson.model.Result;
-import hudson.model.Cause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
-import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.search.QuickSilver;
-
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-
-import javax.servlet.ServletContext;
-
 import hudson.util.StreamTaskListener;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.export.Exported;
+
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Map;
+import java.util.SortedMap;
+
+import static org.junit.Assert.*;
 
 public class JaCoCoColumnTest {
 
@@ -88,7 +78,7 @@ public class JaCoCoColumnTest {
 				try {
 				    MyRun newBuild = newBuild();
 					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
-					assertEquals(1, newBuild.getActions().size());
+					assertEquals(1, newBuild.getAllActions().size());
 					return newBuild;
 				} catch (IOException e) {
 					throw new IllegalStateException(e);

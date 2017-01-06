@@ -3,8 +3,6 @@ package hudson.plugins.jacoco;
 import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
 import hudson.model.Run;
 
 import java.io.IOException;

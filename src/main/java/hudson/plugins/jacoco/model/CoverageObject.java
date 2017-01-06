@@ -1,10 +1,8 @@
 package hudson.plugins.jacoco.model;
 
 import hudson.Util;
-import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.model.Run;
-import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.Rule;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.Axis;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
@@ -290,8 +288,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		float greenBar = ((float)ratio.getTotal())/maximum*100;
 
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'>")
-		.append("<tr>" +
-				"<td class='percentgraph' colspan='2'>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></td></tr>")
+				.append("<tr>" +
+						"<td class='percentgraph' colspan='2'><span class='text'><b>M:</b> ").append(numerator).append(" <b>C:</b> ").append(denominator).append("</span></td></tr>")
 		.append("<tr>")
 		    .append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")	
 		    .append("<td>")
@@ -433,7 +431,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		private CoverageObject<SELF> obj;
 		private CoverageGraphLayout layout;
-		protected Map<Axis,Bounds> bounds=new HashMap<Axis, Bounds>();
+		protected Map<Axis,Bounds> bounds = new HashMap<>();
 
 		protected class Bounds
 		{

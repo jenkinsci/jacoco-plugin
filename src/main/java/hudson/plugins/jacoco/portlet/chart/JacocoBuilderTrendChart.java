@@ -22,7 +22,7 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
@@ -37,8 +37,6 @@ import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -149,10 +147,8 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
 
         // Show empty chart
         if (summaries == null) {
-          JFreeChart chart = ChartFactory.createStackedAreaChart(null, Constants.AXIS_LABEL,
+          return ChartFactory.createStackedAreaChart(null, Constants.AXIS_LABEL,
             Constants.AXIS_LABEL_VALUE, null, PlotOrientation.VERTICAL, true, false, false);
-
-          return chart;
         }
 
         int lineNumber = 0;

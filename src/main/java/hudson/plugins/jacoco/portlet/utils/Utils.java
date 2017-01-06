@@ -22,7 +22,7 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)

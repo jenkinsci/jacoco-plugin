@@ -100,7 +100,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		expect(run.getParent()).andReturn(null).anyTimes();
 		Action action = anyObject();
 		run.addAction(action);
-		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<JacocoBuildAction>();
+		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<>();
 		expectLastCall().andAnswer(new IAnswer<Void>() {
 			@Override
 			public Void answer() throws Throwable {

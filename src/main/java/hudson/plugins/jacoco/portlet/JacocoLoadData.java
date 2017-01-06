@@ -22,7 +22,7 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
@@ -110,14 +110,12 @@ public final class JacocoLoadData {
     }
 
     // Sorting by date, ascending order
-    Map<LocalDate, JacocoCoverageResultSummary> sortedSummaries = new TreeMap<>(summaries);
-
-    return sortedSummaries;
+    return new TreeMap<>(summaries);
 
   }
 
   /**
-   * Summarize JaCoCo converage results.
+   * Summarize JaCoCo coverage results.
    *
    * @param summaries
    *          a Map of JacocoCoverageResultSummary objects indexed by

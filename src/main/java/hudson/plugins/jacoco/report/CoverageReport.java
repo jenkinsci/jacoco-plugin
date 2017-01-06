@@ -23,7 +23,6 @@ import org.kohsuke.stapler.StaplerResponse;
 import org.kohsuke.stapler.WebMethod;
 import org.objectweb.asm.Type;
 
-import hudson.model.AbstractBuild;
 import hudson.plugins.jacoco.ExecutionFileLoader;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.JacocoHealthReportThresholds;

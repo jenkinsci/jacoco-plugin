@@ -1,12 +1,18 @@
 package hudson.plugins.jacoco.model;
 
 import hudson.plugins.jacoco.AbstractJacocoTestBase;
+import hudson.plugins.jacoco.JacocoBuildAction;
+import org.junit.Test;
 
 /**
  * @author Manuel Carrasco
  */
 public class CoverageObjectTest extends AbstractJacocoTestBase {
-	
+	@Test
+    public void testConstruct() {
+	    // no test-content for now...
+    }
+
 	/*@Test
     public void testPrintRatioTable() throws Exception {
 

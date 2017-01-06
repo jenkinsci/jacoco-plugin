@@ -285,7 +285,7 @@ public class ReportFactory {
 			this.outputDirectory = new File(workspaceDir, "\\target\\jenkins-jacoco").getAbsoluteFile(); // this is not permanent; we will not be creating the report just like this
 			this.outputEncoding = "UTF-8";
 			this.sourceEncoding = "UTF-8"; // TODO user preference (UTF-8 is actually often wrong, since javac default is platform default encoding)
-			logger.println("Executin executeReport..");
+			logger.println("Executing executeReport..");
 			this.executeReport(Locale.ENGLISH);
 		}
 	}

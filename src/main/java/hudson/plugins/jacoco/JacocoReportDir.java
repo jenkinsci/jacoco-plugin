@@ -1,7 +1,6 @@
 package hudson.plugins.jacoco;
 
 import hudson.FilePath;
-import hudson.model.AbstractBuild;
 
 import java.io.File;
 import java.io.IOException;

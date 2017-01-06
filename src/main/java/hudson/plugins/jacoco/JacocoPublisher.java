@@ -5,7 +5,6 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Util;
-import hudson.model.Action;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -86,7 +85,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     
 	private static final String DIR_SEP = "\\s*,\\s*";
 
-    private static final Integer THRESHOLD_DEFAULT = Integer.valueOf(0);
+    private static final Integer THRESHOLD_DEFAULT = 0;
 
     @DataBoundConstructor
     public JacocoPublisher() {
