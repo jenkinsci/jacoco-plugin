@@ -22,7 +22,7 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
@@ -33,6 +33,7 @@ import hudson.model.Job;
 import hudson.model.Run;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -93,7 +94,7 @@ public final class Utils {
    * @return LocalDate the last date of all jobs that belogs to
    *         Dashboard View.
    */
-  public static LocalDate getLastDate(List<Job> jobs) {
+  public static LocalDate getLastDate(List<Job<?,?>> jobs) {
     LocalDate lastDate = null;
     for (Job<?,?> job : jobs) {
       Run<?,?> lastRun = job.getLastCompletedBuild();
@@ -121,7 +122,7 @@ public final class Utils {
    *          the value to be rounded
    * @return the rounded value
    */
-  public static float roundFLoat(int scale, int roundingMode, float value) {
+  public static float roundFloat(int scale, RoundingMode roundingMode, float value) {
     BigDecimal bigDecimal = new BigDecimal(value);
     bigDecimal = bigDecimal.setScale(scale, roundingMode);
     return bigDecimal.floatValue();

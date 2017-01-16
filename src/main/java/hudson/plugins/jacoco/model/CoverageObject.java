@@ -1,10 +1,8 @@
 package hudson.plugins.jacoco.model;
 
 import hudson.Util;
-import hudson.model.AbstractBuild;
 import hudson.model.Api;
 import hudson.model.Run;
-import hudson.plugins.jacoco.Messages;
 import hudson.plugins.jacoco.Rule;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.Axis;
 import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
@@ -290,8 +288,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 		float greenBar = ((float)ratio.getTotal())/maximum*100;
 
 		buf.append("<table class='percentgraph' cellpadding='0px' cellspacing='0px'>")
-		.append("<tr>" +
-				"<td class='percentgraph' colspan='2'>").append("<span class='text'>").append("<b>M:</b> "+numerator).append(" ").append("<b>C:</b> "+ denominator).append("</span></td></tr>")
+				.append("<tr>" +
+						"<td class='percentgraph' colspan='2'><span class='text'><b>M:</b> ").append(numerator).append(" <b>C:</b> ").append(denominator).append("</span></td></tr>")
 		.append("<tr>")
 		    .append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")	
 		    .append("<td>")
@@ -392,14 +390,14 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			@Override
 			protected Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> createDataSetBuilder(CoverageObject<SELF> obj)
 			{
-				Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> builders = new LinkedHashMap<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>>();
+				Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> builders = new LinkedHashMap<>();
 				for (Axis axis : layout.getAxes())
 				{
 					builders.put(axis, new DataSetBuilder<String, NumberOnlyBuildLabel>());
 					if (axis.isCrop()) bounds.put(axis, new Bounds());
 				}
 
-				Map<Plot, Number> last = new HashMap<Plot, Number>();
+				Map<Plot, Number> last = new HashMap<>();
 				for (CoverageObject<SELF> a = obj; a != null; a = a.getPreviousResult())
 				{
 					NumberOnlyBuildLabel label = new NumberOnlyBuildLabel(a.getBuild());
@@ -433,7 +431,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		private CoverageObject<SELF> obj;
 		private CoverageGraphLayout layout;
-		protected Map<Axis,Bounds> bounds=new HashMap<Axis, Bounds>();
+		protected Map<Axis,Bounds> bounds = new HashMap<>();
 
 		protected class Bounds
 		{
@@ -463,13 +461,14 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		@Override
 		protected JFreeChart createGraph() {
-			Map<Axis, CategoryDataset> dataSets = new LinkedHashMap<Axis, CategoryDataset>();
+			Map<Axis, CategoryDataset> dataSets = new LinkedHashMap<>();
 			Map<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> dataSetBuilders = createDataSetBuilder(obj);
 			for (Entry<Axis, DataSetBuilder<String, NumberOnlyBuildLabel>> e : dataSetBuilders.entrySet())
 			{
 				dataSets.put(e.getKey(), e.getValue().build());
 			}
-			List<Axis> axes = new ArrayList<Axis>(dataSets.keySet());
+			List<Axis> axes = new ArrayList<>(dataSets.keySet());
+			boolean onlyOneBuild = dataSets.entrySet().iterator().next().getValue().getColumnCount() < 2;
 
 			final JFreeChart chart = ChartFactory.createLineChart(
 					null, // chart title
@@ -487,7 +486,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 			CategoryAxis domainAxis = new ShiftedCategoryAxis(null);
 			plot.setDomainAxis(domainAxis);
 			domainAxis.setCategoryLabelPositions(CategoryLabelPositions.UP_90);
-			domainAxis.setLowerMargin(0.0);
+			domainAxis.setLowerMargin(onlyOneBuild ? 0.5 : 0.0);
 			domainAxis.setUpperMargin(0.0);
 			domainAxis.setCategoryMargin(0.0);
 
@@ -504,7 +503,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				axisId++;
 			}
 
-			layout.apply(chart);
+			layout.apply(chart, onlyOneBuild);
 			return chart;
 		}
 

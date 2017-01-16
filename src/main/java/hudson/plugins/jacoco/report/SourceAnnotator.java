@@ -2,7 +2,6 @@ package hudson.plugins.jacoco.report;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Writer;
@@ -30,7 +29,7 @@ public class SourceAnnotator {
      * Parses the source file into individual lines.
      */
     private List<String> readLines() {
-        ArrayList<String> aList = new ArrayList<String>();
+        ArrayList<String> aList = new ArrayList<>();
 
         BufferedReader br = null;
 
@@ -40,8 +39,6 @@ public class SourceAnnotator {
             while ((line = br.readLine()) != null) {
                 aList.add(line.replaceAll("\\t", "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -71,7 +68,7 @@ public class SourceAnnotator {
                 if (status != ICounter.EMPTY) {
                     printHighlightedLine(buf, i, branches, sourceLines.get(i - 1), status);
                 } else {
-                    buf.append(i + ": ").append(sourceLines.get(i - 1)).append("<br>");
+                    buf.append(i).append(": ").append(sourceLines.get(i - 1)).append("<br>");
                 }
                 output.write(buf.toString());
             }
@@ -98,7 +95,7 @@ public class SourceAnnotator {
      *            coverage status of this line
      */
     private void printHighlightedLine(StringBuilder buf, int lineNumber, ICounter cov, String sourceLine, int status) {
-        buf.append(lineNumber + ":");
+        buf.append(lineNumber).append(":");
 
         String tooltip = getTooltip(cov);
         if (tooltip != null) {
@@ -107,7 +104,7 @@ public class SourceAnnotator {
             buf.append(" <SPAN");
         }
 
-        buf.append(" style=\"BACKGROUND-COLOR: " + getStatusColor(status) + "\">").append(sourceLine).append("</SPAN>").append("<br>");
+        buf.append(" style=\"BACKGROUND-COLOR: ").append(getStatusColor(status)).append("\">").append(sourceLine).append("</SPAN>").append("<br>");
     }
 
     /**

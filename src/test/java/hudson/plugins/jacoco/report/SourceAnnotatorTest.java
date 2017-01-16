@@ -22,12 +22,9 @@ public class SourceAnnotatorTest {
         SourceAnnotator annotator = new SourceAnnotator(file);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(out);
-        try {
+        try (PrintWriter writer = new PrintWriter(out)) {
             ISourceNode cov = new SourceFileCoverageImpl("testclass", "com.example.test");
             annotator.printHighlightedSrcFile(cov, writer);
-        } finally {
-            writer.close();
         }
         String string = new String(out.toByteArray());
         assertTrue(string.contains("package hudson.plugins.jacoco.report"));
@@ -42,18 +39,15 @@ public class SourceAnnotatorTest {
         SourceAnnotator annotator = new SourceAnnotator(file);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(out);
-        try {
+        try (PrintWriter writer = new PrintWriter(out)) {
             SourceNodeImpl cov = new SourceFileCoverageImpl("testclass", "com.example.test");
-            
+
             // set some coverage
             cov.increment(CounterImpl.getInstance(0, 1), CounterImpl.getInstance(1, 2), 21);
             cov.increment(CounterImpl.getInstance(0, 1), CounterImpl.getInstance(0, 4), 22);
             cov.increment(CounterImpl.getInstance(1, 0), CounterImpl.getInstance(3, 0), 23);
-            
+
             annotator.printHighlightedSrcFile(cov, writer);
-        } finally {
-            writer.close();
         }
         String string = new String(out.toByteArray());
         assertTrue(string.contains("package hudson.plugins.jacoco.report"));
@@ -73,12 +67,9 @@ public class SourceAnnotatorTest {
         SourceAnnotator annotator = new SourceAnnotator(file);
         
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        PrintWriter writer = new PrintWriter(out);
-        try {
+        try (PrintWriter writer = new PrintWriter(out)) {
             ISourceNode cov = new SourceFileCoverageImpl("testclass", "com.example.test");
             annotator.printHighlightedSrcFile(cov, writer);
-        } finally {
-            writer.close();
         }
         String string = new String(out.toByteArray());
         assertEquals("<code style=\"white-space:pre;\"></code>", string);

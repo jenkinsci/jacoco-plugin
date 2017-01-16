@@ -3,19 +3,33 @@ package hudson.plugins.jacoco;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.Action;
-import hudson.model.Result;
-import hudson.model.Run;
-import hudson.model.TaskListener;
-import org.easymock.IAnswer;
-import org.junit.Before;
-import org.junit.Test;
+import hudson.model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.easymock.EasyMock.*;
+import hudson.plugins.jacoco.report.ClassReport;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Publisher;
+import org.apache.commons.io.FileUtils;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.internal.analysis.ClassCoverageImpl;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.mock;
+import static org.easymock.EasyMock.niceMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -29,10 +43,193 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
         expect(taskListener.getLogger()).andReturn(System.out).anyTimes();
     }
 
+    @SuppressWarnings("deprecation")
+	@Test
+	public void testConstruct() {
+		JacocoPublisher publisher = new JacocoPublisher(null, null, null, null, null,
+				null, null, null, null,
+				null, null, null, null,
+				null, null, null, null,
+				false);
+		assertNotNull(publisher.toString());
+	}
+
+	@Test
+	public void testGetterSetter() throws Exception {
+		JacocoPublisher publisher = new JacocoPublisher();
+		publisher.setChangeBuildStatus(true);
+		assertTrue(publisher.getChangeBuildStatus());
+		assertTrue(publisher.isChangeBuildStatus());
+
+		publisher.setClassPattern("pattern");
+		assertEquals("pattern", publisher.getClassPattern());
+
+		publisher.setExclusionPattern("excl");
+		assertEquals("excl", publisher.getExclusionPattern());
+
+		publisher.setExecPattern("exec");
+		assertEquals("exec", publisher.getExecPattern());
+
+		publisher.setInclusionPattern("incl");
+		assertEquals("incl", publisher.getInclusionPattern());
+
+		publisher.setSourcePattern("source");
+		assertEquals("source", publisher.getSourcePattern());
+
+		publisher.setMaximumBranchCoverage("maxB");
+		assertEquals("maxB", publisher.getMaximumBranchCoverage());
+
+		publisher.setMaximumClassCoverage("maxCl");
+		assertEquals("maxCl", publisher.getMaximumClassCoverage());
+
+		publisher.setMaximumComplexityCoverage("maxCo");
+		assertEquals("maxCo", publisher.getMaximumComplexityCoverage());
+
+		publisher.setMaximumInstructionCoverage("maxI");
+		assertEquals("maxI", publisher.getMaximumInstructionCoverage());
+
+		publisher.setMaximumLineCoverage("maxL");
+		assertEquals("maxL", publisher.getMaximumLineCoverage());
+
+		publisher.setMaximumMethodCoverage("minM");
+		assertEquals("minM", publisher.getMaximumMethodCoverage());
+
+		publisher.setMinimumBranchCoverage("minB");
+		assertEquals("minB", publisher.getMinimumBranchCoverage());
+
+		publisher.setMinimumClassCoverage("minCl");
+		assertEquals("minCl", publisher.getMinimumClassCoverage());
+
+		publisher.setMinimumComplexityCoverage("minCo");
+		assertEquals("minCo", publisher.getMinimumComplexityCoverage());
+
+		publisher.setMinimumInstructionCoverage("minI");
+		assertEquals("minI", publisher.getMinimumInstructionCoverage());
+
+		publisher.setMinimumLineCoverage("minL");
+		assertEquals("minL", publisher.getMinimumLineCoverage());
+
+		publisher.setMinimumMethodCoverage("minM");
+		assertEquals("minM", publisher.getMinimumMethodCoverage());
+
+		assertNotNull(publisher.toString());
+
+		assertEquals(BuildStepMonitor.NONE, publisher.getRequiredMonitorService());
+
+		BuildStepDescriptor<Publisher> descriptor = publisher.getDescriptor();
+		assertNotNull(descriptor);
+		assertNotNull(descriptor.getDisplayName());
+		assertTrue(descriptor.isApplicable(null));
+	}
+
+	@Test
+	public void testSaveCoverageReports() throws Exception {
+		File tempDir = File.createTempFile("coverage", ".tst");
+		assertTrue(tempDir.delete());
+		try {
+			JacocoPublisher.saveCoverageReports(new FilePath(tempDir), new FilePath(tempDir));
+		} finally {
+			FileUtils.deleteDirectory(tempDir);
+		}
+	}
+
+	@Test
+	public void testResolveFilePathsNoReplace() throws Exception {
+		JacocoPublisher publisher = new JacocoPublisher();
+		Run<?, ?> run = mock(Run.class);
+		TaskListener listener = mock(TaskListener.class);
+
+		expect(run.getEnvironment(listener)).andReturn(new EnvVars());
+
+		EasyMock.replay(run, listener);
+
+		assertEquals("input", publisher.resolveFilePaths(run, listener, "input", Collections.singletonMap("key", "value")));
+
+		EasyMock.verify(run, listener);
+	}
+
+	@Test
+	public void testResolveFilePathsReplace() throws Exception {
+		JacocoPublisher publisher = new JacocoPublisher();
+		Run<?, ?> run = mock(Run.class);
+		TaskListener listener = mock(TaskListener.class);
+
+		expect(run.getEnvironment(listener)).andReturn(new EnvVars());
+
+		EasyMock.replay(run, listener);
+
+		assertEquals("inputvalueinput", publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value")));
+
+		EasyMock.verify(run, listener);
+	}
+
+	@Test
+	public void testResolveFilePathsException() throws Exception {
+		JacocoPublisher publisher = new JacocoPublisher();
+		Run<?, ?> run = mock(Run.class);
+		TaskListener listener = mock(TaskListener.class);
+
+		expect(run.getEnvironment(listener)).andThrow(new IllegalStateException("TestException"));
+		expect(listener.getLogger()).andReturn(System.out);
+
+		EasyMock.replay(run, listener);
+
+		assertEquals("input${key}input", publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value")));
+
+		EasyMock.verify(run, listener);
+	}
+
+	@Test
+	public void testResolveFilePathsAbstractBuildNoReplace() throws Exception {
+		JacocoPublisher publisher = new JacocoPublisher();
+		AbstractBuild<?, ?> build = mock(AbstractBuild.class);
+		TaskListener listener = mock(TaskListener.class);
+
+		expect(build.getEnvironment(listener)).andReturn(new EnvVars());
+		expect(build.getBuildVariables()).andReturn(Collections.singletonMap("key", "value"));
+
+		EasyMock.replay(build, listener);
+
+		assertEquals("input", publisher.resolveFilePaths(build, listener, "input"));
+
+		EasyMock.verify(build, listener);
+	}
+
+	@Test
+	public void testResolveFilePathsAbstractBuildReplace() throws Exception {
+		JacocoPublisher publisher = new JacocoPublisher();
+		AbstractBuild<?, ?> build = mock(AbstractBuild.class);
+		TaskListener listener = mock(TaskListener.class);
+
+		expect(build.getEnvironment(listener)).andReturn(new EnvVars());
+		expect(build.getBuildVariables()).andReturn(Collections.singletonMap("key", "value"));
+
+		EasyMock.replay(build, listener);
+
+		assertEquals("inputvalueinput", publisher.resolveFilePaths(build, listener, "input${key}input"));
+
+		EasyMock.verify(build, listener);
+	}
+
+	@Test
+	public void testResolveFilePathsAbstractBuildException() throws Exception {
+		JacocoPublisher publisher = new JacocoPublisher();
+		AbstractBuild<?, ?> build = mock(AbstractBuild.class);
+		TaskListener listener = mock(TaskListener.class);
+
+		expect(build.getEnvironment(listener)).andThrow(new IllegalStateException("TestException"));
+		expect(listener.getLogger()).andReturn(System.out);
+
+		EasyMock.replay(build, listener);
+
+		assertEquals("input${key}input", publisher.resolveFilePaths(build, listener, "input${key}input"));
+
+		EasyMock.verify(build, listener);
+	}
+
 	@Test
 	public void testLocateReports() throws Exception {
-
-		// Create a temporary workspace in the system 
+		// Create a temporary workspace in the system
 		File w = File.createTempFile("workspace", ".test");
 		assertTrue(w.delete());
 		assertTrue(w.mkdir());
@@ -89,9 +286,10 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		final Run run = mock(Run.class);
 		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
 		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
+		expect(run.getParent()).andReturn(null).anyTimes();
 		Action action = anyObject();
 		run.addAction(action);
-		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<JacocoBuildAction>();
+		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<>();
 		expectLastCall().andAnswer(new IAnswer<Void>() {
 			@Override
 			public Void answer() throws Throwable {
@@ -123,5 +321,17 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
         // verify
 		verify(taskListener, run);
+	}
+
+	@Test
+	public void testCheckResult() throws Exception {
+		TaskListener listener = TaskListener.NULL;
+		JacocoBuildAction action = new JacocoBuildAction(null, new JacocoHealthReportThresholds(), listener, null, null);
+
+		ICoverageNode covReport = new ClassCoverageImpl("name", 1, false);
+
+		action.setCoverage(new ClassReport(), covReport);
+
+		assertEquals(Result.SUCCESS, JacocoPublisher.checkResult(action));
 	}
 }

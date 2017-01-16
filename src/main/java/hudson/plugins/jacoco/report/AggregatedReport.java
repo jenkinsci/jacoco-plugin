@@ -16,7 +16,7 @@ public abstract class AggregatedReport<PARENT extends AggregatedReport<?,PARENT,
     SELF extends AggregatedReport<PARENT,SELF,CHILD>,
     CHILD extends AbstractReport<SELF,CHILD>> extends AbstractReport<PARENT,SELF> {
 
-    private final Map<String, CHILD> children = new TreeMap<String, CHILD>();
+    private final Map<String, CHILD> children = new TreeMap<>();
 
     public void add(CHILD child) {
         children.put(child.getName(),child);
