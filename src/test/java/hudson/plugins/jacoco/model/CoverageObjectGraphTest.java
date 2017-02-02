@@ -152,12 +152,12 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase
 
 	private TestCoverageObject createTestCoverage()
 	{
-		TestCoverageObject t5 = new TestCoverageObject().branch(6, 30).line(5000, 19000);
-		TestCoverageObject t4 = new TestCoverageObject().branch(6, 0).line(5000, 19000).previous(t5);
-		TestCoverageObject t3 = new TestCoverageObject().branch(6, 35).line(5000, 19000).previous(t4);
-		TestCoverageObject t2 = new TestCoverageObject().branch(15, 23).line(10000, 15000).previous(t3);
-		TestCoverageObject t1 = new TestCoverageObject().branch(27, 13).line(12000, 18000).previous(t2);
-		TestCoverageObject t0 = new TestCoverageObject().previous(t1);
+		final TestCoverageObject t5 = new TestCoverageObject().branch(6, 30).line(5000, 19000);
+		final TestCoverageObject t4 = new TestCoverageObject().branch(6, 0).line(5000, 19000).previous(t5);
+		final TestCoverageObject t3 = new TestCoverageObject().branch(6, 35).line(5000, 19000).previous(t4);
+		final TestCoverageObject t2 = new TestCoverageObject().branch(15, 23).line(10000, 15000).previous(t3);
+		final TestCoverageObject t1 = new TestCoverageObject().branch(27, 13).line(12000, 18000).previous(t2);
+		final TestCoverageObject t0 = new TestCoverageObject().branch(40, 0).previous(t1);
 		ctl.replay();
 		return t0;
 	}

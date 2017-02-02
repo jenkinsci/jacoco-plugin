@@ -88,12 +88,12 @@ public class JaCoCoColumnTest {
 			}
 		};
 		assertTrue(jacocoColumn.hasCoverage(mockJob));
-		assertEquals("0.0", jacocoColumn.getPercent(mockJob));
-		assertEquals(new BigDecimal("0.0"), jacocoColumn.getLineCoverage(mockJob));
-		
+		assertEquals("100.0", jacocoColumn.getPercent(mockJob));
+		assertEquals(new BigDecimal("100.0"), jacocoColumn.getLineCoverage(mockJob));
+
 		EasyMock.verify(context);
 	}
-	
+
 	@Test
 	public void testGetLineColorWithNull() throws Exception {
 		assertNull(jacocoColumn.getLineColor(null, null));

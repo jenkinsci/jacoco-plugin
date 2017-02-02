@@ -37,7 +37,7 @@ public class CoverageTest extends AbstractJacocoTestBase {
 
 	@Test
     public void testVacuousCoverage() throws Exception {
-        Coverage c = new Coverage(0, 0);
-        assertEquals(0, c.getPercentage());
+        final Coverage c = new Coverage(0, 0);
+        assertEquals(100, c.getPercentage());
     }
 }
