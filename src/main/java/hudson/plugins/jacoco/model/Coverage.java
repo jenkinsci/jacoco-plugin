@@ -66,7 +66,7 @@ final public class Coverage implements Serializable {
     public float getPercentageFloat() {
         float numerator = covered;
         float denominator = missed + covered;
-        return denominator <= 0 ? 0 : 100 * (numerator / denominator);
+        return denominator <= 0 ? 100 : 100 * (numerator / denominator);
     }
 
     public CoverageElement.Type getType() {
