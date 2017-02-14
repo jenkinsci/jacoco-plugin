@@ -674,7 +674,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                 + ", method: " + deltaCoverageResultSummary.getMethodCoverage().toString()
                 + ", line: " + deltaCoverageResultSummary.getLineCoverage().toString()
                 + ", branch: " + deltaCoverageResultSummary.getBranchCoverage().toString()
-                + ", instruction: " + deltaCoverageResultSummary.getInstructionCoverage().toString());
+                + ", instruction: " + deltaCoverageResultSummary.getInstructionCoverage().toString()
+                + ", complexity: " + deltaCoverageResultSummary.getComplexityCoverage().toString());
 
         if(Utils.isEqualOrLessThan(deltaCoverageResultSummary.getInstructionCoverage(), deltaHealthReport.getDeltaInstruction()) &&
                 (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getBranchCoverage(), deltaHealthReport.getDeltaBranch())) &&
