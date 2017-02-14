@@ -11,6 +11,8 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.plugins.jacoco.portlet.utils.Constants;
+import hudson.plugins.jacoco.portlet.utils.Utils;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.remoting.VirtualChannel;
 import hudson.tasks.BuildStepDescriptor;
@@ -34,6 +36,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 import javax.annotation.Nonnull;
+import hudson.plugins.jacoco.portlet.bean.JacocoDeltaCoverageResultSummary;
 
 /**
  * {@link Publisher} that captures jacoco coverage reports.
@@ -60,6 +63,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
      */
     public JacocoHealthReportThresholds healthReports;
 
+    // Added by Aditi Rajawat for build-over-build feature
+    // Delta coverage thresholds to apply
+    public JacocoHealthReportDeltaThresholds deltaHealthReport;
+
     
     /**
      * Variables containing the configuration set by the user.
@@ -83,6 +90,18 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumMethodCoverage;
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
+
+    /** Added by Aditi Rajawat for build-over-build feature
+     * Following variables contain delta coverage thresholds as configured by the user
+     * Delta coverage = | Last Successful Coverage - Current Coverage |
+     */
+    private String deltaInstructionCoverage;
+    private String deltaBranchCoverage;
+    private String deltaComplexityCoverage;
+    private String deltaLineCoverage;
+    private String deltaMethodCoverage;
+    private String deltaClassCoverage;
+    private boolean buildOverBuild;
     
 	private static final String DIR_SEP = "\\s*,\\s*";
 
@@ -106,6 +125,15 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.maximumMethodCoverage = "0";
         this.maximumClassCoverage = "0";
         this.changeBuildStatus = false;
+        // Added by Aditi Rajawat for build-over-build feature
+        // Updated DataBoundConstructor for the new build-over-build variables
+        this.deltaInstructionCoverage = "0";
+        this.deltaBranchCoverage = "0";
+        this.deltaComplexityCoverage = "0";
+        this.deltaLineCoverage = "0";
+        this.deltaMethodCoverage = "0";
+        this.deltaClassCoverage = "0";
+        this.buildOverBuild = false;
     }
 
 	/**
@@ -114,7 +142,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     @Deprecated
     public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, String maximumInstructionCoverage, String maximumBranchCoverage
     		, String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
-    		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus) {
+    		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus,
+                           String deltaInstructionCoverage, String deltaBranchCoverage, String deltaComplexityCoverage, String deltaLineCoverage, String deltaMethodCoverage, String deltaClassCoverage, boolean buildOverBuild) {
     	this.execPattern = execPattern;
     	this.classPattern = classPattern;
     	this.sourcePattern = sourcePattern;
@@ -133,6 +162,15 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     	this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
     	this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
     	this.changeBuildStatus = changeBuildStatus;
+        // Added by Aditi Rajawat for build-over-build feature
+        // Updated deprecated constructor for the new build-over-build variables
+        this.deltaInstructionCoverage = deltaInstructionCoverage;
+        this.deltaBranchCoverage = deltaBranchCoverage;
+        this.deltaComplexityCoverage = deltaComplexityCoverage;
+        this.deltaLineCoverage = deltaLineCoverage;
+        this.deltaMethodCoverage = deltaMethodCoverage;
+        this.deltaClassCoverage = deltaClassCoverage;
+        this.buildOverBuild = buildOverBuild;
     }
     
     public String checkThresholdInput(String input) {
@@ -166,7 +204,16 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 				+ ", maximumComplexityCoverage=" + maximumComplexityCoverage
 				+ ", maximumLineCoverage=" + maximumLineCoverage
 				+ ", maximumMethodCoverage=" + maximumMethodCoverage
-				+ ", maximumClassCoverage=" + maximumClassCoverage + "]";
+				+ ", maximumClassCoverage=" + maximumClassCoverage
+                // Added by Aditi Rajawat for build-over-build feature
+                // Updated toString() for the new build-over-build variables
+                + ", deltaInstructionCoverage=" + deltaInstructionCoverage
+                + ", deltaBranchCoverage=" + deltaBranchCoverage
+                + ", deltaComplexityCoverage=" + deltaComplexityCoverage
+                + ", deltaLineCoverage=" + deltaLineCoverage
+                + ", deltaMethodCoverage=" + deltaMethodCoverage
+                + ", deltaClassCoverage=" + deltaClassCoverage
+                + "]";
 	}
 
 
@@ -267,10 +314,41 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 	public boolean isChangeBuildStatus() {
 		return changeBuildStatus;
 	}
-	
+
     public boolean getChangeBuildStatus() {
 		return changeBuildStatus;
 	}
+
+	// Added by Aditi Rajawat for build-over-build feature
+    // Getter methods for delta coverage thresholds and build over build flag
+    public String getDeltaInstructionCoverage() {
+        return deltaInstructionCoverage;
+    }
+
+    public String getDeltaBranchCoverage() {
+        return deltaBranchCoverage;
+    }
+
+    public String getDeltaComplexityCoverage() {
+        return deltaComplexityCoverage;
+    }
+
+    public String getDeltaLineCoverage() {
+        return deltaLineCoverage;
+    }
+
+    public String getDeltaMethodCoverage() {
+        return deltaMethodCoverage;
+    }
+
+    public String getDeltaClassCoverage() {
+        return deltaClassCoverage;
+    }
+
+    public boolean isBuildOverBuild() {
+        return buildOverBuild;
+    }
+
     @DataBoundSetter
     public void setExecPattern(String execPattern) {
         this.execPattern = execPattern;
@@ -361,6 +439,43 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.exclusionPattern = exclusionPattern;
     }
 
+    // Added by Aditi Rajawat for build-over-build feature
+    // Setter methods for delta coverage thresholds and build over build flag
+    @DataBoundSetter
+    public void setDeltaInstructionCoverage(String deltaInstructionCoverage) {
+        this.deltaInstructionCoverage = deltaInstructionCoverage;
+    }
+
+    @DataBoundSetter
+    public void setDeltaBranchCoverage(String deltaBranchCoverage) {
+        this.deltaBranchCoverage = deltaBranchCoverage;
+    }
+
+    @DataBoundSetter
+    public void setDeltaComplexityCoverage(String deltaComplexityCoverage) {
+        this.deltaComplexityCoverage = deltaComplexityCoverage;
+    }
+
+    @DataBoundSetter
+    public void setDeltaLineCoverage(String deltaLineCoverage) {
+        this.deltaLineCoverage = deltaLineCoverage;
+    }
+
+    @DataBoundSetter
+    public void setDeltaMethodCoverage(String deltaMethodCoverage) {
+        this.deltaMethodCoverage = deltaMethodCoverage;
+    }
+
+    @DataBoundSetter
+    public void setDeltaClassCoverage(String deltaClassCoverage) {
+        this.deltaClassCoverage = deltaClassCoverage;
+    }
+
+    @DataBoundSetter
+    public void setBuildOverBuild(boolean buildOverBuild) {
+        this.buildOverBuild = buildOverBuild;
+    }
+
 	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
 		destFolder.mkdirs();
 		
@@ -414,6 +529,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild) run).getBuildVariables() : Collections.<String, String>emptyMap();
 
         healthReports = createJacocoHealthReportThresholds();
+
+        // Added by Aditi Rajawat for build-over-build feature
+        // Initialize delta health report with user-configured threshold values
+        deltaHealthReport = createJacocoDeltaHealthReportThresholds();
 
         if (run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) {
             return;
@@ -493,8 +612,24 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                     + ", branch: " + result.getBranchCoverage().getPercentage()
                     + ", instruction: " + result.getInstructionCoverage().getPercentage());
             result.setThresholds(healthReports);
+
+            // Modified by Aditi Rajawat for build-over-build feature
+            // Calculate final result of the current build according to the state of two flags: changeBuildStatus and buildOverBuild
+            // Final result is the logical AND of two operation results
+            // Initializing individual operation result as SUCCESS to eliminate impact if the corresponding flag is not set
+            Result applyMinMaxTh = Result.SUCCESS, applyDeltaTh = Result.SUCCESS;
             if (changeBuildStatus) {
-                run.setResult(checkResult(action));
+                applyMinMaxTh = checkResult(action); // Compare current coverage with minimum and maximum coverage thresholds
+                logger.println("[JaCoCo plugin] Health thresholds "+ healthReports.toString());
+                logger.println("[JaCoCo plugin] Apply Min/Max thresholds result: "+ applyMinMaxTh.toString());
+            }
+            if(buildOverBuild){
+                applyDeltaTh = checkBuildOverBuildResult(run); // Compute delta coverage of current build and compare with delta thresholds
+                logger.println("[JaCoCo plugin] Delta Thresholds "+ deltaHealthReport.toString());
+                logger.println("[JaCoCo plugin] Build over build result: "+ applyDeltaTh.toString());
+            }
+            if(changeBuildStatus || buildOverBuild) {
+                run.setResult(Utils.applyLogicalAnd(applyMinMaxTh, applyDeltaTh));
             }
         }
     }
@@ -508,6 +643,15 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
     }
 
+    // Added by Aditi Rajawat for build-over-build feature
+    /**
+     * Creates JacocoHealthReportDeltaThresholds object to encapsulate user configured delta threshold values.
+     * The values entered by the user are validated to be in range of [0, 100] percentage
+     */
+    private JacocoHealthReportDeltaThresholds createJacocoDeltaHealthReportThresholds(){
+        JacocoHealthReportDeltaThresholds jacocoHealthReportDeltaThresholds = new JacocoHealthReportDeltaThresholds(this.deltaInstructionCoverage, this.deltaBranchCoverage, this.deltaComplexityCoverage, this.deltaLineCoverage, this.deltaMethodCoverage, this.deltaClassCoverage);
+        return jacocoHealthReportDeltaThresholds;
+    }
 
     public static Result checkResult(JacocoBuildAction action) {
 		if ((action.getBranchCoverage().getPercentageFloat() < action.getThresholds().getMinBranch()) || (action.getInstructionCoverage().getPercentageFloat() < action.getThresholds().getMinInstruction())  || (action.getClassCoverage().getPercentageFloat() < action.getThresholds().getMinClass())  || (action.getLineCoverage().getPercentageFloat() < action.getThresholds().getMinLine())  || (action.getComplexityScore().getPercentageFloat() < action.getThresholds().getMinComplexity())  || (action.getMethodCoverage().getPercentageFloat() < action.getThresholds().getMinMethod())) {
@@ -518,6 +662,27 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		}
 		return Result.SUCCESS;
 	}
+
+	// Added by Aditi Rajawat for build-over-build feature
+    // Calculates actual delta coverage of the current build by subtracting it's coverage from coverage of last successful build
+    // and compares if the delta coverage is less than or equal to user-configured delta thresholds
+    // Returns success (if delta coverage is equal to or less than delta thresholds) OR (if delta coverage is bigger than delta thresholds AND current coverage is bigger than last successful coverage)
+    public Result checkBuildOverBuildResult(Run<?,?> run){
+
+        JacocoDeltaCoverageResultSummary deltaCoverageResultSummary = JacocoDeltaCoverageResultSummary.build(run);
+
+        if(Utils.isEqualOrLessThan(deltaCoverageResultSummary.getInstructionCoverage(), deltaHealthReport.getDeltaInstruction()) &&
+                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getBranchCoverage(), deltaHealthReport.getDeltaBranch())) &&
+                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getComplexityCoverage(), deltaHealthReport.getDeltaComplexity())) &&
+                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getLineCoverage(), deltaHealthReport.getDeltaLine())) &&
+                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getMethodCoverage(), deltaHealthReport.getDeltaMethod())) &&
+                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getClassCoverage(), deltaHealthReport.getDeltaClass())))
+            return Result.SUCCESS;
+        else if(deltaCoverageResultSummary.isCoverageBetterThanPrevious())
+            return Result.SUCCESS;
+        else
+            return Result.FAILURE;
+    }
 	
     @Override
     public Action getProjectAction(AbstractProject<?, ?> project) {

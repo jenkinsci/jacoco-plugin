@@ -123,4 +123,60 @@
   <f:entry field="changeBuildStatus">
    <f:checkbox checked="${instance.selected}" title="Change build status according the thresholds"/>
   </f:entry>
+
+<!-- Added by Aditi Rajawat for the new build over build feature -->
+<!-- User can set the value of delta coverage thresholds, which means maximum coverage difference between the last and the current builds -->
+  <f:entry>
+    <table width="78%">
+    	<col width="12%"/>
+    	<col width="11%"/>
+    	<col width="11%"/>
+    	<col width="11%"/>
+    	<col width="11%"/>
+    	<col width="11%"/>
+    	<col width="11%"/>
+    	<thead>
+    	    <tr>
+    	        <td width="12%"></td>
+    	        <td width="11%">${%Instruction}</td>
+    	        <td width="11%">${%Branch}</td>
+    	        <td width="11%">${%Complexity}</td>
+    	        <td width="11%">${%Line}</td>
+    	        <td width="11%">${%Method}</td>
+    	        <td width="11%">${%Class}</td>
+    	    </tr>
+    	</thead>
+    	<tbody>
+    	     <tr>
+    	         <th>
+    	             <img src="${rootURL}/images/16x16/health-00to19.gif" alt="0%"
+    	                         title="${%health.0.title}"/>
+    	         </th>
+    	         <td>
+    	              <f:textbox field="deltaInstructionCoverage" default="0" />
+    	         </td>
+    	         <td>
+    	              <f:textbox field="deltaBranchCoverage" default="0" />
+    	         </td>
+    	         <td>
+    	              <f:textbox field="deltaComplexityCoverage" default="0" />
+    	         </td>
+    	         <td>
+    	              <f:textbox field="deltaLineCoverage" default="0" />
+    	         </td>
+    	         <td>
+    	              <f:textbox field="deltaMethodCoverage" default="0" />
+    	         </td>
+    	         <td>
+    	              <f:textbox field="deltaClassCoverage" default="0" />
+    	         </td>
+    	     </tr>
+    	</tbody>
+    </table>
+  </f:entry>
+  <!-- The current build will fail if it's coverage drops more than delta threshold as compared to the last successful build -->
+  <f:entry field="buildOverBuild">
+     <f:checkbox checked="${instance.selected}" title="Build over build according the delta thresholds"/>
+  </f:entry>
+
 </j:jelly>

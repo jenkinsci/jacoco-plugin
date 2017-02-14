@@ -3,13 +3,14 @@ package hudson.plugins.jacoco;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.Action;
-import hudson.model.Result;
-import hudson.model.Run;
-import hudson.model.TaskListener;
+import hudson.model.*;
 import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,13 +21,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(JacocoPublisher.class)
 public class JacocoPublisherTest extends AbstractJacocoTestBase {
     private final TaskListener taskListener = niceMock(TaskListener.class);
     private final Launcher launcher = niceMock(Launcher.class);
 
     @Before
     public void setUp() {
-        expect(taskListener.getLogger()).andReturn(System.out).anyTimes();
+
+		expect(taskListener.getLogger()).andReturn(System.out).anyTimes();
     }
 
 	@Test
@@ -124,4 +128,55 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
         // verify
 		verify(taskListener, run);
 	}
+
+	// Test perform with build over build feature turned ON
+	@Test
+	public void testPerformWithBuildOverBuild() throws IOException, InterruptedException {
+
+		// expect
+		final Run run = PowerMock.createNiceMock(Run.class);
+		final Job job = PowerMock.createNiceMock(Job.class);
+
+		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
+		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
+		Action action = anyObject();
+		run.addAction(action);
+		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<JacocoBuildAction>();
+		expectLastCall().andAnswer(new IAnswer<Void>() {
+			@Override
+			public Void answer() throws Throwable {
+				buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
+				buildAction.get().onAttached(run);
+
+				return null;
+			}
+		});
+
+		File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
+		assertTrue(dir.delete());
+		assertTrue(dir.mkdirs());
+		assertTrue(new File(dir, "jacoco/classes").mkdirs());
+		FilePath filePath = new FilePath(dir);
+
+		expect(run.getRootDir()).andReturn(dir).anyTimes();
+		expect(run.getParent()).andReturn(job).anyTimes();
+		expect(job.getLastSuccessfulBuild()).andReturn(run).anyTimes();
+
+
+		PowerMock.replay(taskListener, run, job);
+
+		// execute
+		JacocoPublisher publisher = new JacocoPublisher("**/**.exec", "**/classes", "**/src/main/java", "", "", "0", "0"
+				, "0", "0", "0", "0", "0", "0"
+				, "0", "0", "0", "0", false,
+		"10.564", "5.65", "9.995", "11.4529", "9.346", "5.237", true);
+		publisher.perform(run, filePath, launcher, taskListener);
+
+		assertNotNull(buildAction.get());
+		assertEquals("Build over build result", "SUCCESS", publisher.checkBuildOverBuildResult(run).toString());
+
+		// verify
+		PowerMock.verify(taskListener, run, job);
+	}
+
 }

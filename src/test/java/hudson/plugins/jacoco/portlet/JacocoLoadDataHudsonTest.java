@@ -5,10 +5,12 @@ import hudson.Launcher;
 import hudson.model.BuildListener;
 import hudson.model.AbstractBuild;
 import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
+import hudson.plugins.jacoco.portlet.utils.Constants;
 import hudson.tasks.Builder;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.jvnet.hudson.test.HudsonTestCase;
@@ -146,19 +148,20 @@ public class JacocoLoadDataHudsonTest extends HudsonTestCase {
 	@Test
     public void testGetResultSummary() throws Exception {
 
-        float classCoverage = 78.0f;
-        float lineCoverage = 82.0f;
-        float methodCoverage = 0.7f;
-        float branchCoverage = 7.7f;
-        float instructionCoverage = 8.8f;
-        float complexityScore = 1234f;
+        // Modified by Aditi Rajawat to include big decimal data type
+        BigDecimal classCoverage = new BigDecimal(78.0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal lineCoverage = new BigDecimal(82.0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal methodCoverage = new BigDecimal(0.7).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal branchCoverage = new BigDecimal(7.7).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal instructionCoverage = new BigDecimal(8.8).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal complexityScore = new BigDecimal(1234).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
 
-        float classCoverage2 = 86.9f;
-        float lineCoverage2 = 21.7f;
-        float methodCoverage2 = 60.0f;
-        float branchCoverage2 = 17.7f;
-        float instructionCoverage2 = 18.8f;
-        float complexityScore2 = 2234f;
+        BigDecimal classCoverage2 = new BigDecimal(86.9).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal lineCoverage2 = new BigDecimal(21.7).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal methodCoverage2 = new BigDecimal(60.0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal branchCoverage2 = new BigDecimal(17.7).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal instructionCoverage2 = new BigDecimal(18.8).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        BigDecimal complexityScore2 = new BigDecimal(2234).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
 
         // create a result summary with data from the first emma action
         JacocoCoverageResultSummary coverageResultSummary = new JacocoCoverageResultSummary(

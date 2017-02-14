@@ -128,4 +128,11 @@ public final class Constants {
    * The chart default margin value.
    */
   public static final double DEFAULT_MARGIN = 0.0;
+
+  // Added by Aditi Rajawat for build-over-build feature
+  // All the delta thresholds used have decimal scale of 6
+  /**
+   * The scale of coverage percentage big decimal
+   */
+  public static final int COVERAGE_PERCENTAGE_SCALE = 6;
 }

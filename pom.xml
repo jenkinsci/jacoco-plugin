@@ -93,6 +93,7 @@ THE SOFTWARE.
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <jacoco.version>0.7.7.201606060606</jacoco.version>
+      <powermock.version>1.6.6</powermock.version>
    </properties>
 
    <repositories>
@@ -150,7 +151,19 @@ THE SOFTWARE.
 			<artifactId>easymock</artifactId>
 			<version>3.4</version>
 	</dependency>
-	<dependency>
+      <dependency>
+         <groupId>org.powermock</groupId>
+         <artifactId>powermock-module-junit4</artifactId>
+         <version>${powermock.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.powermock</groupId>
+         <artifactId>powermock-api-easymock</artifactId>
+         <version>${powermock.version}</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
 		<groupId>org.jacoco</groupId>
 		<artifactId>jacoco-maven-plugin</artifactId>
 		<version>${jacoco.version}</version>
