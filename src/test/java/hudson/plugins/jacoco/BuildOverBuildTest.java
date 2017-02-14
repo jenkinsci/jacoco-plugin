@@ -17,6 +17,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -35,8 +36,7 @@ public class BuildOverBuildTest {
     private JacocoHealthReportThresholds healthThresholds;
 
     private Run run = PowerMock.createNiceMock(Run.class);
-    private final TaskListener taskListener = PowerMock.createNiceMock(TaskListener.class);
-    private final Launcher launcher = PowerMock.createNiceMock(Launcher.class);
+    private final PrintStream logger = System.out;
 
     @Before
     public void setUp(){
@@ -60,7 +60,6 @@ public class BuildOverBuildTest {
 
         deltaHealthThresholds = new JacocoHealthReportDeltaThresholds("10.556", "0", "2.3434", "9.11457", "8.2525", "1.5556");
         healthThresholds = new JacocoHealthReportThresholds(88, 100, 85, 100, 75, 90, 100, 100, 83, 95, 86, 92);
-        expect(taskListener.getLogger()).andReturn(System.out).anyTimes();
     }
 
     // Test if the build with delta coverage > delta threshold will fail
@@ -74,7 +73,7 @@ public class BuildOverBuildTest {
 
         JacocoPublisher jacocoPublisher = new JacocoPublisher();
         jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
-        Result result = jacocoPublisher.checkBuildOverBuildResult(run);
+        Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger);
 
         PowerMock.verify(JacocoDeltaCoverageResultSummary.class);
 
@@ -93,7 +92,7 @@ public class BuildOverBuildTest {
 
         JacocoPublisher jacocoPublisher = new JacocoPublisher();
         jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
-        Result result = jacocoPublisher.checkBuildOverBuildResult(run);
+        Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger);
 
         PowerMock.verify(JacocoDeltaCoverageResultSummary.class);
 

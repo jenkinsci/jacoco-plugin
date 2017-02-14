@@ -173,7 +173,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		publisher.perform(run, filePath, launcher, taskListener);
 
 		assertNotNull(buildAction.get());
-		assertEquals("Build over build result", "SUCCESS", publisher.checkBuildOverBuildResult(run).toString());
+		assertEquals("Build over build result", "SUCCESS", publisher.checkBuildOverBuildResult(run, taskListener.getLogger()).toString());
 
 		// verify
 		PowerMock.verify(taskListener, run, job);

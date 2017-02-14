@@ -620,12 +620,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             Result applyMinMaxTh = Result.SUCCESS, applyDeltaTh = Result.SUCCESS;
             if (changeBuildStatus) {
                 applyMinMaxTh = checkResult(action); // Compare current coverage with minimum and maximum coverage thresholds
-                logger.println("[JaCoCo plugin] Health thresholds "+ healthReports.toString());
+                logger.println("[JaCoCo plugin] Health thresholds: "+ healthReports.toString());
                 logger.println("[JaCoCo plugin] Apply Min/Max thresholds result: "+ applyMinMaxTh.toString());
             }
             if(buildOverBuild){
-                applyDeltaTh = checkBuildOverBuildResult(run); // Compute delta coverage of current build and compare with delta thresholds
-                logger.println("[JaCoCo plugin] Delta Thresholds "+ deltaHealthReport.toString());
+                applyDeltaTh = checkBuildOverBuildResult(run, logger); // Compute delta coverage of current build and compare with delta thresholds
+                logger.println("[JaCoCo plugin] Delta Thresholds: "+ deltaHealthReport.toString());
                 logger.println("[JaCoCo plugin] Build over build result: "+ applyDeltaTh.toString());
             }
             if(changeBuildStatus || buildOverBuild) {
@@ -667,9 +667,14 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     // Calculates actual delta coverage of the current build by subtracting it's coverage from coverage of last successful build
     // and compares if the delta coverage is less than or equal to user-configured delta thresholds
     // Returns success (if delta coverage is equal to or less than delta thresholds) OR (if delta coverage is bigger than delta thresholds AND current coverage is bigger than last successful coverage)
-    public Result checkBuildOverBuildResult(Run<?,?> run){
+    public Result checkBuildOverBuildResult(Run<?,?> run, PrintStream logger){
 
         JacocoDeltaCoverageResultSummary deltaCoverageResultSummary = JacocoDeltaCoverageResultSummary.build(run);
+        logger.println("[JaCoCo plugin] Delta coverage: class: " + deltaCoverageResultSummary.getClassCoverage().toString()
+                + ", method: " + deltaCoverageResultSummary.getMethodCoverage().toString()
+                + ", line: " + deltaCoverageResultSummary.getLineCoverage().toString()
+                + ", branch: " + deltaCoverageResultSummary.getBranchCoverage().toString()
+                + ", instruction: " + deltaCoverageResultSummary.getInstructionCoverage().toString());
 
         if(Utils.isEqualOrLessThan(deltaCoverageResultSummary.getInstructionCoverage(), deltaHealthReport.getDeltaInstruction()) &&
                 (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getBranchCoverage(), deltaHealthReport.getDeltaBranch())) &&
