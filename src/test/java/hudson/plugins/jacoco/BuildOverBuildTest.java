@@ -62,7 +62,7 @@ public class BuildOverBuildTest {
         healthThresholds = new JacocoHealthReportThresholds(88, 100, 85, 100, 75, 90, 100, 100, 83, 95, 86, 92);
     }
 
-    // Test if the build with delta coverage > delta threshold will fail
+    // Test if the build with delta coverage > delta threshold and overall coverage lesser than last successful build will fail
     @Test
     public void checkBuildOverBuildFailureTest(){
 
@@ -77,26 +77,32 @@ public class BuildOverBuildTest {
 
         PowerMock.verify(JacocoDeltaCoverageResultSummary.class);
 
-        Assert.assertEquals("Delta coverage is beyond delta health threshold values", Result.FAILURE, result);
+        Assert.assertEquals("Delta coverage is greater than delta health threshold values", Result.FAILURE, result);
 
     }
 
     // Test if the build with delta coverage < delta threshold will pass
+    // and build with delta coverage > delta threshold but overall coverage better than last successful will pass
     @Test
     public void checkBuildOverBuildSuccessTest(){
 
         PowerMock.mockStatic(JacocoDeltaCoverageResultSummary.class);
         expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_2);
+        jacocoDeltaCoverageResultSummary_1.setCoverageBetterThanPrevious(true);
+        expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_1);
 
         PowerMock.replay(JacocoDeltaCoverageResultSummary.class);
 
         JacocoPublisher jacocoPublisher = new JacocoPublisher();
         jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
-        Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger);
+        Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger); // check for first test case: delta coverage < delta threshold
+
+        Assert.assertEquals("Delta coverage is lesser than delta health threshold values", Result.SUCCESS, result);
+
+        result = jacocoPublisher.checkBuildOverBuildResult(run, logger); // check for second test case: delta coverage > delta threshold but overall coverage better than last successful build
+        Assert.assertEquals("Delta coverage is greater than delta health threshold values but overall coverage is better than last successful build's coverage", Result.SUCCESS, result);
 
         PowerMock.verify(JacocoDeltaCoverageResultSummary.class);
 
-        Assert.assertEquals("Delta coverage is beyond delta health threshold values", Result.SUCCESS, result);
     }
-
 }
