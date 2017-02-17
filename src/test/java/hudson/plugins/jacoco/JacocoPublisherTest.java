@@ -46,7 +46,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
     @SuppressWarnings("deprecation")
 	@Test
 	public void testConstruct() {
-		JacocoPublisher publisher = new JacocoPublisher(null, null, null, null, null,
+		JacocoPublisher publisher = new JacocoPublisher(null, null, null, null, null, false,
 				null, null, null, null,
 				null, null, null, null,
 				null, null, null, null,
