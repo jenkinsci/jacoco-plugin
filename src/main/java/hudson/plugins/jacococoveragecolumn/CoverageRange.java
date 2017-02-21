@@ -25,14 +25,14 @@ public enum CoverageRange {
 	private final Color fillColor;
 	private final Color lineColor;
 
-	private CoverageRange(final double floor, final Color fillColor,
+	CoverageRange(final double floor, final Color fillColor,
 			final Color lineColor) {
 		this.floor = floor;
 		this.fillColor = fillColor;
 		this.lineColor = lineColor;
 	}
 
-	public static final CoverageRange valueOf(final Double amount) {
+	public static CoverageRange valueOf(final Double amount) {
 		for (final CoverageRange range : values()) {
 			if (amount >= range.floor) {
 				return range;
@@ -41,7 +41,7 @@ public enum CoverageRange {
 		return ABYSSMAL;
 	}
 
-	public static final Color fillColorOf(final Double amount) {
+	public static Color fillColorOf(final Double amount) {
 		try {
 			for (int i = 0; i < values().length; i++) {
 				final CoverageRange range = values()[i];

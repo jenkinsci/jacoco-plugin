@@ -1,9 +1,9 @@
 package hudson.plugins.jacoco;
 
 import hudson.model.Action;
+import hudson.model.Job;
 import hudson.model.Result;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+import hudson.model.Run;
 
 import java.io.IOException;
 
@@ -16,9 +16,9 @@ import org.kohsuke.stapler.StaplerResponse;
  * @author Kohsuke Kawaguchi
  */
 public final class JacocoProjectAction implements Action {
-    public final AbstractProject<?,?> project;
+    public final Job<?,?> project;
 
-    public JacocoProjectAction(AbstractProject<?,?> project) {
+    public JacocoProjectAction(Job<?,?> project) {
         this.project = project;
     }
 
@@ -38,7 +38,7 @@ public final class JacocoProjectAction implements Action {
      * Gets the most recent {@link JacocoBuildAction} object.
      */
     public JacocoBuildAction getLastResult() {
-        for (AbstractBuild<?, ?> b = project.getLastBuild(); b != null; b = b.getPreviousBuild()) {
+        for (Run<?, ?> b = project.getLastBuild(); b != null; b = b.getPreviousBuild()) {
             if (b.isBuilding() || b.getResult() == Result.FAILURE || b.getResult() == Result.ABORTED)
                 continue;
             JacocoBuildAction r = b.getAction(JacocoBuildAction.class);

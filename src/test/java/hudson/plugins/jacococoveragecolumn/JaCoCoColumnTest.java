@@ -1,41 +1,29 @@
 package hudson.plugins.jacococoveragecolumn;
 
-import static org.junit.Assert.*;
-import hudson.console.ConsoleNote;
 import hudson.model.BuildListener;
-import hudson.model.ItemGroup;
-import hudson.model.Result;
-import hudson.model.Cause;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.model.TaskListener;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
-import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.search.QuickSilver;
-
-import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-
-import javax.servlet.ServletContext;
-
 import hudson.util.StreamTaskListener;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.kohsuke.stapler.export.Exported;
 
-public class JaCoCoColumnTest {
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Map;
+import java.util.SortedMap;
 
-	protected Float percentFloat;
+import static org.junit.Assert.*;
+
+public class JaCoCoColumnTest {
 	private JaCoCoColumn jacocoColumn;
 
 	//@Override
@@ -84,11 +72,11 @@ public class JaCoCoColumnTest {
 			@Override
 			@Exported
 			@QuickSilver
-			public Run<?,?> getLastSuccessfulBuild() {
+			public MyRun getLastSuccessfulBuild() {
 				try {
-				    Run<?,?> newBuild = newBuild();
+				    MyRun newBuild = newBuild();
 					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
-					assertEquals(1, newBuild.getActions().size());
+					assertEquals(1, newBuild.getAllActions().size());
 					return newBuild;
 				} catch (IOException e) {
 					throw new IllegalStateException(e);
@@ -100,12 +88,12 @@ public class JaCoCoColumnTest {
 			}
 		};
 		assertTrue(jacocoColumn.hasCoverage(mockJob));
-		assertEquals("0.0", jacocoColumn.getPercent(mockJob));
-		assertEquals(new BigDecimal("0.0"), jacocoColumn.getLineCoverage(mockJob));
-		
+		assertEquals("100.0", jacocoColumn.getPercent(mockJob));
+		assertEquals(new BigDecimal("100.0"), jacocoColumn.getLineCoverage(mockJob));
+
 		EasyMock.verify(context);
 	}
-	
+
 	@Test
 	public void testGetLineColorWithNull() throws Exception {
 		assertNull(jacocoColumn.getLineColor(null, null));
@@ -176,7 +164,7 @@ public class JaCoCoColumnTest {
         }
 
 		@Override
-		public Run<?,?> getLastSuccessfulBuild() {
+		public MyRun getLastSuccessfulBuild() {
 			return null;
 		}
 	}
@@ -193,10 +181,10 @@ public class JaCoCoColumnTest {
 		@Override
 		@Exported
 		@QuickSilver
-		public Run<?,?> getLastSuccessfulBuild() {
+		public MyRun getLastSuccessfulBuild() {
 			try {
-			    Run<?,?> run = newBuild();
-				Map<Type, Coverage> map = Collections.<CoverageElement.Type, Coverage>emptyMap();
+				MyRun run = newBuild();
+				Map<Type, Coverage> map = Collections.emptyMap();
 				run.addAction(new JacocoBuildAction(map, null, listener, null, null));
 				return run;
 			} catch (IOException e) {
@@ -214,7 +202,7 @@ public class JaCoCoColumnTest {
         @Override
         @Exported
         @QuickSilver
-        public Run<?,?> getLastSuccessfulBuild() {
+        public MyRun getLastSuccessfulBuild() {
             try {
                 return newBuild();
             } catch (IOException e) {
@@ -227,10 +215,10 @@ public class JaCoCoColumnTest {
 		}
 	}
 	
-	private class MyJob extends Job {
+	private class MyJob extends Job<MyJob,MyRun> {
 
         public MyJob(String name) {
-            super((ItemGroup<?>)null, name);
+            super(null, name);
         }
 
         @Override
@@ -239,22 +227,22 @@ public class JaCoCoColumnTest {
         }
 
         @Override
-        protected SortedMap _getRuns() {
+        protected SortedMap<Integer, MyRun> _getRuns() {
             return null;
         }
 
         @Override
-        protected void removeRun(Run run) {
+        protected void removeRun(MyRun run) {
         }
 
-        protected synchronized Run newBuild() throws IOException {
+        protected synchronized MyRun newBuild() throws IOException {
             return new MyRun(this);
         }
 	}
 	
-	private class MyRun extends Run {
+	private class MyRun extends Run<MyJob,MyRun> {
 
-        public MyRun(Job job) throws IOException {
+        public MyRun(MyJob job) throws IOException {
             super(job);
         }
 	}

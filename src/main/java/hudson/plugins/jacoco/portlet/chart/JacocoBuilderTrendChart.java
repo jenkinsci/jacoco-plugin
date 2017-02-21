@@ -22,7 +22,7 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
@@ -117,7 +117,8 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
     Map<LocalDate, JacocoCoverageResultSummary> summaries;
 
     // Retrieve Dashboard View jobs
-    List<Job> jobs = getDashboard().getJobs();
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    List<Job<?,?>> jobs = (List) getDashboard().getJobs();
 
     // Fill a HashMap with the data will be showed in the chart
     summaries = JacocoLoadData.loadChartDataWithinRange(jobs, daysNumber);
@@ -147,10 +148,8 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
 
         // Show empty chart
         if (summaries == null) {
-          JFreeChart chart = ChartFactory.createStackedAreaChart(null, Constants.AXIS_LABEL,
+          return ChartFactory.createStackedAreaChart(null, Constants.AXIS_LABEL,
             Constants.AXIS_LABEL_VALUE, null, PlotOrientation.VERTICAL, true, false, false);
-
-          return chart;
         }
 
         int lineNumber = 0;
@@ -204,7 +203,8 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
    */
   private static CategoryDataset buildDataSet(Map<LocalDate, JacocoCoverageResultSummary> summaries) {
 
-    DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<String, LocalDate>();
+    DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<>();
+
     // Modified by Aditi Rajawat, changed according to big decimal coverage type instead of float
     for (Map.Entry<LocalDate, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
       BigDecimal classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);

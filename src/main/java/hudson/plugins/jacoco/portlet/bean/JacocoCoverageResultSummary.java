@@ -22,7 +22,7 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
@@ -30,6 +30,7 @@
 package hudson.plugins.jacoco.portlet.bean;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,7 +80,7 @@ public class JacocoCoverageResultSummary {
    */
   private BigDecimal complexityScore;
 
-  private List<JacocoCoverageResultSummary> coverageResults = new ArrayList<JacocoCoverageResultSummary>();
+  private List<JacocoCoverageResultSummary> coverageResults = new ArrayList<>();
 
   /**
    * Default Constructor.
@@ -158,7 +159,8 @@ public class JacocoCoverageResultSummary {
     }
 
     float totalClass = this.getClassCoverage().floatValue() / this.getCoverageResults().size();
-    totalClass = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalClass);
+    totalClass = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalClass);
+
     return totalClass;
   }
 
@@ -171,9 +173,10 @@ public class JacocoCoverageResultSummary {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
     } 
-    
+
     float totalBranch = this.getBranchCoverage().floatValue() / this.getCoverageResults().size();
-    totalBranch = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalBranch);
+    totalBranch = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalBranch);
+
     return totalBranch;
   }
 
@@ -186,9 +189,10 @@ public class JacocoCoverageResultSummary {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
     }
-     
+
     float totalInstr = this.getInstructionCoverage().floatValue() / this.getCoverageResults().size();
-    totalInstr = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalInstr);
+    totalInstr = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalInstr);
+
     return totalInstr;
   }
 
@@ -201,9 +205,10 @@ public class JacocoCoverageResultSummary {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
     }
-     
+
     float totalComplex = this.getComplexityScore().floatValue() / this.getCoverageResults().size();
-    totalComplex = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalComplex);
+    totalComplex = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalComplex);
+
     return totalComplex;
   }
 
@@ -216,9 +221,10 @@ public class JacocoCoverageResultSummary {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
     } 
-      
+
     float totalLine = this.getLineCoverage().floatValue() / this.getCoverageResults().size();
-    totalLine = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalLine);
+    totalLine = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalLine);
+
     return totalLine;
   }
 
@@ -231,9 +237,10 @@ public class JacocoCoverageResultSummary {
     if (this.getCoverageResults().size() <= 0) {
       return 0.0f;
     }
-    
+
     float totalMethod = this.getMethodCoverage().floatValue() / this.getCoverageResults().size();
-    totalMethod = Utils.roundFLoat(1, BigDecimal.ROUND_HALF_EVEN, totalMethod);
+    totalMethod = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalMethod);
+
     return totalMethod;
   }
 

@@ -22,7 +22,7 @@
  *  THE SOFTWARE.
  */
 
-/**
+/*
  * @author Allyn Pierre (Allyn.GreyDeAlmeidaLimaPierre@sonyericsson.com)
  * @author Eduardo Palazzo (Eduardo.Palazzo@sonyericsson.com)
  * @author Mauro Durante (Mauro.DuranteJunior@sonyericsson.com)
@@ -37,6 +37,7 @@ import hudson.plugins.jacoco.portlet.utils.Constants;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -66,9 +67,9 @@ public final class JacocoLoadData {
    *          number of days
    * @return Map The sorted summaries
    */
-  public static Map<LocalDate, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job> jobs, int daysNumber) {
+  public static Map<LocalDate, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job<?,?>> jobs, int daysNumber) {
 
-    Map<LocalDate, JacocoCoverageResultSummary> summaries = new HashMap<LocalDate, JacocoCoverageResultSummary>();
+    Map<LocalDate, JacocoCoverageResultSummary> summaries = new HashMap<>();
 
     // Get the last build (last date) of the all jobs
     LocalDate lastDate = Utils.getLastDate(jobs);
@@ -110,14 +111,12 @@ public final class JacocoLoadData {
     }
 
     // Sorting by date, ascending order
-    Map<LocalDate, JacocoCoverageResultSummary> sortedSummaries = new TreeMap<LocalDate, JacocoCoverageResultSummary>(summaries);
-
-    return sortedSummaries;
+    return new TreeMap<>(summaries);
 
   }
 
   /**
-   * Summarize JaCoCo converage results.
+   * Summarize JaCoCo coverage results.
    *
    * @param summaries
    *          a Map of JacocoCoverageResultSummary objects indexed by

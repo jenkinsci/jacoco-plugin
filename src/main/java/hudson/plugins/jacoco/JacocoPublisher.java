@@ -5,7 +5,6 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Util;
-import hudson.model.Action;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -105,6 +104,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     
 	private static final String DIR_SEP = "\\s*,\\s*";
 
+    private static final Integer THRESHOLD_DEFAULT = 0;
+
     @DataBoundConstructor
     public JacocoPublisher() {
         this.execPattern = "**/**.exec";
@@ -149,18 +150,18 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     	this.sourcePattern = sourcePattern;
     	this.inclusionPattern = inclusionPattern;
     	this.exclusionPattern = exclusionPattern;
-    	this.minimumInstructionCoverage = checkThresholdInput(minimumInstructionCoverage);
-    	this.minimumBranchCoverage = checkThresholdInput(minimumBranchCoverage);
-    	this.minimumComplexityCoverage = checkThresholdInput(minimumComplexityCoverage);
-    	this.minimumLineCoverage = checkThresholdInput(minimumLineCoverage);
-    	this.minimumMethodCoverage = checkThresholdInput(minimumMethodCoverage);
-    	this.minimumClassCoverage = checkThresholdInput(minimumClassCoverage);
-    	this.maximumInstructionCoverage = checkThresholdInput(maximumInstructionCoverage);
-    	this.maximumBranchCoverage = checkThresholdInput(maximumBranchCoverage);
-    	this.maximumComplexityCoverage = checkThresholdInput(maximumComplexityCoverage);
-    	this.maximumLineCoverage = checkThresholdInput(maximumLineCoverage);
-    	this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
-    	this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
+    	this.minimumInstructionCoverage = minimumInstructionCoverage;
+    	this.minimumBranchCoverage = minimumBranchCoverage;
+    	this.minimumComplexityCoverage = minimumComplexityCoverage;
+    	this.minimumLineCoverage = minimumLineCoverage;
+    	this.minimumMethodCoverage = minimumMethodCoverage;
+    	this.minimumClassCoverage = minimumClassCoverage;
+    	this.maximumInstructionCoverage = maximumInstructionCoverage;
+    	this.maximumBranchCoverage = maximumBranchCoverage;
+    	this.maximumComplexityCoverage = maximumComplexityCoverage;
+    	this.maximumLineCoverage = maximumLineCoverage;
+    	this.maximumMethodCoverage = maximumMethodCoverage;
+    	this.maximumClassCoverage = maximumClassCoverage;
     	this.changeBuildStatus = changeBuildStatus;
         // Added by Aditi Rajawat for build-over-build feature
         // Updated deprecated constructor for the new build-over-build variables
@@ -173,17 +174,17 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.buildOverBuild = buildOverBuild;
     }
     
-    public String checkThresholdInput(String input) {
+    private Integer convertThresholdInputToInteger(String input, EnvVars env) {
     	if ((input == null) || ("".equals(input))) {
-    		return 0+"";
+    		return THRESHOLD_DEFAULT;
     	}
     	try {
+    		String expandedInput = env.expand(input);
             //noinspection ResultOfMethodCallIgnored
-            Integer.parseInt(input);
+            return Integer.parseInt(expandedInput);
     	} catch(NumberFormatException nfe) {
-    		return  0+"";
+    		return  THRESHOLD_DEFAULT;
     	}
-    	return input;
     }
 
 
@@ -366,62 +367,62 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     @DataBoundSetter
     public void setMinimumInstructionCoverage(String minimumInstructionCoverage) {
-        this.minimumInstructionCoverage = checkThresholdInput(minimumInstructionCoverage);
+        this.minimumInstructionCoverage = minimumInstructionCoverage;
     }
 
     @DataBoundSetter
     public void setMinimumBranchCoverage(String minimumBranchCoverage) {
-        this.minimumBranchCoverage = checkThresholdInput(minimumBranchCoverage);
+        this.minimumBranchCoverage = minimumBranchCoverage;
     }
 
     @DataBoundSetter
     public void setMinimumComplexityCoverage(String minimumComplexityCoverage) {
-        this.minimumComplexityCoverage = checkThresholdInput(minimumComplexityCoverage);
+        this.minimumComplexityCoverage = minimumComplexityCoverage;
     }
 
     @DataBoundSetter
     public void setMinimumLineCoverage(String minimumLineCoverage) {
-        this.minimumLineCoverage = checkThresholdInput(minimumLineCoverage);
+        this.minimumLineCoverage = minimumLineCoverage;
     }
 
     @DataBoundSetter
     public void setMinimumMethodCoverage(String minimumMethodCoverage) {
-        this.minimumMethodCoverage = checkThresholdInput(minimumMethodCoverage);
+        this.minimumMethodCoverage = minimumMethodCoverage;
     }
 
     @DataBoundSetter
     public void setMinimumClassCoverage(String minimumClassCoverage) {
-        this.minimumClassCoverage = checkThresholdInput(minimumClassCoverage);
+        this.minimumClassCoverage = minimumClassCoverage;
     }
 
     @DataBoundSetter
     public void setMaximumInstructionCoverage(String maximumInstructionCoverage) {
-        this.maximumInstructionCoverage = checkThresholdInput(maximumInstructionCoverage);
+        this.maximumInstructionCoverage = maximumInstructionCoverage;
     }
 
     @DataBoundSetter
     public void setMaximumBranchCoverage(String maximumBranchCoverage) {
-        this.maximumBranchCoverage = checkThresholdInput(maximumBranchCoverage);
+        this.maximumBranchCoverage = maximumBranchCoverage;
     }
 
     @DataBoundSetter
     public void setMaximumComplexityCoverage(String maximumComplexityCoverage) {
-        this.maximumComplexityCoverage = checkThresholdInput(maximumComplexityCoverage);
+        this.maximumComplexityCoverage = maximumComplexityCoverage;
     }
 
     @DataBoundSetter
     public void setMaximumLineCoverage(String maximumLineCoverage) {
-        this.maximumLineCoverage = checkThresholdInput(maximumLineCoverage);
+        this.maximumLineCoverage = maximumLineCoverage;
     }
 
     @DataBoundSetter
     public void setMaximumMethodCoverage(String maximumMethodCoverage) {
-        this.maximumMethodCoverage = checkThresholdInput(maximumMethodCoverage);
+        this.maximumMethodCoverage = maximumMethodCoverage;
     }
 
     @DataBoundSetter
     public void setMaximumClassCoverage(String maximumClassCoverage) {
-        this.maximumClassCoverage = checkThresholdInput(maximumClassCoverage);
+        this.maximumClassCoverage = maximumClassCoverage;
     }
 
     @DataBoundSetter
@@ -515,20 +516,21 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		FilePath[] directoryPaths = null;
 		try {
             directoryPaths = workspace.act(new ResolveDirPaths(input));
-		} catch(InterruptedException ie) {
+		} catch(InterruptedException | IOException ie) {
 			ie.printStackTrace();
-		} catch(IOException io) {
-			io.printStackTrace();
 		}
-		return directoryPaths;
+        return directoryPaths;
 	}
 
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
-        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild) run).getBuildVariables() : Collections.<String, String>emptyMap();
+        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild<?,?>) run).getBuildVariables() : Collections.<String, String>emptyMap();
 
-        healthReports = createJacocoHealthReportThresholds();
+        EnvVars env = run.getEnvironment(taskListener);
+        env.overrideAll(envs);
+
+        healthReports = createJacocoHealthReportThresholds(env);
 
         // Added by Aditi Rajawat for build-over-build feature
         // Initialize delta health report with user-configured threshold values
@@ -540,9 +542,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         final PrintStream logger = taskListener.getLogger();
         logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
-
-        EnvVars env = run.getEnvironment(taskListener);
-        env.overrideAll(envs);
 
         if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
             if(run.getResult().isWorseThan(Result.UNSTABLE)) {
@@ -559,7 +558,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         JacocoReportDir dir = new JacocoReportDir(run.getRootDir());
 
         if (run instanceof AbstractBuild) {
-            execPattern = resolveFilePaths((AbstractBuild) run, taskListener, execPattern);
+            execPattern = resolveFilePaths((AbstractBuild<?,?>) run, taskListener, execPattern);
         }
 
         List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
@@ -634,10 +633,22 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
     }
 
-    private JacocoHealthReportThresholds createJacocoHealthReportThresholds() {
+    private JacocoHealthReportThresholds createJacocoHealthReportThresholds(EnvVars env) {
         try {
-            return healthReports = new JacocoHealthReportThresholds(Integer.parseInt(minimumClassCoverage), Integer.parseInt(maximumClassCoverage), Integer.parseInt(minimumMethodCoverage), Integer.parseInt(maximumMethodCoverage), Integer.parseInt(minimumLineCoverage), Integer.parseInt(maximumLineCoverage)
-                    , Integer.parseInt(minimumBranchCoverage), Integer.parseInt(maximumBranchCoverage), Integer.parseInt(minimumInstructionCoverage), Integer.parseInt(maximumInstructionCoverage), Integer.parseInt(minimumComplexityCoverage), Integer.parseInt(maximumComplexityCoverage));
+            return healthReports = new JacocoHealthReportThresholds(
+                    convertThresholdInputToInteger(minimumClassCoverage, env), 
+                    convertThresholdInputToInteger(maximumClassCoverage, env), 
+                    convertThresholdInputToInteger(minimumMethodCoverage, env), 
+                    convertThresholdInputToInteger(maximumMethodCoverage, env), 
+                    convertThresholdInputToInteger(minimumLineCoverage, env), 
+                    convertThresholdInputToInteger(maximumLineCoverage, env), 
+                    convertThresholdInputToInteger(minimumBranchCoverage, env), 
+                    convertThresholdInputToInteger(maximumBranchCoverage, env), 
+                    convertThresholdInputToInteger(minimumInstructionCoverage, env), 
+                    convertThresholdInputToInteger(maximumInstructionCoverage, env), 
+                    convertThresholdInputToInteger(minimumComplexityCoverage, env), 
+                    convertThresholdInputToInteger(maximumComplexityCoverage, env)
+                );
         } catch (NumberFormatException nfe) {
             return healthReports = new JacocoHealthReportThresholds(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
@@ -690,11 +701,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             return Result.FAILURE;
     }
 	
-    @Override
-    public Action getProjectAction(AbstractProject<?, ?> project) {
-        return new JacocoProjectAction(project);
-    }
-
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
     }
@@ -703,7 +709,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     public BuildStepDescriptor<Publisher> getDescriptor() {
         return DESCRIPTOR;
     }
-
 
 	@Extension
     public static final BuildStepDescriptor<Publisher> DESCRIPTOR = new DescriptorImpl();
@@ -719,6 +724,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
 
 		@Override
+        @SuppressWarnings("rawtypes")
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
@@ -769,7 +775,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
             FilePath base = new FilePath(f);
-            ArrayList<FilePath> localDirectoryPaths= new ArrayList<FilePath>();
+            ArrayList<FilePath> localDirectoryPaths= new ArrayList<>();
             String[] includes = input.split(DIR_SEP);
             DirectoryScanner ds = new DirectoryScanner();
 

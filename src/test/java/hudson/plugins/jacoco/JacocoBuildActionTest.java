@@ -1,11 +1,29 @@
 package hudson.plugins.jacoco;
 
 
+import hudson.util.LogTaskListener;
+import org.junit.Test;
+
+import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static org.junit.Assert.assertNotNull;
+
 /**
  * @author Kohsuke Kawaguchi
  */
 public class JacocoBuildActionTest extends AbstractJacocoTestBase {
-  
+    @Test
+    public void testConstruct() throws Exception {
+        Logger logger = Logger.getLogger(this.getClass().getName());
+        JacocoBuildAction r = JacocoBuildAction.load(null,
+                new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
+                new LogTaskListener(logger, Level.INFO),
+                new JacocoReportDir(new File(".")), null, null);
+        assertNotNull(r);
+    }
+
 	/*@Test
     public void testLoadReport1() throws Exception {
         JacocoBuildAction r = JacocoBuildAction.load(null,null,
