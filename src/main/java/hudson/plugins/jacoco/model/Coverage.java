@@ -18,6 +18,7 @@ final public class Coverage implements Serializable {
     private int covered = 0;
     private CoverageElement.Type type;
     boolean initialized = false;
+    private static final int COVERAGE_PERCENTAGE_SCALE = 6; // Scale of coverage percentage
 
     public Coverage(int missed, int covered) {
         this.missed = missed;
@@ -67,6 +68,17 @@ final public class Coverage implements Serializable {
         float numerator = covered;
         float denominator = missed + covered;
         return denominator <= 0 ? 100 : 100 * (numerator / denominator);
+    }
+
+    /**
+     * Gets the decimal percentage with a scale of 6 as a string
+     * @return String
+     */
+    @Exported
+    public String getPercentageDecimal(){
+        float numerator = covered;
+        float denominator = missed + covered;
+        return String.format("%."+ Coverage.COVERAGE_PERCENTAGE_SCALE+"f", denominator <= 0 ? 0 : 100 * (numerator / denominator));
     }
 
     public CoverageElement.Type getType() {

@@ -291,7 +291,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 				.append("<tr>" +
 						"<td class='percentgraph' colspan='2'><span class='text'><b>M:</b> ").append(numerator).append(" <b>C:</b> ").append(denominator).append("</span></td></tr>")
 		.append("<tr>")
-		    .append("<td width='40px' class='data'>").append(ratio.getPercentage()).append("%</td>")	
+		    .append("<td width='40px' class='data'>").append(ratio.getPercentageDecimal()).append("%</td>")	// Modified to display coverage on jenkins UI with scale of 6
 		    .append("<td>")
 		    .append("<div class='percentgraph' style='width: ").append(greenBar).append("px;'>")
 		    .append("<div class='redbar' style='width: ").append(redBar).append("px;'>")

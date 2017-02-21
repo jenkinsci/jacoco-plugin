@@ -197,7 +197,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	@Override
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
 		buf.append("<table class='percentgraph' cellpadding='0' cellspacing='0'><tr class='percentgraph'>")
-		.append("<td style='width:40px' class='data'>").append(ratio.getPercentage()).append("%</td>")
+		.append("<td style='width:40px' class='data'>").append(ratio.getPercentageDecimal()).append("%</td>") // Modified to display coverage percentage with a scale of 6
 		.append("<td class='percentgraph'>")
 		.append("<div class='percentgraph' style='width:100px'>")
 		.append("<div class='redbar' style='width:")

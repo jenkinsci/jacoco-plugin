@@ -9,8 +9,8 @@
 	 		<j:forEach var="coverageRatio" items="${it.coverageRatios}">
 	 		<tr>
 	 			<th style="background-color:#e0e0e0;width:30%">${coverageRatio.key.type}</th>
-	 			<td style="width:15%;text-align:center" class="${coverageRatio.value ? 'red':''}">${coverageRatio.key.percentage}%</td>
-	 			<td><div class="percentgraph"><div style="width:${100 - coverageRatio.key.percentage}%" class="redbar"></div></div></td>
+	 			<td style="width:15%;text-align:center" class="${coverageRatio.value ? 'red':''}">${coverageRatio.key.percentageDecimal}%</td>  <!-- Modified to display coverage on Jenkins UI with scale of 6 -->
+	 			<td><div class="percentgraph"><div style="width:${100 - coverageRatio.key.percentageDecimal}%" class="redbar"></div></div></td>  <!-- Modified to display coverage on Jenkins UI with scale of 6 -->
 	 		</tr>
 	 		</j:forEach>
 	 	</table>		
