@@ -461,6 +461,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
+	    logger.print(" " + file);
         }
 
         // Use skipCopyOfSrcFiles flag to determine if the source files should be copied or skipped. If skipped display appropriate logger message.
@@ -469,6 +470,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
             for (FilePath file : matchedSrcDirs) {
                 dir.saveSourcesFrom(file);
+		logger.print(" " + file);
             }
         }
         else{
