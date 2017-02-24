@@ -68,6 +68,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String sourcePattern;
     private String inclusionPattern;
     private String exclusionPattern;
+    private boolean skipCopyOfSrcFiles; // Added for enabling/disabling copy of source files
 
     private String minimumInstructionCoverage;
     private String minimumBranchCoverage;
@@ -94,6 +95,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.sourcePattern = "**/src/main/java";
         this.inclusionPattern = "";
         this.exclusionPattern = "";
+        this.skipCopyOfSrcFiles = false;
         this.minimumInstructionCoverage = "0";
         this.minimumBranchCoverage = "0";
         this.minimumComplexityCoverage = "0";
@@ -113,7 +115,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
      * Loads the configuration set by user.
      */
     @Deprecated
-    public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, String maximumInstructionCoverage, String maximumBranchCoverage
+    public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, boolean skipCopyOfSrcFiles, String maximumInstructionCoverage, String maximumBranchCoverage
     		, String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
     		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus) {
     	this.execPattern = execPattern;
@@ -121,6 +123,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     	this.sourcePattern = sourcePattern;
     	this.inclusionPattern = inclusionPattern;
     	this.exclusionPattern = exclusionPattern;
+        this.skipCopyOfSrcFiles = skipCopyOfSrcFiles;
     	this.minimumInstructionCoverage = minimumInstructionCoverage;
     	this.minimumBranchCoverage = minimumBranchCoverage;
     	this.minimumComplexityCoverage = minimumComplexityCoverage;
@@ -192,7 +195,9 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		return exclusionPattern;
 	}
 
-
+    public boolean isSkipCopyOfSrcFiles() {
+        return skipCopyOfSrcFiles;
+    }
 
 	public String getMinimumInstructionCoverage() {
 		return minimumInstructionCoverage;
@@ -285,6 +290,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     @DataBoundSetter
     public void setSourcePattern(String sourcePattern) {
         this.sourcePattern = sourcePattern;
+    }
+
+    @DataBoundSetter
+    public void setSkipCopyOfSrcFiles(boolean skipCopyOfSrcFiles) {
+        this.skipCopyOfSrcFiles = skipCopyOfSrcFiles;
     }
 
     @DataBoundSetter
@@ -451,13 +461,20 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         for (FilePath file : matchedClassDirs) {
             dir.saveClassesFrom(file);
-            logger.print(" " + file);
+	    logger.print(" " + file);
         }
-        FilePath[] matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
-        logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
-        for (FilePath file : matchedSrcDirs) {
-            dir.saveSourcesFrom(file);
-            logger.print(" " + file);
+
+        // Use skipCopyOfSrcFiles flag to determine if the source files should be copied or skipped. If skipped display appropriate logger message.
+        if(!this.skipCopyOfSrcFiles) {
+            FilePath[] matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
+            logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
+            for (FilePath file : matchedSrcDirs) {
+                dir.saveSourcesFrom(file);
+		logger.print(" " + file);
+            }
+        }
+        else{
+            logger.print("\n[JaCoCo plugin] Skipping save of matched source directories for source-pattern: " + sourcePattern);
         }
 
         logger.println("\n[JaCoCo plugin] Loading inclusions files..");
