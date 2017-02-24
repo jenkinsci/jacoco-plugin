@@ -48,6 +48,10 @@
       </tr>
       </table>
     </f:entry>
+    <!-- Added to allow the user to enable/disable copy of source files -->
+    <f:entry field="skipCopyOfSrcFiles">
+       <f:checkbox checked="${instance.selected}" title="Disable display of source files for coverage"/>
+    </f:entry>
     <f:entry>
 	  <table width="78%">
 	      <col width="12%"/>
