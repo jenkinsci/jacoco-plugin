@@ -1,11 +1,12 @@
 jacoco-plugin
 =============
 
-
 [![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/jacoco-plugin)](https://jenkins.ci.cloudbees.com/job/plugins/job/jacoco-plugin/)
 [![Build Status](https://travis-ci.org/jenkinsci/jacoco-plugin.svg?branch=master)](https://travis-ci.org/jenkinsci/jacoco-plugin)
 
-Jenkins JaCoCo plugin.
+A plugin for Jenkins to capture and visualize code coverage testing results for projects using the 
+JaCoCo for code-coverage analysis.
+
 More information can be found on the Wiki page https://wiki.jenkins-ci.org/display/JENKINS/JaCoCo+Plugin
 
 Note: Version 2.0.0 and higher requires using JaCoCo 0.7.5 or newer, if your projects still use JaCoCo 0.7.4, 
@@ -27,8 +28,10 @@ Contributing to the Plugin
 ==========================
 
 Plugin source code is hosted on [GitHub](https://github.com/jenkinsci/jacoco-plugin).
+
 New feature proposals and bug fix proposals should be submitted as
 [GitHub pull requests](https://help.github.com/articles/creating-a-pull-request).
+
 Fork the repository on GitHub, prepare your change on your forked
 copy, and submit a pull request (see [here](https://github.com/jenkinsci/jacoco-plugin/pulls) for open pull requests). Your pull request will be evaluated
 by the [Cloudbees Jenkins job](https://jenkins.ci.cloudbees.com/job/plugins/job/jacoco-plugin/)
@@ -47,3 +50,16 @@ when you submit.
 
 Before submitting your change, please review the findbugs output to
 assure that you haven't introduced new findbugs warnings.
+
+How to build and test
+=====================
+
+* Build the plugin:
+
+`mvn package`
+
+* Test locally (invokes a local Jenkins instance with the plugin installed):
+
+`mvn hpi:run`
+
+See https://jenkinsci.github.io/maven-hpi-plugin/ for details.
