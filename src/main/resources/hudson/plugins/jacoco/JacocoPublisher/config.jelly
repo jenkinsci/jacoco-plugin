@@ -36,7 +36,6 @@
       </tr>
       
       <tr>
-        
         <td>
           <f:textbox field="inclusionPattern" default=""/>
         </td>
@@ -44,14 +43,18 @@
         <td>
           <f:textbox field="exclusionPattern" default=""/>
         </td>
-        
       </tr>
       </table>
     </f:entry>
-    <!-- Added to allow the user to enable/disable copy of source files -->
+
+    <!-- Allow the user to enable/disable copy of source files -->
     <f:entry field="skipCopyOfSrcFiles">
        <f:checkbox checked="${instance.selected}" title="Disable display of source files for coverage"/>
     </f:entry>
+
+	<f:entry field="changeBuildStatus">
+		<f:checkbox checked="${instance.selected}" title="Change build status according the thresholds"/>
+	</f:entry>
     <f:entry>
 	  <table width="78%">
 	      <col width="12%"/>
@@ -123,8 +126,5 @@
 	            </tr>
 	        </tbody>
 	    </table>
-  </f:entry>
-  <f:entry field="changeBuildStatus">
-   <f:checkbox checked="${instance.selected}" title="Change build status according the thresholds"/>
   </f:entry>
 </j:jelly>
