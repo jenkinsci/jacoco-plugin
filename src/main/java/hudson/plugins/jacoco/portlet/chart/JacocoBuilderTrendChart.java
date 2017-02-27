@@ -112,15 +112,13 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
    * @return Graph a summary graph
    */
   public Graph getSummaryGraph() {
-
-    Map<LocalDate, JacocoCoverageResultSummary> summaries;
-
     // Retrieve Dashboard View jobs
     @SuppressWarnings({"unchecked", "rawtypes"})
     List<Job<?,?>> jobs = (List) getDashboard().getJobs();
 
     // Fill a HashMap with the data will be showed in the chart
-    summaries = JacocoLoadData.loadChartDataWithinRange(jobs, daysNumber);
+    Map<LocalDate, JacocoCoverageResultSummary> summaries =
+            JacocoLoadData.loadChartDataWithinRange(jobs, daysNumber);
 
     return createTrendChart(summaries, width, height);
   }
