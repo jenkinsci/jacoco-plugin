@@ -74,8 +74,7 @@ final public class Coverage implements Serializable {
 
 
     /**
-     * Added by Aditi Rajawat to get coverage as big decimal
-     * Gets the percentage as big decimal with scale 6
+     * Gets the coverage percentage as big decimal with scale 6
      */
     @Exported
     public BigDecimal getPercentageBigDecimal(){

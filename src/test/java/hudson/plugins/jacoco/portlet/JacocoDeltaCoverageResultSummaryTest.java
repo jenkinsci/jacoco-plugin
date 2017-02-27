@@ -22,10 +22,6 @@ import org.powermock.modules.junit4.*;
 import org.powermock.api.easymock.PowerMock;
 import static org.easymock.EasyMock.*;
 
-/**
- * Created by Aditi Rajawat on 2/10/17.
- */
-
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoLoadData.class)
 public class JacocoDeltaCoverageResultSummaryTest {

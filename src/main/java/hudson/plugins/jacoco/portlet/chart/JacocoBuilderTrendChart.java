@@ -205,7 +205,6 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
 
     DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<>();
 
-    // Modified by Aditi Rajawat, changed according to big decimal coverage type instead of float
     for (Map.Entry<LocalDate, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
       BigDecimal classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
       BigDecimal lineCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);

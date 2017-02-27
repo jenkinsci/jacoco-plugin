@@ -40,8 +40,6 @@ import hudson.plugins.jacoco.portlet.utils.Utils;
 
 /**
  * Summary of the Jacoco Coverage result.
- * Modified by Aditi Rajawat for build-over-build feature
- * Changed coverage type from float to Big Decimal to enable delta coverage calculation upto scale of 6
  */
 public class JacocoCoverageResultSummary {
 

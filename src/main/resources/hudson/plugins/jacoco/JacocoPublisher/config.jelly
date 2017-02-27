@@ -128,7 +128,6 @@
    <f:checkbox checked="${instance.selected}" title="Change build status according the thresholds"/>
   </f:entry>
 
-<!-- Added by Aditi Rajawat for the new build over build feature -->
 <!-- User can set the value of delta coverage thresholds, which means maximum coverage difference between the last and the current builds -->
   <f:entry>
     <table width="78%">

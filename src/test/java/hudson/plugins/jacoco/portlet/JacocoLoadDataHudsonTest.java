@@ -148,7 +148,6 @@ public class JacocoLoadDataHudsonTest extends HudsonTestCase {
 	@Test
     public void testGetResultSummary() throws Exception {
 
-        // Modified by Aditi Rajawat to include big decimal data type
         BigDecimal classCoverage = new BigDecimal(78.0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
         BigDecimal lineCoverage = new BigDecimal(82.0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
         BigDecimal methodCoverage = new BigDecimal(0.7).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);

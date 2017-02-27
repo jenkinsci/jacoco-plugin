@@ -8,7 +8,6 @@ import hudson.plugins.jacoco.portlet.JacocoLoadData;
 import java.math.BigDecimal;
 
 /**
- * Created by Aditi Rajawat on 2/9/17.
  * This class encapsulates actual delta coverage of current build.
  * It calculates absolute difference between coverage of last successful build and current build
  */

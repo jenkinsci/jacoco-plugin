@@ -24,9 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import static org.easymock.EasyMock.*;
 import static org.junit.Assert.assertTrue;
 
-/**
- * Created by Aditi Rajawat on 2/13/17.
- */
+
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoDeltaCoverageResultSummary.class)
 public class BuildOverBuildTest {

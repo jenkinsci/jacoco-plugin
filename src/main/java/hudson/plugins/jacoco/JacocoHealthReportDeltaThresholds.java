@@ -5,7 +5,6 @@ import hudson.plugins.jacoco.portlet.utils.Constants;
 import java.math.BigDecimal;
 
 /**
- * Created by Aditi Rajawat on 2/9/17.
  * This class encapsulates delta thresholds configured by the user.
  * The threshold values are interpreted as percentages
  */

@@ -62,7 +62,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
      */
     public JacocoHealthReportThresholds healthReports;
 
-    // Added by Aditi Rajawat for build-over-build feature
     // Delta coverage thresholds to apply
     public JacocoHealthReportDeltaThresholds deltaHealthReport;
 
@@ -91,7 +90,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
 
-    /** Added by Aditi Rajawat for build-over-build feature
+    /**
      * Following variables contain delta coverage thresholds as configured by the user
      * Delta coverage = | Last Successful Coverage - Current Coverage |
      */
@@ -128,8 +127,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.maximumMethodCoverage = "0";
         this.maximumClassCoverage = "0";
         this.changeBuildStatus = false;
-        // Added by Aditi Rajawat for build-over-build feature
-        // Updated DataBoundConstructor for the new build-over-build variables
         this.deltaInstructionCoverage = "0";
         this.deltaBranchCoverage = "0";
         this.deltaComplexityCoverage = "0";
@@ -166,8 +163,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     	this.maximumMethodCoverage = maximumMethodCoverage;
     	this.maximumClassCoverage = maximumClassCoverage;
     	this.changeBuildStatus = changeBuildStatus;
-        // Added by Aditi Rajawat for build-over-build feature
-        // Updated deprecated constructor for the new build-over-build variables
         this.deltaInstructionCoverage = deltaInstructionCoverage;
         this.deltaBranchCoverage = deltaBranchCoverage;
         this.deltaComplexityCoverage = deltaComplexityCoverage;
@@ -209,8 +204,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 				+ ", maximumLineCoverage=" + maximumLineCoverage
 				+ ", maximumMethodCoverage=" + maximumMethodCoverage
 				+ ", maximumClassCoverage=" + maximumClassCoverage
-                // Added by Aditi Rajawat for build-over-build feature
-                // Updated toString() for the new build-over-build variables
                 + ", deltaInstructionCoverage=" + deltaInstructionCoverage
                 + ", deltaBranchCoverage=" + deltaBranchCoverage
                 + ", deltaComplexityCoverage=" + deltaComplexityCoverage
@@ -325,7 +318,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		return changeBuildStatus;
 	}
 
-	// Added by Aditi Rajawat for build-over-build feature
     // Getter methods for delta coverage thresholds and build over build flag
     public String getDeltaInstructionCoverage() {
         return deltaInstructionCoverage;
@@ -450,7 +442,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.exclusionPattern = exclusionPattern;
     }
 
-    // Added by Aditi Rajawat for build-over-build feature
     // Setter methods for delta coverage thresholds and build over build flag
     @DataBoundSetter
     public void setDeltaInstructionCoverage(String deltaInstructionCoverage) {
@@ -542,7 +533,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         healthReports = createJacocoHealthReportThresholds(env);
 
-        // Added by Aditi Rajawat for build-over-build feature
         // Initialize delta health report with user-configured threshold values
         deltaHealthReport = createJacocoDeltaHealthReportThresholds();
 
@@ -629,7 +619,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                     + ", instruction: " + result.getInstructionCoverage().getPercentage());
             result.setThresholds(healthReports);
 
-            // Modified by Aditi Rajawat for build-over-build feature
             // Calculate final result of the current build according to the state of two flags: changeBuildStatus and buildOverBuild
             // Final result is the logical AND of two operation results
             // Initializing individual operation result as SUCCESS to eliminate impact if the corresponding flag is not set
@@ -671,7 +660,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
     }
 
-    // Added by Aditi Rajawat for build-over-build feature
     /**
      * Creates JacocoHealthReportDeltaThresholds object to encapsulate user configured delta threshold values.
      * The values entered by the user are validated to be in range of [0, 100] percentage
@@ -691,7 +679,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		return Result.SUCCESS;
 	}
 
-	// Added by Aditi Rajawat for build-over-build feature
     // Calculates actual delta coverage of the current build by subtracting it's coverage from coverage of last successful build
     // and compares if the delta coverage is less than or equal to user-configured delta thresholds
     // Returns success (if delta coverage is equal to or less than delta thresholds) OR (if delta coverage is bigger than delta thresholds AND current coverage is bigger than last successful coverage)

@@ -137,7 +137,7 @@ public final class Utils {
 	    return pos;
   }
 
-  // Added by Aditi Rajawat for comparing two big decimal values
+  // Compares two big decimal values
   public static boolean isEqualOrLessThan(BigDecimal first, BigDecimal second){
 
     if((first.compareTo(second) == 0) || (first.compareTo(second) == -1))
@@ -146,8 +146,7 @@ public final class Utils {
       return false;
   }
 
-  // Added by Aditi Rajawat for logical AND operation of Jenkins build results
-  /** Logical AND operation on Result :
+  /** Logical AND operation of Jenkins build results:
    * Success AND Success = Success
    * Unstable AND Unstable = Unstable
    * Failure AND Failure = Failure

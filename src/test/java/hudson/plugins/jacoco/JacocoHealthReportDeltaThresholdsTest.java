@@ -7,9 +7,6 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
-/**
- * Created by Aditi Rajawat on 2/10/17.
- */
 public class JacocoHealthReportDeltaThresholdsTest {
 
     private JacocoHealthReportDeltaThresholds jacocoHealthReportDeltaThresholds;

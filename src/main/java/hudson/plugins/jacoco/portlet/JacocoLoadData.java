@@ -176,10 +176,9 @@ public final class JacocoLoadData {
    *          a job execution
    * @return JaCoCoCoverageTestResult the coverage result
    */
-  public static JacocoCoverageResultSummary getResult(Run<?,?> run) { // Modified by Aditi Rajawat to expose the method outside class
+  public static JacocoCoverageResultSummary getResult(Run<?,?> run) {
     JacocoBuildAction jacocoAction = run.getAction(JacocoBuildAction.class);
 
-    // Modified by Aditi Rajawat to calculate coverage as big decimal
     BigDecimal classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
     BigDecimal lineCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
     BigDecimal methodCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
@@ -225,7 +224,6 @@ public final class JacocoLoadData {
 
     for (Job<?,?> job : jobs) {
 
-      // Modified by Aditi Rajawat to calculate coverage as big decimal
       BigDecimal classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
       BigDecimal lineCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
       BigDecimal methodCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
