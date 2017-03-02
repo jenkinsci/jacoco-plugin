@@ -14,12 +14,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.JacocoUtil;
+import org.jacoco.core.analysis.AnalyzerDelegate;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.analysis.ICoverageNode;
-import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.ExecutionDataReaderDelegate;
 import org.jacoco.core.data.ExecutionDataStore;
+import org.jacoco.core.data.ExecutionDataWriter;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.report.FileMultiReportOutput;
 import org.jacoco.report.IReportGroupVisitor;
@@ -156,7 +158,8 @@ public class ReportFactory {
 				logger.println("Executing newFileInputStream..");
 				in = new FileInputStream(dataFile);
 				logger.println("Executing ExecutionDataReader..");
-				final ExecutionDataReader reader = new ExecutionDataReader(in);
+				final char version = JacocoUtil.getVersion(dataFile);
+				final ExecutionDataReaderDelegate reader = new ExecutionDataReaderDelegate(in, version);
 				reader.setSessionInfoVisitor(sessionInfoStore);
 				reader.setExecutionDataVisitor(executionDataStore);
 				reader.read();
@@ -188,7 +191,7 @@ public class ReportFactory {
 
 	private IBundleCoverage createBundle() throws IOException {
 		final CoverageBuilder builder = new CoverageBuilder();
-		final Analyzer analyzer = new Analyzer(executionDataStore, builder);
+		final AnalyzerDelegate analyzer = new AnalyzerDelegate(executionDataStore, builder, ExecutionDataWriter.FORMAT_VERSION);
 		final File classesDir = new File(workspaceDir, "\\target\\classes"); // TODO: only works in maven default setup. class file location must come from user preference
 
 		List<File> filesToAnalyze = getFilesToAnalyze(classesDir);

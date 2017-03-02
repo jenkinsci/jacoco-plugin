@@ -127,6 +127,11 @@ THE SOFTWARE.
 	    <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
 	    <version>${jacoco.version}</version>
 	  </dependency>
+	  <dependency>
+	    <groupId>org.sonarsource.java</groupId>
+	    <artifactId>java-jacoco-previous</artifactId>
+	    <version>4.4.0.8066</version>
+	</dependency>
       <dependency>
 			<groupId>org.kohsuke</groupId>
 			<artifactId>asm5</artifactId>

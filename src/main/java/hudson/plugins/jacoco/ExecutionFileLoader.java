@@ -13,10 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.plexus.util.FileUtils;
-import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.JacocoUtil;
+import org.jacoco.core.analysis.AnalyzerDelegate;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
-import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.ExecutionDataReaderDelegate;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.maven.FileFilter;
@@ -78,7 +79,8 @@ public class ExecutionFileLoader implements Serializable {
 		public void setClassDir(FilePath classDir) {
 			this.classDir = classDir;
 		}
-		private void loadExecutionData() throws IOException {
+		private char loadExecutionData() throws IOException {
+			char version = 0;
 			
 			executionDataStore = new ExecutionDataStore();
 			sessionInfoStore = new SessionInfoStore();
@@ -88,7 +90,12 @@ public class ExecutionFileLoader implements Serializable {
 				try {
 					try (final InputStream inputStream = new BufferedInputStream(
 							new FileInputStream(executionDataFile))) {
-						final ExecutionDataReader reader = new ExecutionDataReader(inputStream);
+						// We will assume all exec files will be the same version
+						if (version == 0) {
+							version = JacocoUtil.getVersion(executionDataFile);
+						}
+						
+						final ExecutionDataReaderDelegate reader = new ExecutionDataReaderDelegate(inputStream, version);
 						reader.setSessionInfoVisitor(sessionInfoStore);
 						reader.setExecutionDataVisitor(executionDataStore);
 						reader.read();
@@ -98,13 +105,15 @@ public class ExecutionFileLoader implements Serializable {
 	                e.printStackTrace();
 	            }
 	        }
+			
+			return version;
 		}
-	    private IBundleCoverage analyzeStructure() throws IOException {
+	    private IBundleCoverage analyzeStructure(final char version) throws IOException {
 	    	
 			File classDirectory = new File(classDir.getRemote());
 			final CoverageBuilder coverageBuilder = new CoverageBuilder();
-			final Analyzer analyzer = new Analyzer(executionDataStore,
-					coverageBuilder);
+			final AnalyzerDelegate analyzer = new AnalyzerDelegate(executionDataStore,
+					coverageBuilder, version);
 			
 			if (includes==null) {
 				includes = STARSTAR;
@@ -133,8 +142,8 @@ public class ExecutionFileLoader implements Serializable {
 			return coverageBuilder.getBundle(name);
 		}
 	    public IBundleCoverage loadBundleCoverage() throws IOException {
-			loadExecutionData();
-			this.bundleCoverage = analyzeStructure();
+			char version = loadExecutionData();
+			this.bundleCoverage = analyzeStructure(version);
 			return this.bundleCoverage;
 		}
 

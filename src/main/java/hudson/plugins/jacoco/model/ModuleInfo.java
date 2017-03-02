@@ -6,10 +6,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.jacoco.core.analysis.Analyzer;
+import org.jacoco.core.JacocoUtil;
+import org.jacoco.core.analysis.AnalyzerDelegate;
 import org.jacoco.core.analysis.CoverageBuilder;
 import org.jacoco.core.analysis.IBundleCoverage;
-import org.jacoco.core.data.ExecutionDataReader;
+import org.jacoco.core.data.ExecutionDataReaderDelegate;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 
@@ -64,11 +65,12 @@ public class ModuleInfo {
 		public void setExecFile(FilePath execFile) {
 			this.execFile = execFile;
 		}
-		private void loadExecutionData() throws IOException {
+		private char loadExecutionData() throws IOException {
 	    	File executionDataFile = new File(execFile.getRemote());
 			final FileInputStream fis = new FileInputStream(executionDataFile);
-			final ExecutionDataReader executionDataReader = new ExecutionDataReader(
-					fis);
+			final char version = JacocoUtil.getVersion(executionDataFile);
+			final ExecutionDataReaderDelegate executionDataReader = new ExecutionDataReaderDelegate(
+					fis, version);
 			executionDataStore = new ExecutionDataStore();
 			sessionInfoStore = new SessionInfoStore();
 
@@ -79,20 +81,22 @@ public class ModuleInfo {
 			}
 
 			fis.close();
+			
+			return version;
 		}
-	    private IBundleCoverage analyzeStructure() throws IOException {
+	    private IBundleCoverage analyzeStructure(char version) throws IOException {
 			File classDirectory = new File(classDir.getRemote());
 			final CoverageBuilder coverageBuilder = new CoverageBuilder();
-			final Analyzer analyzer = new Analyzer(executionDataStore,
-					coverageBuilder);
+			final AnalyzerDelegate analyzer = new AnalyzerDelegate(executionDataStore,
+					coverageBuilder, version);
 
 			analyzer.analyzeAll(classDirectory);
 
 			return coverageBuilder.getBundle(name);
 		}
 	    public IBundleCoverage loadBundleCoverage() throws IOException {
-			loadExecutionData();
-			this.bundleCoverage = analyzeStructure();
+			char version = loadExecutionData();
+			this.bundleCoverage = analyzeStructure(version);
 			return this.bundleCoverage;
 		}
 }
