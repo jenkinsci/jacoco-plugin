@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nonnull;
 
 /**
  * Encapsulates the directory structure in $JENKINS_HOME where we store jacoco related files.
@@ -26,10 +27,10 @@ public class JacocoReportDir {
         return new File(root,"classes");
     }
 
-    public void saveClassesFrom(FilePath dir) throws IOException, InterruptedException {
+    public int saveClassesFrom(@Nonnull FilePath dir, @Nonnull String fileMask) throws IOException, InterruptedException {
         FilePath d = new FilePath(getClassesDir());
         d.mkdirs();
-        dir.copyRecursiveTo(d);
+        return dir.copyRecursiveTo(fileMask, d);
     }
 
     /**
@@ -39,10 +40,10 @@ public class JacocoReportDir {
         return new File(root,"sources");
     }
 
-    public void saveSourcesFrom(FilePath dir) throws IOException, InterruptedException {
+    public int saveSourcesFrom(@Nonnull FilePath dir, @Nonnull String fileMask) throws IOException, InterruptedException {
         FilePath d = new FilePath(getSourcesDir());
         d.mkdirs();
-        dir.copyRecursiveTo(d);
+        return dir.copyRecursiveTo(fileMask, d);
     }
 
     /**

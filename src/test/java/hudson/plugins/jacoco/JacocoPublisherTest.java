@@ -3,7 +3,15 @@ package hudson.plugins.jacoco;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.AbstractBuild;
+import hudson.model.Action;
+import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
+import hudson.plugins.jacoco.report.ClassReport;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Publisher;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,10 +19,6 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import hudson.plugins.jacoco.report.ClassReport;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Publisher;
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
@@ -383,6 +387,31 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		// verify if jacoco/sources exists
 		File jacocoSrc = new File(run.getRootDir(), "jacoco/sources");
 		assertTrue(jacocoSrc.exists() && jacocoSrc.isDirectory());
+		verify(taskListener, run);
+	}
+
+	@Test
+	public void testCopyClassAndSource() throws IOException, InterruptedException {
+
+		final Run run = new RunBuilder().taskListener(taskListener).build();
+		FilePath workspace = new WorkspaceBuilder().name("workspace", ".tst")
+				.file("classes/Test.class")
+				.file("classes/Test.jar")
+				.file("classes/sub/Test2.class")
+				.file("src/main/java/Test.java")
+				.file("src/main/java/test.png")
+				.build();
+
+		JacocoPublisher publisher = new JacocoPublisher();
+		publisher.setClassPattern("**/classes");
+		publisher.perform(run, workspace, launcher, taskListener);
+
+		assertTrue(new File(run.getRootDir(), "jacoco/classes/Test.class").exists());
+		assertFalse(new File(run.getRootDir(), "jacoco/classes/Test.jar").exists());
+		assertTrue(new File(run.getRootDir(), "jacoco/classes/sub/Test2.class").exists());
+		assertFalse(new File(run.getRootDir(), "jacoco/classes/Test2.class").exists());
+		assertTrue(new File(run.getRootDir(), "jacoco/sources/Test.java").exists());
+		assertFalse(new File(run.getRootDir(), "jacoco/sources/test.png").exists());
 		verify(taskListener, run);
 	}
 }

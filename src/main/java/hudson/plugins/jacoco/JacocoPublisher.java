@@ -446,7 +446,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
 
-        JacocoReportDir dir = new JacocoReportDir(run.getRootDir());
+        JacocoReportDir reportDir = new JacocoReportDir(run.getRootDir());
 
         if (run instanceof AbstractBuild) {
             execPattern = resolveFilePaths((AbstractBuild<?,?>) run, taskListener, execPattern);
@@ -455,22 +455,22 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
-        dir.addExecFiles(matchedExecFiles);
+        reportDir.addExecFiles(matchedExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
         FilePath[] matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
-        for (FilePath file : matchedClassDirs) {
-            dir.saveClassesFrom(file);
-	    logger.print(" " + file);
+        for (FilePath dir : matchedClassDirs) {
+            int copied = reportDir.saveClassesFrom(dir, "**/*.class");
+            logger.print("\n[JaCoCo plugin]  - " + dir + " " + copied + " files");
         }
 
         // Use skipCopyOfSrcFiles flag to determine if the source files should be copied or skipped. If skipped display appropriate logger message.
         if(!this.skipCopyOfSrcFiles) {
             FilePath[] matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
             logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
-            for (FilePath file : matchedSrcDirs) {
-                dir.saveSourcesFrom(file);
-		logger.print(" " + file);
+            for (FilePath dir : matchedSrcDirs) {
+                int copied = reportDir.saveSourcesFrom(dir, "**/*.java");
+                logger.print("\n[JaCoCo plugin] - " + dir + " " + copied + " files");
             }
         }
         else{
@@ -491,7 +491,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             logger.println("[JaCoCo plugin] exclusions: " + Arrays.toString(excludes));
         }
 
-        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, dir, includes, excludes);
+        final JacocoBuildAction action = JacocoBuildAction.load(run, healthReports, taskListener, reportDir, includes, excludes);
         action.getThresholds().ensureValid();
         logger.println("[JaCoCo plugin] Thresholds: " + action.getThresholds());
         run.addAction(action);
