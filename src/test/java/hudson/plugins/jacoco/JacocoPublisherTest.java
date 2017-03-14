@@ -414,4 +414,29 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		assertFalse(new File(run.getRootDir(), "jacoco/sources/test.png").exists());
 		verify(taskListener, run);
 	}
+
+	@Test
+	public void testCopyClass_Wrong() throws IOException, InterruptedException {
+
+		final Run run = new RunBuilder().taskListener(taskListener).build();
+		FilePath workspace = new WorkspaceBuilder().name("workspace", ".tst")
+				.file("classes/Test.class")
+				.file("classes/Test.jar")
+				.file("classes/sub/Test2.class")
+				.build();
+
+		JacocoPublisher publisher = new JacocoPublisher();
+		publisher.setClassPattern("**/classes/");
+		publisher.perform(run, workspace, launcher, taskListener);
+
+		assertTrue(new File(run.getRootDir(), "jacoco/classes/Test.class").exists());
+		assertFalse(new File(run.getRootDir(), "jacoco/classes/Test.jar").exists());
+		assertTrue(new File(run.getRootDir(), "jacoco/classes/sub/Test2.class").exists());
+		assertTrue(new File(run.getRootDir(), "jacoco/classes/Test2.class").exists()); // will be copied accidentally
+
+		assertTrue(logContent.toString().contains("WARNING: You are using directory patterns with trailing /, /* or /**"));
+		assertTrue(logContent.toString().replace("\\","/").contains("tst/classes 2 files"));
+		assertTrue(logContent.toString().replace("\\","/").contains("tst/classes/sub 1 files"));
+		verify(taskListener, run);
+	}
 }

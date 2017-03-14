@@ -459,6 +459,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.print(" " + Util.join(matchedExecFiles," "));
         FilePath[] matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
+        final String warning = "\n[JaCoCo plugin] WARNING: You are using directory patterns with trailing /, /* or /** . This will most likely" +
+                " multiply the copied files in your build directory. Check the list below and ignore this warning if you know what you are doing.";
+        if (hasSubDirectories(classPattern)) {
+            logger.print(warning);
+        }
         for (FilePath dir : matchedClassDirs) {
             int copied = reportDir.saveClassesFrom(dir, "**/*.class");
             logger.print("\n[JaCoCo plugin]  - " + dir + " " + copied + " files");
@@ -468,6 +473,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         if(!this.skipCopyOfSrcFiles) {
             FilePath[] matchedSrcDirs = resolveDirPaths(filePath, taskListener, sourcePattern);
             logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
+            if (hasSubDirectories(sourcePattern)) logger.print(warning);
             for (FilePath dir : matchedSrcDirs) {
                 int copied = reportDir.saveSourcesFrom(dir, "**/*.java");
                 logger.print("\n[JaCoCo plugin] - " + dir + " " + copied + " files");
@@ -513,6 +519,18 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                 run.setResult(checkResult(action));
             }
         }
+    }
+
+    private boolean hasSubDirectories(String pattern) {
+        for (String dir : pattern.split(DIR_SEP)) {
+            if (dir.endsWith("\\") || dir.endsWith("/") ||
+                    dir.endsWith("\\*") || dir.endsWith("/*") ||
+                    dir.endsWith("\\**") || dir.endsWith("/**")
+                    ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private JacocoHealthReportThresholds createJacocoHealthReportThresholds(EnvVars env) {
