@@ -7,6 +7,7 @@ import hudson.model.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -32,17 +33,27 @@ import static org.easymock.EasyMock.niceMock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class JacocoPublisherTest extends AbstractJacocoTestBase {
     private final TaskListener taskListener = niceMock(TaskListener.class);
     private final Launcher launcher = niceMock(Launcher.class);
+	private StringBuilder logContent;
 
     @Before
     public void setUp() {
-        expect(taskListener.getLogger()).andReturn(System.out).anyTimes();
-    }
+		logContent = new StringBuilder();
+		expect(taskListener.getLogger()).andReturn(new PrintStream(System.out) {
+													   @Override
+													   public void print(String s) {
+														   super.print(s);
+														   logContent.append(s);
+													   }
+												   }
+		).anyTimes();
+	}
 
     @SuppressWarnings("deprecation")
 	@Test
@@ -339,66 +350,18 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 	@Test
 	public void testSkipCopyOfSrcFilesTrue() throws IOException, InterruptedException{
 
-		final Run run = mock(Run.class);
-		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
-		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
-		expect(run.getParent()).andReturn(null).anyTimes();
+		final Run run = new RunBuilder().taskListener(taskListener).build();
+		FilePath workspace = new WorkspaceBuilder().name("workspace", ".tst")
+				.file("classes/Test.class")
+				.file("src/main/java/Test.java")
+				.build();
 
-		// create a test build directory
-		File rootDir = File.createTempFile("BuildTest", ".tst");
-		assertTrue(rootDir.delete());
-		assertTrue(rootDir.mkdirs());
-		FilePath root = new FilePath(rootDir);
-
-		expect(run.getRootDir()).andReturn(rootDir).anyTimes();
-
-		Action action = anyObject();
-		run.addAction(action);
-		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<>();
-		expectLastCall().andAnswer(new IAnswer<Void>() {
-			@Override
-			public Void answer() throws Throwable {
-				buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
-				buildAction.get().onAttached(run);
-
-				return null;
-			}
-		});
-
-		replay(taskListener, run);
-
-		// create a test workspace of Jenkins job
-		File wksp = File.createTempFile("workspace", ".tst");
-		assertTrue(wksp.delete());
-		assertTrue(wksp.mkdir());
-		wksp.deleteOnExit();
-		FilePath workspace = new FilePath(wksp);
-
-		// create class and source files directory inside the test workspace
-		File d1 = new File(workspace.child("classes").getRemote());
-		assertTrue(d1.mkdir());
-		d1.deleteOnExit();
-		File testClass = File.createTempFile("Test", ".class", d1);
-		assertTrue(testClass.delete());
-		assertTrue(testClass.mkdir());
-		testClass.deleteOnExit();
-
-		File d2 = new File(workspace.child("java").getRemote());
-		assertTrue(d2.mkdir());
-		d2.deleteOnExit();
-		File testSrc = File.createTempFile("Test", ".java", d2);
-		assertTrue(testSrc.delete());
-		assertTrue(testSrc.mkdir());
-		testSrc.deleteOnExit();
-
-		// set skip copy of src files as true
-		JacocoPublisher publisher = new JacocoPublisher("**/**.exec", "**/classes", "**/java", null, null, true, null, null
-				, null, null, null, null, null, null
-				, null, null, null, null, false);
+		JacocoPublisher publisher = new JacocoPublisher();
+		publisher.setSkipCopyOfSrcFiles(true);
 		publisher.perform(run, workspace, launcher, taskListener);
 
 		// verify if jacoco/sources doesn't exists
-		File jacocoSrc = new File(rootDir, "jacoco/sources");
+		File jacocoSrc = new File(run.getRootDir(), "jacoco/sources");
 		Assert.assertFalse(jacocoSrc.exists() && jacocoSrc.isDirectory());
 
 		verify(taskListener, run);
@@ -407,66 +370,18 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 	@Test
 	public void testSkipCopyOfSrcFilesFalse() throws IOException, InterruptedException{
 
-		final Run run = mock(Run.class);
-		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
-		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
-		expect(run.getParent()).andReturn(null).anyTimes();
+		final Run run = new RunBuilder().taskListener(taskListener).build();
+		FilePath workspace = new WorkspaceBuilder().name("workspace", ".tst")
+				.file("classes/Test.class")
+				.file("src/main/java/Test.java")
+				.build();
 
-		// create a test build directory
-		File rootDir = File.createTempFile("BuildTest", ".tst");
-		assertTrue(rootDir.delete());
-		assertTrue(rootDir.mkdirs());
-		FilePath root = new FilePath(rootDir);
-
-		expect(run.getRootDir()).andReturn(rootDir).anyTimes();
-
-		Action action = anyObject();
-		run.addAction(action);
-		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<>();
-		expectLastCall().andAnswer(new IAnswer<Void>() {
-			@Override
-			public Void answer() throws Throwable {
-				buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
-				buildAction.get().onAttached(run);
-
-				return null;
-			}
-		});
-
-		replay(taskListener, run);
-
-		// create a test workspace of Jenkins job
-		File wksp = File.createTempFile("workspace", ".tst");
-		assertTrue(wksp.delete());
-		assertTrue(wksp.mkdir());
-		wksp.deleteOnExit();
-		FilePath workspace = new FilePath(wksp);
-
-		// create class and source files directory inside the test workspace
-		File d1 = new File(workspace.child("classes").getRemote());
-		assertTrue(d1.mkdir());
-		d1.deleteOnExit();
-		File testClass = File.createTempFile("Test", ".class", d1);
-		assertTrue(testClass.delete());
-		assertTrue(testClass.mkdir());
-		testClass.deleteOnExit();
-
-		File d2 = new File(workspace.child("java").getRemote());
-		assertTrue(d2.mkdir());
-		d2.deleteOnExit();
-		File testSrc = File.createTempFile("Test", ".java", d2);
-		assertTrue(testSrc.delete());
-		assertTrue(testSrc.mkdir());
-		testSrc.deleteOnExit();
-
-		// set skip copy of src files as false
-		JacocoPublisher publisher = new JacocoPublisher("**/**.exec", "**/classes", "**/java", null, null, false, null, null
-				, null, null, null, null, null, null
-				, null, null, null, null, false);
+		JacocoPublisher publisher = new JacocoPublisher();
+		publisher.setSkipCopyOfSrcFiles(false);
 		publisher.perform(run, workspace, launcher, taskListener);
 
 		// verify if jacoco/sources exists
-		File jacocoSrc = new File(rootDir, "jacoco/sources");
+		File jacocoSrc = new File(run.getRootDir(), "jacoco/sources");
 		assertTrue(jacocoSrc.exists() && jacocoSrc.isDirectory());
 		verify(taskListener, run);
 	}
