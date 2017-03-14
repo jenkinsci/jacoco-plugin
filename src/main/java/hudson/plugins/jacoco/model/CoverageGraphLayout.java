@@ -21,73 +21,87 @@ public class CoverageGraphLayout
 {
 	enum CoverageType
 	{
-		INSTRUCTION(Messages.CoverageObject_Legend_Instructions())
+		INSTRUCTION
 				{
 					@Override
-					public Coverage getCoverage(CoverageObject<?> a)
-					{
+					public String getMessage() {
+						return null;
+					}
+
+					@Override
+					public Coverage getCoverage(CoverageObject<?> a) {
 						return a.instruction;
 					}
 
 				},
-		BRANCH(Messages.CoverageObject_Legend_Branch())
+		BRANCH
 				{
 					@Override
-					public Coverage getCoverage(CoverageObject<?> a)
-					{
+					public String getMessage() {
+						return Messages.CoverageObject_Legend_Branch();
+					}
+
+					@Override
+					public Coverage getCoverage(CoverageObject<?> a) {
 						return a.branch;
 					}
 
 				},
-		COMPLEXITY(Messages.CoverageObject_Legend_Complexity())
+		COMPLEXITY
 				{
 					@Override
-					public Coverage getCoverage(CoverageObject<?> a)
-					{
+					public String getMessage() {
+						return Messages.CoverageObject_Legend_Complexity();
+					}
+
+					@Override
+					public Coverage getCoverage(CoverageObject<?> a) {
 						return a.complexity;
 					}
 
 				},
-		METHOD(Messages.CoverageObject_Legend_Method())
+		METHOD
 				{
 					@Override
-					public Coverage getCoverage(CoverageObject<?> a)
-					{
+					public String getMessage() {
+						return Messages.CoverageObject_Legend_Method();
+					}
+
+					@Override
+					public Coverage getCoverage(CoverageObject<?> a) {
 						return a.method;
 					}
 
 				},
-		CLAZZ(Messages.CoverageObject_Legend_Class())
+		CLAZZ
 				{
 					@Override
-					public Coverage getCoverage(CoverageObject<?> a)
-					{
+					public String getMessage() {
+						return Messages.CoverageObject_Legend_Class();
+					}
+
+					@Override
+					public Coverage getCoverage(CoverageObject<?> a) {
 						return a.clazz;
 					}
 
 				},
-		LINE(Messages.CoverageObject_Legend_Line())
+		LINE
 				{
 					@Override
-					public Coverage getCoverage(CoverageObject<?> a)
-					{
+					public String getMessage() {
+						return Messages.CoverageObject_Legend_Line();
+					}
+
+					@Override
+					public Coverage getCoverage(CoverageObject<?> a) {
 						return a.line;
 					}
 
 				};
 
-		private String message;
 
-		CoverageType(String message)
-		{
-			this.message = message;
-		}
-
-		public String getMessage()
-		{
-
-			return message;
-		}
+		public abstract String getMessage();
 
 		public abstract Coverage getCoverage(CoverageObject<?> a);
 
