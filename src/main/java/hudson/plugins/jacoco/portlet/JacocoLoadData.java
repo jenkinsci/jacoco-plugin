@@ -33,7 +33,6 @@ import hudson.model.Job;
 import hudson.model.Run;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
-import hudson.plugins.jacoco.portlet.utils.Constants;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.math.BigDecimal;
@@ -179,31 +178,31 @@ public final class JacocoLoadData {
   public static JacocoCoverageResultSummary getResult(Run<?,?> run) {
     JacocoBuildAction jacocoAction = run.getAction(JacocoBuildAction.class);
 
-    BigDecimal classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    BigDecimal lineCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    BigDecimal methodCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    BigDecimal branchCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    BigDecimal instructionCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    BigDecimal complexityScore = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+    float classCoverage = 0.0f;
+    float lineCoverage = 0.0f;
+    float methodCoverage = 0.0f;
+    float branchCoverage = 0.0f;
+    float instructionCoverage = 0.0f;
+    float complexityScore = 0.0f;
 
     if (jacocoAction != null) {
       if (null != jacocoAction.getClassCoverage()) {
-        classCoverage = jacocoAction.getClassCoverage().getPercentageBigDecimal();
+        classCoverage = jacocoAction.getClassCoverage().getPercentageFloat();
       }
       if (null != jacocoAction.getLineCoverage()) {
-        lineCoverage = jacocoAction.getLineCoverage().getPercentageBigDecimal();
+        lineCoverage = jacocoAction.getLineCoverage().getPercentageFloat();
       }
       if (null != jacocoAction.getMethodCoverage()) {
-        methodCoverage = jacocoAction.getMethodCoverage().getPercentageBigDecimal();
+        methodCoverage = jacocoAction.getMethodCoverage().getPercentageFloat();
       }
       if (null != jacocoAction.getBranchCoverage()) {
-        branchCoverage = jacocoAction.getBranchCoverage().getPercentageBigDecimal();
+        branchCoverage = jacocoAction.getBranchCoverage().getPercentageFloat();
       }
       if (null != jacocoAction.getInstructionCoverage()) {
-        instructionCoverage = jacocoAction.getInstructionCoverage().getPercentageBigDecimal();
+        instructionCoverage = jacocoAction.getInstructionCoverage().getPercentageFloat();
       }
       if (null != jacocoAction.getComplexityScore()) {
-        complexityScore = jacocoAction.getComplexityScore().getPercentageBigDecimal();
+        complexityScore = jacocoAction.getComplexityScore().getPercentageFloat();
       }
     }
     return new JacocoCoverageResultSummary(
@@ -224,12 +223,12 @@ public final class JacocoLoadData {
 
     for (Job<?,?> job : jobs) {
 
-      BigDecimal classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal lineCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal methodCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal branchCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal instructionCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal complexityScore = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+      float classCoverage = 0.0f;
+      float lineCoverage = 0.0f;
+      float methodCoverage = 0.0f;
+      float branchCoverage = 0.0f;
+      float instructionCoverage = 0.0f;
+      float complexityScore = 0.0f;
 
       Run<?,?> run = job.getLastSuccessfulBuild();
 
@@ -239,26 +238,44 @@ public final class JacocoLoadData {
 
         if (null != jacocoAction) {
           if (null != jacocoAction.getClassCoverage()) {
-            classCoverage = jacocoAction.getClassCoverage().getPercentageBigDecimal();
+            classCoverage = jacocoAction.getClassCoverage().getPercentageFloat();
+            BigDecimal bigClassCoverage = new BigDecimal(classCoverage);
+            bigClassCoverage = bigClassCoverage.setScale(1, RoundingMode.HALF_EVEN);
+            classCoverage = bigClassCoverage.floatValue();
           }
           if (null != jacocoAction.getLineCoverage()) {
-            lineCoverage = jacocoAction.getLineCoverage().getPercentageBigDecimal();
+            lineCoverage = jacocoAction.getLineCoverage().getPercentageFloat();
+            BigDecimal bigLineCoverage = new BigDecimal(lineCoverage);
+            bigLineCoverage = bigLineCoverage.setScale(1, RoundingMode.HALF_EVEN);
+            lineCoverage = bigLineCoverage.floatValue();
           }
 
           if (null != jacocoAction.getMethodCoverage()) {
-            methodCoverage = jacocoAction.getMethodCoverage().getPercentageBigDecimal();
+            methodCoverage = jacocoAction.getMethodCoverage().getPercentageFloat();
+            BigDecimal bigMethodCoverage = new BigDecimal(methodCoverage);
+            bigMethodCoverage = bigMethodCoverage.setScale(1, RoundingMode.HALF_EVEN);
+            methodCoverage = bigMethodCoverage.floatValue();
           }
 
           if (null != jacocoAction.getBranchCoverage()) {
-            branchCoverage = jacocoAction.getBranchCoverage().getPercentageBigDecimal();
+            branchCoverage = jacocoAction.getBranchCoverage().getPercentageFloat();
+            BigDecimal bigBranchCoverage = new BigDecimal(branchCoverage);
+            bigBranchCoverage = bigBranchCoverage.setScale(1, RoundingMode.HALF_EVEN);
+            branchCoverage = bigBranchCoverage.floatValue();
           }
 
           if (null != jacocoAction.getInstructionCoverage()) {
-            instructionCoverage = jacocoAction.getInstructionCoverage().getPercentageBigDecimal();
+            instructionCoverage = jacocoAction.getInstructionCoverage().getPercentageFloat();
+            BigDecimal bigInstructionCoverage = new BigDecimal(instructionCoverage);
+            bigInstructionCoverage = bigInstructionCoverage.setScale(1, RoundingMode.HALF_EVEN);
+            instructionCoverage = bigInstructionCoverage.floatValue();
           }
 
           if (null != jacocoAction.getComplexityScore()) {
-            complexityScore = jacocoAction.getComplexityScore().getPercentageBigDecimal();
+            complexityScore = jacocoAction.getComplexityScore().getPercentageFloat();
+            BigDecimal bigComplexityCoverage = new BigDecimal(complexityScore);
+            bigComplexityCoverage = bigComplexityCoverage.setScale(1, RoundingMode.HALF_EVEN);
+            complexityScore = bigComplexityCoverage.floatValue();
           }
         }
       }

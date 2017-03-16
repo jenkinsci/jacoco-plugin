@@ -37,7 +37,6 @@ import hudson.plugins.jacoco.portlet.utils.Utils;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -204,37 +203,36 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
     DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<>();
 
     for (Map.Entry<LocalDate, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
-      BigDecimal classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal lineCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal methodCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal branchCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal instructionCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-      BigDecimal complexityScore = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+      float classCoverage = 0;
+      float lineCoverage = 0;
+      float methodCoverage = 0;
+      float branchCoverage = 0;
+      float instructionCoverage = 0;
+      float complexityScore = 0;
 
       int count = 0;
 
       List<JacocoCoverageResultSummary> list = entry.getValue().getJacocoCoverageResults();
 
       for (JacocoCoverageResultSummary item : list) {
-        classCoverage = classCoverage.add(item.getClassCoverage());
-        lineCoverage = lineCoverage.add(item.getLineCoverage());
-        methodCoverage = methodCoverage.add(item.getMethodCoverage());
-        branchCoverage = branchCoverage.add(item.getBranchCoverage());
-        instructionCoverage = instructionCoverage.add(item.getInstructionCoverage());
-        complexityScore = complexityScore.add(item.getComplexityScore());
+        classCoverage += item.getClassCoverage();
+        lineCoverage += item.getLineCoverage();
+        methodCoverage += item.getMethodCoverage();
+        branchCoverage += item.getBranchCoverage();
+        instructionCoverage += item.getInstructionCoverage();
+        complexityScore+= item.getComplexityScore();
         count++;
       }
 
       if(count!=0) {
-        BigDecimal countBD = new BigDecimal(count).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        dataSetBuilder.add((classCoverage.divideToIntegralValue(countBD)), "class", entry.getKey());
-        dataSetBuilder.add((lineCoverage.divideToIntegralValue(countBD)), "line", entry.getKey());
-        dataSetBuilder.add((methodCoverage.divideToIntegralValue(countBD)), "method", entry.getKey());
-        dataSetBuilder.add((branchCoverage.divideToIntegralValue(countBD)), "branch", entry.getKey());
-        dataSetBuilder.add((instructionCoverage.divideToIntegralValue(countBD)), "instruction", entry.getKey());
-
-        // XXX this should be a separate chart. the range axis is different.
-        dataSetBuilder.add((complexityScore.divideToIntegralValue(countBD)), "complexity", entry.getKey());
+	      dataSetBuilder.add((classCoverage / count), "class", entry.getKey());
+	      dataSetBuilder.add((lineCoverage / count), "line", entry.getKey());
+	      dataSetBuilder.add((methodCoverage / count), "method", entry.getKey());
+	      dataSetBuilder.add((branchCoverage / count), "branch", entry.getKey());
+	      dataSetBuilder.add((instructionCoverage / count), "instruction", entry.getKey());
+      
+	      // XXX this should be a separate chart. the range axis is different.
+	      dataSetBuilder.add((complexityScore / count), "complexity", entry.getKey());
       }
     }
 

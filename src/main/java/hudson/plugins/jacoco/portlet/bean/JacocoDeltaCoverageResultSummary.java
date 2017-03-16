@@ -2,10 +2,7 @@ package hudson.plugins.jacoco.portlet.bean;
 
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.plugins.jacoco.JacocoPublisher;
 import hudson.plugins.jacoco.portlet.JacocoLoadData;
-
-import java.math.BigDecimal;
 
 /**
  * This class encapsulates actual delta coverage of current build.
@@ -16,17 +13,17 @@ public class JacocoDeltaCoverageResultSummary {
     /**
      * Variables to capture delta coverage of current build
      */
-    private BigDecimal instructionCoverage;
+    private float instructionCoverage;
 
-    private BigDecimal branchCoverage;
+    private float branchCoverage;
 
-    private BigDecimal complexityCoverage;
+    private float complexityCoverage;
 
-    private BigDecimal lineCoverage;
+    private float lineCoverage;
 
-    private BigDecimal methodCoverage;
+    private float methodCoverage;
 
-    private BigDecimal classCoverage;
+    private float classCoverage;
 
     private boolean coverageBetterThanPrevious=false;
 
@@ -41,17 +38,19 @@ public class JacocoDeltaCoverageResultSummary {
         JacocoCoverageResultSummary currentBuildCoverage = JacocoLoadData.getResult(run);
 
         JacocoDeltaCoverageResultSummary jacocoDeltaCoverageResultSummary = new JacocoDeltaCoverageResultSummary();
-        jacocoDeltaCoverageResultSummary.instructionCoverage = lastBuildCoverage.getInstructionCoverage().subtract(currentBuildCoverage.getInstructionCoverage()).abs();
-        jacocoDeltaCoverageResultSummary.branchCoverage = lastBuildCoverage.getBranchCoverage().subtract(currentBuildCoverage.getBranchCoverage()).abs();
-        jacocoDeltaCoverageResultSummary.complexityCoverage = lastBuildCoverage.getComplexityScore().subtract(currentBuildCoverage.getComplexityScore()).abs();
-        jacocoDeltaCoverageResultSummary.lineCoverage = lastBuildCoverage.getLineCoverage().subtract(currentBuildCoverage.getLineCoverage()).abs();
-        jacocoDeltaCoverageResultSummary.methodCoverage = lastBuildCoverage.getMethodCoverage().subtract(currentBuildCoverage.getMethodCoverage()).abs();
-        jacocoDeltaCoverageResultSummary.classCoverage = lastBuildCoverage.getClassCoverage().subtract(currentBuildCoverage.getClassCoverage()).abs();
+        jacocoDeltaCoverageResultSummary.instructionCoverage = currentBuildCoverage.getInstructionCoverage() - lastBuildCoverage.getInstructionCoverage();
+        jacocoDeltaCoverageResultSummary.branchCoverage = currentBuildCoverage.getBranchCoverage() - lastBuildCoverage.getBranchCoverage();
+        jacocoDeltaCoverageResultSummary.complexityCoverage = currentBuildCoverage.getComplexityScore() - lastBuildCoverage.getComplexityScore();
+        jacocoDeltaCoverageResultSummary.lineCoverage = currentBuildCoverage.getLineCoverage() - lastBuildCoverage.getLineCoverage();
+        jacocoDeltaCoverageResultSummary.methodCoverage = currentBuildCoverage.getMethodCoverage() - lastBuildCoverage.getMethodCoverage();
+        jacocoDeltaCoverageResultSummary.classCoverage = currentBuildCoverage.getClassCoverage() - lastBuildCoverage.getClassCoverage();
 
-        if((currentBuildCoverage.getInstructionCoverage().compareTo(lastBuildCoverage.getInstructionCoverage())!= -1)
-                && (currentBuildCoverage.getBranchCoverage().compareTo(lastBuildCoverage.getBranchCoverage()) != -1) && (currentBuildCoverage.getComplexityScore().compareTo(lastBuildCoverage.getComplexityScore()) != -1)
-                && (currentBuildCoverage.getLineCoverage().compareTo(lastBuildCoverage.getLineCoverage()) != -1) && (currentBuildCoverage.getMethodCoverage().compareTo(lastBuildCoverage.getMethodCoverage()) != -1)
-                && (currentBuildCoverage.getClassCoverage().compareTo(lastBuildCoverage.getClassCoverage()) != -1))
+        if(currentBuildCoverage.getInstructionCoverage() >= lastBuildCoverage.getInstructionCoverage()
+                && currentBuildCoverage.getBranchCoverage() >= lastBuildCoverage.getBranchCoverage()
+                && currentBuildCoverage.getComplexityScore() >= lastBuildCoverage.getComplexityScore()
+                && currentBuildCoverage.getLineCoverage() >= lastBuildCoverage.getLineCoverage()
+                && currentBuildCoverage.getMethodCoverage() >= lastBuildCoverage.getMethodCoverage()
+                && currentBuildCoverage.getClassCoverage() >= lastBuildCoverage.getClassCoverage())
             // Since delta coverage is the absolute difference by definition,
             // use this flag to mark if the current coverage is bigger than the coverage of last successful build
             jacocoDeltaCoverageResultSummary.coverageBetterThanPrevious = true;
@@ -59,27 +58,27 @@ public class JacocoDeltaCoverageResultSummary {
         return jacocoDeltaCoverageResultSummary;
     }
 
-    public BigDecimal getInstructionCoverage() {
+    public float getInstructionCoverage() {
         return instructionCoverage;
     }
 
-    public BigDecimal getBranchCoverage() {
+    public float getBranchCoverage() {
         return branchCoverage;
     }
 
-    public BigDecimal getComplexityCoverage() {
+    public float getComplexityCoverage() {
         return complexityCoverage;
     }
 
-    public BigDecimal getLineCoverage() {
+    public float getLineCoverage() {
         return lineCoverage;
     }
 
-    public BigDecimal getMethodCoverage() {
+    public float getMethodCoverage() {
         return methodCoverage;
     }
 
-    public BigDecimal getClassCoverage() {
+    public float getClassCoverage() {
         return classCoverage;
     }
 
@@ -87,27 +86,27 @@ public class JacocoDeltaCoverageResultSummary {
         return coverageBetterThanPrevious;
     }
 
-    public void setInstructionCoverage(BigDecimal instructionCoverage) {
+    public void setInstructionCoverage(float instructionCoverage) {
         this.instructionCoverage = instructionCoverage;
     }
 
-    public void setBranchCoverage(BigDecimal branchCoverage) {
+    public void setBranchCoverage(float branchCoverage) {
         this.branchCoverage = branchCoverage;
     }
 
-    public void setComplexityCoverage(BigDecimal complexityCoverage) {
+    public void setComplexityCoverage(float complexityCoverage) {
         this.complexityCoverage = complexityCoverage;
     }
 
-    public void setLineCoverage(BigDecimal lineCoverage) {
+    public void setLineCoverage(float lineCoverage) {
         this.lineCoverage = lineCoverage;
     }
 
-    public void setMethodCoverage(BigDecimal methodCoverage) {
+    public void setMethodCoverage(float methodCoverage) {
         this.methodCoverage = methodCoverage;
     }
 
-    public void setClassCoverage(BigDecimal classCoverage) {
+    public void setClassCoverage(float classCoverage) {
         this.classCoverage = classCoverage;
     }
 
@@ -118,12 +117,12 @@ public class JacocoDeltaCoverageResultSummary {
     @Override
     public String toString() {
         return "JacocoDeltaCoverageResultSummary [" +
-                "instructionCoverage=" + instructionCoverage.toString() +
-                ", branchCoverage=" + branchCoverage.toString() +
-                ", complexityCoverage=" + complexityCoverage.toString() +
-                ", lineCoverage=" + lineCoverage.toString() +
-                ", methodCoverage=" + methodCoverage.toString() +
-                ", classCoverage=" + classCoverage.toString() +
+                "instructionCoverage=" + instructionCoverage +
+                ", branchCoverage=" + branchCoverage +
+                ", complexityCoverage=" + complexityCoverage +
+                ", lineCoverage=" + lineCoverage +
+                ", methodCoverage=" + methodCoverage +
+                ", classCoverage=" + classCoverage +
                 ", coverageBetterThanPrevious=" + coverageBetterThanPrevious +
                 ']';
     }

@@ -39,21 +39,21 @@ public class BuildOverBuildTest {
     @Before
     public void setUp(){
         jacocoDeltaCoverageResultSummary_1 = new JacocoDeltaCoverageResultSummary();
-        jacocoDeltaCoverageResultSummary_1.setInstructionCoverage(new BigDecimal(12.234).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_1.setClassCoverage(new BigDecimal(0.5523).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_1.setMethodCoverage(new BigDecimal(11.8921).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_1.setLineCoverage(new BigDecimal(21.523).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_1.setBranchCoverage(new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_1.setComplexityCoverage(new BigDecimal(1.34).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
+        jacocoDeltaCoverageResultSummary_1.setInstructionCoverage(12.234f);
+        jacocoDeltaCoverageResultSummary_1.setClassCoverage(0.5523f);
+        jacocoDeltaCoverageResultSummary_1.setMethodCoverage(11.8921f);
+        jacocoDeltaCoverageResultSummary_1.setLineCoverage(21.523f);
+        jacocoDeltaCoverageResultSummary_1.setBranchCoverage(0f);
+        jacocoDeltaCoverageResultSummary_1.setComplexityCoverage(1.34f);
         jacocoDeltaCoverageResultSummary_1.setCoverageBetterThanPrevious(false);
 
         jacocoDeltaCoverageResultSummary_2 = new JacocoDeltaCoverageResultSummary();
-        jacocoDeltaCoverageResultSummary_2.setInstructionCoverage(new BigDecimal(7.54).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_2.setClassCoverage(new BigDecimal(0.439).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_2.setMethodCoverage(new BigDecimal(5.340).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_2.setLineCoverage(new BigDecimal(7.8921).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_2.setBranchCoverage(new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
-        jacocoDeltaCoverageResultSummary_2.setComplexityCoverage(new BigDecimal(1.678).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
+        jacocoDeltaCoverageResultSummary_2.setInstructionCoverage(7.54f);
+        jacocoDeltaCoverageResultSummary_2.setClassCoverage(0.439f);
+        jacocoDeltaCoverageResultSummary_2.setMethodCoverage(5.340f);
+        jacocoDeltaCoverageResultSummary_2.setLineCoverage(7.8921f);
+        jacocoDeltaCoverageResultSummary_2.setBranchCoverage(0f);
+        jacocoDeltaCoverageResultSummary_2.setComplexityCoverage(1.678f);
         jacocoDeltaCoverageResultSummary_2.setCoverageBetterThanPrevious(true);
 
         deltaHealthThresholds = new JacocoHealthReportDeltaThresholds("10.556", "0", "2.3434", "9.11457", "8.2525", "1.5556");

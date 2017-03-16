@@ -1,11 +1,9 @@
 package hudson.plugins.jacoco;
 
-import hudson.plugins.jacoco.portlet.utils.Constants;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.math.BigDecimal;
+import static org.junit.Assert.assertEquals;
 
 public class JacocoHealthReportDeltaThresholdsTest {
 
@@ -19,30 +17,30 @@ public class JacocoHealthReportDeltaThresholdsTest {
     // Test if negative coverage thresholds are changed to zero percentage
     @Test
     public void changeNegativeThToZeroTest(){
-        Assert.assertEquals("Negative TH changed to zero", 0, jacocoHealthReportDeltaThresholds.getDeltaBranch().compareTo(new BigDecimal(0)));
+        assertEquals("Negative TH changed to zero", 0f, jacocoHealthReportDeltaThresholds.getDeltaBranch(), 0.00001);
     }
 
     // Test if coverage thresholds greater than 100 are changed to 100 percentage
     @Test
     public void changeTooBigToHundredTest(){
-        Assert.assertEquals("TH greater than 100 changed to 100", 0, jacocoHealthReportDeltaThresholds.getDeltaLine().compareTo(new BigDecimal(100)));
+        assertEquals("TH greater than 100 changed to 100", 100f, jacocoHealthReportDeltaThresholds.getDeltaLine(), 0.00001);
     }
 
     // Test if coverage thresholds greater than X.XXXXXX5 are half round up
     @Test
     public void halfRoundUpTest(){
-        Assert.assertEquals("Delta threshold with scale greater than six is round half up when greater than X.XXXXXX5", 0, jacocoHealthReportDeltaThresholds.getDeltaComplexity().compareTo(new BigDecimal(5.064793).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP)));
+        assertEquals("Delta threshold with scale greater than six is round half up when greater than X.XXXXXX5", 5.064793f, jacocoHealthReportDeltaThresholds.getDeltaComplexity(), 0.00001);
     }
 
     // Test if coverage thresholds lesser than X.XXXXXX5 are half round down
     @Test
     public void halfRoundDownTest(){
-        Assert.assertEquals("Delta threshold with scale greater than six is round half down when lesser than X.XXXXXX5", 0, jacocoHealthReportDeltaThresholds.getDeltaInstruction().compareTo(new BigDecimal(10.055550).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP)));
+        assertEquals("Delta threshold with scale greater than six is round half down when lesser than X.XXXXXX5", 10.055550f, jacocoHealthReportDeltaThresholds.getDeltaInstruction(), 0.00001);
     }
 
     // Test if coverage thresholds with scale lesser than six are scaled to six digits after decimal
     @Test
     public void scaleToSixTest(){
-        Assert.assertEquals("Delta threshold with scale lesser than six is scaled to six", 0, jacocoHealthReportDeltaThresholds.getDeltaMethod().compareTo(new BigDecimal(2.022200).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP)));
+        assertEquals("Delta threshold with scale lesser than six is scaled to six", 2.022200f, jacocoHealthReportDeltaThresholds.getDeltaMethod(), 0.00001);
     }
 }

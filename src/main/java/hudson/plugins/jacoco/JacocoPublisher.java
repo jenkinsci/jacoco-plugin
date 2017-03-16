@@ -10,7 +10,6 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import hudson.plugins.jacoco.portlet.utils.Constants;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 import hudson.plugins.jacoco.report.CoverageReport;
 import hudson.remoting.VirtualChannel;
@@ -683,8 +682,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
      * The values entered by the user are validated to be in range of [0, 100] percentage
      */
     private JacocoHealthReportDeltaThresholds createJacocoDeltaHealthReportThresholds(){
-        JacocoHealthReportDeltaThresholds jacocoHealthReportDeltaThresholds = new JacocoHealthReportDeltaThresholds(this.deltaInstructionCoverage, this.deltaBranchCoverage, this.deltaComplexityCoverage, this.deltaLineCoverage, this.deltaMethodCoverage, this.deltaClassCoverage);
-        return jacocoHealthReportDeltaThresholds;
+        return new JacocoHealthReportDeltaThresholds(this.deltaInstructionCoverage, this.deltaBranchCoverage, this.deltaComplexityCoverage, this.deltaLineCoverage, this.deltaMethodCoverage, this.deltaClassCoverage);
     }
 
     public static Result checkResult(JacocoBuildAction action) {
@@ -703,19 +701,19 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     public Result checkBuildOverBuildResult(Run<?,?> run, PrintStream logger){
 
         JacocoDeltaCoverageResultSummary deltaCoverageResultSummary = JacocoDeltaCoverageResultSummary.build(run);
-        logger.println("[JaCoCo plugin] Delta coverage: class: " + deltaCoverageResultSummary.getClassCoverage().toString()
-                + ", method: " + deltaCoverageResultSummary.getMethodCoverage().toString()
-                + ", line: " + deltaCoverageResultSummary.getLineCoverage().toString()
-                + ", branch: " + deltaCoverageResultSummary.getBranchCoverage().toString()
-                + ", instruction: " + deltaCoverageResultSummary.getInstructionCoverage().toString()
-                + ", complexity: " + deltaCoverageResultSummary.getComplexityCoverage().toString());
+        logger.println("[JaCoCo plugin] Delta coverage: class: " + deltaCoverageResultSummary.getClassCoverage()
+                + ", method: " + deltaCoverageResultSummary.getMethodCoverage()
+                + ", line: " + deltaCoverageResultSummary.getLineCoverage()
+                + ", branch: " + deltaCoverageResultSummary.getBranchCoverage()
+                + ", instruction: " + deltaCoverageResultSummary.getInstructionCoverage()
+                + ", complexity: " + deltaCoverageResultSummary.getComplexityCoverage());
 
-        if(Utils.isEqualOrLessThan(deltaCoverageResultSummary.getInstructionCoverage(), deltaHealthReport.getDeltaInstruction()) &&
-                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getBranchCoverage(), deltaHealthReport.getDeltaBranch())) &&
-                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getComplexityCoverage(), deltaHealthReport.getDeltaComplexity())) &&
-                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getLineCoverage(), deltaHealthReport.getDeltaLine())) &&
-                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getMethodCoverage(), deltaHealthReport.getDeltaMethod())) &&
-                (Utils.isEqualOrLessThan(deltaCoverageResultSummary.getClassCoverage(), deltaHealthReport.getDeltaClass())))
+        if(Math.abs(deltaCoverageResultSummary.getInstructionCoverage()) <= deltaHealthReport.getDeltaInstruction() &&
+                Math.abs(deltaCoverageResultSummary.getBranchCoverage()) <= deltaHealthReport.getDeltaBranch() &&
+                Math.abs(deltaCoverageResultSummary.getComplexityCoverage()) <= deltaHealthReport.getDeltaComplexity() &&
+                Math.abs(deltaCoverageResultSummary.getLineCoverage()) <= deltaHealthReport.getDeltaLine() &&
+                Math.abs(deltaCoverageResultSummary.getMethodCoverage()) <= deltaHealthReport.getDeltaMethod() &&
+                Math.abs(deltaCoverageResultSummary.getClassCoverage()) <= deltaHealthReport.getDeltaClass())
             return Result.SUCCESS;
         else if(deltaCoverageResultSummary.isCoverageBetterThanPrevious())
             return Result.SUCCESS;

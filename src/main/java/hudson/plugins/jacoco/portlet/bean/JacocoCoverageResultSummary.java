@@ -29,13 +29,11 @@
  */
 package hudson.plugins.jacoco.portlet.bean;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
 import hudson.model.Job;
-import hudson.plugins.jacoco.portlet.utils.Constants;
 import hudson.plugins.jacoco.portlet.utils.Utils;
 
 /**
@@ -51,32 +49,32 @@ public class JacocoCoverageResultSummary {
   /**
    * Line coverage percentage.
    */
-  private BigDecimal lineCoverage;
+  private float lineCoverage;
 
   /**
    * Method coverage percentage.
    */
-  private BigDecimal methodCoverage;
+  private float methodCoverage;
 
   /**
    * Class coverage percentage.
    */
-  private BigDecimal classCoverage;
+  private float classCoverage;
 
   /**
    * Block coverage percentage.
    */
-  private BigDecimal instructionCoverage;
+  private float instructionCoverage;
 
   /**
    * Block coverage percentage.
    */
-  private BigDecimal branchCoverage;
+  private float branchCoverage;
 
   /**
    * Complexity score (not a percentage).
    */
-  private BigDecimal complexityScore;
+  private float complexityScore;
 
   private List<JacocoCoverageResultSummary> coverageResults = new ArrayList<>();
 
@@ -84,12 +82,6 @@ public class JacocoCoverageResultSummary {
    * Default Constructor.
    */
   public JacocoCoverageResultSummary() {
-    this.lineCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    this.methodCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    this.classCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    this.instructionCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    this.branchCoverage = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-    this.complexityScore = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
   }
 
   /**
@@ -104,8 +96,8 @@ public class JacocoCoverageResultSummary {
    * @param classCoverage
    *          coverage percentage
    */
-  public JacocoCoverageResultSummary(Job<?,?> job, BigDecimal lineCoverage, BigDecimal methodCoverage,
-                                     BigDecimal classCoverage, BigDecimal branchCoverage, BigDecimal instructionCoverage, BigDecimal complexityScore) {
+  public JacocoCoverageResultSummary(Job<?,?> job, float lineCoverage, float methodCoverage,
+    float classCoverage, float branchCoverage, float instructionCoverage, float complexityScore) {
     this.job = job;
     this.lineCoverage = lineCoverage;
     this.methodCoverage = methodCoverage;
@@ -125,12 +117,12 @@ public class JacocoCoverageResultSummary {
    */
   public JacocoCoverageResultSummary addCoverageResult(JacocoCoverageResultSummary coverageResult) {
 
-    this.lineCoverage = this.lineCoverage.add(coverageResult.getLineCoverage());
-    this.methodCoverage = this.methodCoverage.add(coverageResult.getMethodCoverage());
-    this.classCoverage = this.classCoverage.add(coverageResult.getClassCoverage());
-    this.branchCoverage = this.branchCoverage.add(coverageResult.getBranchCoverage());
-    this.instructionCoverage = this.instructionCoverage.add(coverageResult.getInstructionCoverage());
-    this.complexityScore = this.complexityScore.add(coverageResult.getComplexityScore());
+    this.setLineCoverage(this.getLineCoverage() + coverageResult.getLineCoverage());
+    this.setMethodCoverage(this.getMethodCoverage() + coverageResult.getMethodCoverage());
+    this.setClassCoverage(this.getClassCoverage() + coverageResult.getClassCoverage());
+    this.setBranchCoverage(this.getBranchCoverage() + coverageResult.getBranchCoverage());
+    this.setInstructionCoverage(this.getInstructionCoverage() + coverageResult.getInstructionCoverage());
+    this.setComplexityScore(this.getComplexityScore() + coverageResult.getComplexityScore());
 
     getCoverageResults().add(coverageResult);
 
@@ -156,7 +148,7 @@ public class JacocoCoverageResultSummary {
       return 0.0f;
     }
 
-    float totalClass = this.getClassCoverage().floatValue() / this.getCoverageResults().size();
+    float totalClass = this.getClassCoverage() / this.getCoverageResults().size();
     totalClass = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalClass);
 
     return totalClass;
@@ -172,7 +164,7 @@ public class JacocoCoverageResultSummary {
       return 0.0f;
     } 
 
-    float totalBranch = this.getBranchCoverage().floatValue() / this.getCoverageResults().size();
+    float totalBranch = this.getBranchCoverage() / this.getCoverageResults().size();
     totalBranch = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalBranch);
 
     return totalBranch;
@@ -188,7 +180,7 @@ public class JacocoCoverageResultSummary {
       return 0.0f;
     }
 
-    float totalInstr = this.getInstructionCoverage().floatValue() / this.getCoverageResults().size();
+    float totalInstr = this.getInstructionCoverage() / this.getCoverageResults().size();
     totalInstr = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalInstr);
 
     return totalInstr;
@@ -204,7 +196,7 @@ public class JacocoCoverageResultSummary {
       return 0.0f;
     }
 
-    float totalComplex = this.getComplexityScore().floatValue() / this.getCoverageResults().size();
+    float totalComplex = this.getComplexityScore() / this.getCoverageResults().size();
     totalComplex = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalComplex);
 
     return totalComplex;
@@ -220,7 +212,7 @@ public class JacocoCoverageResultSummary {
       return 0.0f;
     } 
 
-    float totalLine = this.getLineCoverage().floatValue() / this.getCoverageResults().size();
+    float totalLine = this.getLineCoverage() / this.getCoverageResults().size();
     totalLine = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalLine);
 
     return totalLine;
@@ -236,7 +228,7 @@ public class JacocoCoverageResultSummary {
       return 0.0f;
     }
 
-    float totalMethod = this.getMethodCoverage().floatValue() / this.getCoverageResults().size();
+    float totalMethod = this.getMethodCoverage() / this.getCoverageResults().size();
     totalMethod = Utils.roundFloat(1, RoundingMode.HALF_EVEN, totalMethod);
 
     return totalMethod;
@@ -249,36 +241,36 @@ public class JacocoCoverageResultSummary {
     return job;
   }
 
-  public BigDecimal getInstructionCoverage() {
+  public float getInstructionCoverage() {
     return instructionCoverage;
   }
 
-  public BigDecimal getBranchCoverage() {
+  public float getBranchCoverage() {
     return branchCoverage;
   }
 
-  public BigDecimal getComplexityScore() {
+  public float getComplexityScore() {
     return complexityScore;
   }
 
   /**
    * @return the lineCoverage
    */
-  public BigDecimal getLineCoverage() {
+  public float getLineCoverage() {
     return lineCoverage;
   }
 
   /**
    * @return the methodCoverage
    */
-  public BigDecimal getMethodCoverage() {
+  public float getMethodCoverage() {
     return methodCoverage;
   }
 
   /**
    * @return the classCoverage
    */
-  public BigDecimal getClassCoverage() {
+  public float getClassCoverage() {
     return classCoverage;
   }
 
@@ -290,15 +282,15 @@ public class JacocoCoverageResultSummary {
     this.job = job;
   }
 
-  public void setInstructionCoverage(BigDecimal instructionCoverage) {
+  public void setInstructionCoverage(float instructionCoverage) {
     this.instructionCoverage = instructionCoverage;
   }
 
-  public void setBranchCoverage(BigDecimal branchCoverage) {
+  public void setBranchCoverage(float branchCoverage) {
     this.branchCoverage = branchCoverage;
   }
 
-  public void setComplexityScore(BigDecimal complexityScore) {
+  public void setComplexityScore(float complexityScore) {
     this.complexityScore = complexityScore;
   }
 
@@ -306,7 +298,7 @@ public class JacocoCoverageResultSummary {
    * @param lineCoverage
    *          the lineCoverage to set
    */
-  public void setLineCoverage(BigDecimal lineCoverage) {
+  public void setLineCoverage(float lineCoverage) {
     this.lineCoverage = lineCoverage;
   }
 
@@ -314,7 +306,7 @@ public class JacocoCoverageResultSummary {
    * @param methodCoverage
    *          the methodCoverage to set
    */
-  public void setMethodCoverage(BigDecimal methodCoverage) {
+  public void setMethodCoverage(float methodCoverage) {
     this.methodCoverage = methodCoverage;
   }
 
@@ -322,7 +314,7 @@ public class JacocoCoverageResultSummary {
    * @param classCoverage
    *          the classCoverage to set
    */
-  public void setClassCoverage(BigDecimal classCoverage) {
+  public void setClassCoverage(float classCoverage) {
     this.classCoverage = classCoverage;
   }
 

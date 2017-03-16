@@ -13,33 +13,33 @@ public class JacocoHealthReportDeltaThresholds {
     /**
      * Variables to hold delta threshold values for different types of percentage coverages
      */
-    private BigDecimal deltaInstruction;
-    private BigDecimal deltaBranch;
-    private BigDecimal deltaComplexity;
-    private BigDecimal deltaLine;
-    private BigDecimal deltaMethod;
-    private BigDecimal deltaClass;
+    private float deltaInstruction;
+    private float deltaBranch;
+    private float deltaComplexity;
+    private float deltaLine;
+    private float deltaMethod;
+    private float deltaClass;
 
     public JacocoHealthReportDeltaThresholds() {
     }
 
     // Constructor used for bounding user-configured string threshold values to corresponding big decimal thresholds
     public JacocoHealthReportDeltaThresholds(String deltaInstruction, String deltaBranch, String deltaComplexity, String deltaLine, String deltaMethod, String deltaClass){
-        this.deltaInstruction = deltaInstruction!=null ? new BigDecimal(deltaInstruction).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP) : new BigDecimal("0").setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        this.deltaBranch = deltaBranch!=null ? new BigDecimal(deltaBranch).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP) : new BigDecimal("0").setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        this.deltaComplexity = deltaComplexity!=null ? new BigDecimal(deltaComplexity).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP) : new BigDecimal("0").setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        this.deltaLine = deltaLine!=null ? new BigDecimal(deltaLine).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP) : new BigDecimal("0").setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        this.deltaMethod = deltaMethod!=null ? new BigDecimal(deltaMethod).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP) : new BigDecimal("0").setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        this.deltaClass = deltaClass!=null ? new BigDecimal(deltaClass).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP): new BigDecimal("0").setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        this.deltaInstruction = deltaInstruction!=null ? Float.valueOf(deltaInstruction) : 0f;
+        this.deltaBranch = deltaBranch!=null ? Float.valueOf(deltaBranch) : 0f;
+        this.deltaComplexity = deltaComplexity!=null ? Float.valueOf(deltaComplexity) : 0f;
+        this.deltaLine = deltaLine!=null ? Float.valueOf(deltaLine) : 0f;
+        this.deltaMethod = deltaMethod!=null ? Float.valueOf(deltaMethod) : 0f;
+        this.deltaClass = deltaClass!=null ? Float.valueOf(deltaClass): 0f;
         this.ensureValid(); // Validate threshold values while creating new object to encapsulate these
     }
 
     // Used to apply [0,100] range over threshold values
     // 0 is set if threshold is smaller than 0 and 100 is set if threshold is bigger than 100, else remains unchanged
-    private BigDecimal applyRange(BigDecimal min, BigDecimal value, BigDecimal max){
-        if(value.compareTo(min) == -1)
+    private float applyRange(float min, float value, float max){
+        if(value < min)
             return min;
-        else if(value.compareTo(max) == 1)
+        else if(value > max)
             return max;
         else
             return value;
@@ -48,8 +48,8 @@ public class JacocoHealthReportDeltaThresholds {
 
     // Ensure if the threshold values are within [0, 100] percentage range
     public void ensureValid(){
-        BigDecimal min = new BigDecimal(0).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        BigDecimal max = new BigDecimal(100).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+        float min = 0f;
+        float max = 100f;
 
         this.deltaInstruction = applyRange(min, this.deltaInstruction, max);
         this.deltaBranch = applyRange(min, this.deltaBranch, max);
@@ -59,63 +59,63 @@ public class JacocoHealthReportDeltaThresholds {
         this.deltaClass = applyRange(min, this.deltaClass, max);
     }
 
-    public BigDecimal getDeltaInstruction() {
+    public float getDeltaInstruction() {
         return deltaInstruction;
     }
 
-    public void setDeltaInstruction(BigDecimal deltaInstruction) {
+    public void setDeltaInstruction(float deltaInstruction) {
         this.deltaInstruction = deltaInstruction;
     }
 
-    public BigDecimal getDeltaBranch() {
+    public float getDeltaBranch() {
         return deltaBranch;
     }
 
-    public void setDeltaBranch(BigDecimal deltaBranch) {
+    public void setDeltaBranch(float deltaBranch) {
         this.deltaBranch = deltaBranch;
     }
 
-    public BigDecimal getDeltaComplexity() {
+    public float getDeltaComplexity() {
         return deltaComplexity;
     }
 
-    public void setDeltaComplexity(BigDecimal deltaComplexity) {
+    public void setDeltaComplexity(float deltaComplexity) {
         this.deltaComplexity = deltaComplexity;
     }
 
-    public BigDecimal getDeltaLine() {
+    public float getDeltaLine() {
         return deltaLine;
     }
 
-    public void setDeltaLine(BigDecimal deltaLine) {
+    public void setDeltaLine(float deltaLine) {
         this.deltaLine = deltaLine;
     }
 
-    public BigDecimal getDeltaMethod() {
+    public float getDeltaMethod() {
         return deltaMethod;
     }
 
-    public void setDeltaMethod(BigDecimal deltaMethod) {
+    public void setDeltaMethod(float deltaMethod) {
         this.deltaMethod = deltaMethod;
     }
 
-    public BigDecimal getDeltaClass() {
+    public float getDeltaClass() {
         return deltaClass;
     }
 
-    public void setDeltaClass(BigDecimal deltaClass) {
+    public void setDeltaClass(float deltaClass) {
         this.deltaClass = deltaClass;
     }
 
     @Override
     public String toString() {
         return "JacocoHealthReportDeltaThresholds [" +
-                "deltaInstruction=" + deltaInstruction.toString() +
-                ", deltaBranch=" + deltaBranch.toString() +
-                ", deltaComplexity=" + deltaComplexity.toString() +
-                ", deltaLine=" + deltaLine.toString() +
-                ", deltaMethod=" + deltaMethod.toString() +
-                ", deltaClass=" + deltaClass.toString() +
+                "deltaInstruction=" + deltaInstruction +
+                ", deltaBranch=" + deltaBranch +
+                ", deltaComplexity=" + deltaComplexity +
+                ", deltaLine=" + deltaLine +
+                ", deltaMethod=" + deltaMethod +
+                ", deltaClass=" + deltaClass +
                 ']';
     }
 }

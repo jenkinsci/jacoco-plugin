@@ -4,20 +4,7 @@ import hudson.model.Result;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.math.BigDecimal;
-
 public class UtilsComparisonTest {
-
-    // Test if boolean results for big decimal comparison utility method are correct
-    @Test
-    public void isEqualOrLessThanTest(){
-        BigDecimal first = new BigDecimal(10.09090).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        BigDecimal second = new BigDecimal(10.099).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        BigDecimal third =  new BigDecimal(10.099).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
-        Assert.assertTrue(Utils.isEqualOrLessThan(first, second));
-        Assert.assertTrue(Utils.isEqualOrLessThan(second, third));
-        Assert.assertFalse(Utils.isEqualOrLessThan(second, first));
-    }
 
     // Test if logical AND operation on Result data type works as expected
     @Test

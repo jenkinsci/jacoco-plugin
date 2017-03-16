@@ -1,26 +1,20 @@
 package hudson.plugins.jacoco.portlet;
 
-import hudson.model.Action;
 import hudson.model.Job;
 import hudson.model.Run;
-import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
 import hudson.plugins.jacoco.portlet.bean.JacocoDeltaCoverageResultSummary;
-import hudson.plugins.jacoco.portlet.utils.Constants;
-import org.easymock.IAnswer;
-import org.easymock.IExpectationSetters;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.math.BigDecimal;
-import java.util.concurrent.atomic.AtomicReference;
-
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.*;
 import org.powermock.api.easymock.PowerMock;
-import static org.easymock.EasyMock.*;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import static org.easymock.EasyMock.expect;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoLoadData.class)
@@ -33,26 +27,26 @@ public class JacocoDeltaCoverageResultSummaryTest {
 
     @Before
     public void setUp(){
-        lastSuccessfulBuildCoverage = new JacocoCoverageResultSummary(job, new BigDecimal(88.9090).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP)
-                , new BigDecimal(95.5055).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(98.889).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(68.90).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(80.822).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(60.05623).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
+        lastSuccessfulBuildCoverage = new JacocoCoverageResultSummary(job, 88.9090f
+                , 95.5055f,
+                98.889f,
+                68.90f,
+                80.822f,
+                60.05623f);
 
-        currentBuildwithMoreCoverage = new JacocoCoverageResultSummary(job, new BigDecimal(89.231).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP)
-                , new BigDecimal(95.750).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(98.999).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(68.90).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(85.565).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(61.232).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
+        currentBuildwithMoreCoverage = new JacocoCoverageResultSummary(job, 89.231f
+                , 95.750f,
+                98.999f,
+                68.90f,
+                85.565f,
+                61.232f);
 
-        currentBuildWithLesserCoverage = new JacocoCoverageResultSummary(job, new BigDecimal(85.556).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP)
-                , new BigDecimal(95.5055).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(99.0909).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(65.223).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(80.822).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP),
-                new BigDecimal(61.234).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP));
+        currentBuildWithLesserCoverage = new JacocoCoverageResultSummary(job, 85.556f
+                , 95.5055f,
+                99.0909f,
+                65.223f,
+                80.822f,
+                61.234f);
     }
 
     // Test delta coverage summary when current build has better coverage than previous successful build
@@ -73,14 +67,19 @@ public class JacocoDeltaCoverageResultSummaryTest {
         PowerMock.verify(run, job);
         PowerMock.verify(JacocoLoadData.class);
 
-        Assert.assertEquals("Absolute difference in instruction coverage", currentBuildwithMoreCoverage.getInstructionCoverage().subtract(lastSuccessfulBuildCoverage.getInstructionCoverage()).abs(), deltaCoverageSummary.getInstructionCoverage());
-        Assert.assertEquals("Absolute difference in branch coverage", currentBuildwithMoreCoverage.getBranchCoverage().subtract(lastSuccessfulBuildCoverage.getBranchCoverage()).abs(), deltaCoverageSummary.getBranchCoverage());
-        Assert.assertEquals("Absolute difference in complexity coverage", currentBuildwithMoreCoverage.getComplexityScore().subtract(lastSuccessfulBuildCoverage.getComplexityScore()).abs(), deltaCoverageSummary.getComplexityCoverage());
-        Assert.assertEquals("Absolute difference in line coverage", currentBuildwithMoreCoverage.getLineCoverage().subtract(lastSuccessfulBuildCoverage.getLineCoverage()).abs(),deltaCoverageSummary.getLineCoverage());
-        Assert.assertEquals("Absolute difference in method coverage", currentBuildwithMoreCoverage.getMethodCoverage().subtract(lastSuccessfulBuildCoverage.getMethodCoverage()).abs(), deltaCoverageSummary.getMethodCoverage());
-        Assert.assertEquals("Absolute difference in class coverage", currentBuildwithMoreCoverage.getClassCoverage().subtract(lastSuccessfulBuildCoverage.getClassCoverage()).abs(), deltaCoverageSummary.getClassCoverage());
-        Assert.assertTrue(deltaCoverageSummary.isCoverageBetterThanPrevious());
-
+        assertEquals("Absolute difference in instruction coverage",
+                currentBuildwithMoreCoverage.getInstructionCoverage() - lastSuccessfulBuildCoverage.getInstructionCoverage(), deltaCoverageSummary.getInstructionCoverage(), 0.00001);
+        assertEquals("Absolute difference in branch coverage",
+                currentBuildwithMoreCoverage.getBranchCoverage() - lastSuccessfulBuildCoverage.getBranchCoverage(), deltaCoverageSummary.getBranchCoverage(), 0.00001);
+        assertEquals("Absolute difference in complexity coverage",
+                currentBuildwithMoreCoverage.getComplexityScore() - lastSuccessfulBuildCoverage.getComplexityScore(), deltaCoverageSummary.getComplexityCoverage(), 0.00001);
+        assertEquals("Absolute difference in line coverage",
+                currentBuildwithMoreCoverage.getLineCoverage() - lastSuccessfulBuildCoverage.getLineCoverage(), deltaCoverageSummary.getLineCoverage(), 0.00001);
+        assertEquals("Absolute difference in method coverage",
+                currentBuildwithMoreCoverage.getMethodCoverage() - lastSuccessfulBuildCoverage.getMethodCoverage(), deltaCoverageSummary.getMethodCoverage(), 0.00001);
+        assertEquals("Absolute difference in class coverage",
+                currentBuildwithMoreCoverage.getClassCoverage() - lastSuccessfulBuildCoverage.getClassCoverage(), deltaCoverageSummary.getClassCoverage(), 0.00001);
+        assertTrue(deltaCoverageSummary.isCoverageBetterThanPrevious());
     }
 
     // Test delta coverage summary when current build has worse coverage than previous successful build
@@ -101,15 +100,18 @@ public class JacocoDeltaCoverageResultSummaryTest {
         PowerMock.verify(run, job);
         PowerMock.verify(JacocoLoadData.class);
 
-        Assert.assertEquals("Absolute difference in instruction coverage", currentBuildWithLesserCoverage.getInstructionCoverage().subtract(lastSuccessfulBuildCoverage.getInstructionCoverage()).abs(), deltaCoverageSummary.getInstructionCoverage());
-        Assert.assertEquals("Absolute difference in branch coverage", currentBuildWithLesserCoverage.getBranchCoverage().subtract(lastSuccessfulBuildCoverage.getBranchCoverage()).abs(), deltaCoverageSummary.getBranchCoverage());
-        Assert.assertEquals("Absolute difference in complexity coverage", currentBuildWithLesserCoverage.getComplexityScore().subtract(lastSuccessfulBuildCoverage.getComplexityScore()).abs(), deltaCoverageSummary.getComplexityCoverage());
-        Assert.assertEquals("Absolute difference in line coverage", currentBuildWithLesserCoverage.getLineCoverage().subtract(lastSuccessfulBuildCoverage.getLineCoverage()).abs(),deltaCoverageSummary.getLineCoverage());
-        Assert.assertEquals("Absolute difference in method coverage", currentBuildWithLesserCoverage.getMethodCoverage().subtract(lastSuccessfulBuildCoverage.getMethodCoverage()).abs(), deltaCoverageSummary.getMethodCoverage());
-        Assert.assertEquals("Absolute difference in class coverage", currentBuildWithLesserCoverage.getClassCoverage().subtract(lastSuccessfulBuildCoverage.getClassCoverage()).abs(), deltaCoverageSummary.getClassCoverage());
-        Assert.assertFalse(deltaCoverageSummary.isCoverageBetterThanPrevious());
-
+        assertEquals("Absolute difference in instruction coverage",
+                currentBuildWithLesserCoverage.getInstructionCoverage() - lastSuccessfulBuildCoverage.getInstructionCoverage(), deltaCoverageSummary.getInstructionCoverage(), 0.00001);
+        assertEquals("Absolute difference in branch coverage",
+                currentBuildWithLesserCoverage.getBranchCoverage() - lastSuccessfulBuildCoverage.getBranchCoverage(), deltaCoverageSummary.getBranchCoverage(), 0.00001);
+        assertEquals("Absolute difference in complexity coverage",
+                currentBuildWithLesserCoverage.getComplexityScore() - lastSuccessfulBuildCoverage.getComplexityScore(), deltaCoverageSummary.getComplexityCoverage(), 0.00001);
+        assertEquals("Absolute difference in line coverage",
+                currentBuildWithLesserCoverage.getLineCoverage() - lastSuccessfulBuildCoverage.getLineCoverage(), deltaCoverageSummary.getLineCoverage(), 0.00001);
+        assertEquals("Absolute difference in method coverage",
+                currentBuildWithLesserCoverage.getMethodCoverage() - lastSuccessfulBuildCoverage.getMethodCoverage(), deltaCoverageSummary.getMethodCoverage(), 0.00001);
+        assertEquals("Absolute difference in class coverage",
+                currentBuildWithLesserCoverage.getClassCoverage() - lastSuccessfulBuildCoverage.getClassCoverage(), deltaCoverageSummary.getClassCoverage(), 0.00001);
+        assertFalse(deltaCoverageSummary.isCoverageBetterThanPrevious());
     }
-
-
 }
