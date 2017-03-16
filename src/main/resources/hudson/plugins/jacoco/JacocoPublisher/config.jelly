@@ -129,6 +129,10 @@
   </f:entry>
 
 <!-- User can set the value of delta coverage thresholds, which means maximum coverage difference between the last and the current builds -->
+	<!-- The current build will fail if it's coverage drops more than delta threshold as compared to the last successful build -->
+  <f:entry field="buildOverBuild">
+    <f:checkbox checked="${instance.selected}" title="Fail the build if coverage degrades more than the delta thresholds"/>
+  </f:entry>
   <f:entry>
     <table width="78%">
     	<col width="12%"/>
@@ -176,10 +180,6 @@
     	     </tr>
     	</tbody>
     </table>
-  </f:entry>
-  <!-- The current build will fail if it's coverage drops more than delta threshold as compared to the last successful build -->
-  <f:entry field="buildOverBuild">
-     <f:checkbox checked="${instance.selected}" title="Build over build according the delta thresholds"/>
   </f:entry>
 
 </j:jelly>

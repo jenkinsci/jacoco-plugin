@@ -635,8 +635,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             }
             if(buildOverBuild){
                 applyDeltaTh = checkBuildOverBuildResult(run, logger); // Compute delta coverage of current build and compare with delta thresholds
-                logger.println("[JaCoCo plugin] Delta Thresholds: "+ deltaHealthReport.toString());
-                logger.println("[JaCoCo plugin] Build over build result: "+ applyDeltaTh.toString());
+                logger.println("[JaCoCo plugin] Delta thresholds: " + deltaHealthReport.toString());
+                logger.println("[JaCoCo plugin] Results of delta thresholds check: "+ applyDeltaTh.toString());
             }
             if(changeBuildStatus || buildOverBuild) {
                 run.setResult(Utils.applyLogicalAnd(applyMinMaxTh, applyDeltaTh));
