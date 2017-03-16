@@ -3,6 +3,20 @@ package hudson.plugins.jacoco;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.*;
+import org.easymock.IAnswer;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.concurrent.atomic.AtomicReference;
+
 import hudson.model.AbstractBuild;
 import hudson.model.Action;
 import hudson.model.Result;
@@ -41,6 +55,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(JacocoPublisher.class)
 public class JacocoPublisherTest extends AbstractJacocoTestBase {
     private final TaskListener taskListener = niceMock(TaskListener.class);
     private final Launcher launcher = niceMock(Launcher.class);
@@ -66,7 +82,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 				null, null, null, null,
 				null, null, null, null,
 				null, null, null, null,
-				false);
+				false, null, null, null, null, null, null, false);
 		assertNotNull(publisher.toString());
 	}
 
@@ -439,4 +455,55 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		assertTrue(logContent.toString().replace("\\","/").contains("tst/classes/sub 1 files"));
 		verify(taskListener, run);
 	}
+
+	// Test perform with build over build feature turned ON
+	@Test
+	public void testPerformWithBuildOverBuild() throws IOException, InterruptedException {
+
+		// expect
+		final Run run = PowerMock.createNiceMock(Run.class);
+		final Job job = PowerMock.createNiceMock(Job.class);
+
+		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
+		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
+		Action action = anyObject();
+		run.addAction(action);
+		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<JacocoBuildAction>();
+		expectLastCall().andAnswer(new IAnswer<Void>() {
+			@Override
+			public Void answer() throws Throwable {
+				buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
+				buildAction.get().onAttached(run);
+
+				return null;
+			}
+		});
+
+		File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
+		assertTrue(dir.delete());
+		assertTrue(dir.mkdirs());
+		assertTrue(new File(dir, "jacoco/classes").mkdirs());
+		FilePath filePath = new FilePath(dir);
+
+		expect(run.getRootDir()).andReturn(dir).anyTimes();
+		expect(run.getParent()).andReturn(job).anyTimes();
+		expect(job.getLastSuccessfulBuild()).andReturn(run).anyTimes();
+
+
+		PowerMock.replay(taskListener, run, job);
+
+		// execute
+		JacocoPublisher publisher = new JacocoPublisher("**/**.exec", "**/classes", "**/src/main/java", "", "", false, "0", "0"
+				, "0", "0", "0", "0", "0", "0"
+				, "0", "0", "0", "0", false,
+				"10.564", "5.65", "9.995", "11.4529", "9.346", "5.237", true);
+		publisher.perform(run, filePath, launcher, taskListener);
+
+		assertNotNull(buildAction.get());
+		assertEquals("Build over build result", "SUCCESS", publisher.checkBuildOverBuildResult(run, taskListener.getLogger()).toString());
+
+		// verify
+		PowerMock.verify(taskListener, run, job);
+	}
+
 }

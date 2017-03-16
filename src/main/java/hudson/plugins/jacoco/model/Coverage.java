@@ -1,7 +1,10 @@
 package hudson.plugins.jacoco.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
+import hudson.plugins.jacoco.portlet.utils.Constants;
+import hudson.plugins.jacoco.portlet.utils.Utils;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -67,6 +70,27 @@ final public class Coverage implements Serializable {
         float numerator = covered;
         float denominator = missed + covered;
         return denominator <= 0 ? 100 : 100 * (numerator / denominator);
+    }
+
+
+    /**
+     * Gets the coverage percentage as big decimal with scale 6
+     */
+    @Exported
+    public BigDecimal getPercentageBigDecimal(){
+        try {
+            BigDecimal numerator = new BigDecimal(covered).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+            BigDecimal denominator = new BigDecimal(missed + covered).setScale(Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+
+            if(Utils.isEqualOrLessThan(denominator, new BigDecimal(0))) {
+                return new BigDecimal(0);
+            } else {
+                BigDecimal coverage = numerator.divide(denominator, Constants.COVERAGE_PERCENTAGE_SCALE, BigDecimal.ROUND_HALF_UP);
+                return coverage.multiply(new BigDecimal(100));
+            }
+        }catch (ArithmeticException ex){
+            return new BigDecimal(0);
+        }
     }
 
     public CoverageElement.Type getType() {

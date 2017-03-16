@@ -128,4 +128,9 @@ public final class Constants {
    * The chart default margin value.
    */
   public static final double DEFAULT_MARGIN = 0.0;
+
+  /**
+   * Scale of coverage percentage big decimal
+   */
+  public static final int COVERAGE_PERCENTAGE_SCALE = 6;
 }

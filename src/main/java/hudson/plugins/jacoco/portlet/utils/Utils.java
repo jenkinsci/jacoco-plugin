@@ -30,6 +30,7 @@
 package hudson.plugins.jacoco.portlet.utils;
 
 import hudson.model.Job;
+import hudson.model.Result;
 import hudson.model.Run;
 
 import java.math.BigDecimal;
@@ -135,6 +136,36 @@ public final class Utils {
 	        pos = str.indexOf(c, pos+1);
 	    return pos;
   }
-  
+
+  // Compares two big decimal values
+  public static boolean isEqualOrLessThan(BigDecimal first, BigDecimal second){
+
+    if((first.compareTo(second) == 0) || (first.compareTo(second) == -1))
+      return true;
+    else
+      return false;
+  }
+
+  /** Logical AND operation of Jenkins build results:
+   * Success AND Success = Success
+   * Unstable AND Unstable = Unstable
+   * Failure AND Failure = Failure
+   * X AND Failure = Failure, Failure AND X = Failure, X = Success/Unstable/Failure
+   * Y AND Unstable = Unstable, Unstable AND Y = Unstable, Y = Success/Unstable
+   */
+  public static Result applyLogicalAnd(Result op1, Result op2){
+
+    if(op1.toString().equals("FAILURE") || op2.toString().equals("FAILURE"))
+      return Result.FAILURE;
+
+    if(op1.toString().equals("UNSTABLE") || op2.toString().equals("UNSTABLE"))
+      return Result.UNSTABLE;
+
+    if(op1.toString().equals("SUCCESS") && op2.toString().equals("SUCCESS"))
+      return Result.SUCCESS;
+
+    return Result.FAILURE;
+
+  }
   
 }
