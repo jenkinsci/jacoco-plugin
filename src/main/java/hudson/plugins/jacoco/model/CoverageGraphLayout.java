@@ -25,7 +25,7 @@ public class CoverageGraphLayout
 				{
 					@Override
 					public String getMessage() {
-						return null;
+						return Messages.CoverageObject_Legend_Instructions();
 					}
 
 					@Override
