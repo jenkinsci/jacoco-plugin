@@ -15,11 +15,11 @@ public class JacocoUtil {
 		
 		try (DataInputStream in = new DataInputStream(new FileInputStream(jacocoExec))) {
 			if (in.read() != ExecutionDataWriter.BLOCK_HEADER) {
-				throw new IOException("Invalid execution data file.");
+				throw new IOException("Invalid execution data file. Unrecognized block header.");
 			}
 			
 			if (in.readChar() != ExecutionDataWriter.MAGIC_NUMBER) {
-				throw new IOException("Invalid execution data file.");
+				throw new IOException("Invalid execution data file. Unrecognized magic number.");
 			}
 			
 			version = in.readChar();

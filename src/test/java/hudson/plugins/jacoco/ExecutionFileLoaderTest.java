@@ -119,10 +119,10 @@ public class ExecutionFileLoaderTest {
         ExecutionFileLoader loader = new ExecutionFileLoader();
         
         assertTrue("This test requires that a jacoco.exec file exists in the target-directory", 
-                new File("target/jacoco.exec").exists());
+                new File("src/test/resources/jacoco_074.exec").exists());
         loader.setClassDir(new FilePath(new File("target/classes")));
         loader.setExcludes("excludme.test");
-        loader.addExecFile(new FilePath(new File("src/test/jacoco_074.exec")));
+        loader.addExecFile(new FilePath(new File("src/test/resources/jacoco_074.exec")));
         
         // handles invalid files gracefully
         loader.addExecFile(new FilePath(new File("somenonexistingfile")));
