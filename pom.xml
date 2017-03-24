@@ -28,7 +28,7 @@ THE SOFTWARE.
    <parent>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>1.614</version>
+      <version>1.625.3</version>
       <relativePath />
    </parent>
 
@@ -121,6 +121,12 @@ THE SOFTWARE.
          <artifactId>dashboard-view</artifactId>
          <version>2.1</version>
          <optional>true</optional>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sourceforge.nekohtml</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions> 
       </dependency>
       <dependency>
 	    <groupId>org.jacoco</groupId>
@@ -145,11 +151,12 @@ THE SOFTWARE.
 			<version>5.0.1</version>
 			<scope>runtime</scope>
 	  </dependency>
-	<dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymock</artifactId>
-                <version>3.4</version>
-	</dependency>
+      <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>3.4</version>
+            <scope>test</scope>
+      </dependency>
       <dependency>
          <groupId>org.powermock</groupId>
          <artifactId>powermock-module-junit4</artifactId>
@@ -166,7 +173,22 @@ THE SOFTWARE.
 		<groupId>org.jacoco</groupId>
 		<artifactId>jacoco-maven-plugin</artifactId>
 		<version>${jacoco.version}</version>
-	</dependency>
+        <!-- Exclude a few unused transitive dependencies of things that are not needed here to avoid clashes with other plugins -->
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.maven.doxia</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions> 
+      </dependency>
         <dependency>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-plugin-plugin</artifactId>
@@ -201,6 +223,18 @@ THE SOFTWARE.
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
             <version>3.0.24</version>
+        </dependency>
+        <!-- Somehow we need org.w3c.dom.ElementTraversal, but do not get it from any of the dependencies
+        do not update to 2.x as it will not contain the class any more! -->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.4.01</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.1</version>
         </dependency>
    </dependencies>
    
