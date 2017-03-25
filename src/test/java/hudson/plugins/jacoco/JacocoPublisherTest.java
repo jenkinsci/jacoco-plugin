@@ -4,6 +4,7 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
+import hudson.plugins.jacoco.JacocoPublisher.DescriptorImpl;
 import org.easymock.IAnswer;
 import org.junit.Before;
 import org.junit.Test;
@@ -148,7 +149,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		assertEquals(BuildStepMonitor.NONE, publisher.getRequiredMonitorService());
 
-		BuildStepDescriptor<Publisher> descriptor = publisher.getDescriptor();
+		BuildStepDescriptor<Publisher> descriptor = new DescriptorImpl();
 		assertNotNull(descriptor);
 		assertNotNull(descriptor.getDisplayName());
 		assertTrue(descriptor.isApplicable(null));

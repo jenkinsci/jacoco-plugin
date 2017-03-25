@@ -28,8 +28,10 @@ import java.util.List;
 import java.util.Map;
 
 import jenkins.MasterToSlaveFileCallable;
+import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import org.apache.tools.ant.DirectoryScanner;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -727,15 +729,20 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     @Override
     public BuildStepDescriptor<Publisher> getDescriptor() {
-        return DESCRIPTOR;
+        return (BuildStepDescriptor<Publisher>)super.getDescriptor();
     }
 
-	@Extension
-    public static final BuildStepDescriptor<Publisher> DESCRIPTOR = new DescriptorImpl();
+    /**
+     * @deprecated
+     *      use injection via {@link Jenkins#getInjector()}
+     */
+    public static /*final*/ BuildStepDescriptor<Publisher> DESCRIPTOR;
 
+    @Extension @Symbol("jacoco")
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
             super(JacocoPublisher.class);
+            DESCRIPTOR = this;
         }
 
 		@Override
