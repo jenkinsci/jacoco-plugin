@@ -5,7 +5,16 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.*;
 import hudson.plugins.jacoco.JacocoPublisher.DescriptorImpl;
+import hudson.plugins.jacoco.report.ClassReport;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Publisher;
+import org.apache.commons.io.FileUtils;
+import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.internal.analysis.ClassCoverageImpl;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,46 +24,12 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.concurrent.atomic.AtomicReference;
-
-import hudson.model.AbstractBuild;
-import hudson.model.Action;
-import hudson.model.Result;
-import hudson.model.Run;
-import hudson.model.TaskListener;
-import hudson.plugins.jacoco.report.ClassReport;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Publisher;
-
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.apache.commons.io.FileUtils;
-import org.easymock.EasyMock;
-import org.easymock.IAnswer;
-import org.jacoco.core.analysis.ICoverageNode;
-import org.jacoco.core.internal.analysis.ClassCoverageImpl;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.getCurrentArguments;
-import static org.easymock.EasyMock.mock;
-import static org.easymock.EasyMock.niceMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoPublisher.class)
@@ -108,6 +83,12 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		publisher.setSourcePattern("source");
 		assertEquals("source", publisher.getSourcePattern());
+
+		publisher.setSourceExclusionPattern("sourceExclusion");
+		assertEquals("sourceExclusion", publisher.getSourceExclusionPattern());
+
+		publisher.setSourceInclusionPattern("sourceInclusion");
+		assertEquals("sourceInclusion", publisher.getSourceInclusionPattern());
 
 		publisher.setMaximumBranchCoverage("maxB");
 		assertEquals("maxB", publisher.getMaximumBranchCoverage());
@@ -416,11 +397,15 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 				.file("classes/Test.jar")
 				.file("classes/sub/Test2.class")
 				.file("src/main/java/Test.java")
+				.file("src/main/java/generated/bean.java")
+				.file("src/main/java/Test.groovy")
 				.file("src/main/java/test.png")
 				.build();
 
 		JacocoPublisher publisher = new JacocoPublisher();
 		publisher.setClassPattern("**/classes");
+		publisher.setSourceInclusionPattern("**/*.java,**/*.groovy");
+		publisher.setSourceExclusionPattern("generated/**/*");
 		publisher.perform(run, workspace, launcher, taskListener);
 
 		assertTrue(new File(run.getRootDir(), "jacoco/classes/Test.class").exists());
@@ -428,6 +413,8 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		assertTrue(new File(run.getRootDir(), "jacoco/classes/sub/Test2.class").exists());
 		assertFalse(new File(run.getRootDir(), "jacoco/classes/Test2.class").exists());
 		assertTrue(new File(run.getRootDir(), "jacoco/sources/Test.java").exists());
+		assertTrue(new File(run.getRootDir(), "jacoco/sources/Test.groovy").exists());
+		assertFalse(new File(run.getRootDir(), "jacoco/sources/generated/bean.java").exists());
 		assertFalse(new File(run.getRootDir(), "jacoco/sources/test.png").exists());
 		verify(taskListener, run);
 	}
