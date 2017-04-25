@@ -29,14 +29,9 @@
  */
 package hudson.plugins.jacoco.portlet.chart;
 
-import hudson.plugins.jacoco.portlet.Messages;
-import hudson.plugins.jacoco.portlet.JacocoLoadData;
-import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
-import hudson.plugins.jacoco.portlet.utils.Constants;
-import hudson.plugins.jacoco.portlet.utils.Utils;
-
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -49,16 +44,20 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.category.CategoryItemRenderer;
 import org.jfree.data.category.CategoryDataset;
-import org.joda.time.LocalDate;
+import org.kohsuke.stapler.DataBoundConstructor;
 
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.Job;
+import hudson.plugins.jacoco.portlet.JacocoLoadData;
+import hudson.plugins.jacoco.portlet.Messages;
+import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
+import hudson.plugins.jacoco.portlet.utils.Constants;
+import hudson.plugins.jacoco.portlet.utils.Utils;
 import hudson.plugins.view.dashboard.DashboardPortlet;
 import hudson.util.DataSetBuilder;
 import hudson.util.Graph;
 import hudson.util.ShiftedCategoryAxis;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 /**
  * A portlet for JaCoCo coverage results - Trend Chart.
@@ -117,7 +116,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
     List<Job<?,?>> jobs = (List) getDashboard().getJobs();
 
     // Fill a HashMap with the data will be showed in the chart
-    Map<LocalDate, JacocoCoverageResultSummary> summaries =
+    Map<Calendar, JacocoCoverageResultSummary> summaries =
             JacocoLoadData.loadChartDataWithinRange(jobs, daysNumber);
 
     return createTrendChart(summaries, width, height);
@@ -135,7 +134,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
    *          the chart height
    * @return Graph (JFreeChart)
    */
-  private static Graph createTrendChart(final Map<LocalDate, JacocoCoverageResultSummary> summaries, int widthParam,
+  private static Graph createTrendChart(final Map<Calendar, JacocoCoverageResultSummary> summaries, int widthParam,
     int heightParam) {
 
     return new Graph(-1, widthParam, heightParam) {
@@ -198,11 +197,11 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
    * @return CategoryDataset Interface for a dataset with one or more
    *         series, and values associated with categories.
    */
-  private static CategoryDataset buildDataSet(Map<LocalDate, JacocoCoverageResultSummary> summaries) {
+  private static CategoryDataset buildDataSet(Map<Calendar, JacocoCoverageResultSummary> summaries) {
 
-    DataSetBuilder<String, LocalDate> dataSetBuilder = new DataSetBuilder<>();
+    DataSetBuilder<String, Calendar> dataSetBuilder = new DataSetBuilder<>();
 
-    for (Map.Entry<LocalDate, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
+    for (Map.Entry<Calendar, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
       float classCoverage = 0;
       float lineCoverage = 0;
       float methodCoverage = 0;
@@ -230,7 +229,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
 	      dataSetBuilder.add((methodCoverage / count), "method", entry.getKey());
 	      dataSetBuilder.add((branchCoverage / count), "branch", entry.getKey());
 	      dataSetBuilder.add((instructionCoverage / count), "instruction", entry.getKey());
-      
+
 	      // XXX this should be a separate chart. the range axis is different.
 	      dataSetBuilder.add((complexityScore / count), "complexity", entry.getKey());
       }
