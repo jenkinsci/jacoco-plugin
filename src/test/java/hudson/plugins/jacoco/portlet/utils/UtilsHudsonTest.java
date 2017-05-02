@@ -1,14 +1,14 @@
 package hudson.plugins.jacoco.portlet.utils;
 
-import hudson.model.FreeStyleProject;
-import hudson.model.Job;
-
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.jvnet.hudson.test.HudsonTestCase;
+
+import hudson.model.FreeStyleProject;
+import hudson.model.Job;
 
 /**
  * Test {@link hudson.plugins.jacoco.portlet.utils.Utils}
@@ -33,7 +33,7 @@ public class UtilsHudsonTest extends HudsonTestCase {
     jobs.add(prj);
     jobs.add(prj2);
 
-    LocalDate lastDate = Utils.getLastDate(jobs);
+    Calendar lastDate = Utils.getLastDate(jobs);
     assertNotNull(lastDate);
   }
 

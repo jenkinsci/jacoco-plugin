@@ -29,15 +29,14 @@
  */
 package hudson.plugins.jacoco.portlet.utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Calendar;
+import java.util.List;
+
 import hudson.model.Job;
 import hudson.model.Result;
 import hudson.model.Run;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.List;
-
-import org.joda.time.LocalDate;
 
 /**
  * Defines common methods that are used for the whole project.
@@ -68,7 +67,7 @@ public final class Utils {
     if (attribute != null) {
       if (attribute.equals("") || attribute.equals("0")) {
         return defaultValue;
-      } 
+      }
 
       // Check if attribute value is a number
       try {
@@ -81,7 +80,7 @@ public final class Utils {
       } catch (NumberFormatException exception) {
         return defaultValue;
       }
-    } 
+    }
 
     return defaultValue;
   }
@@ -95,16 +94,16 @@ public final class Utils {
    * @return LocalDate the last date of all jobs that belogs to
    *         Dashboard View.
    */
-  public static LocalDate getLastDate(List<Job<?,?>> jobs) {
-    LocalDate lastDate = null;
+  public static Calendar getLastDate(List<Job<?,?>> jobs) {
+    Calendar lastDate = null;
     for (Job<?,?> job : jobs) {
       Run<?,?> lastRun = job.getLastCompletedBuild();
       if (lastRun != null) {
-        LocalDate date = new LocalDate(lastRun.getTimestamp());
+          Calendar date = lastRun.getTimestamp();
         if (lastDate == null) {
           lastDate = date;
         }
-        if (date.isAfter(lastDate)) {
+        if (date.after(lastDate)) {
           lastDate = date;
         }
       }
@@ -128,8 +127,8 @@ public final class Utils {
     bigDecimal = bigDecimal.setScale(scale, roundingMode);
     return bigDecimal.floatValue();
   }
-  
-  
+
+
   public static int nthOccurrence(String str, char c, int n) {
 	    int pos = str.indexOf(c, 0);
 	    while (n-- > 0 && pos != -1)
@@ -158,5 +157,5 @@ public final class Utils {
     return Result.FAILURE;
 
   }
-  
+
 }

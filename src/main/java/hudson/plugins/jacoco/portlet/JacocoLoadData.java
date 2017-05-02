@@ -29,21 +29,20 @@
  */
 package hudson.plugins.jacoco.portlet;
 
-import hudson.model.Job;
-import hudson.model.Run;
-import hudson.plugins.jacoco.JacocoBuildAction;
-import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
-import hudson.plugins.jacoco.portlet.utils.Utils;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.joda.time.LocalDate;
+import hudson.model.Job;
+import hudson.model.Run;
+import hudson.plugins.jacoco.JacocoBuildAction;
+import hudson.plugins.jacoco.portlet.bean.JacocoCoverageResultSummary;
+import hudson.plugins.jacoco.portlet.utils.Utils;
 
 /**
  * Load data of JaCoCo coverage results used by chart or grid.
@@ -66,20 +65,20 @@ public final class JacocoLoadData {
    *          number of days
    * @return Map The sorted summaries
    */
-  public static Map<LocalDate, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job<?,?>> jobs, int daysNumber) {
+  public static Map<Calendar, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job<?,?>> jobs, int daysNumber) {
 
-    Map<LocalDate, JacocoCoverageResultSummary> summaries = new HashMap<>();
+    Map<Calendar, JacocoCoverageResultSummary> summaries = new HashMap<>();
 
     // Get the last build (last date) of the all jobs
-    LocalDate lastDate = Utils.getLastDate(jobs);
+    Calendar firstDate = Utils.getLastDate(jobs);
 
     // No builds
-    if (lastDate == null) {
+    if (firstDate == null) {
       return null;
     }
 
-    // Get the first date from last build date minus number of days
-    LocalDate firstDate = lastDate.minusDays(daysNumber);
+    // Adjust for the given date range
+    firstDate.add(Calendar.DAY_OF_MONTH, -daysNumber);
 
     // For each job, get JaCoCo coverage results according with
     // date range (last build date minus number of days)
@@ -88,9 +87,9 @@ public final class JacocoLoadData {
       Run<?,?> run = job.getLastCompletedBuild();
 
       if (null != run) {
-        LocalDate runDate = new LocalDate(run.getTimestamp());
+          Calendar runDate = run.getTimestamp();
 
-        while (runDate.isAfter(firstDate)) {
+        while (runDate.after(firstDate)) {
 
           summarize(summaries, run, runDate, job);
 
@@ -103,8 +102,7 @@ public final class JacocoLoadData {
             break;
           }
 
-          runDate = new LocalDate(run.getTimestamp());
-
+          runDate = run.getTimestamp();
         }
       }
     }
@@ -128,7 +126,7 @@ public final class JacocoLoadData {
    * @param job
    *          job from the DashBoard Portlet view
    */
-  private static void summarize(Map<LocalDate, JacocoCoverageResultSummary> summaries, Run<?,?> run, LocalDate runDate, Job<?,?> job) {
+  private static void summarize(Map<Calendar, JacocoCoverageResultSummary> summaries, Run<?,?> run, Calendar runDate, Job<?,?> job) {
 
     JacocoCoverageResultSummary jacocoCoverageResult = getResult(run);
 
