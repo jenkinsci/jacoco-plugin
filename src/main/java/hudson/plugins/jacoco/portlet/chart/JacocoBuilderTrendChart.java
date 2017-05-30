@@ -116,7 +116,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
     List<Job<?,?>> jobs = (List) getDashboard().getJobs();
 
     // Fill a HashMap with the data will be showed in the chart
-    Map<Calendar, JacocoCoverageResultSummary> summaries =
+    Map<String, JacocoCoverageResultSummary> summaries =
             JacocoLoadData.loadChartDataWithinRange(jobs, daysNumber);
 
     return createTrendChart(summaries, width, height);
@@ -134,7 +134,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
    *          the chart height
    * @return Graph (JFreeChart)
    */
-  private static Graph createTrendChart(final Map<Calendar, JacocoCoverageResultSummary> summaries, int widthParam,
+  private static Graph createTrendChart(final Map<String, JacocoCoverageResultSummary> summaries, int widthParam,
     int heightParam) {
 
     return new Graph(-1, widthParam, heightParam) {
@@ -197,11 +197,11 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
    * @return CategoryDataset Interface for a dataset with one or more
    *         series, and values associated with categories.
    */
-  private static CategoryDataset buildDataSet(Map<Calendar, JacocoCoverageResultSummary> summaries) {
+  private static CategoryDataset buildDataSet(Map<String, JacocoCoverageResultSummary> summaries) {
 
-    DataSetBuilder<String, Calendar> dataSetBuilder = new DataSetBuilder<>();
+    DataSetBuilder<String, String> dataSetBuilder = new DataSetBuilder<>();
 
-    for (Map.Entry<Calendar, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
+    for (Map.Entry<String, JacocoCoverageResultSummary> entry : summaries.entrySet()) {
       float classCoverage = 0;
       float lineCoverage = 0;
       float methodCoverage = 0;

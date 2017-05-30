@@ -31,6 +31,8 @@ package hudson.plugins.jacoco.portlet;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
@@ -50,6 +52,11 @@ import hudson.plugins.jacoco.portlet.utils.Utils;
 public final class JacocoLoadData {
 
   /**
+   * Date formatter.
+   */
+  public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+  /**
    * Private constructor avoiding this class to be used in a non-static way.
    */
   private JacocoLoadData() {
@@ -65,9 +72,9 @@ public final class JacocoLoadData {
    *          number of days
    * @return Map The sorted summaries
    */
-  public static Map<Calendar, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job<?,?>> jobs, int daysNumber) {
+  public static Map<String, JacocoCoverageResultSummary> loadChartDataWithinRange(List<Job<?,?>> jobs, int daysNumber) {
 
-    Map<Calendar, JacocoCoverageResultSummary> summaries = new HashMap<>();
+    Map<String, JacocoCoverageResultSummary> summaries = new HashMap<>();
 
     // Get the last build (last date) of the all jobs
     Calendar firstDate = Utils.getLastDate(jobs);
@@ -126,12 +133,14 @@ public final class JacocoLoadData {
    * @param job
    *          job from the DashBoard Portlet view
    */
-  private static void summarize(Map<Calendar, JacocoCoverageResultSummary> summaries, Run<?,?> run, Calendar runDate, Job<?,?> job) {
+  private static void summarize(Map<String, JacocoCoverageResultSummary> summaries, Run<?,?> run, Calendar runDate, Job<?,?> job) {
 
     JacocoCoverageResultSummary jacocoCoverageResult = getResult(run);
+	
+	String date = DATE_FORMAT.format(runDate.getTime());
 
     // Retrieve JaCoCo information for informed date
-    JacocoCoverageResultSummary jacocoCoverageResultSummary = summaries.get(runDate);
+    JacocoCoverageResultSummary jacocoCoverageResultSummary = summaries.get(date);
 
     // Consider the last result of each
     // job date (if there are many builds for the same date). If not
@@ -163,7 +172,7 @@ public final class JacocoLoadData {
       }
     }
 
-    summaries.put(runDate, jacocoCoverageResultSummary);
+    summaries.put(date, jacocoCoverageResultSummary);
   }
 
   /**
