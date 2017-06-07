@@ -126,7 +126,7 @@ public class ExecutionFileLoader implements Serializable {
 				for (final File file : filesToAnalyze) {
 					analyzer.analyzeAll(file);
 				}
-			} catch (final Exception e) {
+			} catch (final RuntimeException e) {
 				System.out.println("While reading class directory: " + classDirectory);
 				e.printStackTrace();
 			}

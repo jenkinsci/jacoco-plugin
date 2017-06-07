@@ -100,8 +100,8 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 				}
 			}
 			action.getLogger().println("[JaCoCo plugin] Done.");
-			
-		} catch (Exception e) {
+
+		} catch (RuntimeException e) {
 			e.printStackTrace();
 		}
 	}

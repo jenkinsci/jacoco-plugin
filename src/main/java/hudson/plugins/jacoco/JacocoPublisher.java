@@ -485,40 +485,39 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 		sourceFolder.copyRecursiveTo(destFolder);
 	}
 	
-    protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env) {
+    protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env)
+            throws InterruptedException {
         try {
-
             final EnvVars environment = build.getEnvironment(listener);
             environment.overrideAll(env);
             return environment.expand(input);
-            
-        } catch (Exception e) {
+        } catch (IOException | RuntimeException e) {
             listener.getLogger().println("Failed to resolve parameters in string \""+
             input+"\" due to following error:\n"+e.getMessage());
         }
         return input;
     }
 
-    protected String resolveFilePaths(AbstractBuild<?, ?> build, TaskListener listener, String input) {
+    protected String resolveFilePaths(AbstractBuild<?, ?> build, TaskListener listener, String input)
+            throws InterruptedException {
         try {
-
             final EnvVars environment = build.getEnvironment(listener);
             environment.overrideAll(build.getBuildVariables());
             return environment.expand(input);
-
-        } catch (Exception e) {
+        } catch (IOException | RuntimeException e) {
             listener.getLogger().println("Failed to resolve parameters in string \""+
                     input+"\" due to following error:\n"+e.getMessage());
         }
         return input;
     }
 
-    protected static FilePath[] resolveDirPaths(FilePath workspace, TaskListener listener, final String input) {
+    protected static FilePath[] resolveDirPaths(FilePath workspace, TaskListener listener, final String input)
+            throws InterruptedException {
 		//final PrintStream logger = listener.getLogger();
 		FilePath[] directoryPaths = null;
 		try {
             directoryPaths = workspace.act(new ResolveDirPaths(input));
-		} catch(InterruptedException | IOException ie) {
+		} catch (IOException ie) {
 			ie.printStackTrace();
 		}
         return directoryPaths;
