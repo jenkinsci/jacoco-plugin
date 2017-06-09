@@ -77,7 +77,7 @@ public final class Utils {
           return defaultValue;
         }
         return validAttributeValue;
-      } catch (NumberFormatException exception) {
+      } catch (NumberFormatException e) {
         return defaultValue;
       }
     }

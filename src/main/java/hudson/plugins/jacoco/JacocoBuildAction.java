@@ -30,6 +30,8 @@ import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
 import hudson.plugins.jacoco.report.CoverageReport;
 
+import javax.annotation.Nullable;
+
 /**
  * Build view extension by JaCoCo plugin.
  *
@@ -210,8 +212,9 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	/**
 	 * Obtains the detailed {@link CoverageReport} instance.
+	 * @return the report, or null if these was a problem
 	 */
-	public synchronized CoverageReport getResult() {
+	public synchronized @Nullable CoverageReport getResult() {
 
 		if(report!=null) {
 			final CoverageReport r = report.get();
@@ -227,7 +230,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			report = new WeakReference<>(r);
 			r.setThresholds(thresholds);
 			return r;
-		} catch (IOException e) {
+		} catch (IOException | RuntimeException e) {
 			getLogger().println("Failed to load " + reportFolder);
 			e.printStackTrace(getLogger());
 			return null;

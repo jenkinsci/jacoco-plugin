@@ -28,36 +28,31 @@ public class SourceAnnotator {
     /**
      * Parses the source file into individual lines.
      */
-    private List<String> readLines() {
-        ArrayList<String> aList = new ArrayList<>();
-
-        BufferedReader br = null;
-
+    private List<String> readLines() throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(src));
         try {
-            br = new BufferedReader(new FileReader(src));
+            ArrayList<String> aList = new ArrayList<>();
             String line;
             while ((line = br.readLine()) != null) {
                 aList.add(line.replaceAll("\\t", "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return aList;
         } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            br.close();
         }
-
-        return aList;
     }
 
     public void printHighlightedSrcFile(ISourceNode cov, Writer output) {
-        StringBuilder buf = new StringBuilder();
         try {
-            List<String> sourceLines = readLines();
+            StringBuilder buf = new StringBuilder();
+            List<String> sourceLines;
+            try {
+                sourceLines = readLines();
+            } catch (IOException e) {
+                e.printStackTrace();
+                output.write("ERROR: Error while reading the sourcefile!");
+                return;
+            }
             output.write("<code style=\"white-space:pre;\">");
             for (int i = 1; i <= sourceLines.size(); ++i) {
                 buf.setLength(0);
@@ -76,7 +71,7 @@ public class SourceAnnotator {
 
             //logger.log(Level.INFO, "lines: " + buf);
         } catch (IOException e) {
-            buf.append("ERROR: Error while reading the sourcefile!");
+            throw new RuntimeException(e);
         }
     }
 

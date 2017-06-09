@@ -23,12 +23,6 @@ public class CoverageRangeTest {
 	}
 
 	@Test
-	public void testFillColorOfHandlesNull() throws Exception {
-		final Color color = CoverageRange.fillColorOf(null);
-		assertEquals(CoverageRange.ABYSSMAL.getFillColor(), color);
-	}
-	
-	@Test
 	public void test() {
 		expect(CoverageRange.ABYSSMAL, -20.0);
 		expect(CoverageRange.ABYSSMAL, 0.0);

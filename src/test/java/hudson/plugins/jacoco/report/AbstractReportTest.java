@@ -2,6 +2,7 @@ package hudson.plugins.jacoco.report;
 
 import static org.junit.Assert.*;
 import hudson.model.TaskListener;
+import hudson.plugins.jacoco.ExecutionFileLoader;
 import hudson.plugins.jacoco.JacocoBuildAction;
 
 import hudson.util.StreamTaskListener;
@@ -24,7 +25,7 @@ public class AbstractReportTest {
         TaskListener taskListener = StreamTaskListener.fromStdout();
 
         JacocoBuildAction action = new JacocoBuildAction(null, null, taskListener, null, null);
-        report.getParent().getParent().setParent(new CoverageReport(action, null));
+        report.getParent().getParent().setParent(new CoverageReport(action, new ExecutionFileLoader()));
         assertNull(report.getBuild());
 
         assertNull(report.getName());

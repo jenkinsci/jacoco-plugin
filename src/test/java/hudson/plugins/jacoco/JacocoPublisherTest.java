@@ -55,6 +55,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoPublisher.class)
@@ -207,9 +208,11 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(run, listener);
 
-		assertEquals("input${key}input", publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value")));
-
-		EasyMock.verify(run, listener);
+		try {
+			publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value"));
+		} catch (RuntimeException e) {
+			assertTrue(e.getMessage().startsWith("Failed to resolve parameters"));
+		}
 	}
 
 	@Test
@@ -255,9 +258,12 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(build, listener);
 
-		assertEquals("input${key}input", publisher.resolveFilePaths(build, listener, "input${key}input"));
-
-		EasyMock.verify(build, listener);
+		try {
+			publisher.resolveFilePaths(build, listener, "input${key}input");
+			fail();
+		} catch (RuntimeException e) {
+			assertTrue(e.getMessage().startsWith("Failed to resolve parameters"));
+		}
 	}
 
 	@Test

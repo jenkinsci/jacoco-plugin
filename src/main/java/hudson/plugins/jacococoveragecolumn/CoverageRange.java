@@ -41,22 +41,23 @@ public enum CoverageRange {
 		return ABYSSMAL;
 	}
 
-	public static Color fillColorOf(final Double amount) {
-		try {
-			for (int i = 0; i < values().length; i++) {
-				final CoverageRange range = values()[i];
-				if (amount == range.floor) {
-					return range.fillColor;
-				} else if (amount > range.floor) {
-					final CoverageRange range1 = values()[i - 1];
-					final double t0 = amount - range.floor;
-					final double t1 = range1.floor - amount;
-					return blendedColor(range.fillColor, range1.fillColor, t0,
-							t1);
+	public static Color fillColorOf(final double amount) {
+		for (int i = 0; i < values().length; i++) {
+			final CoverageRange range = values()[i];
+			if (amount == range.floor) {
+				return range.fillColor;
+			} else if (amount > range.floor) {
+				if (i == 0) {
+					// This method used to throw ArrayIndexOutOfBoundsException
+					// in this case, catch it and return this value:
+					return ABYSSMAL.fillColor;
 				}
+				final CoverageRange range1 = values()[i - 1];
+				final double t0 = amount - range.floor;
+				final double t1 = range1.floor - amount;
+				return blendedColor(range.fillColor, range1.fillColor, t0,
+						t1);
 			}
-		} catch (final RuntimeException e) {
-			return ABYSSMAL.fillColor;
 		}
 		return ABYSSMAL.fillColor;
 	}
@@ -64,6 +65,9 @@ public enum CoverageRange {
 	private static Color blendedColor(final Color fillColor0,
 			final Color fillColor1, final double t0, final double t1) {
 		final double total = t0 + t1;
+		if (total == 0) {
+			return ABYSSMAL.fillColor;
+		}
 		final int r = (int) ((fillColor0.getRed() * t1 + fillColor1.getRed()
 				* t0) / total);
 		final int g = (int) ((fillColor0.getGreen() * t1 + fillColor1

@@ -61,7 +61,7 @@ public class SourceAnnotatorTest {
     }
 
     @Test
-    public void testInvalidFile() throws Exception {
+    public void testMissingFile() throws Exception {
         File file = new File("notexisting");
         assertFalse(file.exists());
         SourceAnnotator annotator = new SourceAnnotator(file);
@@ -72,7 +72,7 @@ public class SourceAnnotatorTest {
             annotator.printHighlightedSrcFile(cov, writer);
         }
         String string = new String(out.toByteArray());
-        assertEquals("<code style=\"white-space:pre;\"></code>", string);
+        assertEquals("ERROR: Error while reading the sourcefile!", string);
     }
 
 

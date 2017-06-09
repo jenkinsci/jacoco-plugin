@@ -93,11 +93,10 @@ public class ExecutionFileLoader implements Serializable {
 						reader.setExecutionDataVisitor(executionDataStore);
 						reader.read();
 					}
-	            } catch (final IOException e) {
-	            	System.out.println("While reading execution data-file: " + executionDataFile);
-	                e.printStackTrace();
-	            }
-	        }
+				} catch (final IOException e) {
+					throw new IOException("While reading execution data-file: " + executionDataFile, e);
+				}
+			}
 		}
 	    private IBundleCoverage analyzeStructure() throws IOException {
 	    	
@@ -121,14 +120,14 @@ public class ExecutionFileLoader implements Serializable {
 
 			final FileFilter fileFilter = new FileFilter(Arrays.asList(includes), Arrays.asList(excludes));
 			try {
-				@SuppressWarnings("unchecked")
 				final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, fileFilter.getIncludes(), fileFilter.getExcludes());
 				for (final File file : filesToAnalyze) {
 					analyzer.analyzeAll(file);
 				}
-			} catch (final RuntimeException e) {
-				System.out.println("While reading class directory: " + classDirectory);
-				e.printStackTrace();
+			} catch (IOException e) {
+				throw new IOException("While reading class directory: " + classDirectory, e);
+			} catch (RuntimeException e) {
+				throw new RuntimeException("While reading class directory: " + classDirectory, e);
 			}
 			return coverageBuilder.getBundle(name);
 		}
