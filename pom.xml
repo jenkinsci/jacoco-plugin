@@ -33,7 +33,7 @@ THE SOFTWARE.
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>2.2.2-SNAPSHOT</version>
+   <version>2.3-SNAPSHOT</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
