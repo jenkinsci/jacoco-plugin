@@ -8,19 +8,23 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static java.nio.file.Files.createDirectories;
 import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Kohsuke Kawaguchi
  */
 public class JacocoBuildActionTest extends AbstractJacocoTestBase {
+    private static final Logger logger = Logger.getLogger(JacocoBuildActionTest.class.getName());
+
     @Test
     public void testConstruct() throws Exception {
-        Logger logger = Logger.getLogger(this.getClass().getName());
+        File testDir =  new File("target/test/JacocoBuildActionTest");
+        createDirectories(new File(testDir, "jacoco/classes").toPath());
         JacocoBuildAction r = JacocoBuildAction.load(null,
                 new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
                 new LogTaskListener(logger, Level.INFO),
-                new JacocoReportDir(new File(".")), null, null);
+                new JacocoReportDir(testDir), null, null);
         assertNotNull(r);
     }
 
