@@ -90,6 +90,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumMethodCoverage;
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
+    private boolean canRunOnFailed;
 
     /**
      * Following variables contain delta coverage thresholds as configured by the user
@@ -128,6 +129,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.maximumMethodCoverage = "0";
         this.maximumClassCoverage = "0";
         this.changeBuildStatus = false;
+	this.canRunOnFailed = false;
         this.deltaInstructionCoverage = "0";
         this.deltaBranchCoverage = "0";
         this.deltaComplexityCoverage = "0";
@@ -164,6 +166,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     	this.maximumMethodCoverage = maximumMethodCoverage;
     	this.maximumClassCoverage = maximumClassCoverage;
     	this.changeBuildStatus = changeBuildStatus;
+	this.canRunOnFailed = false;
         this.deltaInstructionCoverage = deltaInstructionCoverage;
         this.deltaBranchCoverage = deltaBranchCoverage;
         this.deltaComplexityCoverage = deltaComplexityCoverage;
@@ -433,6 +436,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
+    public void setCanRunOnFailed(boolean canRunOnFailed) {
+        this.canRunOnFailed = canRunOnFailed;
+    }
+
+    @DataBoundSetter
     public void setInclusionPattern(String inclusionPattern) {
         this.inclusionPattern = inclusionPattern;
     }
@@ -532,7 +540,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         // Initialize delta health report with user-configured threshold values
         deltaHealthReport = createJacocoDeltaHealthReportThresholds();
 
-        if (run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) {
+        if (run.getResult() == Result.FAILURE && !canRunOnFailed || run.getResult() == Result.ABORTED) {
             return;
         }
 
