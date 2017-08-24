@@ -54,8 +54,7 @@ public class CoverageGraphLayoutTest {
         assertEquals("Branch", BRANCH.getMessage());
         assertEquals("Methoden", METHOD.getMessage());
         assertEquals("Klassen", CLAZZ.getMessage());
-        assertEquals("KomplexitÃ¤t", COMPLEXITY.getMessage()); // TODO there might be an encoding issue with our resources?
-
+        assertEquals("Komplexität", COMPLEXITY.getMessage());
     }
 
     @Test
