@@ -36,10 +36,6 @@ THE SOFTWARE.
    <version>2.3-SNAPSHOT</version>
    <packaging>hpi</packaging>
 
-   <prerequisites>
-       <maven>3.0</maven>
-   </prerequisites>
-
    <name>Jenkins JaCoCo plugin</name>
    <url>https://wiki.jenkins-ci.org/display/JENKINS/JaCoCo+Plugin</url>
    <licenses>
@@ -356,7 +352,7 @@ THE SOFTWARE.
 		 <plugin>
 			  <groupId>org.jenkins-ci.tools</groupId>
 			  <artifactId>maven-hpi-plugin</artifactId>
-				 <version>2.1</version>
+				 <version>1.122</version>
 			  <executions>
 				 <execution>
 				   <phase>compile</phase>
