@@ -2,9 +2,11 @@ package hudson.plugins.jacoco.report;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,16 +31,13 @@ public class SourceAnnotator {
      * Parses the source file into individual lines.
      */
     private List<String> readLines() throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(src));
-        try {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(src), StandardCharsets.UTF_8))) {
             ArrayList<String> aList = new ArrayList<>();
             String line;
             while ((line = br.readLine()) != null) {
                 aList.add(line.replaceAll("\\t", "&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp").replaceAll("<", "&lt").replaceAll(">", "&gt"));
             }
             return aList;
-        } finally {
-            br.close();
         }
     }
 

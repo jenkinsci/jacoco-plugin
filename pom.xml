@@ -28,7 +28,7 @@ THE SOFTWARE.
    <parent>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>1.625.3</version>
+      <version>3.0</version>
       <relativePath />
    </parent>
 
@@ -97,7 +97,10 @@ THE SOFTWARE.
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <ant.version>1.9.2</ant.version>
       <jacoco.version>0.7.9</jacoco.version>
+      <jenkins.version>2.54</jenkins.version>
+      <maven.version>3.5.2</maven.version>
       <powermock.version>1.6.6</powermock.version>
    </properties>
 
@@ -119,7 +122,7 @@ THE SOFTWARE.
       <dependency>
          <groupId>org.jenkins-ci.plugins</groupId>
          <artifactId>dashboard-view</artifactId>
-         <version>2.1</version>
+         <version>2.9.11</version>
          <optional>true</optional>
         <exclusions>
           <exclusion>
@@ -128,6 +131,23 @@ THE SOFTWARE.
           </exclusion>
         </exclusions> 
       </dependency>
+      <dependency>
+	    <groupId>org.apache.ant</groupId>
+	    <artifactId>ant</artifactId>
+	    <version>${ant.version}</version>
+	  </dependency>
+      <dependency>
+	    <groupId>commons-io</groupId>
+	    <artifactId>commons-io</artifactId>
+	    <version>2.5</version>
+	    <scope>runtime</scope>
+	  </dependency>
+      <dependency>
+	    <groupId>xerces</groupId>
+	    <artifactId>xercesImpl</artifactId>
+	    <version>2.11.0</version>
+	    <scope>runtime</scope>
+	  </dependency>
       <dependency>
 	    <groupId>org.jacoco</groupId>
 	    <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
@@ -196,29 +216,75 @@ THE SOFTWARE.
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.maven.reporting</groupId>
+            <artifactId>maven-reporting-api</artifactId>
+            <version>3.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.reporting</groupId>
+            <artifactId>maven-reporting-impl</artifactId>
+            <version>2.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.shared</groupId>
+            <artifactId>maven-shared-utils</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.5.2</version>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.5.2</version>
+            <version>${maven.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-embedder</artifactId>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.5.2</version>
+            <version>${maven.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-repository-metadata</artifactId>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-settings</artifactId>
-            <version>3.5.2</version>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-aether-provider</artifactId>
+			<version>3.3.9</version>
+            <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-container-default</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.codehaus.plexus</groupId>
+			<artifactId>plexus-interpolation</artifactId>
+			<version>1.24</version>
+		</dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
@@ -278,8 +344,8 @@ THE SOFTWARE.
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.7.0</version>
             <configuration>
-               <source>1.7</source>
-               <target>1.7</target>
+               <source>1.8</source>
+               <target>1.8</target>
             </configuration>
          </plugin>
          <plugin>
@@ -289,7 +355,7 @@ THE SOFTWARE.
             <configuration>
                 <signature>
                   <groupId>org.codehaus.mojo.signature</groupId>
-                  <artifactId>java17</artifactId>
+                  <artifactId>java18</artifactId>
                   <version>1.0</version>
                 </signature>
             </configuration>
@@ -326,7 +392,6 @@ THE SOFTWARE.
          <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${jacoco.version}</version>
             <configuration>
                <excludes>
                   <exclude>**/Messages.*</exclude>
@@ -352,7 +417,6 @@ THE SOFTWARE.
 		 <plugin>
 			  <groupId>org.jenkins-ci.tools</groupId>
 			  <artifactId>maven-hpi-plugin</artifactId>
-				 <version>1.122</version>
 			  <executions>
 				 <execution>
 				   <phase>compile</phase>
@@ -361,11 +425,34 @@ THE SOFTWARE.
 				   </goals>
 				 </execution>
 			   </executions>
-
 			  <configuration>
 				<pluginFirstClassLoader>true</pluginFirstClassLoader>
 				<maskClasses>org.objectweb.asm.</maskClasses>
 			  </configuration>
+		</plugin>
+		<plugin>
+			<artifactId>maven-enforcer-plugin</artifactId>
+			<executions>
+				<execution>
+					<id>display-info</id>
+					<phase>validate</phase>
+					<goals>
+						<goal>display-info</goal>
+						<goal>enforce</goal>
+					</goals>
+					<configuration>
+						<rules>
+							<enforceBytecodeVersion>
+								<excludes>
+									<exclude>org.ow2.asm:asm-commons</exclude>
+									<exclude>org.ow2.asm:asm-tree</exclude>
+									<exclude>org.ow2.asm:asm</exclude>
+								</excludes>
+							</enforceBytecodeVersion>
+						</rules>
+					</configuration>
+				</execution>
+			</executions>
 		</plugin>
 	  </plugins>
       <pluginManagement>
@@ -385,7 +472,7 @@ THE SOFTWARE.
                               <artifactId>
                                  maven-hpi-plugin
                               </artifactId>
-                              <versionRange>[1.64,)</versionRange>
+                              <versionRange>[2.0,)</versionRange>
                               <goals>
                                  <goal>hpi</goal>
                                  <goal>apt-compile</goal>
@@ -424,7 +511,7 @@ THE SOFTWARE.
                                  org.codehaus.groovy.maven
                               </groupId>
                               <artifactId>gmaven-plugin</artifactId>
-                              <versionRange>[1.0-rc-5,)</versionRange>
+                              <versionRange>[1.0,)</versionRange>
                               <goals>
                                  <goal>generateTestStubs</goal>
                                  <goal>testCompile</goal>

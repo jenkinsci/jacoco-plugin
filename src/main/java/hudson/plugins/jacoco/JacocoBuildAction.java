@@ -5,32 +5,32 @@ import java.io.PrintStream;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
-import hudson.model.Action;
-import hudson.model.Run;
-import hudson.model.TaskListener;
-import jenkins.model.RunAction2;
-import jenkins.tasks.SimpleBuildStep.LastBuildAction;
+import javax.annotation.Nullable;
+
 import org.jacoco.core.analysis.IBundleCoverage;
 import org.jvnet.localizer.Localizable;
 import org.kohsuke.stapler.StaplerProxy;
 
 import hudson.model.AbstractBuild;
+import hudson.model.Action;
 import hudson.model.HealthReport;
 import hudson.model.HealthReportingAction;
 import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.plugins.jacoco.model.CoverageObject;
 import hudson.plugins.jacoco.report.CoverageReport;
-
-import javax.annotation.Nullable;
+import jenkins.model.RunAction2;
+import jenkins.tasks.SimpleBuildStep.LastBuildAction;
 
 /**
  * Build view extension by JaCoCo plugin.
@@ -42,6 +42,7 @@ import javax.annotation.Nullable;
  * @author Ognjen Bubalo
  */
 public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> implements HealthReportingAction, StaplerProxy, Serializable, RunAction2, LastBuildAction {
+    private static final long serialVersionUID = 1L;
 
 	private transient Run<?,?> owner;
 	
@@ -58,7 +59,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 * TODO: add ability to trend thresholds on the graph
 	 */
 	private final JacocoHealthReportThresholds thresholds;
-	private transient List<JacocoProjectAction> jacocoProjectActions=Collections.emptyList();
+	private transient JacocoProjectAction jacocoProjectAction;
 
 	/**
 	 * 
@@ -74,8 +75,8 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		if (ratios == null) {
 			ratios = Collections.emptyMap();
 		}
-		this.inclusions = inclusions;
-		this.exclusions = exclusions;
+		this.inclusions = inclusions != null ? Arrays.copyOf(inclusions, inclusions.length) : null;
+		this.exclusions = exclusions != null ? Arrays.copyOf(exclusions, exclusions.length) : null;
 		this.clazz = getOrCreateRatio(ratios, CoverageElement.Type.CLASS);
 		this.method = getOrCreateRatio(ratios, CoverageElement.Type.METHOD);
 		this.line = getOrCreateRatio(ratios, CoverageElement.Type.LINE);
@@ -367,7 +368,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	}
 
 	private void setOwner(Run<?, ?> owner) {
-		jacocoProjectActions = Collections.singletonList(new JacocoProjectAction(owner.getParent()));
+		jacocoProjectAction = new JacocoProjectAction(owner.getParent());
 		this.owner = owner;
 	}
 
@@ -383,6 +384,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	@Override
 	public Collection<? extends Action> getProjectActions() {
-		return jacocoProjectActions;
+		return jacocoProjectAction != null ? Arrays.asList(jacocoProjectAction) : Collections.emptyList();
 	}
 }

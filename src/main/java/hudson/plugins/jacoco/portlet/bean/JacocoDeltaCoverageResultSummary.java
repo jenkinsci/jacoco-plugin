@@ -32,8 +32,7 @@ public class JacocoDeltaCoverageResultSummary {
 
     // Used to extract coverage result of current and last successful build and encapsulate delta coverage values
     public static JacocoDeltaCoverageResultSummary build(Run<?,?> run){
-        Job<?, ?> parent = run.getParent();
-        Run<?,?> lastSuccessfulBuild = parent!=null ? parent.getLastSuccessfulBuild():null;
+        Run<?,?> lastSuccessfulBuild = run.getParent().getLastSuccessfulBuild();
         JacocoCoverageResultSummary lastBuildCoverage = lastSuccessfulBuild!=null ? JacocoLoadData.getResult(lastSuccessfulBuild):new JacocoCoverageResultSummary();
         JacocoCoverageResultSummary currentBuildCoverage = JacocoLoadData.getResult(run);
 
