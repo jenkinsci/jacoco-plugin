@@ -55,8 +55,8 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	/**
 	 * Loads the exec files using JaCoCo API. Creates the reporting objects and the report tree.
 	 * 
-	 * @param action
-	 * @param executionFileLoader
+	 * @param action Jacoco build action
+	 * @param executionFileLoader execution file loader owning bundle coverage
 	 */
 	public CoverageReport(JacocoBuildAction action, @Nonnull ExecutionFileLoader executionFileLoader ) {
 		this(action);
@@ -219,6 +219,8 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     /**
      * Serves a single jacoco.exec file that merges all that have been recorded.
+     * @return HTTP response serving a single jacoco.exec file, or error 404 if nothing has been recorded. 
+     * @throws IOException if any I/O error occurs
      */
     @WebMethod(name="jacoco.exec")
     public HttpResponse doJacocoExec() throws IOException {

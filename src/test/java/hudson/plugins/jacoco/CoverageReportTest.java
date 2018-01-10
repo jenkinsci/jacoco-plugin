@@ -30,6 +30,7 @@ public class CoverageReportTest extends AbstractJacocoTestBase {
 
     /**
      * Ensures the coverage after loading two reports represents the combined metrics of both reports.
+     * @throws Exception if any error occurs
      */
 	@Test
     public void testLoadMultipleReports() throws Exception {
