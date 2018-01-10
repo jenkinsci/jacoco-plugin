@@ -384,6 +384,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	@Override
 	public Collection<? extends Action> getProjectActions() {
-		return jacocoProjectAction != null ? Arrays.asList(jacocoProjectAction) : Collections.emptyList();
+		return jacocoProjectAction != null ? Collections.singletonList(jacocoProjectAction) : Collections.emptyList();
 	}
 }
