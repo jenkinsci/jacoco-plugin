@@ -246,7 +246,7 @@ public class JacocoBuilderTrendChart extends DashboardPortlet {
 
     @Override
     public String getDisplayName() {
-      return Messages.ChartTitle();
+      return Messages.chartTitle();
     }
   }
 

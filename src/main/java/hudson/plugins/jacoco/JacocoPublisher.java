@@ -733,11 +733,15 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
      */
     public static /*final*/ BuildStepDescriptor<Publisher> DESCRIPTOR;
 
+    private static final void setDescriptor(BuildStepDescriptor<Publisher> descriptor) {
+        DESCRIPTOR = descriptor;
+    }
+
     @Extension @Symbol("jacoco")
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
         public DescriptorImpl() {
             super(JacocoPublisher.class);
-            DESCRIPTOR = this;
+            setDescriptor(this);
         }
 
 		@Override

@@ -31,7 +31,6 @@ package hudson.plugins.jacoco.portlet;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
@@ -50,11 +49,6 @@ import hudson.plugins.jacoco.portlet.utils.Utils;
  * Load data of JaCoCo coverage results used by chart or grid.
  */
 public final class JacocoLoadData {
-
-  /**
-   * Date formatter.
-   */
-  public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
   /**
    * Private constructor avoiding this class to be used in a non-static way.
@@ -137,7 +131,7 @@ public final class JacocoLoadData {
 
     JacocoCoverageResultSummary jacocoCoverageResult = getResult(run);
 	
-	String date = DATE_FORMAT.format(runDate.getTime());
+	String date = new SimpleDateFormat("yyyy-MM-dd").format(runDate.getTime());
 
     // Retrieve JaCoCo information for informed date
     JacocoCoverageResultSummary jacocoCoverageResultSummary = summaries.get(date);
