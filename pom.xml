@@ -28,7 +28,7 @@ THE SOFTWARE.
    <parent>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>3.0</version>
+      <version>3.2</version>
       <relativePath />
    </parent>
 
@@ -97,8 +97,8 @@ THE SOFTWARE.
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <ant.version>1.9.2</ant.version>
-      <jacoco.version>0.7.9</jacoco.version>
+      <java.level>8</java.level>
+      <jacoco.version>0.8.0</jacoco.version>
       <jenkins.version>2.54</jenkins.version>
       <maven.version>3.5.2</maven.version>
       <powermock.version>1.6.6</powermock.version>
@@ -132,23 +132,6 @@ THE SOFTWARE.
         </exclusions> 
       </dependency>
       <dependency>
-	    <groupId>org.apache.ant</groupId>
-	    <artifactId>ant</artifactId>
-	    <version>${ant.version}</version>
-	  </dependency>
-      <dependency>
-	    <groupId>commons-io</groupId>
-	    <artifactId>commons-io</artifactId>
-	    <version>2.5</version>
-	    <scope>runtime</scope>
-	  </dependency>
-      <dependency>
-	    <groupId>xerces</groupId>
-	    <artifactId>xercesImpl</artifactId>
-	    <version>2.11.0</version>
-	    <scope>runtime</scope>
-	  </dependency>
-      <dependency>
 	    <groupId>org.jacoco</groupId>
 	    <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
 	    <version>${jacoco.version}</version>
@@ -163,18 +146,16 @@ THE SOFTWARE.
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm</artifactId>
 			<version>6.0</version>
-			<scope>runtime</scope>
 	  </dependency>
 	  <dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-commons</artifactId>
 			<version>6.0</version>
-			<scope>runtime</scope>
 	  </dependency>
       <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-            <version>3.5</version>
+            <version>3.5.1</version>
             <scope>test</scope>
       </dependency>
       <dependency>
@@ -210,30 +191,6 @@ THE SOFTWARE.
         </exclusions> 
       </dependency>
         <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-plugin-plugin</artifactId>
-            <version>3.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.reporting</groupId>
-            <artifactId>maven-reporting-api</artifactId>
-            <version>3.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.reporting</groupId>
-            <artifactId>maven-reporting-impl</artifactId>
-            <version>2.3</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-shared-utils</artifactId>
-            <version>3.1.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
             <version>${maven.version}</version>
@@ -247,19 +204,7 @@ THE SOFTWARE.
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
-            <artifactId>maven-embedder</artifactId>
-            <version>${maven.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>${maven.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-repository-metadata</artifactId>
             <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
@@ -269,22 +214,6 @@ THE SOFTWARE.
             <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>org.apache.maven</groupId>
-			<artifactId>maven-aether-provider</artifactId>
-			<version>3.3.9</version>
-            <scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-container-default</artifactId>
-			<version>1.0.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.plexus</groupId>
-			<artifactId>plexus-interpolation</artifactId>
-			<version>1.24</version>
-		</dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
@@ -305,10 +234,111 @@ THE SOFTWARE.
       <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
-            <version>1.2</version>
+            <version>1.10</version>
       </dependency>
    </dependencies>
-   
+
+   <!-- enforce versions of transitive dependencies to match RequireUpperBoundDeps rule -->
+   <dependencyManagement>
+       <dependencies>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ant</groupId>
+                <artifactId>ant</artifactId>
+                <version>1.9.9</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>4.5.4</version>
+            </dependency>
+            <dependency>
+	           <groupId>org.apache.maven</groupId>
+	           <artifactId>maven-core</artifactId>
+	           <version>${maven.version}</version>
+	        </dependency>
+            <dependency>
+               <groupId>org.apache.maven</groupId>
+               <artifactId>maven-embedder</artifactId>
+               <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven</groupId>
+               <artifactId>maven-repository-metadata</artifactId>
+               <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.reporting</groupId>
+                <artifactId>maven-reporting-api</artifactId>
+                <version>3.0</version>
+            </dependency>
+            <dependency>
+	           <groupId>org.apache.maven.doxia</groupId>
+	           <artifactId>doxia-sink-api</artifactId>
+	           <version>1.7</version>
+	        </dependency>
+            <dependency>
+	           <groupId>org.apache.maven.doxia</groupId>
+	           <artifactId>doxia-site-renderer</artifactId>
+	           <version>1.7.4</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.reporting</groupId>
+                <artifactId>maven-reporting-impl</artifactId>
+                <version>3.0.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.maven.shared</groupId>
+                <artifactId>maven-shared-utils</artifactId>
+                <version>3.2.0</version>
+            </dependency>
+            <dependency>
+	           <groupId>org.codehaus.plexus</groupId>
+	           <artifactId>plexus-velocity</artifactId>
+	           <version>1.2</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven</groupId>
+               <artifactId>maven-aether-provider</artifactId>
+               <version>3.3.9</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-classworlds</artifactId>
+               <version>2.5.2</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-component-annotations</artifactId>
+               <version>1.7.1</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-container-default</artifactId>
+               <version>1.7.1</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-interpolation</artifactId>
+               <version>1.24</version>
+            </dependency>
+            <dependency>
+	           <groupId>org.jenkins-ci.main</groupId>
+	           <artifactId>maven-plugin</artifactId>
+	           <version>2.17</version>
+	        </dependency>
+       </dependencies>
+   </dependencyManagement>
+
 	<distributionManagement>
 		<repository>
 		  <id>maven.jenkins-ci.org</id>
@@ -343,10 +373,6 @@ THE SOFTWARE.
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.7.0</version>
-            <configuration>
-               <source>1.8</source>
-               <target>1.8</target>
-            </configuration>
          </plugin>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
@@ -392,6 +418,7 @@ THE SOFTWARE.
          <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${jacoco.version}</version>
             <configuration>
                <excludes>
                   <exclude>**/Messages.*</exclude>
@@ -444,9 +471,7 @@ THE SOFTWARE.
 						<rules>
 							<enforceBytecodeVersion>
 								<excludes>
-									<exclude>org.ow2.asm:asm-commons</exclude>
-									<exclude>org.ow2.asm:asm-tree</exclude>
-									<exclude>org.ow2.asm:asm</exclude>
+									<exclude>org.ow2.asm:*</exclude>
 								</excludes>
 							</enforceBytecodeVersion>
 						</rules>
@@ -507,22 +532,6 @@ THE SOFTWARE.
                         </pluginExecution>
                         <pluginExecution>
                            <pluginExecutionFilter>
-                              <groupId>
-                                 org.codehaus.groovy.maven
-                              </groupId>
-                              <artifactId>gmaven-plugin</artifactId>
-                              <versionRange>[1.0,)</versionRange>
-                              <goals>
-                                 <goal>generateTestStubs</goal>
-                                 <goal>testCompile</goal>
-                              </goals>
-                           </pluginExecutionFilter>
-                           <action>
-                              <ignore />
-                           </action>
-                        </pluginExecution>
-                        <pluginExecution>
-                           <pluginExecutionFilter>
                               <groupId>org.jvnet.localizer</groupId>
                               <artifactId>
                                  maven-localizer-plugin
@@ -558,20 +567,6 @@ THE SOFTWARE.
                               <versionRange>[${jacoco.version},)</versionRange>
                               <goals>
                                  <goal>prepare-agent</goal>
-                              </goals>
-                           </pluginExecutionFilter>
-                           <action>
-                              <ignore />
-                           </action>
-                        </pluginExecution>
-                        <pluginExecution>
-                           <pluginExecutionFilter>
-                              <groupId>org.codehaus.gmaven</groupId>
-                              <artifactId>gmaven-plugin</artifactId>
-                              <versionRange>[1.3,)</versionRange>
-                              <goals>
-                                 <goal>generateTestStubs</goal>
-                                 <goal>testCompile</goal>
                               </goals>
                            </pluginExecutionFilter>
                            <action>
