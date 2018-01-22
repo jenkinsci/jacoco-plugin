@@ -59,6 +59,7 @@ public final class CoverageElement {
        * Returns the ratio object on the given report that tracks this type of coverage.
        * 
        * @param from The report to return the appropriate Coverage object from. Not null.
+       * @return the ratio object on the given report that tracks this type of coverage.
        */
       public abstract Coverage getAssociatedRatio(AbstractReport<?,?> from);
     }
@@ -73,6 +74,7 @@ public final class CoverageElement {
      * <p>
      * Warning: don't call this method getType() because that confuses the
      * Digester.
+     * @return the enum constant that says what type of coverage this bean represents.
      */
     public Type getTypeAsEnum() {
         return type;

@@ -67,6 +67,13 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	 *            The available coverage ratios in the report. Null is treated
 	 *            the same as an empty map.
 	 * @param thresholds
+	 *            The thresholds that applied when this build was built.
+	 * @param listener
+	 *            The listener from which we get logger
+	 * @param inclusions
+	 *            See {@link JacocoReportDir#parse(String[], String...)}
+	 * @param exclusions
+	 *            See {@link JacocoReportDir#parse(String[], String...)}
 	 */
 	public JacocoBuildAction(
 			Map<CoverageElement.Type, Coverage> ratios,
@@ -296,7 +303,19 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	/**
 	 * Constructs the object from JaCoCo exec files.
-	 *
+	 * @param owner
+	 *            Not used
+     * @param thresholds
+     *            The thresholds that applied when this build was built.
+     * @param listener
+     *            The listener from which we get logger
+	 * @param layout
+	 *             The object parsing the saved "jacoco.exec" files 
+     * @param includes
+     *            See {@link JacocoReportDir#parse(String[], String...)}
+     * @param excludes
+     *            See {@link JacocoReportDir#parse(String[], String...)}
+	 * @return new {@code JacocoBuildAction} from JaCoCo exec files
 	 * @throws IOException
 	 *      if failed to parse the file.
 	 */
@@ -311,11 +330,6 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	/**
 	 * Extracts top-level coverage information from the JaCoCo report document.
-	 * 
-	 * @param layout
-	 * @param ratios
-	 * @return
-	 * @throws IOException
 	 */
 	private static Map<Type, Coverage> loadRatios(JacocoReportDir layout, Map<Type, Coverage> ratios, String[] includes, String... excludes) throws IOException {
 

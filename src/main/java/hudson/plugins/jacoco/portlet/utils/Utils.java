@@ -142,6 +142,9 @@ public final class Utils {
    * Failure AND Failure = Failure
    * X AND Failure = Failure, Failure AND X = Failure, X = Success/Unstable/Failure
    * Y AND Unstable = Unstable, Unstable AND Y = Unstable, Y = Success/Unstable
+   * @param op1 first result 
+   * @param op2 second result
+   * @return Logical AND operation of {@code op1 AND op2}
    */
   public static Result applyLogicalAnd(Result op1, Result op2){
 

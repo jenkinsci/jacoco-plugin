@@ -11,6 +11,9 @@ import java.util.TreeMap;
  * Reports that have children.
  *
  * @author Kohsuke Kawaguchi
+ * @param <PARENT> Parent type
+ * @param <SELF> Self type
+ * @param <CHILD> Child type
  */
 public abstract class AggregatedReport<PARENT extends AggregatedReport<?,PARENT,?>,
     SELF extends AggregatedReport<PARENT,SELF,CHILD>,
