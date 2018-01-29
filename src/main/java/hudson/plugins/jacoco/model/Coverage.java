@@ -1,7 +1,9 @@
 package hudson.plugins.jacoco.model;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
 
+import hudson.plugins.jacoco.portlet.utils.Utils;
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
@@ -57,8 +59,8 @@ final public class Coverage implements Serializable {
      * @see #getPercentageFloat()
      */
     @Exported
-    public int getPercentage() {
-        return Math.round(getPercentageFloat());
+    public float getPercentage() {
+        return Utils.roundFloat(6, RoundingMode.HALF_EVEN, getPercentageFloat());
     }
 
     /**

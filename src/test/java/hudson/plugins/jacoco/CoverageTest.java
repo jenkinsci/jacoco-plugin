@@ -17,7 +17,7 @@ public class CoverageTest extends AbstractJacocoTestBase {
 	@Test
     public void testPercentageCalculation() throws Exception {
         Coverage c = new Coverage(1, 2);
-        assertEquals(67, c.getPercentage());
+        assertEquals("Coverage percentage calculation", 66.666667, c.getPercentage(), 0.00001);
     }
 
 	@Test
@@ -42,7 +42,7 @@ public class CoverageTest extends AbstractJacocoTestBase {
 	@Test
     public void testVacuousCoverage() throws Exception {
         final Coverage c = new Coverage(0, 0);
-        assertEquals(100, c.getPercentage());
+        assertEquals("Vacuous coverage percentage calculation", 100.000000, c.getPercentage(), 0.00001);
     }
 
     @Test
