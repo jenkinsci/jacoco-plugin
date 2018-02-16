@@ -12,6 +12,8 @@ import java.io.IOException;
  * which maintains the details of the coverage report.
  *
  * @author Kohsuke Kawaguchi
+ * @param <PARENT> Parent type
+ * @param <SELF> Self type
  */
 public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>,
     SELF extends CoverageObject<SELF>> extends CoverageObject<SELF> implements ModelObject {
@@ -39,6 +41,7 @@ public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>
     /**
      * Called at the last stage of the tree construction,
      * to set the back pointer.
+     * @param p parent
      */
     protected void setParent(PARENT p) {
         this.parent = p;

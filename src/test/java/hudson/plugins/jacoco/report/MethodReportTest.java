@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class MethodReportTest {
     @Test
-    public void test() {
+    public void testMissingFile() {
         MethodReport report = new MethodReport();
         assertFalse(report.hasClassCoverage());
         
@@ -22,7 +22,7 @@ public class MethodReportTest {
         StringWriter writer = new StringWriter();
         report.printHighlightedSrcFile(writer);
         String string = writer.toString();
-        assertTrue(string, string.contains("</code>"));
+        assertEquals("ERROR: Error while reading the sourcefile!", string);
     }
 
     @Test

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 
 import hudson.model.Run;
@@ -54,56 +55,50 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	/**
 	 * Loads the exec files using JaCoCo API. Creates the reporting objects and the report tree.
 	 * 
-	 * @param action
-	 * @param executionFileLoader
+	 * @param action Jacoco build action
+	 * @param executionFileLoader execution file loader owning bundle coverage
 	 */
-	public CoverageReport(JacocoBuildAction action, ExecutionFileLoader executionFileLoader ) {
+	public CoverageReport(JacocoBuildAction action, @Nonnull ExecutionFileLoader executionFileLoader ) {
 		this(action);
-		try {
+		action.getLogger().println("[JaCoCo plugin] Loading packages..");
 
-			action.getLogger().println("[JaCoCo plugin] Loading packages..");
+		if (executionFileLoader.getBundleCoverage() !=null ) {
+			setAllCovTypes(this, executionFileLoader.getBundleCoverage());
 
-			if (executionFileLoader.getBundleCoverage() !=null ) {
-				setAllCovTypes(this, executionFileLoader.getBundleCoverage());
-				
-				ArrayList<IPackageCoverage> packageList = new ArrayList<>(executionFileLoader.getBundleCoverage().getPackages());
-				for (IPackageCoverage packageCov: packageList) {
-					PackageReport packageReport = new PackageReport();
-					packageReport.setName(packageCov.getName());
-					packageReport.setParent(this);
-					this.setCoverage(packageReport, packageCov);
+			ArrayList<IPackageCoverage> packageList = new ArrayList<>(executionFileLoader.getBundleCoverage().getPackages());
+			for (IPackageCoverage packageCov: packageList) {
+				PackageReport packageReport = new PackageReport();
+				packageReport.setName(packageCov.getName());
+				packageReport.setParent(this);
+				this.setCoverage(packageReport, packageCov);
 
-					ArrayList<IClassCoverage> classList = new ArrayList<>(packageCov.getClasses());
-					for (IClassCoverage classCov: classList) {
-						ClassReport classReport = new ClassReport();
-						classReport.setName(classCov.getName());
-						classReport.setParent(packageReport);
-                        classReport.setSrcFileInfo(classCov, executionFileLoader.getSrcDir() + "/" + packageCov.getName() + "/" + classCov.getSourceFileName());
+				ArrayList<IClassCoverage> classList = new ArrayList<>(packageCov.getClasses());
+				for (IClassCoverage classCov: classList) {
+					ClassReport classReport = new ClassReport();
+					classReport.setName(classCov.getName());
+					classReport.setParent(packageReport);
+					classReport.setSrcFileInfo(classCov, executionFileLoader.getSrcDir() + "/" + packageCov.getName() + "/" + classCov.getSourceFileName());
 
-						packageReport.setCoverage(classReport, classCov);
+					packageReport.setCoverage(classReport, classCov);
 
-						ArrayList<IMethodCoverage> methodList = new ArrayList<>(classCov.getMethods());
-						for (IMethodCoverage methodCov: methodList) {
-							MethodReport methodReport = new MethodReport();
-							methodReport.setName(getMethodName(classCov, methodCov));
-							methodReport.setParent(classReport);
-							classReport.setCoverage(methodReport, methodCov);
-							methodReport.setSrcFileInfo(methodCov);
+					ArrayList<IMethodCoverage> methodList = new ArrayList<>(classCov.getMethods());
+					for (IMethodCoverage methodCov: methodList) {
+						MethodReport methodReport = new MethodReport();
+						methodReport.setName(getMethodName(classCov, methodCov));
+						methodReport.setParent(classReport);
+						classReport.setCoverage(methodReport, methodCov);
+						methodReport.setSrcFileInfo(methodCov);
 
-							classReport.add(methodReport);
-						}
-
-						packageReport.add(classReport);
+						classReport.add(methodReport);
 					}
 
-					this.add(packageReport);
+					packageReport.add(classReport);
 				}
+
+				this.add(packageReport);
 			}
-			action.getLogger().println("[JaCoCo plugin] Done.");
-			
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
+		action.getLogger().println("[JaCoCo plugin] Done.");
 	}
 
     /**
@@ -224,6 +219,8 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     /**
      * Serves a single jacoco.exec file that merges all that have been recorded.
+     * @return HTTP response serving a single jacoco.exec file, or error 404 if nothing has been recorded. 
+     * @throws IOException if any I/O error occurs
      */
     @WebMethod(name="jacoco.exec")
     public HttpResponse doJacocoExec() throws IOException {

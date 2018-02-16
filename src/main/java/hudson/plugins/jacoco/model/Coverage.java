@@ -53,6 +53,8 @@ final public class Coverage implements Serializable {
 
     /**
      * Gets the percentage as an integer between 0 and 100.
+     * @return the coverage percentage as a rounded integer between 0 and 100.
+     * @see #getPercentageFloat()
      */
     @Exported
     public int getPercentage() {
@@ -61,6 +63,8 @@ final public class Coverage implements Serializable {
 
     /**
      * Gets the percentage as a float between 0f and 100f.
+     * @return the coverage percentage as a float between 0f and 100f.
+     * @see #getPercentage()
      */
     @Exported
     public float getPercentageFloat() {

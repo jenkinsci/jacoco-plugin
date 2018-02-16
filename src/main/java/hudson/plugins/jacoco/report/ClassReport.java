@@ -32,6 +32,7 @@ public final class ClassReport extends AggregatedReport<PackageReport,ClassRepor
 
     /**
      * Read the source Java file for this class.
+     * @return the source Java file for this class.
      */
     public File getSourceFilePath() {
         return new File(sourceFilePath);

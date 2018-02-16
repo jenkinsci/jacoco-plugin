@@ -22,6 +22,7 @@ public class JacocoReportDir {
 
     /**
      * Where we store *.class files, honoring package names as directories.
+     * @return Directory to which we store *.class files, honoring package names as directories.
      */
     public File getClassesDir() {
         return new File(root,"classes");
@@ -35,6 +36,7 @@ public class JacocoReportDir {
 
     /**
      * Where we store *.java files, honoring package names as directories.
+     * @return Directory to which we store *.java files, honoring package names as directories.
      */
     public File getSourcesDir() {
         return new File(root,"sources");
@@ -49,6 +51,7 @@ public class JacocoReportDir {
     /**
      * Root directory that stores jacoco.exec files.
      * Each exec file is stored in its own directory.
+     * @return Directory that stores jacoco.exec files.
      *
      * @see #getExecFiles()
      */
@@ -58,6 +61,7 @@ public class JacocoReportDir {
 
     /**
      * Lists up existing jacoco.exec files.
+     * @return List of existing jacoco.exec files.
      */
     public List<File> getExecFiles() {
         List<File> r = new ArrayList<>();
@@ -88,6 +92,10 @@ public class JacocoReportDir {
 
     /**
      * Parses the saved "jacoco.exec" files into an {@link ExecutionFileLoader}.
+     * @param includes see {@link ExecutionFileLoader#setIncludes}
+     * @param excludes see {@link ExecutionFileLoader#setExcludes}
+     * @return the configured {@code ExecutionFileLoader}
+     * @throws IOException if any I/O error occurs
      */
     public ExecutionFileLoader parse(String[] includes, String... excludes) throws IOException {
         ExecutionFileLoader efl = new ExecutionFileLoader();

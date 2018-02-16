@@ -46,7 +46,7 @@ public class ClassReportTest {
         report.printHighlightedSrcFile(writer);
         
         String string = writer.toString();
-        assertTrue(string, string.contains("</code>"));
+        assertEquals("ERROR: Error while reading the sourcefile!", string);
     }
     
     @Test

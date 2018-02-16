@@ -94,7 +94,13 @@ public class JacocoCoverageResultSummary {
    * @param methodCoverage
    *          method coverage percentage
    * @param classCoverage
-   *          coverage percentage
+   *          class coverage percentage
+   * @param branchCoverage
+   *          branch coverage percentage
+   * @param instructionCoverage 
+   *          instruction coverage percentage
+   * @param complexityScore 
+   *          complexity score (not a percentage)
    */
   public JacocoCoverageResultSummary(Job<?,?> job, float lineCoverage, float methodCoverage,
     float classCoverage, float branchCoverage, float instructionCoverage, float complexityScore) {

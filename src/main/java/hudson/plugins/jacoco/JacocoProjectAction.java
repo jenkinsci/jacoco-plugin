@@ -36,6 +36,7 @@ public final class JacocoProjectAction implements Action {
 
     /**
      * Gets the most recent {@link JacocoBuildAction} object.
+     * @return the most recent jacoco coverage report
      */
     public JacocoBuildAction getLastResult() {
         for (Run<?, ?> b = project.getLastBuild(); b != null; b = b.getPreviousBuild()) {

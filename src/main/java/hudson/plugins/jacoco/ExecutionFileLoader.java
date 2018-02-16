@@ -23,6 +23,7 @@ import org.jacoco.maven.FileFilter;
 
 
 public class ExecutionFileLoader implements Serializable {
+    private static final long serialVersionUID = 1L;
     private final static String[] STARSTAR = {"**"};
     private final static String[] ITEM_ZERO = {"{0}"};
     
@@ -33,10 +34,10 @@ public class ExecutionFileLoader implements Serializable {
 		private String[] includes;
 		private String[] excludes;
 		
-		private ExecutionDataStore executionDataStore;
-		private SessionInfoStore sessionInfoStore;
+		private transient ExecutionDataStore executionDataStore;
+		private transient SessionInfoStore sessionInfoStore;
 		
-		private IBundleCoverage bundleCoverage;
+		private transient IBundleCoverage bundleCoverage;
 		
 		private ArrayList<FilePath> execFiles; 
 		
@@ -93,11 +94,10 @@ public class ExecutionFileLoader implements Serializable {
 						reader.setExecutionDataVisitor(executionDataStore);
 						reader.read();
 					}
-	            } catch (final IOException e) {
-	            	System.out.println("While reading execution data-file: " + executionDataFile);
-	                e.printStackTrace();
-	            }
-	        }
+				} catch (final IOException e) {
+					throw new IOException("While reading execution data-file: " + executionDataFile, e);
+				}
+			}
 		}
 	    private IBundleCoverage analyzeStructure() throws IOException {
 	    	
@@ -121,14 +121,14 @@ public class ExecutionFileLoader implements Serializable {
 
 			final FileFilter fileFilter = new FileFilter(Arrays.asList(includes), Arrays.asList(excludes));
 			try {
-				@SuppressWarnings("unchecked")
 				final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, fileFilter.getIncludes(), fileFilter.getExcludes());
 				for (final File file : filesToAnalyze) {
 					analyzer.analyzeAll(file);
 				}
-			} catch (final Exception e) {
-				System.out.println("While reading class directory: " + classDirectory);
-				e.printStackTrace();
+			} catch (IOException e) {
+				throw new IOException("While reading class directory: " + classDirectory, e);
+			} catch (RuntimeException e) {
+				throw new RuntimeException("While reading class directory: " + classDirectory, e);
 			}
 			return coverageBuilder.getBundle(name);
 		}

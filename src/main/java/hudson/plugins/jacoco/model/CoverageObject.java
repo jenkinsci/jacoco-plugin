@@ -48,6 +48,7 @@ import org.kohsuke.stapler.export.ExportedBean;
  *
  * @author Kohsuke Kawaguchi
  * @author Martin Heinzerling
+ * @param <SELF> self-type
  */
 @ExportedBean
 public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
@@ -198,6 +199,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 	/**
 	 * Line coverage. Can be null if this information is not collected.
+	 * @return Line coverage.
 	 */
 	@Exported(inline=true)
 	public Coverage getLineCoverage() {
@@ -206,6 +208,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 	/**
 	 * Gets the build object that owns the whole coverage report tree.
+	 * @return the build object that owns the whole coverage report tree.
 	 */
 	public abstract Run<?,?> getBuild();
 
@@ -223,6 +226,7 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 	/**
 	 * Used in the view to print out four table columns with the coverage info.
+	 * @return HTML code.
 	 */
 	public String printFourCoverageColumns() {
 		StringBuilder buf = new StringBuilder();
@@ -358,6 +362,9 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 	/**
 	 * Generates the graph that shows the coverage trend up to this report.
+	 * @param req Stapler request from which context, graph width and graph height are read
+	 * @param rsp Stapler response to which is sent the graph
+	 * @throws IOException if any I/O error occurs
 	 */
 	public void doGraph(StaplerRequest req, StaplerResponse rsp) throws IOException {
 		if(ChartUtil.awtProblemCause != null) {
@@ -371,8 +378,8 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 
 		String w = Util.fixEmptyAndTrim(req.getParameter("width"));
 		String h = Util.fixEmptyAndTrim(req.getParameter("height"));
-		int width = (w != null) ? Integer.valueOf(w) : 500;
-		int height = (h != null) ? Integer.valueOf(h) : 200;
+		int width = (w != null) ? Integer.parseInt(w) : 500;
+		int height = (h != null) ? Integer.parseInt(h) : 200;
 
 		CoverageGraphLayout layout = new CoverageGraphLayout()
 				.baseStroke(4f)

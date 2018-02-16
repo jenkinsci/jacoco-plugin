@@ -32,7 +32,7 @@
   <dp:decorate portlet="${it}">
     <tr><td>
       <div align="center">
-        <img id="graph" src="${it.url}summaryGraph/png" lazymap="${it.url}summaryGraph/map" alt="${%ChartTitle}"/>
+        <img id="graph" src="${it.url}summaryGraph/png" lazymap="${it.url}summaryGraph/map" alt="${%chartTitle}"/>
        </div>
      </td></tr>
   </dp:decorate>

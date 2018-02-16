@@ -38,7 +38,6 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
     	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
     	child.setName(newChildName);
         getChildren().put(child.getName(), child);
-        this.hasClassCoverage();
         //logger.log(Level.INFO, "SourceFileReport");
     }
 

@@ -28,12 +28,12 @@ THE SOFTWARE.
    <parent>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>plugin</artifactId>
-      <version>1.625.3</version>
+      <version>3.2</version>
       <relativePath />
    </parent>
 
    <artifactId>jacoco</artifactId>
-   <version>2.2.1-SNAPSHOT</version>
+   <version>2.3-SNAPSHOT</version>
    <packaging>hpi</packaging>
 
    <name>Jenkins JaCoCo plugin</name>
@@ -97,7 +97,10 @@ THE SOFTWARE.
       <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <jacoco.version>0.7.8</jacoco.version>
+      <java.level>8</java.level>
+      <jacoco.version>0.8.0</jacoco.version>
+      <jenkins.version>2.54</jenkins.version>
+      <maven.version>3.5.2</maven.version>
       <powermock.version>1.6.6</powermock.version>
    </properties>
 
@@ -119,7 +122,7 @@ THE SOFTWARE.
       <dependency>
          <groupId>org.jenkins-ci.plugins</groupId>
          <artifactId>dashboard-view</artifactId>
-         <version>2.1</version>
+         <version>2.9.11</version>
          <optional>true</optional>
         <exclusions>
           <exclusion>
@@ -135,26 +138,24 @@ THE SOFTWARE.
 	  </dependency>
       <dependency>
 			<groupId>org.kohsuke</groupId>
-			<artifactId>asm5</artifactId>
-			<version>5.0.1</version>
+			<artifactId>asm6</artifactId>
+			<version>6.0_BETA</version>
 			<scope>runtime</scope>
 	  </dependency>
 	  <dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm</artifactId>
-			<version>5.0.1</version>
-			<scope>runtime</scope>
+			<version>6.0</version>
 	  </dependency>
 	  <dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-commons</artifactId>
-			<version>5.0.1</version>
-			<scope>runtime</scope>
+			<version>6.0</version>
 	  </dependency>
       <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-            <version>3.4</version>
+            <version>3.5.1</version>
             <scope>test</scope>
       </dependency>
       <dependency>
@@ -190,39 +191,33 @@ THE SOFTWARE.
         </exclusions> 
       </dependency>
         <dependency>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-plugin-plugin</artifactId>
-            <version>3.5</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.3.9</version>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-artifact</artifactId>
-            <version>3.3.9</version>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-model</artifactId>
-            <version>3.3.9</version>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-settings</artifactId>
-            <version>3.3.9</version>
+            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.0.24</version>
+            <version>3.1.0</version>
         </dependency>
         <!-- Somehow we need org.w3c.dom.ElementTraversal, but do not get it from any of the dependencies
         do not update to 2.x as it will not contain the class any more! -->
@@ -234,15 +229,116 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpcore</artifactId>
-            <version>4.4.1</version>
+            <version>4.4.8</version>
         </dependency>
       <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
-            <version>1.2</version>
+            <version>1.10</version>
       </dependency>
    </dependencies>
-   
+
+   <!-- enforce versions of transitive dependencies to match RequireUpperBoundDeps rule -->
+   <dependencyManagement>
+       <dependencies>
+            <dependency>
+               <groupId>commons-io</groupId>
+               <artifactId>commons-io</artifactId>
+               <version>2.5</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.ant</groupId>
+               <artifactId>ant</artifactId>
+               <version>1.9.9</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.commons</groupId>
+               <artifactId>commons-lang3</artifactId>
+               <version>3.5</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.httpcomponents</groupId>
+               <artifactId>httpclient</artifactId>
+               <version>4.5.4</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven</groupId>
+               <artifactId>maven-core</artifactId>
+               <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven</groupId>
+               <artifactId>maven-embedder</artifactId>
+               <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven</groupId>
+               <artifactId>maven-repository-metadata</artifactId>
+               <version>${maven.version}</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven.reporting</groupId>
+               <artifactId>maven-reporting-api</artifactId>
+               <version>3.0</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven.doxia</groupId>
+               <artifactId>doxia-sink-api</artifactId>
+               <version>1.7</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven.doxia</groupId>
+               <artifactId>doxia-site-renderer</artifactId>
+               <version>1.7.4</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven.reporting</groupId>
+               <artifactId>maven-reporting-impl</artifactId>
+               <version>3.0.0</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven.shared</groupId>
+               <artifactId>maven-shared-utils</artifactId>
+               <version>3.2.0</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-velocity</artifactId>
+               <version>1.2</version>
+            </dependency>
+            <dependency>
+               <groupId>org.apache.maven</groupId>
+               <artifactId>maven-aether-provider</artifactId>
+               <version>3.3.9</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-classworlds</artifactId>
+               <version>2.5.2</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-component-annotations</artifactId>
+               <version>1.7.1</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-container-default</artifactId>
+               <version>1.7.1</version>
+            </dependency>
+            <dependency>
+               <groupId>org.codehaus.plexus</groupId>
+               <artifactId>plexus-interpolation</artifactId>
+               <version>1.24</version>
+            </dependency>
+            <dependency>
+               <groupId>org.jenkins-ci.main</groupId>
+               <artifactId>maven-plugin</artifactId>
+               <version>2.17</version>
+            </dependency>
+       </dependencies>
+   </dependencyManagement>
+
 	<distributionManagement>
 		<repository>
 		  <id>maven.jenkins-ci.org</id>
@@ -255,7 +351,7 @@ THE SOFTWARE.
 		 <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-shade-plugin</artifactId>
-			<version>1.3.1</version>
+			<version>3.1.0</version>
 			<executions>
 			  <execution>
 				<phase>insert-test</phase>
@@ -276,20 +372,16 @@ THE SOFTWARE.
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
-            <version>3.6.0</version>
-            <configuration>
-               <source>1.7</source>
-               <target>1.7</target>
-            </configuration>
+            <version>3.7.0</version>
          </plugin>
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>animal-sniffer-maven-plugin</artifactId>
-            <version>1.9</version>
+            <version>1.16</version>
             <configuration>
                 <signature>
                   <groupId>org.codehaus.mojo.signature</groupId>
-                  <artifactId>java17</artifactId>
+                  <artifactId>java18</artifactId>
                   <version>1.0</version>
                 </signature>
             </configuration>
@@ -352,7 +444,6 @@ THE SOFTWARE.
 		 <plugin>
 			  <groupId>org.jenkins-ci.tools</groupId>
 			  <artifactId>maven-hpi-plugin</artifactId>
-				 <version>1.121</version>
 			  <executions>
 				 <execution>
 				   <phase>compile</phase>
@@ -361,11 +452,32 @@ THE SOFTWARE.
 				   </goals>
 				 </execution>
 			   </executions>
-
 			  <configuration>
 				<pluginFirstClassLoader>true</pluginFirstClassLoader>
 				<maskClasses>org.objectweb.asm.</maskClasses>
 			  </configuration>
+		</plugin>
+		<plugin>
+			<artifactId>maven-enforcer-plugin</artifactId>
+			<executions>
+				<execution>
+					<id>display-info</id>
+					<phase>validate</phase>
+					<goals>
+						<goal>display-info</goal>
+						<goal>enforce</goal>
+					</goals>
+					<configuration>
+						<rules>
+							<enforceBytecodeVersion>
+								<excludes>
+									<exclude>org.ow2.asm:*</exclude>
+								</excludes>
+							</enforceBytecodeVersion>
+						</rules>
+					</configuration>
+				</execution>
+			</executions>
 		</plugin>
 	  </plugins>
       <pluginManagement>
@@ -385,7 +497,7 @@ THE SOFTWARE.
                               <artifactId>
                                  maven-hpi-plugin
                               </artifactId>
-                              <versionRange>[1.64,)</versionRange>
+                              <versionRange>[2.0,)</versionRange>
                               <goals>
                                  <goal>hpi</goal>
                                  <goal>apt-compile</goal>
@@ -412,22 +524,6 @@ THE SOFTWARE.
                               <versionRange>[1.0,)</versionRange>
                               <goals>
                                  <goal>display-info</goal>
-                              </goals>
-                           </pluginExecutionFilter>
-                           <action>
-                              <ignore />
-                           </action>
-                        </pluginExecution>
-                        <pluginExecution>
-                           <pluginExecutionFilter>
-                              <groupId>
-                                 org.codehaus.groovy.maven
-                              </groupId>
-                              <artifactId>gmaven-plugin</artifactId>
-                              <versionRange>[1.0-rc-5,)</versionRange>
-                              <goals>
-                                 <goal>generateTestStubs</goal>
-                                 <goal>testCompile</goal>
                               </goals>
                            </pluginExecutionFilter>
                            <action>
@@ -471,20 +567,6 @@ THE SOFTWARE.
                               <versionRange>[${jacoco.version},)</versionRange>
                               <goals>
                                  <goal>prepare-agent</goal>
-                              </goals>
-                           </pluginExecutionFilter>
-                           <action>
-                              <ignore />
-                           </action>
-                        </pluginExecution>
-                        <pluginExecution>
-                           <pluginExecutionFilter>
-                              <groupId>org.codehaus.gmaven</groupId>
-                              <artifactId>gmaven-plugin</artifactId>
-                              <versionRange>[1.3,)</versionRange>
-                              <goals>
-                                 <goal>generateTestStubs</goal>
-                                 <goal>testCompile</goal>
                               </goals>
                            </pluginExecutionFilter>
                            <action>

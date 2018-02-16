@@ -28,8 +28,28 @@ import java.io.PrintStream;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.*;
+import org.apache.commons.io.FileUtils;
+import org.easymock.EasyMock;
+import org.easymock.IAnswer;
+import org.jacoco.core.analysis.ICoverageNode;
+import org.jacoco.core.internal.analysis.ClassCoverageImpl;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.mock;
+import static org.easymock.EasyMock.niceMock;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoPublisher.class)
@@ -188,9 +208,11 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(run, listener);
 
-		assertEquals("input${key}input", publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value")));
-
-		EasyMock.verify(run, listener);
+		try {
+			publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value"));
+		} catch (RuntimeException e) {
+			assertTrue(e.getMessage().startsWith("Failed to resolve parameters"));
+		}
 	}
 
 	@Test
@@ -236,9 +258,12 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(build, listener);
 
-		assertEquals("input${key}input", publisher.resolveFilePaths(build, listener, "input${key}input"));
-
-		EasyMock.verify(build, listener);
+		try {
+			publisher.resolveFilePaths(build, listener, "input${key}input");
+			fail();
+		} catch (RuntimeException e) {
+			assertTrue(e.getMessage().startsWith("Failed to resolve parameters"));
+		}
 	}
 
 	@Test
