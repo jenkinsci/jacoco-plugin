@@ -16,6 +16,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import hudson.model.AbstractBuild;
@@ -360,6 +361,66 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
         // verify
 		verify(taskListener, run);
+	}
+
+	@Test
+	public void testPerformWithEnvVarsInSettings() throws IOException, InterruptedException {
+		// expect
+		final AbstractBuild<?, ?> build = mock(AbstractBuild.class);
+		expect(build.getResult()).andReturn(Result.SUCCESS).anyTimes();
+		expect(build.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
+		expect(build.getBuildVariables()).andReturn(new HashMap<String, String>() {
+			private static final long serialVersionUID = 1L;
+		{
+			put("VERSION", "1.0.0");
+			put("TARGET", "hostname");
+		}}).anyTimes();
+		expect(build.getParent()).andReturn(null).anyTimes();
+		Action action = anyObject();
+		build.addAction(action);
+		final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<>();
+		expectLastCall().andAnswer(new IAnswer<Void>() {
+			@Override
+			public Void answer() throws Throwable {
+				buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
+				buildAction.get().onAttached(build);
+
+				return null;
+			}
+		});
+
+		File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
+		assertTrue(dir.delete());
+		assertTrue(dir.mkdirs());
+		assertTrue(new File(dir, "jacoco/classes").mkdirs());
+		FilePath filePath = new FilePath(dir);
+
+		expect(build.getRootDir()).andReturn(dir).anyTimes();
+
+		replay(taskListener, build);
+
+		// execute
+		JacocoPublisher publisher = new JacocoPublisher();
+
+		assertEquals("code/1.0.0/**/classes", publisher.resolveFilePaths(build, taskListener, "code/${VERSION}/**/classes"));
+		assertEquals("target/hostname/**.exec", publisher.resolveFilePaths(build, taskListener, "target/${TARGET}/**.exec"));
+		assertEquals("code/1.0.0/**/src/main/java", publisher.resolveFilePaths(build, taskListener, "code/${VERSION}/**/src/main/java"));
+
+		publisher.setClassPattern("code/${VERSION}/**/classes");
+		publisher.setExecPattern("target/${TARGET}/**.exec");
+		publisher.setSourcePattern("code/${VERSION}/**/src/main/java");
+		publisher.perform(build, filePath, launcher, taskListener);
+
+		assertNotNull(buildAction.get());
+		assertEquals(Result.SUCCESS, JacocoPublisher.checkResult(buildAction.get()));
+		assertEquals("code/${VERSION}/**/classes", publisher.getClassPattern());
+		assertEquals("target/${TARGET}/**.exec", publisher.getExecPattern());
+		assertEquals("code/${VERSION}/**/src/main/java", publisher.getSourcePattern());
+
+		assertNotNull(build.toString());
+
+		// verify
+		verify(taskListener, build);
 	}
 
 	@Test
