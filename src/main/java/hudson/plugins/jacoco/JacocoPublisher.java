@@ -549,6 +549,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
         Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild<?,?>) run).getBuildVariables() : Collections.<String, String>emptyMap();
+        // Don't change the original when expanding environment variables
+        String execPattern = this.execPattern;
+        String classPattern = this.classPattern;
+        String sourcePattern = this.sourcePattern;
 
         EnvVars env = run.getEnvironment(taskListener);
         env.overrideAll(envs);
@@ -575,13 +579,15 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             return;
         }
 
+        if (run instanceof AbstractBuild) {
+            execPattern = resolveFilePaths((AbstractBuild<?,?>) run, taskListener, execPattern);
+            classPattern = resolveFilePaths((AbstractBuild<?,?>) run, taskListener, classPattern);
+            sourcePattern = resolveFilePaths((AbstractBuild<?,?>) run, taskListener, sourcePattern);
+        }
+
         logger.println("[JaCoCo plugin] " + execPattern + ";" + classPattern +  ";" + sourcePattern + ";" + " locations are configured");
 
         JacocoReportDir reportDir = new JacocoReportDir(run.getRootDir());
-
-        if (run instanceof AbstractBuild) {
-            execPattern = resolveFilePaths((AbstractBuild<?,?>) run, taskListener, execPattern);
-        }
 
         List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
