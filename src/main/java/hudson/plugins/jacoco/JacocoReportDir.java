@@ -76,7 +76,7 @@ public class JacocoReportDir {
         return r;
     }
 
-    public void addExecFiles(Iterable<FilePath> execFiles) throws IOException, InterruptedException {
+    public void addExecFiles(Iterable<FilePath> execFiles, boolean removeOriginalExecFiles) throws IOException, InterruptedException {
         FilePath root = new FilePath(getExecFilesDir());
         int i=0;
         for (FilePath file : execFiles) {
@@ -87,6 +87,10 @@ public class JacocoReportDir {
 
         	FilePath fullExecName = separateExecDir.child("jacoco.exec");
         	file.copyTo(fullExecName);
+
+            if (removeOriginalExecFiles) {
+                file.delete();
+            }
         }
     }
 
