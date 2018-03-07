@@ -10,8 +10,11 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.DirectoryFileFilter;
+import org.apache.commons.io.filefilter.RegexFileFilter;
 import org.codehaus.plexus.util.FileUtils;
 import org.jacoco.core.analysis.Analyzer;
 import org.jacoco.core.analysis.CoverageBuilder;
@@ -70,14 +73,22 @@ public class ExecutionFileLoader implements Serializable {
 		public FilePath getSrcDir() {
 			return srcDir;
 		}
-		public void setSrcDir(FilePath srcDir) {
-			this.srcDir = srcDir;
+		public void setSrcDir(FilePath srcDir) throws IOException, InterruptedException {
+			this.srcDir = getCanonicalFilePath(srcDir);
 		}
 		public FilePath getClassDir() {
 			return classDir;
 		}
-		public void setClassDir(FilePath classDir) {
-			this.classDir = classDir;
+		public void setClassDir(FilePath classDir) throws IOException, InterruptedException {
+			this.classDir = getCanonicalFilePath(classDir);
+		}
+		public static FilePath getCanonicalFilePath(final FilePath path) throws IOException, InterruptedException {
+			final String realPath = path.readLink();
+			if (realPath == null) {
+				return path;
+			} else {
+				return new FilePath(new File(realPath));
+			}
 		}
 		private void loadExecutionData() throws IOException {
 			
@@ -99,9 +110,9 @@ public class ExecutionFileLoader implements Serializable {
 				}
 			}
 		}
-	    private IBundleCoverage analyzeStructure() throws IOException {
+	    private IBundleCoverage analyzeStructure() throws IOException, InterruptedException {
 	    	
-			File classDirectory = new File(classDir.getRemote());
+			File classDirectory = new File(getCanonicalFilePath(this.classDir).getRemote());
 			final CoverageBuilder coverageBuilder = new CoverageBuilder();
 			final Analyzer analyzer = new Analyzer(executionDataStore,
 					coverageBuilder);
@@ -132,7 +143,7 @@ public class ExecutionFileLoader implements Serializable {
 			}
 			return coverageBuilder.getBundle(name);
 		}
-	    public IBundleCoverage loadBundleCoverage() throws IOException {
+	    public IBundleCoverage loadBundleCoverage() throws IOException, InterruptedException {
 			loadExecutionData();
 			this.bundleCoverage = analyzeStructure();
 			return this.bundleCoverage;

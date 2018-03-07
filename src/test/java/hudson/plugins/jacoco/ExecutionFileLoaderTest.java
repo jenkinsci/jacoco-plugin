@@ -16,7 +16,7 @@ import org.junit.Test;
 public class ExecutionFileLoaderTest {
 
     @Test
-    public void test() throws IOException {
+    public void test() throws IOException, InterruptedException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
         loader.addExecFile(new FilePath(new File(".")));
         
@@ -45,7 +45,7 @@ public class ExecutionFileLoaderTest {
     }
     
     @Test
-    public void testLoadBundleCoverageNoIncludes() throws IOException {
+    public void testLoadBundleCoverageNoIncludes() throws IOException, InterruptedException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
         
         loader.setClassDir(new FilePath(new File("target/classes")));
@@ -55,7 +55,7 @@ public class ExecutionFileLoaderTest {
     }
     
     @Test
-    public void testLoadBundleCoverageNoIncludes2() throws IOException {
+    public void testLoadBundleCoverageNoIncludes2() throws IOException, InterruptedException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
         
         loader.setClassDir(new FilePath(new File("target/classes")));
@@ -68,7 +68,7 @@ public class ExecutionFileLoaderTest {
     }
 
     @Test
-    public void testLoadBundleCoverageNoIncludes3() throws IOException {
+    public void testLoadBundleCoverageNoIncludes3() throws IOException, InterruptedException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
         
         loader.setClassDir(new FilePath(new File("target/classes")));
@@ -83,7 +83,7 @@ public class ExecutionFileLoaderTest {
     }
 
     @Test
-    public void testLoadBundleCoverageWithIncludes() throws IOException {
+    public void testLoadBundleCoverageWithIncludes() throws IOException, InterruptedException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
         
         loader.setClassDir(new FilePath(new File("target/classes")));
@@ -95,7 +95,7 @@ public class ExecutionFileLoaderTest {
     }
     
     @Test
-    public void testLoadBundleWithExecFile() throws IOException {
+    public void testLoadBundleWithExecFile() throws IOException, InterruptedException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
         
         assertTrue("This test requires that a jacoco.exec file exists in the target-directory", 
@@ -112,7 +112,7 @@ public class ExecutionFileLoaderTest {
     }
 
     @Test
-    public void testLoadBundleWithMissingExecFile() throws IOException {
+    public void testLoadBundleWithMissingExecFile() throws IOException, InterruptedException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
 
         assertTrue("This test requires that a jacoco.exec file exists in the target-directory",
@@ -131,7 +131,7 @@ public class ExecutionFileLoaderTest {
     }
 
     @Test
-    public void testLoadBundleWithoutClasses() throws IOException {
+    public void testLoadBundleWithoutClasses() throws IOException, InterruptedException {
         // Special Jenkins publisher case to handle empty classes dir
         ExecutionFileLoader loader = new ExecutionFileLoader();
         
