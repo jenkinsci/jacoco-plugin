@@ -44,7 +44,7 @@ import hudson.plugins.jacoco.portlet.bean.JacocoDeltaCoverageResultSummary;
  * @author Kohsuke Kawaguchi
  * @author Jonathan Fuerth
  * @author Ognjen Bubalo
- * 
+ *
  */
 public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
@@ -66,7 +66,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     // Delta coverage thresholds to apply
     public JacocoHealthReportDeltaThresholds deltaHealthReport;
 
-    
+
     /**
      * Variables containing the configuration set by the user.
      */
@@ -76,6 +76,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String inclusionPattern;
     private String exclusionPattern;
     private boolean skipCopyOfSrcFiles; // Added for enabling/disabling copy of source files
+    private boolean removeOriginalExecFiles;
 
     private String minimumInstructionCoverage;
     private String minimumBranchCoverage;
@@ -102,7 +103,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String deltaMethodCoverage;
     private String deltaClassCoverage;
     private boolean buildOverBuild;
-    
+
 	private static final String DIR_SEP = "\\s*,\\s*";
 
     private static final Integer THRESHOLD_DEFAULT = 0;
@@ -115,6 +116,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.inclusionPattern = "";
         this.exclusionPattern = "";
         this.skipCopyOfSrcFiles = false;
+        this.removeOriginalExecFiles = false;
         this.minimumInstructionCoverage = "0";
         this.minimumBranchCoverage = "0";
         this.minimumComplexityCoverage = "0";
@@ -140,11 +142,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 	/**
      * Loads the configuration set by user.
 	 * @param execPattern deprecated
-	 * @param classPattern deprecated 
+	 * @param classPattern deprecated
 	 * @param sourcePattern deprecated
 	 * @param inclusionPattern deprecated
 	 * @param exclusionPattern deprecated
 	 * @param skipCopyOfSrcFiles deprecated
+	 * @param removeOriginalExecFiles deprecated
 	 * @param maximumInstructionCoverage deprecated
 	 * @param maximumBranchCoverage deprecated
 	 * @param maximumComplexityCoverage deprecated
@@ -167,7 +170,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 	 * @param buildOverBuild deprecated
      */
     @Deprecated
-    public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, boolean skipCopyOfSrcFiles, String maximumInstructionCoverage, String maximumBranchCoverage
+    public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, boolean skipCopyOfSrcFiles, boolean removeOriginalExecFiles, String maximumInstructionCoverage, String maximumBranchCoverage
     		, String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
     		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus,
                            String deltaInstructionCoverage, String deltaBranchCoverage, String deltaComplexityCoverage, String deltaLineCoverage, String deltaMethodCoverage, String deltaClassCoverage, boolean buildOverBuild) {
@@ -177,6 +180,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     	this.inclusionPattern = inclusionPattern;
     	this.exclusionPattern = exclusionPattern;
         this.skipCopyOfSrcFiles = skipCopyOfSrcFiles;
+        this.removeOriginalExecFiles = removeOriginalExecFiles;
     	this.minimumInstructionCoverage = minimumInstructionCoverage;
     	this.minimumBranchCoverage = minimumBranchCoverage;
     	this.minimumComplexityCoverage = minimumComplexityCoverage;
@@ -198,7 +202,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.deltaClassCoverage = deltaClassCoverage;
         this.buildOverBuild = buildOverBuild;
     }
-    
+
     private Integer convertThresholdInputToInteger(String input, EnvVars env) {
     	if ((input == null) || ("".equals(input))) {
     		return THRESHOLD_DEFAULT;
@@ -236,6 +240,9 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                 + ", deltaLineCoverage=" + deltaLineCoverage
                 + ", deltaMethodCoverage=" + deltaMethodCoverage
                 + ", deltaClassCoverage=" + deltaClassCoverage
+                + ", buildOverBuild=" + buildOverBuild
+                + ", skipCopyOfSrcFiles=" + skipCopyOfSrcFiles
+                + ", removeOriginalExecFiles=" + removeOriginalExecFiles
                 + "]";
 	}
 
@@ -252,7 +259,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 	public String getSourcePattern() {
 		return sourcePattern;
 	}
-	
+
 	public String getInclusionPattern() {
 		return inclusionPattern;
 	}
@@ -263,6 +270,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     public boolean isSkipCopyOfSrcFiles() {
         return skipCopyOfSrcFiles;
+    }
+
+    public boolean getRemoveOriginalExecFiles() {
+        return removeOriginalExecFiles;
     }
 
 	public String getMinimumInstructionCoverage() {
@@ -394,6 +405,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
+    public void setRemoveOriginalExecFiles(boolean removeOriginalExecFiles) {
+        this.removeOriginalExecFiles = removeOriginalExecFiles;
+    }
+
+    @DataBoundSetter
     public void setMinimumInstructionCoverage(String minimumInstructionCoverage) {
         this.minimumInstructionCoverage = minimumInstructionCoverage;
     }
@@ -504,12 +520,13 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.buildOverBuild = buildOverBuild;
     }
 
+
 	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
 		destFolder.mkdirs();
-		
+
 		sourceFolder.copyRecursiveTo(destFolder);
 	}
-	
+
     protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env)
             throws InterruptedException, IOException {
         try {
@@ -586,7 +603,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         List<FilePath> matchedExecFiles = Arrays.asList(filePath.list(resolveFilePaths(run, taskListener, execPattern, env)));
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
-        reportDir.addExecFiles(matchedExecFiles);
+        reportDir.addExecFiles(matchedExecFiles, this.removeOriginalExecFiles);
         logger.print(" " + Util.join(matchedExecFiles," "));
         FilePath[] matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
@@ -682,17 +699,17 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private JacocoHealthReportThresholds createJacocoHealthReportThresholds(EnvVars env) {
         try {
             return healthReports = new JacocoHealthReportThresholds(
-                    convertThresholdInputToInteger(minimumClassCoverage, env), 
-                    convertThresholdInputToInteger(maximumClassCoverage, env), 
-                    convertThresholdInputToInteger(minimumMethodCoverage, env), 
-                    convertThresholdInputToInteger(maximumMethodCoverage, env), 
-                    convertThresholdInputToInteger(minimumLineCoverage, env), 
-                    convertThresholdInputToInteger(maximumLineCoverage, env), 
-                    convertThresholdInputToInteger(minimumBranchCoverage, env), 
-                    convertThresholdInputToInteger(maximumBranchCoverage, env), 
-                    convertThresholdInputToInteger(minimumInstructionCoverage, env), 
-                    convertThresholdInputToInteger(maximumInstructionCoverage, env), 
-                    convertThresholdInputToInteger(minimumComplexityCoverage, env), 
+                    convertThresholdInputToInteger(minimumClassCoverage, env),
+                    convertThresholdInputToInteger(maximumClassCoverage, env),
+                    convertThresholdInputToInteger(minimumMethodCoverage, env),
+                    convertThresholdInputToInteger(maximumMethodCoverage, env),
+                    convertThresholdInputToInteger(minimumLineCoverage, env),
+                    convertThresholdInputToInteger(maximumLineCoverage, env),
+                    convertThresholdInputToInteger(minimumBranchCoverage, env),
+                    convertThresholdInputToInteger(maximumBranchCoverage, env),
+                    convertThresholdInputToInteger(minimumInstructionCoverage, env),
+                    convertThresholdInputToInteger(maximumInstructionCoverage, env),
+                    convertThresholdInputToInteger(minimumComplexityCoverage, env),
                     convertThresholdInputToInteger(maximumComplexityCoverage, env)
                 );
         } catch (NumberFormatException e) {
@@ -743,7 +760,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         else
             return Result.FAILURE;
     }
-	
+
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
     }
@@ -780,7 +797,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
-		
+
 		/*@Override
         public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
             JacocoPublisher pub = new JacocoPublisher();

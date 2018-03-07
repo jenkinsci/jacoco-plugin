@@ -47,6 +47,10 @@
       </table>
     </f:entry>
 
+	<f:entry field="removeOriginalExecFiles">
+	    <f:checkbox checked="${instance.selected}" title="Remove original exec files after they have been copied to the build job"/>
+	</f:entry>
+
     <!-- Allow the user to enable/disable copy of source files -->
     <f:entry field="skipCopyOfSrcFiles">
        <f:checkbox checked="${instance.selected}" title="Disable display of source files for coverage"/>
