@@ -80,7 +80,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
     @SuppressWarnings("deprecation")
 	@Test
 	public void testConstruct() {
-		JacocoPublisher publisher = new JacocoPublisher(null, null, null, null, null, false,
+		JacocoPublisher publisher = new JacocoPublisher(null, null, null, null, null, false, false,
 				null, null, null, null,
 				null, null, null, null,
 				null, null, null, null,
@@ -145,6 +145,9 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		publisher.setMinimumMethodCoverage("minM");
 		assertEquals("minM", publisher.getMinimumMethodCoverage());
+
+		publisher.setSymbolicLinks(true);
+		assertEquals(true, publisher.getSymbolicLinks());
 
 		assertNotNull(publisher.toString());
 
@@ -297,14 +300,14 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		assertTrue(f4.renameTo(f6));
 		f5.deleteOnExit();
 		f6.deleteOnExit();
-		
+
 		/*
-		// Look for files in the entire workspace recursively without providing 
+		// Look for files in the entire workspace recursively without providing
 		// the includes parameter
 		FilePath[] reports = JacocoPublisher.locateCoverageReports(workspace, "**e/jacoco*.xml");
 		assertEquals(2 , reports.length);
 
-		// Generate a includes string and look for files 
+		// Generate a includes string and look for files
 		String includes = f1.getName() + "; " + f2.getName() + "; " + d1.getName();
 		reports = JacocoPublisher.locateCoverageReports(workspace, includes);
 		assertEquals(3, reports.length);
@@ -313,7 +316,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		FilePath local = workspace.child("coverage_localfolder");
 		JacocoPublisher.saveCoverageReports(local, reports);
 		assertEquals(3, local.list().size());
-		
+
 		local.deleteRecursive();
 		 */
 
@@ -500,7 +503,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		PowerMock.replay(taskListener, run, job);
 
 		// execute
-		JacocoPublisher publisher = new JacocoPublisher("**/**.exec", "**/classes", "**/src/main/java", "", "", false, "0", "0"
+		JacocoPublisher publisher = new JacocoPublisher("**/**.exec", "**/classes", "**/src/main/java", "", "", false, false, "0", "0"
 				, "0", "0", "0", "0", "0", "0"
 				, "0", "0", "0", "0", false,
 				"10.564", "5.65", "9.995", "11.4529", "9.346", "5.237", true);

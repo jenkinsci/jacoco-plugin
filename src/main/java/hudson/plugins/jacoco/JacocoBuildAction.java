@@ -45,15 +45,15 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
     private static final long serialVersionUID = 1L;
 
 	private transient Run<?,?> owner;
-	
+
 	@Deprecated public transient AbstractBuild<?,?> build;
-	
+
 	private final transient PrintStream logger;
 	@Deprecated private transient ArrayList<?> reports;
 	private transient WeakReference<CoverageReport> report;
 	private final String[] inclusions;
 	private final String[] exclusions;
- 
+
 	/**
 	 * The thresholds that applied when this build was built.
 	 * TODO: add ability to trend thresholds on the graph
@@ -62,7 +62,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 	private transient JacocoProjectAction jacocoProjectAction;
 
 	/**
-	 * 
+	 *
 	 * @param ratios
 	 *            The available coverage ratios in the report. Null is treated
 	 *            the same as an empty map.
@@ -238,7 +238,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			report = new WeakReference<>(r);
 			r.setThresholds(thresholds);
 			return r;
-		} catch (IOException | RuntimeException e) {
+		} catch (IOException | RuntimeException | InterruptedException e) {
 			getLogger().println("Failed to load " + reportFolder);
 			e.printStackTrace(getLogger());
 			return null;
@@ -264,13 +264,13 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 			Coverage lineCoverage = result.getLineCoverage();
 			Coverage methodCoverage = result.getMethodCoverage();
 
-			instructionCoverage.setType(CoverageElement.Type.INSTRUCTION);			
+			instructionCoverage.setType(CoverageElement.Type.INSTRUCTION);
 			classCoverage.setType(CoverageElement.Type.CLASS);
-			complexityScore.setType(CoverageElement.Type.COMPLEXITY);			
-			branchCoverage.setType(CoverageElement.Type.BRANCH);			
+			complexityScore.setType(CoverageElement.Type.COMPLEXITY);
+			branchCoverage.setType(CoverageElement.Type.BRANCH);
 			lineCoverage.setType(CoverageElement.Type.LINE);
 			methodCoverage.setType(CoverageElement.Type.METHOD);
-			
+
 			ratios.put(instructionCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(instructionCoverage));
 			ratios.put(branchCoverage,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(branchCoverage));
 			ratios.put(complexityScore,JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == thresholds.getResultByTypeAndRatio(complexityScore));
@@ -280,7 +280,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		}
 		return ratios;
 	}
-	
+
 	/**
 	 * Gets the previous {@link JacocoBuildAction} of the given build.
 	 */
@@ -310,19 +310,19 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
      * @param listener
      *            The listener from which we get logger
 	 * @param layout
-	 *             The object parsing the saved "jacoco.exec" files 
+	 *             The object parsing the saved "jacoco.exec" files
      * @param includes
      *            See {@link JacocoReportDir#parse(String[], String...)}
      * @param excludes
      *            See {@link JacocoReportDir#parse(String[], String...)}
 	 * @return new {@code JacocoBuildAction} from JaCoCo exec files
-	 * @throws IOException
-	 *      if failed to parse the file.
+	 * @throws IOException if failed to parse the file.
+	 * @throws InterruptedException if thread is interrupted
 	 */
-	public static JacocoBuildAction load(Run<?,?> owner, JacocoHealthReportThresholds thresholds, TaskListener listener, JacocoReportDir layout, String[] includes, String[] excludes) throws IOException {
+	public static JacocoBuildAction load(Run<?,?> owner, JacocoHealthReportThresholds thresholds, TaskListener listener, JacocoReportDir layout, String[] includes, String[] excludes) throws IOException, InterruptedException {
 		//PrintStream logger = listener.getLogger();
 		Map<CoverageElement.Type,Coverage> ratios = null;
-		
+
 	    ratios = loadRatios(layout, ratios, includes, excludes);
 		return new JacocoBuildAction(ratios, thresholds, listener, includes, excludes);
 	}
@@ -330,8 +330,9 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 
 	/**
 	 * Extracts top-level coverage information from the JaCoCo report document.
+	 * @throws InterruptedException if thread is interrupted
 	 */
-	private static Map<Type, Coverage> loadRatios(JacocoReportDir layout, Map<Type, Coverage> ratios, String[] includes, String... excludes) throws IOException {
+	private static Map<Type, Coverage> loadRatios(JacocoReportDir layout, Map<Type, Coverage> ratios, String[] includes, String... excludes) throws IOException, InterruptedException {
 
 		if (ratios == null) {
 			ratios = new LinkedHashMap<CoverageElement.Type, Coverage>();
@@ -365,7 +366,7 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		return ratios;
 
 	}
-	
+
 	//private static final Logger logger = Logger.getLogger(JacocoBuildAction.class.getName());
 	public final PrintStream getLogger() {
 	    if(logger != null) {

@@ -12,7 +12,10 @@ import java.util.Locale;
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 
+import hudson.FilePath;
 import hudson.model.Run;
+
+import org.apache.tools.ant.DirectoryScanner;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
@@ -32,7 +35,7 @@ import hudson.util.HttpResponses;
 
 /**
  * Root object of the coverage report.
- * 
+ *
  * @author Kohsuke Kawaguchi
  * @author Ognjen Bubalo
  */
@@ -43,7 +46,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		this.action = action;
 		setName("Jacoco");
 	}
-	
+
 //	private String instructionColor;
 //	private String classColor;
 //	private String branchColor;
@@ -52,9 +55,24 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 //	private String methodColor;
 	public JacocoHealthReportThresholds healthReports;
 
+	private static final String DIR_SEP = "\\s*,\\s*";
+
+	private String[] getMatchingFiles(final FilePath base, final String input) {
+        String[] includes = input.split(DIR_SEP);
+        DirectoryScanner ds = new DirectoryScanner();
+
+        ds.setIncludes(includes);
+        ds.setCaseSensitive(false);
+        ds.setBasedir(new File(base.getRemote()));
+        ds.scan();
+        String[] files = ds.getIncludedFiles();
+
+        return files;
+	}
+
 	/**
 	 * Loads the exec files using JaCoCo API. Creates the reporting objects and the report tree.
-	 * 
+	 *
 	 * @param action Jacoco build action
 	 * @param executionFileLoader execution file loader owning bundle coverage
 	 */
@@ -64,38 +82,62 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
 		if (executionFileLoader.getBundleCoverage() !=null ) {
 			setAllCovTypes(this, executionFileLoader.getBundleCoverage());
+			try {
+				final FilePath srcDir = ExecutionFileLoader.getCanonicalFilePath(executionFileLoader.getSrcDir());
+				final List<String> srcMultipleMatches = new ArrayList<>();
+				final List<String> srcMissing = new ArrayList<>();
 
-			ArrayList<IPackageCoverage> packageList = new ArrayList<>(executionFileLoader.getBundleCoverage().getPackages());
-			for (IPackageCoverage packageCov: packageList) {
-				PackageReport packageReport = new PackageReport();
-				packageReport.setName(packageCov.getName());
-				packageReport.setParent(this);
-				this.setCoverage(packageReport, packageCov);
+				ArrayList<IPackageCoverage> packageList = new ArrayList<>(executionFileLoader.getBundleCoverage().getPackages());
+				for (IPackageCoverage packageCov: packageList) {
+					PackageReport packageReport = new PackageReport();
+					packageReport.setName(packageCov.getName());
+					packageReport.setParent(this);
+					this.setCoverage(packageReport, packageCov);
 
-				ArrayList<IClassCoverage> classList = new ArrayList<>(packageCov.getClasses());
-				for (IClassCoverage classCov: classList) {
-					ClassReport classReport = new ClassReport();
-					classReport.setName(classCov.getName());
-					classReport.setParent(packageReport);
-					classReport.setSrcFileInfo(classCov, executionFileLoader.getSrcDir() + "/" + packageCov.getName() + "/" + classCov.getSourceFileName());
+					ArrayList<IClassCoverage> classList = new ArrayList<>(packageCov.getClasses());
+					for (IClassCoverage classCov: classList) {
+						ClassReport classReport = new ClassReport();
+						classReport.setName(classCov.getName());
+						classReport.setParent(packageReport);
+						final String srcFileFilter = "**/"+ packageCov.getName() + "/" + classCov.getSourceFileName();
+						final String[] srcFiles = this.getMatchingFiles(srcDir, srcFileFilter);
+						if (srcFiles.length > 0) {
+							if (srcFiles.length > 1 && !srcMultipleMatches.contains(srcFileFilter)) {
+								action.getLogger().println("[JaCoCo plugin] Found more than one match for "+ srcFileFilter +", using the first");
+								srcMultipleMatches.add(srcFileFilter);
+							}
+							final String srcFile = srcFiles[0];
+							classReport.setSrcFileInfo(classCov, srcDir.getRemote() + "/" + srcFile);
+						} else {
+						    if (!srcMissing.contains(srcFileFilter)) {
+						        srcMissing.add(srcFileFilter);
+						    }
+						}
 
-					packageReport.setCoverage(classReport, classCov);
+						packageReport.setCoverage(classReport, classCov);
 
-					ArrayList<IMethodCoverage> methodList = new ArrayList<>(classCov.getMethods());
-					for (IMethodCoverage methodCov: methodList) {
-						MethodReport methodReport = new MethodReport();
-						methodReport.setName(getMethodName(classCov, methodCov));
-						methodReport.setParent(classReport);
-						classReport.setCoverage(methodReport, methodCov);
-						methodReport.setSrcFileInfo(methodCov);
+						ArrayList<IMethodCoverage> methodList = new ArrayList<>(classCov.getMethods());
+						for (IMethodCoverage methodCov: methodList) {
+							MethodReport methodReport = new MethodReport();
+							methodReport.setName(getMethodName(classCov, methodCov));
+							methodReport.setParent(classReport);
+							classReport.setCoverage(methodReport, methodCov);
+							methodReport.setSrcFileInfo(methodCov);
 
-						classReport.add(methodReport);
+							classReport.add(methodReport);
+						}
+
+						packageReport.add(classReport);
 					}
 
-					packageReport.add(classReport);
+					this.add(packageReport);
 				}
 
-				this.add(packageReport);
+				if (srcMissing.size() > 0) {
+				    action.getLogger().println("[JaCoCo plugin] "+ srcMissing.size() + " source files was missing");
+				}
+			} catch (InterruptedException | IOException e) {
+				action.getLogger().println("[JaCoCo plugin] " + e.getMessage());
 			}
 		}
 		action.getLogger().println("[JaCoCo plugin] Done.");
@@ -103,7 +145,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     /**
      * From Jacoco: Checks if a class name is anonymous or not.
-     * 
+     *
      * @param vmname
      * @return
      */
@@ -124,7 +166,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     /**
      * Returns a method name for the method, including possible parameter names.
-     * 
+     *
      * @param classCov
      *            Coverage Information about the Class
      * @param methodCov
@@ -140,14 +182,14 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
             if (isAnonymous(classCov.getName())) {
                 return "{...}";
             }
-            
+
             int pos = classCov.getName().lastIndexOf('/');
             String name = pos == -1 ? classCov.getName() : classCov.getName().substring(pos + 1);
             sb.append(name.replace('$', '.'));
         } else {
             sb.append(methodCov.getName());
         }
-        
+
         sb.append('(');
         final Type[] arguments = Type.getArgumentTypes(methodCov.getDesc());
         boolean comma = false;
@@ -157,7 +199,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
             } else {
                 comma = true;
             }
-            
+
             String name = arg.getClassName();
             int pos = name.lastIndexOf('.');
             String shortname = pos == -1 ? name : name.substring(pos + 1);
@@ -170,12 +212,12 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     static final NumberFormat dataFormat = new DecimalFormat("000.00", new DecimalFormatSymbols(Locale.US));
     static final NumberFormat percentFormat = new DecimalFormat("0.0", new DecimalFormatSymbols(Locale.US));
-	
+
 	@Override
 	protected void printRatioCell(boolean failed, Coverage ratio, StringBuilder buf) {
 		if (ratio != null && ratio.isInitialized()) {
 			String bgColor = "#FFFFFF";
-			
+
 			if (JacocoHealthReportThresholds.RESULT.BETWEENMINMAX == healthReports.getResultByTypeAndRatio(ratio)) {
 				bgColor = "#FF8000";
 			} else if (JacocoHealthReportThresholds.RESULT.BELOWMINIMUM == healthReports.getResultByTypeAndRatio(ratio)) {
@@ -188,7 +230,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 			buf.append("</td>\n");
 		}
 	}
-	
+
 	@Override
 	protected void printRatioTable(Coverage ratio, StringBuilder buf){
 		buf.append("<table class='percentgraph' cellpadding='0' cellspacing='0'><tr class='percentgraph'>")
@@ -208,7 +250,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		if(prev!=null) {
 			return prev.getResult();
 		}
-		
+
 		return null;
 	}
 
@@ -219,7 +261,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 
     /**
      * Serves a single jacoco.exec file that merges all that have been recorded.
-     * @return HTTP response serving a single jacoco.exec file, or error 404 if nothing has been recorded. 
+     * @return HTTP response serving a single jacoco.exec file, or error 404 if nothing has been recorded.
      * @throws IOException if any I/O error occurs
      */
     @WebMethod(name="jacoco.exec")
