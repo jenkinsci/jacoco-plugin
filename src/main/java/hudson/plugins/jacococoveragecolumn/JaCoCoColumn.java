@@ -18,6 +18,8 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
+import javax.annotation.Nonnull;
+
 /**
  * View column that shows the code coverage (line) percentage
  *
@@ -30,13 +32,8 @@ public class JaCoCoColumn extends ListViewColumn {
 
 	public boolean hasCoverage(final Job<?, ?> job) {
 		final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
-		if (lastSuccessfulBuild == null) {
-			return false;
-		} else if (lastSuccessfulBuild.getAction(JacocoBuildAction.class) == null){
-			return false;
-		}
-		
-		return true;
+		return lastSuccessfulBuild != null &&
+				lastSuccessfulBuild.getAction(JacocoBuildAction.class) != null;
 	}
 
 	public String getPercent(final Job<?, ?> job) {
@@ -123,7 +120,7 @@ public class JaCoCoColumn extends ListViewColumn {
 	private static class DescriptorImpl extends ListViewColumnDescriptor {
 		@Override
 		public ListViewColumn newInstance(final StaplerRequest req,
-				final JSONObject formData) throws FormException {
+										  @Nonnull final JSONObject formData) {
 			return new JaCoCoColumn();
 		}
 		
@@ -132,6 +129,7 @@ public class JaCoCoColumn extends ListViewColumn {
 			return false;
 		}
 
+		@Nonnull
 		@Override
 		public String getDisplayName() {
 			return "JaCoCo Line Coverage";

@@ -55,46 +55,6 @@ public final class Constants {
   public static final int DEFAULT_DAYS_NUMBER = 30;
 
   /**
-   * Number of milliseconds in a day.
-   */
-  public static final long MILLISECONDS_IN_A_DAY = 24L * 60 * 60 * 1000;
-
-  /**
-   * Spaces around the graph - top.
-   */
-  public static final double TOP_INSET = 5.0;
-
-  /**
-   * Spaces around the graph - left.
-   */
-  public static final double LEFT_INSET = 0.0;
-
-  /**
-   * Spaces around the graph - bottom.
-   */
-  public static final double BOTTOM_INSET = 5.0;
-
-  /**
-   * Spaces around the graph - right.
-   */
-  public static final double RIGHT_INSET = 0.0;
-
-  /**
-   * The gap between columns of the chart.
-   */
-  public static final double COLUMNS_GAP = 0.2;
-
-  /**
-   * Lower margin.
-   */
-  public static final double LOWER_MARGIN = 0.0;
-
-  /**
-   * Upper margin.
-   */
-  public static final double UPPER_MARGIN = 0.0;
-
-  /**
    * The default foreground alpha transparency.
    */
   public static final float FOREGROUND_ALPHA = 0.8f;
