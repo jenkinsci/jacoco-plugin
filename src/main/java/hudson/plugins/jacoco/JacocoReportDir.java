@@ -42,10 +42,10 @@ public class JacocoReportDir {
         return new File(root,"sources");
     }
 
-    public int saveSourcesFrom(@Nonnull FilePath dir, @Nonnull String fileMask) throws IOException, InterruptedException {
+    public int saveSourcesFrom(@Nonnull FilePath dir, @Nonnull String inclusionMask, @Nonnull String exclusionMask) throws IOException, InterruptedException {
         FilePath d = new FilePath(getSourcesDir());
         d.mkdirs();
-        return dir.copyRecursiveTo(fileMask, d);
+        return dir.copyRecursiveTo(inclusionMask, exclusionMask, d);
     }
 
     /**

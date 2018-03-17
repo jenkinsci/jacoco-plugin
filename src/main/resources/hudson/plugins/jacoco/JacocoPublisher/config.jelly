@@ -8,8 +8,8 @@
       <col width="26%"/>
       <tr>
         <td>Path to exec files (e.g.: **/target/**.exec, **/jacoco.exec)</td>
-        <td>Path to class directories (e.g.: **/target/classDir, **/classes)</td>
-        <td>Path to source directories (e.g.: **/mySourceFiles)</td>
+        <td>Inclusions (e.g.: **/*.class)</td>
+        <td>Exclusions (e.g.: **/*Test*.class)</td>
       </tr>
       
       <tr>
@@ -18,32 +18,49 @@
         </td>
       
         <td>
-          <f:textbox field="classPattern"  default="**/classes"/>
-        </td>
-        
-        <td>
-          <f:textbox field="sourcePattern" default="**/src/main/java"/>
-        </td>
-        
-      </tr>
-      </table>
-      <table width="78%">
-            <col width="39%"/>
-      		<col width="39%"/>
-      <tr>
-        <td>Inclusions (e.g.: **/*.class)</td>
-        <td>Exclusions (e.g.: **/*Test*.class)</td>
-      </tr>
-      
-      <tr>
-        <td>
           <f:textbox field="inclusionPattern" default=""/>
+
         </td>
         
         <td>
           <f:textbox field="exclusionPattern" default=""/>
         </td>
       </tr>
+      </table>
+      <br/>
+      <table width="78%">
+        <col width="39%"/>
+        <col width="39%"/>
+        <tr>
+            <td>Path to class directories (e.g.: **/target/classDir, **/classes)</td>
+        </tr>
+        <tr>
+         <td>
+            <f:textbox field="classPattern"  default="**/classes"/>
+         </td>
+        </tr>
+      </table>
+      <br/>
+      <table width="78%">
+        <col width="26%"/>
+        <col width="26%"/>
+        <col width="26%"/>
+        <tr>
+            <td>Path to source directories (e.g.: **/mySourceFiles)</td>
+            <td>Inclusions (e.g.: **/*.java,**/*.groovy,**/*.gs)</td>
+            <td>Exclusions (e.g.: generated/**/*.java)</td>
+        </tr>
+        <tr>
+          <td>
+            <f:textbox field="sourcePattern" default="**/src/main/java"/>
+          </td>
+          <td>
+            <f:textbox field="sourceInclusionPattern" default="**/*.java"/>
+          </td>
+          <td>
+            <f:textbox field="sourceExclusionPattern" default=""/>
+          </td>
+        </tr>
       </table>
     </f:entry>
 
