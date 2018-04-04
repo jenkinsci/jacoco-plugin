@@ -11,9 +11,6 @@ import java.util.logging.Logger;
 import static org.junit.Assert.assertTrue;
 
 public class WorkspaceBuilder {
-
-    private String workspacePrefix = "workspace";
-    private String workspaceSuffix = ".tst";
     private List<String> files = new ArrayList<>();
 
     FilePath build() throws IOException {
@@ -34,12 +31,6 @@ public class WorkspaceBuilder {
         }
         Logger.getLogger(WorkspaceBuilder.class.getName()).info("Created workspace: " + wksp.getAbsolutePath());
         return workspace;
-    }
-
-    public WorkspaceBuilder name(String workspacePrefix, String workspaceSuffix) {
-        this.workspacePrefix = workspacePrefix;
-        this.workspaceSuffix = workspaceSuffix;
-        return this;
     }
 
     public WorkspaceBuilder file(String relativeFile) {

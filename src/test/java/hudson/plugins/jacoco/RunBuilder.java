@@ -23,9 +23,6 @@ import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertTrue;
 
 public class RunBuilder {
-
-    private String buildPrefix = "BuildTest";
-    private String buildSuffix = ".tst";
     private TaskListener taskListener;
 
     Run build() throws IOException, InterruptedException {
@@ -37,7 +34,7 @@ public class RunBuilder {
         expect(run.getParent()).andReturn(null).anyTimes();
 
         // create a test build directory
-        File rootDir = File.createTempFile(buildPrefix, buildSuffix);
+        File rootDir = File.createTempFile("BuildTest", ".tst");
         assertTrue(rootDir.delete());
         assertTrue(rootDir.mkdirs());
 
@@ -46,25 +43,16 @@ public class RunBuilder {
         Action action = anyObject();
         run.addAction(action);
         final AtomicReference<JacocoBuildAction> buildAction = new AtomicReference<>();
-        expectLastCall().andAnswer(new IAnswer<Void>() {
-            @Override
-            public Void answer() throws Throwable {
-                buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
-                buildAction.get().onAttached(run);
-                return null;
-            }
+        expectLastCall().andAnswer((IAnswer<Void>) () -> {
+            buildAction.set((JacocoBuildAction) getCurrentArguments()[0]);
+            buildAction.get().onAttached(run);
+            return null;
         });
 
         replay(usedTaskListener, run);
         Logger.getLogger(RunBuilder.class.getName()).info("Created build dir: " + rootDir.getAbsolutePath());
         return run;
 
-    }
-
-    public RunBuilder buildDir(String buildPrefix, String buildSuffix) {
-        this.buildPrefix = buildPrefix;
-        this.buildSuffix = buildSuffix;
-        return this;
     }
 
     public RunBuilder taskListener(TaskListener taskListener) {
