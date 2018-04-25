@@ -9,6 +9,8 @@ import hudson.plugins.jacoco.model.Coverage;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.search.QuickSilver;
 import hudson.util.StreamTaskListener;
+import net.sf.json.JSONObject;
+
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,12 +28,9 @@ import static org.junit.Assert.*;
 public class JaCoCoColumnTest {
 	private JaCoCoColumn jacocoColumn;
 
-	//@Override
     @Before
-	public void setUp() throws Exception {
+	public void setUp() {
 		jacocoColumn = new JaCoCoColumn();
-		
-		//super.setUp();
 	}
 
 	@Test
@@ -84,7 +83,7 @@ public class JaCoCoColumnTest {
 			}
 
 			@Override
-			protected synchronized void saveNextBuildNumber() throws IOException {
+			protected synchronized void saveNextBuildNumber() {
 			}
 		};
 		assertTrue(jacocoColumn.hasCoverage(mockJob));
@@ -95,12 +94,12 @@ public class JaCoCoColumnTest {
 	}
 
 	@Test
-	public void testGetLineColorWithNull() throws Exception {
+	public void testGetLineColorWithNull() {
 		assertNull(jacocoColumn.getLineColor(null, null));
 	}
 
 	@Test
-	public void testGetLineColor() throws Exception {
+	public void testGetLineColor() {
 		final BuildListener listener = EasyMock.createNiceMock(BuildListener.class);
 		EasyMock.replay(listener);
 		
@@ -123,12 +122,12 @@ public class JaCoCoColumnTest {
 	}
 
 	@Test
-	public void testGetFillColorWithNull() throws Exception {
+	public void testGetFillColorWithNull() {
 		assertNull(jacocoColumn.getFillColor(null, null));
 	}
 
 	@Test
-	public void testGetFillColor100() throws Exception {
+	public void testGetFillColor100() {
 		final BuildListener listener = EasyMock.createNiceMock(BuildListener.class);
 		EasyMock.replay(listener);
 		
@@ -153,7 +152,7 @@ public class JaCoCoColumnTest {
 	@Test
 	public void testDescriptor() throws FormException {
 		assertNotNull(jacocoColumn.getDescriptor());
-		assertNotNull(jacocoColumn.getDescriptor().newInstance(null, null));
+		assertNotNull(jacocoColumn.getDescriptor().newInstance(null, JSONObject.fromObject("{\"key\":\"value\"}")));
 		assertNotNull(jacocoColumn.getDescriptor().getDisplayName());
 	}
 
@@ -211,7 +210,7 @@ public class JaCoCoColumnTest {
         }
 
         @Override
-		protected synchronized void saveNextBuildNumber() throws IOException {
+		protected synchronized void saveNextBuildNumber() {
 		}
 	}
 	
