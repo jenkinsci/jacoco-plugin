@@ -98,7 +98,7 @@ THE SOFTWARE.
       <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.level>8</java.level>
-      <jacoco.version>0.8.0</jacoco.version>
+      <jacoco.version>0.8.1</jacoco.version>
       <jenkins.version>2.54</jenkins.version>
       <maven.version>3.5.2</maven.version>
       <powermock.version>1.6.6</powermock.version>
@@ -351,7 +351,7 @@ THE SOFTWARE.
 		 <plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-shade-plugin</artifactId>
-			<version>3.1.0</version>
+			<version>3.1.1</version>
 			<executions>
 			  <execution>
 				<phase>insert-test</phase>
@@ -374,6 +374,11 @@ THE SOFTWARE.
             <artifactId>maven-compiler-plugin</artifactId>
             <version>3.7.0</version>
          </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>         
          <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>animal-sniffer-maven-plugin</artifactId>
