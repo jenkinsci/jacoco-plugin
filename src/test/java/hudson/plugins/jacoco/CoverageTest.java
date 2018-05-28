@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import hudson.plugins.jacoco.model.Coverage;
 
+import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import static org.junit.Assert.*;
@@ -17,7 +18,7 @@ public class CoverageTest extends AbstractJacocoTestBase {
 	@Test
     public void testPercentageCalculation() throws Exception {
         Coverage c = new Coverage(1, 2);
-        assertEquals(67, c.getPercentage());
+        assertEquals(BigDecimal.valueOf(66.67), c.getPercentage());
     }
 
 	@Test
@@ -42,7 +43,7 @@ public class CoverageTest extends AbstractJacocoTestBase {
 	@Test
     public void testVacuousCoverage() throws Exception {
         final Coverage c = new Coverage(0, 0);
-        assertEquals(100, c.getPercentage());
+        assertEquals(BigDecimal.valueOf(100).setScale(2), c.getPercentage());
     }
 
     @Test
