@@ -2,6 +2,8 @@ package hudson.plugins.jacoco.report;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -196,7 +198,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		.append("<td class='percentgraph'>")
 		.append("<div class='percentgraph' style='width:100px'>")
 		.append("<div class='redbar' style='width:")
-		.append(100 - ratio.getPercentage()).append("px'>")
+		.append(BigDecimal.valueOf(100).subtract(ratio.getPercentage()).setScale(0, RoundingMode.HALF_UP)).append("px'>")
 		.append("</div></div></td></tr><tr><td colspan='2'>")
 		.append("<span class='text'><b>M:</b> ").append(ratio.getMissed())
 		.append(" <b>C:</b> ").append(ratio.getCovered()).append("</span></td></tr></table>\n");
