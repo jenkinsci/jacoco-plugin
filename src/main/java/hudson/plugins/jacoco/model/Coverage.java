@@ -1,6 +1,7 @@
 package hudson.plugins.jacoco.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
@@ -57,8 +58,9 @@ final public class Coverage implements Serializable {
      * @see #getPercentageFloat()
      */
     @Exported
-    public int getPercentage() {
-        return Math.round(getPercentageFloat());
+    public BigDecimal getPercentage() {
+        BigDecimal bd = new BigDecimal(getPercentageFloat());
+        return bd.setScale(2, BigDecimal.ROUND_HALF_UP);
     }
 
     /**
