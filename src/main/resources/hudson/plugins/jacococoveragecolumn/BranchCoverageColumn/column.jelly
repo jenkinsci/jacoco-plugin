@@ -1,0 +1,36 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core">
+  <j:choose>
+    <j:when test="${it != null}">
+      <j:set var="coverageAmount" value="${it.getCoverage(job)}" />
+      <j:set var="coveragePercent" value="${it.getPercent(job)}" />
+      <j:set var="color" value="${it.getColor(job, coverageAmount)}" />
+      <j:set var="backgroundColor" value="${it.getFillColor(job, coverageAmount)}" />
+    </j:when>
+    <j:otherwise>
+      <j:set var="coverageAmount" value="${null}" />
+    </j:otherwise>
+  </j:choose>
+
+  <j:choose>
+    <j:when test="${coverageAmount != null}">
+      <td tooltip="${%Percentage of branches of code that are covered in unit tests}"
+      		style="color:#${color}; background-color:#${backgroundColor};" 
+      		data="${coverageAmount}" align="center">
+        <j:choose>
+          <j:when test="${it.hasCoverage(job)}">
+            <a style="color:#${color}" href="${rootURL}/${job.url}lastSuccessfulBuild/jacoco/">
+              ${coveragePercent}%
+            </a>
+          </j:when>
+          <j:otherwise>
+            N/A
+          </j:otherwise>
+        </j:choose>
+      </td>
+    </j:when>
+    <j:otherwise>
+      <td data="-" align="center"></td>
+    </j:otherwise>
+  </j:choose>
+</j:jelly>
