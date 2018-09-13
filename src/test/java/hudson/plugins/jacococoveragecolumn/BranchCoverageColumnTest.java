@@ -1,16 +1,15 @@
 package hudson.plugins.jacococoveragecolumn;
 
-import hudson.model.BuildListener;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.plugins.jacoco.JacocoBuildAction;
 import hudson.plugins.jacoco.model.Coverage;
+import hudson.plugins.jacoco.model.CoverageElement;
 import hudson.plugins.jacoco.model.CoverageElement.Type;
 import hudson.search.QuickSilver;
 import hudson.util.StreamTaskListener;
 import net.sf.json.JSONObject;
-
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,20 +17,20 @@ import org.kohsuke.stapler.export.Exported;
 
 import javax.servlet.ServletContext;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-public class LineCoverageColumnTest {
-	private LineCoverageColumn lineCoverageColumn;
+public class BranchCoverageColumnTest {
+
+	private BranchCoverageColumn sut;
 
     @Before
 	public void setUp() {
-		lineCoverageColumn = new LineCoverageColumn();
+		sut = new BranchCoverageColumn();
 	}
 
 	@Test
@@ -47,8 +46,8 @@ public class LineCoverageColumnTest {
 			public MyRun getLastSuccessfulBuild() {
 				try {
 				    MyRun newBuild = newBuild();
-					Map<Type, Coverage> ratios = new HashMap<>();
-					ratios.put(Type.LINE, new Coverage(200, 100));
+					Map<CoverageElement.Type, Coverage> ratios = new HashMap<>();
+					ratios.put(Type.BRANCH, new Coverage(100, 200));
 					newBuild.addAction(new JacocoBuildAction(ratios, null, StreamTaskListener.fromStdout(), null, null));
 					assertEquals(1, newBuild.getAllActions().size());
 					return newBuild;
@@ -61,19 +60,16 @@ public class LineCoverageColumnTest {
 			protected synchronized void saveNextBuildNumber() {
 			}
 		};
-		assertTrue(lineCoverageColumn.hasCoverage(mockJob));
-		assertEquals("33.33", lineCoverageColumn.getPercent(mockJob));
-		assertEquals(new BigDecimal("33.33"), lineCoverageColumn.getCoverage(mockJob));
+		assertEquals("66.67", sut.getPercent(mockJob));
 
 		EasyMock.verify(context);
 	}
 
 	@Test
 	public void testDescriptor() throws FormException {
-		assertNotNull(lineCoverageColumn.getDescriptor());
-		assertNotNull(
-				lineCoverageColumn.getDescriptor().newInstance(null, JSONObject.fromObject("{\"key\":\"value\"}")));
-		assertNotNull(lineCoverageColumn.getDescriptor().getDisplayName());
+		assertNotNull(sut.getDescriptor());
+		assertNotNull(sut.getDescriptor().newInstance(null, JSONObject.fromObject("{\"key\":\"value\"}")));
+		assertNotNull(sut.getDescriptor().getDisplayName());
 	}
 
 	private class MyJob extends Job<MyJob,MyRun> {

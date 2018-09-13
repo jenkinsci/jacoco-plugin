@@ -27,19 +27,8 @@ public class LineCoverageColumn extends AbstractJaCoCoCoverageColumn {
 
 	@Override
 	protected Float getPercentageFloat(final Run<?, ?> lastSuccessfulBuild) {
-		if(lastSuccessfulBuild == null) {
-			return 0f;
-		}
-
-		final JacocoBuildAction action = lastSuccessfulBuild
-				.getAction(JacocoBuildAction.class);
-
-		if(action == null) {
-			return 0f;
-		}
-
-		final Coverage ratio = action.getLineCoverage();
-		return ratio.getPercentageFloat();
+		return getPercentageFloat(lastSuccessfulBuild,
+				(a) -> a.getLineCoverage().getPercentageFloat());
 	}
 
 	@Extension

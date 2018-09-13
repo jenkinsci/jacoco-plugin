@@ -25,19 +25,8 @@ public class BranchCoverageColumn extends AbstractJaCoCoCoverageColumn {
 
 	@Override
 	protected Float getPercentageFloat(final Run<?, ?> lastSuccessfulBuild) {
-		if(lastSuccessfulBuild == null) {
-			return 0f;
-		}
-
-		final JacocoBuildAction action = lastSuccessfulBuild
-				.getAction(JacocoBuildAction.class);
-
-		if(action == null) {
-			return 0f;
-		}
-
-		final Coverage ratio = action.getBranchCoverage();
-		return ratio.getPercentageFloat();
+		return getPercentageFloat(lastSuccessfulBuild,
+				(a) -> a.getBranchCoverage().getPercentageFloat());
 	}
 
 	@Extension

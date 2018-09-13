@@ -3,11 +3,13 @@ package hudson.plugins.jacococoveragecolumn;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.plugins.jacoco.JacocoBuildAction;
+import hudson.plugins.jacoco.model.Coverage;
 import hudson.views.ListViewColumn;
 
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.function.Function;
 
 /**
  * Abstract view column to show the code coverage percentage
@@ -16,6 +18,23 @@ import java.math.RoundingMode;
 public abstract class AbstractJaCoCoCoverageColumn extends ListViewColumn {
 
 	protected abstract Float getPercentageFloat(final Run<?, ?> build);
+
+	protected Float getPercentageFloat(final Run<?, ?> lastSuccessfulBuild,
+									   Function<JacocoBuildAction, Float> percentageFunction) {
+		if(lastSuccessfulBuild == null) {
+			return 0f;
+		}
+
+		final JacocoBuildAction action = lastSuccessfulBuild
+				.getAction(JacocoBuildAction.class);
+
+		if(action == null) {
+			return 0f;
+		}
+
+		return percentageFunction.apply(action);
+	}
+
 
 	public boolean hasCoverage(final Job<?, ?> job) {
 		final Run<?, ?> lastSuccessfulBuild = job.getLastSuccessfulBuild();
