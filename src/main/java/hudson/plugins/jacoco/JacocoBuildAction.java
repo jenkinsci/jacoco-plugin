@@ -338,6 +338,10 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
 		}
 		ExecutionFileLoader efl = layout.parse(includes, excludes);
         IBundleCoverage bundleCoverage = efl.getBundleCoverage();
+        if(bundleCoverage == null) {
+        	return null;
+		}
+
 		Coverage ratio = new Coverage();
 		ratio.accumulatePP(bundleCoverage.getClassCounter().getMissedCount(), bundleCoverage.getClassCounter().getCoveredCount());
 		ratios.put(CoverageElement.Type.CLASS, ratio);
