@@ -13,6 +13,7 @@ import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
 
 import hudson.model.Run;
+import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.analysis.IClassCoverage;
 import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
@@ -62,10 +63,11 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 		this(action);
 		action.getLogger().println("[JaCoCo plugin] Loading packages..");
 
-		if (executionFileLoader.getBundleCoverage() !=null ) {
-			setAllCovTypes(this, executionFileLoader.getBundleCoverage());
+		IBundleCoverage bundleCoverage = executionFileLoader.getBundleCoverage();
+		if (bundleCoverage !=null ) {
+			setAllCovTypes(this, bundleCoverage);
 
-			ArrayList<IPackageCoverage> packageList = new ArrayList<>(executionFileLoader.getBundleCoverage().getPackages());
+			ArrayList<IPackageCoverage> packageList = new ArrayList<>(bundleCoverage.getPackages());
 			for (IPackageCoverage packageCov: packageList) {
 				PackageReport packageReport = new PackageReport();
 				packageReport.setName(packageCov.getName());

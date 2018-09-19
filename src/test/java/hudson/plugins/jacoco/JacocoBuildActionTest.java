@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static java.nio.file.Files.createDirectories;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -21,6 +22,18 @@ public class JacocoBuildActionTest extends AbstractJacocoTestBase {
     public void testConstruct() throws Exception {
         File testDir =  new File("target/test/JacocoBuildActionTest");
         createDirectories(new File(testDir, "jacoco/classes").toPath());
+        JacocoBuildAction r = JacocoBuildAction.load(null,
+                new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
+                new LogTaskListener(logger, Level.INFO),
+                new JacocoReportDir(testDir), null, null);
+        assertNotNull(r);
+    }
+
+    @Test
+    public void testConstructNonExistingTestDir() throws Exception {
+        File testDir =  new File("target/test/notExistingTest");
+        assertFalse("Expecting " + testDir.getAbsolutePath() + " to not exist, but was found",
+                testDir.exists());
         JacocoBuildAction r = JacocoBuildAction.load(null,
                 new JacocoHealthReportThresholds(30, 90, 25, 80, 15, 60, 15, 60, 20, 70, 0, 0),
                 new LogTaskListener(logger, Level.INFO),
