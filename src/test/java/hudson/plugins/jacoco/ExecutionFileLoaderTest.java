@@ -93,7 +93,15 @@ public class ExecutionFileLoaderTest {
         assertNotNull(coverage);
         assertEquals(0, coverage.getClassCounter().getCoveredCount());
     }
-    
+
+    @Test
+    public void testLoadBundleCoverageClassDirectoryNotExists() throws IOException {
+        ExecutionFileLoader loader = new ExecutionFileLoader();
+        loader.setClassDir(new FilePath(new File("NotExisting")));
+        IBundleCoverage coverage = loader.loadBundleCoverage();
+        assertNull(coverage);
+    }
+
     @Test
     public void testLoadBundleWithExecFile() throws IOException {
         ExecutionFileLoader loader = new ExecutionFileLoader();
