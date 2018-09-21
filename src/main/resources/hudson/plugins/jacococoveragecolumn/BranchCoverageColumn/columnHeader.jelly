@@ -24,5 +24,5 @@ THE SOFTWARE.
 
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core">
-    <th tooltip="${%Percentage of lines of code that are covered in unit tests}">${%Line Coverage}</th>
+    <th tooltip="${%Percentage of branches of code that are covered in unit tests}">${%Branch Coverage}</th>
 </j:jelly>
