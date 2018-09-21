@@ -3,8 +3,6 @@ package hudson.plugins.jacococoveragecolumn;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.Run;
-import hudson.plugins.jacoco.JacocoBuildAction;
-import hudson.plugins.jacoco.model.Coverage;
 import hudson.views.ListViewColumnDescriptor;
 import hudson.views.ListViewColumn;
 
@@ -19,10 +17,10 @@ import javax.annotation.Nonnull;
  * View column that shows the code line coverage percentage
  *
  */
-public class LineCoverageColumn extends AbstractJaCoCoCoverageColumn {
+public class JaCoCoColumn extends AbstractJaCoCoCoverageColumn {
 
 	@DataBoundConstructor
-	public LineCoverageColumn() {
+	public JaCoCoColumn() {
 	}
 
 	@Override
@@ -43,7 +41,7 @@ public class LineCoverageColumn extends AbstractJaCoCoCoverageColumn {
 		@Override
 		public ListViewColumn newInstance(final StaplerRequest req,
 										  @Nonnull final JSONObject formData) {
-			return new LineCoverageColumn();
+			return new JaCoCoColumn();
 		}
 
 		@Override

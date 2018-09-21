@@ -1,6 +1,5 @@
 package hudson.plugins.jacococoveragecolumn;
 
-import hudson.model.BuildListener;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
 import hudson.model.Run;
@@ -19,19 +18,18 @@ import org.kohsuke.stapler.export.Exported;
 import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.SortedMap;
 
 import static org.junit.Assert.*;
 
-public class LineCoverageColumnTest {
-	private LineCoverageColumn lineCoverageColumn;
+public class JaCoCoColumnTest {
+	private JaCoCoColumn jaCoCoColumn;
 
     @Before
 	public void setUp() {
-		lineCoverageColumn = new LineCoverageColumn();
+		jaCoCoColumn = new JaCoCoColumn();
 	}
 
 	@Test
@@ -61,19 +59,19 @@ public class LineCoverageColumnTest {
 			protected synchronized void saveNextBuildNumber() {
 			}
 		};
-		assertTrue(lineCoverageColumn.hasCoverage(mockJob));
-		assertEquals("33.33", lineCoverageColumn.getPercent(mockJob));
-		assertEquals(new BigDecimal("33.33"), lineCoverageColumn.getCoverage(mockJob));
+		assertTrue(jaCoCoColumn.hasCoverage(mockJob));
+		assertEquals("33.33", jaCoCoColumn.getPercent(mockJob));
+		assertEquals(new BigDecimal("33.33"), jaCoCoColumn.getCoverage(mockJob));
 
 		EasyMock.verify(context);
 	}
 
 	@Test
 	public void testDescriptor() throws FormException {
-		assertNotNull(lineCoverageColumn.getDescriptor());
+		assertNotNull(jaCoCoColumn.getDescriptor());
 		assertNotNull(
-				lineCoverageColumn.getDescriptor().newInstance(null, JSONObject.fromObject("{\"key\":\"value\"}")));
-		assertNotNull(lineCoverageColumn.getDescriptor().getDisplayName());
+				jaCoCoColumn.getDescriptor().newInstance(null, JSONObject.fromObject("{\"key\":\"value\"}")));
+		assertNotNull(jaCoCoColumn.getDescriptor().getDisplayName());
 	}
 
 	private class MyJob extends Job<MyJob,MyRun> {
