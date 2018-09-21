@@ -3,8 +3,6 @@ package hudson.plugins.jacococoveragecolumn;
 import hudson.Extension;
 import hudson.model.Descriptor;
 import hudson.model.Run;
-import hudson.plugins.jacoco.JacocoBuildAction;
-import hudson.plugins.jacoco.model.Coverage;
 import hudson.views.ListViewColumn;
 import hudson.views.ListViewColumnDescriptor;
 import net.sf.json.JSONObject;
