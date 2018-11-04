@@ -205,6 +205,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(run, listener);
 
+		//noinspection CatchMayIgnoreException
 		try {
 			publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value"));
 			fail("Should catch exception here");
@@ -256,6 +257,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(build, listener);
 
+		//noinspection CatchMayIgnoreException
 		try {
 			publisher.resolveFilePaths(build, listener, "input${key}input");
 			fail();

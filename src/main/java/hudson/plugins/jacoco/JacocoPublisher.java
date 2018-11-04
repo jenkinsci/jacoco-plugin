@@ -670,7 +670,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                     + ", method: " + result.getMethodCoverage().getPercentage()
                     + ", line: " + result.getLineCoverage().getPercentage()
                     + ", branch: " + result.getBranchCoverage().getPercentage()
-                    + ", instruction: " + result.getInstructionCoverage().getPercentage());
+                    + ", instruction: " + result.getInstructionCoverage().getPercentage()
+                    + ", complexity: " + result.getComplexityScore().getPercentage());
             result.setThresholds(healthReports);
 
             // Calculate final result of the current build according to the state of two flags: changeBuildStatus and buildOverBuild
