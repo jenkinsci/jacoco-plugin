@@ -572,7 +572,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
-        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild<?,?>) run).getBuildVariables() : Collections.<String, String>emptyMap();
+        Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild<?,?>) run).getBuildVariables() : Collections.emptyMap();
 
         EnvVars env = run.getEnvironment(taskListener);
         env.overrideAll(envs);
@@ -786,7 +786,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
      */
     public static /*final*/ BuildStepDescriptor<Publisher> DESCRIPTOR;
 
-    private static final void setDescriptor(BuildStepDescriptor<Publisher> descriptor) {
+    private static void setDescriptor(BuildStepDescriptor<Publisher> descriptor) {
         DESCRIPTOR = descriptor;
     }
 
@@ -797,7 +797,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             setDescriptor(this);
         }
 
-		@Override
+		@Nonnull
+        @Override
         public String getDisplayName() {
             return Messages.JacocoPublisher_DisplayName();
         }
