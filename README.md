@@ -1,7 +1,7 @@
 jacoco-plugin
 =============
 
-[![Build Status](https://jenkins.ci.cloudbees.com/buildStatus/icon?job=plugins/jacoco-plugin)](https://jenkins.ci.cloudbees.com/job/plugins/job/jacoco-plugin/)
+[![Build Status](https://ci.jenkins.io/buildStatus/icon?job=Plugins/jacoco-plugin/master)](https://ci.jenkins.io/blue/organizations/jenkins/Plugins%2Fjacoco-plugin/activity) 
 [![Build Status](https://travis-ci.org/jenkinsci/jacoco-plugin.svg?branch=master)](https://travis-ci.org/jenkinsci/jacoco-plugin)
 [![Release](https://img.shields.io/github/release/jenkinsci/jacoco-plugin.svg)](https://github.com/jenkinsci/jacoco-plugin/releases)
 
