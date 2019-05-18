@@ -1,12 +1,8 @@
 package hudson.plugins.jacoco;
 
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.model.*;
+import hudson.model.Result;
+import hudson.model.Run;
 import hudson.plugins.jacoco.portlet.bean.JacocoDeltaCoverageResultSummary;
-import hudson.plugins.jacoco.portlet.utils.Constants;
-import org.easymock.IAnswer;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,15 +11,10 @@ import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
-import java.math.BigDecimal;
-import java.util.concurrent.atomic.AtomicReference;
 
-import static org.easymock.EasyMock.*;
-import static org.junit.Assert.assertTrue;
-
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoDeltaCoverageResultSummary.class)
@@ -31,7 +22,7 @@ public class BuildOverBuildTest {
 
     private JacocoDeltaCoverageResultSummary jacocoDeltaCoverageResultSummary_1, jacocoDeltaCoverageResultSummary_2;
     private JacocoHealthReportDeltaThresholds deltaHealthThresholds;
-    private JacocoHealthReportThresholds healthThresholds;
+    //private JacocoHealthReportThresholds healthThresholds;
 
     private Run run = PowerMock.createNiceMock(Run.class);
     private final PrintStream logger = System.out;
@@ -57,7 +48,7 @@ public class BuildOverBuildTest {
         jacocoDeltaCoverageResultSummary_2.setCoverageBetterThanPrevious(true);
 
         deltaHealthThresholds = new JacocoHealthReportDeltaThresholds("10.556", "0", "2.3434", "9.11457", "8.2525", "1.5556");
-        healthThresholds = new JacocoHealthReportThresholds(88, 100, 85, 100, 75, 90, 100, 100, 83, 95, 86, 92);
+        //healthThresholds = new JacocoHealthReportThresholds(88, 100, 85, 100, 75, 90, 100, 100, 83, 95, 86, 92);
     }
 
     // Test if the build with delta coverage > delta threshold and overall coverage lesser than last successful build will fail
@@ -65,6 +56,7 @@ public class BuildOverBuildTest {
     public void checkBuildOverBuildFailureTest(){
 
         PowerMock.mockStatic(JacocoDeltaCoverageResultSummary.class);
+        //noinspection ConstantConditions
         expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_1);
 
         PowerMock.replay(JacocoDeltaCoverageResultSummary.class);
@@ -85,8 +77,10 @@ public class BuildOverBuildTest {
     public void checkBuildOverBuildSuccessTest(){
 
         PowerMock.mockStatic(JacocoDeltaCoverageResultSummary.class);
+        //noinspection ConstantConditions
         expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_2);
         jacocoDeltaCoverageResultSummary_1.setCoverageBetterThanPrevious(true);
+        //noinspection ConstantConditions
         expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_1);
 
         PowerMock.replay(JacocoDeltaCoverageResultSummary.class);
