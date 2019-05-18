@@ -99,9 +99,9 @@ THE SOFTWARE.
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <java.level>8</java.level>
       <jacoco.version>0.8.3</jacoco.version>
-      <jenkins.version>2.54</jenkins.version>
+      <jenkins.version>2.150.3</jenkins.version>
       <maven.version>3.5.2</maven.version>
-      <powermock.version>1.6.6</powermock.version>
+      <powermock.version>2.0.2</powermock.version>
    </properties>
 
    <repositories>
@@ -149,7 +149,7 @@ THE SOFTWARE.
       <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-            <version>3.5.1</version>
+            <version>4.0.2</version>
             <scope>test</scope>
       </dependency>
       <dependency>
@@ -248,7 +248,7 @@ THE SOFTWARE.
             <dependency>
                <groupId>org.apache.commons</groupId>
                <artifactId>commons-lang3</artifactId>
-               <version>3.7</version>
+               <version>3.8.1</version>
             </dependency>
             <dependency>
                <groupId>org.apache.httpcomponents</groupId>

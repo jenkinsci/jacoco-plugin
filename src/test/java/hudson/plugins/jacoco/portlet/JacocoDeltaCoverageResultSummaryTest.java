@@ -18,6 +18,12 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoLoadData.class)
+// See e.g. https://issues.jenkins-ci.org/browse/JENKINS-55179
+@org.powermock.core.classloader.annotations.PowerMockIgnore({
+        "com.sun.org.apache.xerces.*",
+        "javax.xml.*",
+        "org.xml.*",
+        "javax.management.*"})
 public class JacocoDeltaCoverageResultSummaryTest {
 
     private final Run run = PowerMock.createNiceMock(Run.class);

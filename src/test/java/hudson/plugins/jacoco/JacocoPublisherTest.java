@@ -50,6 +50,12 @@ import hudson.tasks.Publisher;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoPublisher.class)
+// See e.g. https://issues.jenkins-ci.org/browse/JENKINS-55179
+@org.powermock.core.classloader.annotations.PowerMockIgnore({
+		"com.sun.org.apache.xerces.*",
+		"javax.xml.*",
+		"org.xml.*",
+		"javax.management.*"})
 public class JacocoPublisherTest extends AbstractJacocoTestBase {
     private final TaskListener taskListener = niceMock(TaskListener.class);
     private final Launcher launcher = niceMock(Launcher.class);
@@ -205,7 +211,6 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(run, listener);
 
-		//noinspection CatchMayIgnoreException
 		try {
 			publisher.resolveFilePaths(run, listener, "input${key}input", Collections.singletonMap("key", "value"));
 			fail("Should catch exception here");
@@ -257,7 +262,6 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 
 		EasyMock.replay(build, listener);
 
-		//noinspection CatchMayIgnoreException
 		try {
 			publisher.resolveFilePaths(build, listener, "input${key}input");
 			fail();
@@ -284,7 +288,6 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		f3.deleteOnExit();
 		File f4 = File.createTempFile("anyname", ".xml", w);
 		f4.deleteOnExit();
-
 
 		// Create a folder and move there 2 files
 		File d1 = new File(workspace.child("subdir").getRemote());

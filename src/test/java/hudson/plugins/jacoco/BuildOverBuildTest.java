@@ -18,6 +18,12 @@ import static org.easymock.EasyMock.expect;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JacocoDeltaCoverageResultSummary.class)
+// See e.g. https://issues.jenkins-ci.org/browse/JENKINS-55179
+@org.powermock.core.classloader.annotations.PowerMockIgnore({
+        "com.sun.org.apache.xerces.*",
+        "javax.xml.*",
+        "org.xml.*",
+        "javax.management.*"})
 public class BuildOverBuildTest {
 
     private JacocoDeltaCoverageResultSummary jacocoDeltaCoverageResultSummary_1, jacocoDeltaCoverageResultSummary_2;

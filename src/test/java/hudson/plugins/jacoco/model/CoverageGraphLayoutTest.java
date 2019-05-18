@@ -21,6 +21,7 @@ import static hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue.valu
 import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CoverageGraphLayoutTest {
 
@@ -54,8 +55,12 @@ public class CoverageGraphLayoutTest {
         assertEquals("Branch", BRANCH.getMessage());
         assertEquals("Methoden", METHOD.getMessage());
         assertEquals("Klassen", CLAZZ.getMessage());
-        assertEquals("KomplexitÃ¤t", COMPLEXITY.getMessage()); // TODO there might be an encoding issue with our resources?
 
+        // JDK 8 has a problem with encoding here, JDK 11 works, so we
+        // need to check for both until we do not use JDK 8 any more
+        assertTrue("Had: " + COMPLEXITY.getMessage(),
+                COMPLEXITY.getMessage().equals("KomplexitÃ¤t") ||
+                COMPLEXITY.getMessage().equals("Komplexität"));
     }
 
     @Test
