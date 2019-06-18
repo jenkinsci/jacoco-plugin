@@ -92,6 +92,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String maximumMethodCoverage;
     private String maximumClassCoverage;
     private boolean changeBuildStatus;
+    private boolean runAlways; // Added to always run even if build has FAILED or ABORTED
 
     /**
      * Following variables contain delta coverage thresholds as configured by the user
@@ -132,6 +133,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.maximumMethodCoverage = "0";
         this.maximumClassCoverage = "0";
         this.changeBuildStatus = false;
+        this.runAlways = false;
         this.deltaInstructionCoverage = "0";
         this.deltaBranchCoverage = "0";
         this.deltaComplexityCoverage = "0";
@@ -162,6 +164,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 	 * @param minimumMethodCoverage deprecated
 	 * @param minimumClassCoverage deprecated
 	 * @param changeBuildStatus deprecated
+	 * @param runAlways deprecated
 	 * @param deltaInstructionCoverage deprecated
 	 * @param deltaBranchCoverage deprecated
 	 * @param deltaComplexityCoverage deprecated
@@ -173,7 +176,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     @Deprecated
     public JacocoPublisher(String execPattern, String classPattern, String sourcePattern, String inclusionPattern, String exclusionPattern, boolean skipCopyOfSrcFiles, String maximumInstructionCoverage, String maximumBranchCoverage
     		, String maximumComplexityCoverage, String maximumLineCoverage, String maximumMethodCoverage, String maximumClassCoverage, String minimumInstructionCoverage, String minimumBranchCoverage
-    		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus,
+    		, String minimumComplexityCoverage, String minimumLineCoverage, String minimumMethodCoverage, String minimumClassCoverage, boolean changeBuildStatus, boolean runAlways,
                            String deltaInstructionCoverage, String deltaBranchCoverage, String deltaComplexityCoverage, String deltaLineCoverage, String deltaMethodCoverage, String deltaClassCoverage, boolean buildOverBuild) {
     	this.execPattern = execPattern;
     	this.classPattern = classPattern;
@@ -194,6 +197,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     	this.maximumMethodCoverage = maximumMethodCoverage;
     	this.maximumClassCoverage = maximumClassCoverage;
     	this.changeBuildStatus = changeBuildStatus;
+        this.runAlways = runAlways;
         this.deltaInstructionCoverage = deltaInstructionCoverage;
         this.deltaBranchCoverage = deltaBranchCoverage;
         this.deltaComplexityCoverage = deltaComplexityCoverage;
@@ -237,6 +241,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 				+ ", maximumLineCoverage=" + maximumLineCoverage
 				+ ", maximumMethodCoverage=" + maximumMethodCoverage
 				+ ", maximumClassCoverage=" + maximumClassCoverage
+                + ", runAlways=" + runAlways
                 + ", deltaInstructionCoverage=" + deltaInstructionCoverage
                 + ", deltaBranchCoverage=" + deltaBranchCoverage
                 + ", deltaComplexityCoverage=" + deltaComplexityCoverage
@@ -357,6 +362,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     public boolean getChangeBuildStatus() {
 		return changeBuildStatus;
 	}
+    
+    public boolean isRunAlways() {
+        return runAlways;
+    }
 
     // Getter methods for delta coverage thresholds and build over build flag
     public String getDeltaInstructionCoverage() {
@@ -483,6 +492,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     }
 
     @DataBoundSetter
+    public void setRunAlways(boolean runAlways) {
+        this.runAlways = runAlways;
+    }
+
+    @DataBoundSetter
     public void setInclusionPattern(String inclusionPattern) {
         this.inclusionPattern = inclusionPattern;
     }
@@ -582,7 +596,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         // Initialize delta health report with user-configured threshold values
         deltaHealthReport = createJacocoDeltaHealthReportThresholds();
 
-        if (run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) {
+        if ((run.getResult() == Result.FAILURE || run.getResult() == Result.ABORTED) && !runAlways) {
             return;
         }
 
@@ -590,7 +604,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
 
         if ((execPattern==null) || (classPattern==null) || (sourcePattern==null)) {
-            if(run.getResult().isWorseThan(Result.UNSTABLE)) {
+            if(run.getResult().isWorseThan(Result.UNSTABLE) && !runAlways) {
                 return;
             }
 

@@ -81,7 +81,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 				null, null, null, null,
 				null, null, null, null,
 				null, null, null, null,
-				false, null, null, null, null, null, null, false);
+				false, false, null, null, null, null, null, null, false);
 		assertNotNull(publisher.toString());
 	}
 
@@ -91,6 +91,9 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		publisher.setChangeBuildStatus(true);
 		assertTrue(publisher.getChangeBuildStatus());
 		assertTrue(publisher.isChangeBuildStatus());
+
+		publisher.setRunAlways(true);
+		assertTrue(publisher.isRunAlways());
 
 		publisher.setClassPattern("pattern");
 		assertEquals("pattern", publisher.getClassPattern());
@@ -523,7 +526,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 			//noinspection deprecation
 			JacocoPublisher publisher = new JacocoPublisher("**/**.exec", "**/classes", "**/src/main/java", "", "", false, "0", "0"
 					, "0", "0", "0", "0", "0", "0"
-					, "0", "0", "0", "0", false,
+					, "0", "0", "0", "0", false, false,
 					"10.564", "5.65", "9.995", "11.4529", "9.346", "5.237", true);
 			publisher.perform(run, filePath, launcher, taskListener);
 
