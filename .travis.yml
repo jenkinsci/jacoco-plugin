@@ -1,7 +1,8 @@
+# Use xenial to still have OpenJDK 8 available
+dist: xenial
 language: java
+jdk:
+  - openjdk8
+  - openjdk11
 
 sudo: false
-
-jdk:
-  - oraclejdk8
-  - oraclejdk11
