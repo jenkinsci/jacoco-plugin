@@ -55,7 +55,7 @@
             <f:textbox field="sourcePattern" default="**/src/main/java"/>
           </td>
           <td>
-            <f:textbox field="sourceInclusionPattern" default="**/*.java"/>
+            <f:textbox field="sourceInclusionPattern" default="**/*.java,**/*.groovy,**/*.kt,**/*.kts"/>
           </td>
           <td>
             <f:textbox field="sourceExclusionPattern" default=""/>

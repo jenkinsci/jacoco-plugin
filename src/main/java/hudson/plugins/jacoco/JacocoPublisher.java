@@ -115,7 +115,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.execPattern = "**/**.exec";
         this.classPattern = "**/classes";
         this.sourcePattern = "**/src/main/java";
-        this.sourceInclusionPattern = "**/*.java";
+        this.sourceInclusionPattern = "**/*.java,**/*.groovy,**/*.kt,**/*.kts";
         this.sourceExclusionPattern = "";
         this.inclusionPattern = "";
         this.exclusionPattern = "";
