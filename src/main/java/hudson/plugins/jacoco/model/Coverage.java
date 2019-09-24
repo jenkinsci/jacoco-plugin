@@ -64,12 +64,19 @@ final public class Coverage implements Serializable {
     /**
      * Gets the percentage as a float between 0f and 100f.
      * @return the coverage percentage as a float between 0f and 100f.
+     *      returns 100f if no coverage data was recorded at all, i.e. covered and missed are zero
      * @see #getPercentage()
      */
     @Exported
     public float getPercentageFloat() {
         float numerator = covered;
         float denominator = missed + covered;
+
+        // there are two cases that we cannot distinguish easily
+        // a) covered and missing are zero because no code was covered
+        // b) covered and missing are zero because there is no code to cover in this class, e.g. interfaces
+
+        // we use b) here for now, see JENKINS-56123 for more discussion on this
         return denominator <= 0 ? 100 : 100 * (numerator / denominator);
     }
 

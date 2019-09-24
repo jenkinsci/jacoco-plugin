@@ -45,6 +45,24 @@ public class CoverageTest extends AbstractJacocoTestBase {
         assertEquals(100, c.getPercentage());
     }
 
+	@Test
+    public void testHalfCoverage() throws Exception {
+        Coverage c = new Coverage(1, 1);
+        assertEquals(50, c.getPercentage());
+
+        c = new Coverage(12, 12);
+        assertEquals(50, c.getPercentage());
+    }
+
+	@Test
+    public void testFullCoverage() throws Exception {
+        Coverage c = new Coverage(0, 1);
+        assertEquals(100, c.getPercentage());
+
+        c = new Coverage(0, 12);
+        assertEquals(100, c.getPercentage());
+    }
+
     @Test
     public void testStringRepresentation() {
 	    int coverageInt = 67;
