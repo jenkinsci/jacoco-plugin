@@ -644,7 +644,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             logger.print("\n[JaCoCo plugin] Saving matched source directories for source-pattern: " + sourcePattern + ": ");
             logger.print("\n[JaCoCo plugin] Source Inclusions: " + sourceInclusionPattern);
             logger.print("\n[JaCoCo plugin] Source Exclusions: " + sourceExclusionPattern);
-            if (hasSubDirectories(sourcePattern)) logger.print(warning);
+
+            if (hasSubDirectories(sourcePattern)) {
+                logger.print(warning);
+            }
+
             for (FilePath dir : matchedSrcDirs) {
                 int copied = reportDir.saveSourcesFrom(dir, sourceInclusionPattern, sourceExclusionPattern);
                 logger.print("\n[JaCoCo plugin] - " + dir + " " + copied + " files");
