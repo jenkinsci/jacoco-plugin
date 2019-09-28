@@ -74,7 +74,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 			return;
 		}
 
-		assertGraph(chart, "simple.png");
+		assertGraph(chart, "simple.png", "simple_2.png");
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 			return;
 		}
 
-		assertGraph(chart, "singleBuild.png");
+		assertGraph(chart, "singleBuild.png", "singleBuild_2.png");
 	}
 
 	@Test
@@ -111,7 +111,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 			return;
 		}
 
-		assertGraph(chart, "baseStroke.png");
+		assertGraph(chart, "baseStroke.png", "baseStroke_2.png");
 	}
 
 	@Test
@@ -134,7 +134,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 			return;
 		}
 
-		assertGraph(chart, "multiple.png");
+		assertGraph(chart, "multiple.png", "multiple_2.png");
 	}
 
 	@Test
@@ -152,7 +152,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 			return;
 		}
 
-		assertGraph(chart, "crop5.png");
+		assertGraph(chart, "crop5.png", "crop5_2.png");
 	}
 
 	@Test
@@ -170,7 +170,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 			return;
 		}
 
-		assertGraph(chart, "crop100.png");
+		assertGraph(chart, "crop100.png", "crop100_2.png");
 	}
 
     @Test
@@ -187,7 +187,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
             return;
         }
 
-        assertGraph(chart, "skipzero.png");
+        assertGraph(chart, "skipzero.png", "skipzero_2.png");
     }
 
 	private TestCoverageObject createTestCoverage() {
@@ -225,8 +225,13 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 		}
 	}
 
-	private void assertGraph(JFreeChart chart, String file) throws IOException {
-		assertGraph(chart, file, !new File(TEST_RESOURCES + file).exists());
+	private void assertGraph(JFreeChart chart, String file, String file2) throws IOException {
+		try {
+			assertGraph(chart, file, !new File(TEST_RESOURCES + file).exists());
+		} catch (AssertionError e) {
+			// try second file to cater for different images on different JDKs
+			assertGraph(chart, file, !new File(TEST_RESOURCES + file2).exists());
+		}
 	}
 
 	private void replaceFonts(JFreeChart chart) {
