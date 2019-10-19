@@ -37,7 +37,7 @@ THE SOFTWARE.
     <packaging>hpi</packaging>
 
     <name>Jenkins JaCoCo plugin</name>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/JaCoCo+Plugin</url>
+    <url>https://wiki.jenkins.io/display/JENKINS/JaCoCo+Plugin</url>
 
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
