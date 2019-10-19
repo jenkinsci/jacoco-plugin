@@ -53,6 +53,7 @@ THE SOFTWARE.
     <licenses>
         <license>
             <name>MIT license</name>
+            <url>https://opensource.org/licenses/MIT</url>
             <comments>All source code is under the MIT license.</comments>
         </license>
     </licenses>
