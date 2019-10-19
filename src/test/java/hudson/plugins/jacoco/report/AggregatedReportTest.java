@@ -35,7 +35,7 @@ public class AggregatedReportTest {
         assertTrue(report.hasChildrenLineCoverage());
 
         child.getClassCoverage().accumulate(0, 3);
-        assertFalse("For method childs it's always false", report.hasChildrenClassCoverage());
+        assertFalse("For method children it's always false", report.hasChildrenClassCoverage());
     }
     
     @Test
