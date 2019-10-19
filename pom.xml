@@ -40,9 +40,6 @@ THE SOFTWARE.
     <url>https://wiki.jenkins.io/display/JENKINS/JaCoCo+Plugin</url>
 
     <properties>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <project.build.outputEncoding>UTF-8</project.build.outputEncoding>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.level>8</java.level>
         <jacoco.version>0.8.3</jacoco.version>
         <jenkins.version>2.150.3</jenkins.version>
