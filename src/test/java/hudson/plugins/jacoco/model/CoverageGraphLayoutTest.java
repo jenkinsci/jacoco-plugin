@@ -1,12 +1,11 @@
 package hudson.plugins.jacoco.model;
 
 import hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType;
-
-import java.util.Locale;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Locale;
 
 import static hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType.BRANCH;
 import static hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageType.CLAZZ;
@@ -21,7 +20,6 @@ import static hudson.plugins.jacoco.model.CoverageGraphLayout.CoverageValue.valu
 import static java.util.Locale.ENGLISH;
 import static java.util.Locale.GERMAN;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class CoverageGraphLayoutTest {
 
@@ -58,9 +56,8 @@ public class CoverageGraphLayoutTest {
 
         // JDK 8 has a problem with encoding here, JDK 11 works, so we
         // need to check for both until we do not use JDK 8 any more
-        assertTrue("Had: " + COMPLEXITY.getMessage(),
-                COMPLEXITY.getMessage().equals("KomplexitÃ¤t") ||
-                COMPLEXITY.getMessage().equals("Komplexität"));
+        assertEquals("Had: " + COMPLEXITY.getMessage(),
+                "Komplexität", COMPLEXITY.getMessage());
     }
 
     @Test
