@@ -34,9 +34,8 @@ New feature proposals and bug fix proposals should be submitted as
 [GitHub pull requests](https://help.github.com/articles/creating-a-pull-request).
 
 Fork the repository on GitHub, prepare your change on your forked
-copy, and submit a pull request (see [here](https://github.com/jenkinsci/jacoco-plugin/pulls) for open pull requests). Your pull request will be evaluated
-by the [Cloudbees Jenkins job](https://jenkins.ci.cloudbees.com/job/plugins/job/jacoco-plugin/)
-and you should receive e-mail with the results of the evaluation.
+copy, and submit a pull request (see [here](https://github.com/jenkinsci/jacoco-plugin/pulls) for open pull requests).
+Your pull request will be evaluated by [this job](https://ci.jenkins.io/job/Plugins/job/jacoco-plugin/).
 
 Before submitting your change, please assure that you've added a test
 which verifies your change.  There have been many developers involved
