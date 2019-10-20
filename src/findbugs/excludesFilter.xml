@@ -1,0 +1,8 @@
+<FindBugsFilter>
+    <!-- This started to show up after the logger was in place for a long time
+        Not sure how else it can be fixed... -->
+    <Match>
+        <Class name="hudson.plugins.jacoco.JacocoBuildAction" />
+        <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED" />
+    </Match>
+</FindBugsFilter>
