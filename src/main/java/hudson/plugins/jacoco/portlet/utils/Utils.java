@@ -91,7 +91,7 @@ public final class Utils {
    *
    * @param jobs
    *          a list of jobs from the DashBoard Portlet view
-   * @return LocalDate the last date of all jobs that belogs to
+   * @return LocalDate the last date of all jobs that belongs to
    *         Dashboard View.
    */
   public static Calendar getLastDate(List<Job<?,?>> jobs) {

@@ -69,7 +69,7 @@ public class JacocoLoadDataHudsonTest extends HudsonTestCase {
         //Verify the result
         Map<LocalDate, JacocoCoverageResultSummary> summaryMap = JacocoLoadData.loadChartDataWithinRange(jobs, numberOfDays);
 
-        // Testing the size of the returned map against the exepected value,
+        // Testing the size of the returned map against the expected value,
         // which is a non-zero, therefore tha map must not be empty
         assertEquals(summaryMapSize, summaryMap.size());
 
@@ -129,7 +129,7 @@ public class JacocoLoadDataHudsonTest extends HudsonTestCase {
         //Verify the result
         Map<LocalDate, JacocoCoverageResultSummary> summaryMap = JacocoLoadData.loadChartDataWithinRange(jobs, numberOfDays);
 
-        // Testing the size of the returned map against the exepected value,
+        // Testing the size of the returned map against the expected value,
         // which is a non-zero, therefore tha map must not be empty
         assertEquals(summaryMapSize, summaryMap.size());
 
