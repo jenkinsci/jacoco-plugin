@@ -47,8 +47,14 @@ public class JacocoHealthReportThresholds implements Serializable {
     }
 
     private int applyRange(int min , int value, int max) {
-        if (value < min) return min;
-        if (value > max) return max;
+        if (value < min) {
+        	return min;
+		}
+
+        if (value > max) {
+        	return max;
+		}
+
         return value;
     }
 
@@ -166,50 +172,51 @@ public class JacocoHealthReportThresholds implements Serializable {
 	}
 
 	public  RESULT getResultByTypeAndRatio(Coverage ratio) {
-		    RESULT result = RESULT.ABOVEMAXIMUM;
-		    Type covType = ratio.getType();
-		    
-			if (covType == Type.INSTRUCTION) {
-				if (ratio.getPercentageFloat() < minInstruction) {
-					result = RESULT.BELOWMINIMUM;
-				} else if (ratio.getPercentageFloat() < maxInstruction) {
-					result = RESULT.BETWEENMINMAX;
-				}
-				
-			} else if (covType == Type.BRANCH) {
-				if (ratio.getPercentageFloat() < minBranch) {
-					result = RESULT.BELOWMINIMUM;
-				} else if (ratio.getPercentageFloat() < maxBranch) {
-					result = RESULT.BETWEENMINMAX;
-				} 
-			} else if (covType == Type.LINE) {
-				if (ratio.getPercentageFloat() < minLine) {
-					result = RESULT.BELOWMINIMUM;
-				} else if (ratio.getPercentageFloat() < maxLine) {
-					result = RESULT.BETWEENMINMAX;
-				} 
-			} else if (covType == Type.COMPLEXITY) {
-				if (ratio.getPercentageFloat() < minComplexity) {
-					result = RESULT.BELOWMINIMUM;
-				} else if (ratio.getPercentageFloat() < maxComplexity) {
-					result = RESULT.BETWEENMINMAX;
-				} 
-			} else if (covType == Type.METHOD) {
-				if (ratio.getPercentageFloat() < minMethod) {
-					result = RESULT.BELOWMINIMUM;
-				} else if (ratio.getPercentageFloat() < maxMethod) {
-					result = RESULT.BETWEENMINMAX;
-				} 
-			} else if (covType == Type.CLASS) {
-				if (ratio.getPercentageFloat() < minClass) {
-					result = RESULT.BELOWMINIMUM;
-				} else if (ratio.getPercentageFloat() < maxClass) {
-					result = RESULT.BETWEENMINMAX;
-				} 
+		RESULT result = RESULT.ABOVEMAXIMUM;
+		Type covType = ratio.getType();
+		float percentage = ratio.getPercentageFloat();
+
+		if (covType == Type.INSTRUCTION) {
+			if (percentage < minInstruction) {
+				result = RESULT.BELOWMINIMUM;
+			} else if (percentage < maxInstruction) {
+				result = RESULT.BETWEENMINMAX;
 			}
+		} else if (covType == Type.BRANCH) {
+			if (percentage < minBranch) {
+				result = RESULT.BELOWMINIMUM;
+			} else if (percentage < maxBranch) {
+				result = RESULT.BETWEENMINMAX;
+			}
+		} else if (covType == Type.LINE) {
+			if (percentage < minLine) {
+				result = RESULT.BELOWMINIMUM;
+			} else if (percentage < maxLine) {
+				result = RESULT.BETWEENMINMAX;
+			}
+		} else if (covType == Type.COMPLEXITY) {
+			if (percentage < minComplexity) {
+				result = RESULT.BELOWMINIMUM;
+			} else if (percentage < maxComplexity) {
+				result = RESULT.BETWEENMINMAX;
+			}
+		} else if (covType == Type.METHOD) {
+			if (percentage < minMethod) {
+				result = RESULT.BELOWMINIMUM;
+			} else if (percentage < maxMethod) {
+				result = RESULT.BETWEENMINMAX;
+			}
+		} else if (covType == Type.CLASS) {
+			if (percentage < minClass) {
+				result = RESULT.BELOWMINIMUM;
+			} else if (percentage < maxClass) {
+				result = RESULT.BETWEENMINMAX;
+			}
+		}
 			 
 		return result;
 	}
+
 	@Override
 	public String toString() {
 		return "JacocoHealthReportThresholds [minClass=" + minClass
@@ -221,6 +228,4 @@ public class JacocoHealthReportThresholds implements Serializable {
 				+ ", minComplexity=" + minComplexity + ", maxComplexity="
 				+ maxComplexity + "]";
 	}
-	
-
 }
