@@ -507,23 +507,6 @@ THE SOFTWARE.
                     <maskClasses>org.objectweb.asm.</maskClasses>
                 </configuration>
             </plugin>
-            <plugin>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>display-info</id>
-                        <configuration>
-                            <rules>
-                                <enforceBytecodeVersion>
-                                    <excludes combine.children="append">
-                                        <exclude>org.ow2.asm:*</exclude>
-                                    </excludes>
-                                </enforceBytecodeVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 </project>
