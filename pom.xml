@@ -512,15 +512,10 @@ THE SOFTWARE.
                 <executions>
                     <execution>
                         <id>display-info</id>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>display-info</goal>
-                            <goal>enforce</goal>
-                        </goals>
                         <configuration>
                             <rules>
                                 <enforceBytecodeVersion>
-                                    <excludes>
+                                    <excludes combine.children="append">
                                         <exclude>org.ow2.asm:*</exclude>
                                     </excludes>
                                 </enforceBytecodeVersion>
