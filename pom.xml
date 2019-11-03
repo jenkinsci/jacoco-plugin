@@ -41,7 +41,7 @@ THE SOFTWARE.
 
     <properties>
         <java.level>8</java.level>
-        <jacoco.version>0.8.3</jacoco.version>
+        <jacoco.version>0.8.5</jacoco.version>
         <jenkins.version>2.150.3</jenkins.version>
         <maven.version>3.5.2</maven.version>
         <powermock.version>2.0.2</powermock.version>
@@ -228,16 +228,6 @@ THE SOFTWARE.
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
             <version>${jacoco.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>7.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>7.0</version>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
