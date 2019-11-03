@@ -215,13 +215,7 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>dashboard-view</artifactId>
-            <version>2.9.11</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>net.sourceforge.nekohtml</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
+            <version>2.12</version>
             <optional>true</optional>
         </dependency>
         <dependency>
