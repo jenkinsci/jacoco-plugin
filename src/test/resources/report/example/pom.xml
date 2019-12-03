@@ -6,6 +6,12 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -23,7 +29,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.2</version>
+                <version>0.8.5</version>
                 <executions>
                     <execution>
                         <id>default-prepare-agent</id>
@@ -42,7 +48,7 @@
                         <phase>package</phase>
                         <configuration>
                             <dataFile>jacoco/execFiles/exec0/jacoco.exec</dataFile>
-                            <outputDirectory>${build.directory}/jacoco</outputDirectory>
+                            <outputDirectory>${project.build.directory}/jacoco</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
