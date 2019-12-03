@@ -18,11 +18,13 @@ import org.kohsuke.stapler.StaplerResponse;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
 public class CoverageReportTest {
     private static final String EXAMPLE_ROOT_DIR = "/report/example";
+    private static final String EXAMPLE_EXEC_FILE = "/report/example/jacoco/execFiles/exec0/jacoco.exec";
     private static final String EXAMPLE_XML_FILE = "/report/example/target/jacoco/jacoco.xml";
 
     @Test
@@ -39,10 +41,21 @@ public class CoverageReportTest {
 
     @Test
     public void testDoJaCoCoExec() throws Exception {
-        CoverageReport report = new CoverageReport(action, new ExecutionFileLoader());
-        assertNotNull(report);
-        // TODO: how to simulate JaCoCoBuildAction without full Jenkins test-framework?
-        // report.doJacocoExec();
+        URL execFileUrl = CoverageReportTest.class.getResource(EXAMPLE_EXEC_FILE);
+        StaplerResponse response = mock(StaplerResponse.class);
+        response.serveFile(isNull(), eq(execFileUrl), anyLong());
+
+        File rootDir = Paths.get(CoverageReportTest.class.getResource(EXAMPLE_ROOT_DIR).toURI()).toFile();
+        Run<?, ?> owner = mock(NICE, Run.class);
+        expect(owner.getRootDir()).andReturn(rootDir);
+
+        replay(owner, response);
+        action.onLoad(owner);
+        new CoverageReport(action, new ExecutionFileLoader())
+                .doJacocoExec()
+                .generateResponse(null, response, null);
+
+        verify(response);
     }
 
     @Test
