@@ -20,7 +20,7 @@ import org.jacoco.core.data.ExecutionDataReader;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
 import org.jacoco.maven.FileFilter;
-
+import org.jacoco.report.IReportVisitor;
 
 public class ExecutionFileLoader implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -141,11 +141,23 @@ public class ExecutionFileLoader implements Serializable {
 			return this.bundleCoverage;
 		}
 
+		public void read(IReportVisitor visitor, String name) throws IOException {
+			setName(name);
+			loadBundleCoverage();
+			visitor.visitInfo(sessionInfoStore.getInfos(), executionDataStore.getContents());
+			visitor.visitBundle(bundleCoverage, null);
+			visitor.visitEnd();
+		}
+
 		public void setIncludes(String... includes) {
 			this.includes = includes;
 		}
 
 		public void setExcludes(String... excludes) {
 			this.excludes = excludes;
+		}
+
+		public boolean isEmpty() {
+			return execFiles.isEmpty();
 		}
 }

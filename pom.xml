@@ -507,6 +507,37 @@ THE SOFTWARE.
                     <maskClasses>org.objectweb.asm.</maskClasses>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <phase>process-test-resources</phase>
+                        <configuration>
+                            <skip>${skipTests}</skip>
+                            <executable>mvn</executable>
+                            <workingDirectory>${project.build.testOutputDirectory}/report/example</workingDirectory>
+                            <arguments>
+                                <argument>clean</argument>
+                                <argument>package</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M3</version>
+                <configuration>
+                    <excludes>
+                        <exclude>**/example/ExampleTest.java</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>

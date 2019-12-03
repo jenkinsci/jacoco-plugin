@@ -4,11 +4,14 @@
     <st:include it="${it.build}" page="sidepanel.jelly" />
     <l:main-panel>
       <h2>${%JaCoCo Coverage Report}</h2>
-      <div>
+      <table><tr>
+        <td rowspan="2">
         <img src="${imagesURL}/24x24/save.png" />
-
+        </td><td>
         <a href="jacoco.exec">Download <tt>jacoco.exec</tt> binary coverage file</a>
-      </div>
+        </td></tr><tr><td>
+        <a href="jacoco.xml">Download <tt>jacoco.xml</tt> coverage report</a>
+      </td></tr></table>
 
       <e:floatingTrendGraph/>
 

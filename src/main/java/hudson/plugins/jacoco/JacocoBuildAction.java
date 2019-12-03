@@ -218,6 +218,10 @@ public final class JacocoBuildAction extends CoverageObject<JacocoBuildAction> i
         return new JacocoReportDir(owner.getRootDir());
     }
 
+	public ExecutionFileLoader getExecutionFileLoader() throws IOException {
+		return getJacocoReport().parse(inclusions, exclusions);
+	}
+
 	/**
 	 * Obtains the detailed {@link CoverageReport} instance.
 	 * @return the report, or null if these was a problem
