@@ -198,6 +198,13 @@ See
 
 -   N/A
 
+#### Version 3.0.5 (January 25, 2020)
+
+- Initial support for JDK 11
+- [JENKINS-49351](https://issues.jenkins-ci.org/browse/JENKINS-49351): Added runAlways user paramater to allow Jacoco to run even if build FAILED or was ABORTED
+- [JENKINS-56918](https://issues.jenkins-ci.org/browse/JENKINS-56918): Adjust default source-includes to include *.groovy, *.kt and *.kts (Kotlin)
+- [JENKINS-55166](https://issues.jenkins-ci.org/browse/JENKINS-55166): Replace non-ASCII characters in properties for German and Spanish to not depend on the encoding of file
+
 #### Version 3.0.4 (November 4, 2018)
 
 -   PR [\#100](https://github.com/jenkinsci/jacoco-plugin/pull/100)/PR
