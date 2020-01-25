@@ -4,6 +4,11 @@ jacoco-plugin
 [![Build Status](https://ci.jenkins.io/buildStatus/icon?job=Plugins/jacoco-plugin/master)](https://ci.jenkins.io/blue/organizations/jenkins/Plugins%2Fjacoco-plugin/activity) 
 [![Build Status](https://travis-ci.org/jenkinsci/jacoco-plugin.svg?branch=master)](https://travis-ci.org/jenkinsci/jacoco-plugin)
 [![Release](https://img.shields.io/github/release/jenkinsci/jacoco-plugin.svg)](https://github.com/jenkinsci/jacoco-plugin/releases)
+<!--[![Join the chat at https://gitter.im/jenkinsci/jacoco-plugin](https://badges.gitter.im/jenkinsci/jacoco-plugin.svg)](https://gitter.im/jenkinsci/jacoco-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)-->
+[![Jenkins Plugin](https://img.shields.io/jenkins/plugin/v/jacoco.svg)](https://plugins.jenkins.io/jacoco)
+[![GitHub release](https://img.shields.io/github/release/jenkinsci/jacoco-plugin.svg?label=changelog)](https://github.com/jenkinsci/jacoco-plugin/releases/latest)
+[![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/jacoco.svg?color=blue)](https://plugins.jenkins.io/jacoco)
+
 
 A plugin for Jenkins to capture and visualize code coverage testing results for projects using the 
 JaCoCo for code-coverage analysis.
