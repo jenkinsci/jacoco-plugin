@@ -33,7 +33,7 @@ THE SOFTWARE.
     </parent>
 
     <artifactId>jacoco</artifactId>
-    <version>3.0.5</version>
+    <version>3.0.5-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <name>Jenkins JaCoCo plugin</name>
@@ -100,7 +100,7 @@ THE SOFTWARE.
         <connection>scm:git:ssh://github.com/jenkinsci/jacoco-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/jacoco-plugin</url>
-        <tag>jacoco-3.0.5</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
@@ -349,7 +349,7 @@ THE SOFTWARE.
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -362,7 +362,7 @@ THE SOFTWARE.
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -375,7 +375,7 @@ THE SOFTWARE.
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <execute />
+                                        <execute/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -388,7 +388,7 @@ THE SOFTWARE.
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -401,7 +401,7 @@ THE SOFTWARE.
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                                 <pluginExecution>
@@ -414,7 +414,7 @@ THE SOFTWARE.
                                         </goals>
                                     </pluginExecutionFilter>
                                     <action>
-                                        <ignore />
+                                        <ignore/>
                                     </action>
                                 </pluginExecution>
                             </pluginExecutions>
