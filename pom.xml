@@ -37,7 +37,7 @@ THE SOFTWARE.
     <packaging>hpi</packaging>
 
     <name>Jenkins JaCoCo plugin</name>
-    <url>https://wiki.jenkins.io/display/JENKINS/JaCoCo+Plugin</url>
+    <url>https://github.com/jenkinsci/jacoco-plugin</url>
 
     <properties>
         <java.level>8</java.level>
