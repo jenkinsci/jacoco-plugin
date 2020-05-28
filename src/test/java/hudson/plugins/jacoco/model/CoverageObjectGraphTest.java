@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.awt.Color;
@@ -27,6 +28,7 @@ import java.util.Locale;
 
 import static org.junit.Assert.assertArrayEquals;
 
+@Ignore("Flaky tests. Dependant on the platform")
 public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 	private static final int WIDTH = 500;
 	private static final int HEIGHT = 200;
