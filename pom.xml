@@ -97,7 +97,7 @@ THE SOFTWARE.
     </developers>
 
     <scm>
-        <connection>scm:git:ssh://github.com/jenkinsci/jacoco-plugin.git</connection>
+        <connection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/jacoco-plugin</url>
         <tag>HEAD</tag>
