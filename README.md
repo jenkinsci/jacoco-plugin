@@ -203,6 +203,12 @@ See
 
 -   N/A
 
+#### Version 3.0.6 (May 29, 2020)
+
+- Add wiki content to main README
+- Adjust URLs in pom.xml
+- Ignore one test which is depending on the exact version of Java
+
 #### Version 3.0.5 (January 25, 2020)
 
 - Initial support for JDK 11
