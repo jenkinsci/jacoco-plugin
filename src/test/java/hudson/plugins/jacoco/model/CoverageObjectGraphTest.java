@@ -181,7 +181,7 @@ public class CoverageObjectGraphTest extends AbstractJacocoTestBase {
 		} catch (AssertionError e) {
 			File f = new File("target", file);
 			ChartUtilities.saveChartAsPNG(f, chart, WIDTH, HEIGHT);
-			System.err.println("Stored wrong graph file to " + f.getAbsolutePath());
+			System.err.println("Stored wrong graph file to " + f.getAbsolutePath() + " expected is at " + new File(TEST_RESOURCES + file));
 			throw e;
 		}
 	}
