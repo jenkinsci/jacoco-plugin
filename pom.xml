@@ -45,6 +45,8 @@ THE SOFTWARE.
         <jenkins.version>2.150.3</jenkins.version>
         <maven.version>3.5.2</maven.version>
         <powermock.version>2.0.7</powermock.version>
+        <!-- Do not fail if tests are run without argLine -->
+        <argLine></argLine>
     </properties>
 
     <licenses>
@@ -425,6 +427,14 @@ THE SOFTWARE.
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <!-- Allow test execution when specifying surefire argLine via CLI -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <argLine>@{argLine} ${argLine}</argLine>
                     </configuration>
                 </plugin>
             </plugins>
