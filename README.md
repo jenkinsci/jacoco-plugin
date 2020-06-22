@@ -203,6 +203,11 @@ See
 
 -   N/A
 
+#### Version 3.0.7 (Jun 22, 2020)
+
+- Do not fail if tests are run without argLine
+- Update dependencies
+
 #### Version 3.0.6 (May 29, 2020)
 
 - Add wiki content to main README
