@@ -33,7 +33,7 @@ THE SOFTWARE.
     </parent>
 
     <artifactId>jacoco</artifactId>
-    <version>3.0.7-SNAPSHOT</version>
+    <version>3.0.7</version>
     <packaging>hpi</packaging>
 
     <name>Jenkins JaCoCo plugin</name>
@@ -46,7 +46,7 @@ THE SOFTWARE.
         <maven.version>3.5.2</maven.version>
         <powermock.version>2.0.7</powermock.version>
         <!-- Do not fail if tests are run without argLine -->
-        <argLine></argLine>
+        <argLine />
     </properties>
 
     <licenses>
@@ -102,7 +102,7 @@ THE SOFTWARE.
         <connection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/jacoco-plugin</url>
-        <tag>HEAD</tag>
+        <tag>jacoco-3.0.7</tag>
     </scm>
 
     <distributionManagement>
