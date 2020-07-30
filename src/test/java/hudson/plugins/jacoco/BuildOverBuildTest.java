@@ -56,9 +56,9 @@ public class BuildOverBuildTest {
     }
 
     /**
-     * [JENKINS-58184] - This test verifies that we are now ignoring positive coverage changes while checking against the thresholds.
-     * Instruction Coverage has gone down but is still within the configured threshold limit.
-     * Method and line coverage has increased and are way above thresholds.
+     * [JENKINS-58184] - This test verifies that we are ignoring coverage increase while checking against the thresholds.
+     * In this test data, Instruction Coverage has gone down but it is still within the configured threshold limit.
+     *                  Method and line coverage has increased and are way above thresholds.
      * The check passes the build as no decrease is more than the configured threshold
      */
     @Test
@@ -106,9 +106,9 @@ public class BuildOverBuildTest {
     }
 
     /**
-     * [JENKINS-58184] - This test verify that we are still respecting the thresholds and are failing the build
+     * [JENKINS-58184] - This test verifies that we are still respecting the thresholds and are failing the build
      *                  in case the drop in coverage is more than the configured threshold for any parameter
-     * Drop in complexity coverage is more than the configured limit of 2.3434 and so the build fails
+     * In this test data, drop in complexity coverage is more than the configured limit of 2.3434 and so the build fails
      */
     @Test
     public void shouldFailIfNegativeMetricIsAboveThresholdAndOtherMetricesArePositive(){
