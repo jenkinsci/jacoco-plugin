@@ -778,9 +778,9 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         /**
          * If the coverage for a particular parameter has increased we are not checking it against the configured thresholds.
-         * If the coverage for a particular parameter is less than zero we check the value against the configured threshold
-         * In case all the parameter coverage has increased then thresholds will not be checked.
-         * [JENKINS-58184] - This fix will ensure that check will never fail in case the coverage is increasing beyond threshold
+         * Only if the coverage for a particular parameter has decreased we check the value against the configured thresholds.
+         * In case all the parameter coverage has increased then thresholds will not be checked at all.
+         * [JENKINS-58184] - This fix will ensure that checks will never fail in case the coverage is increasing beyond threshold for any parameter
          */
         if((deltaCoverageResultSummary.getInstructionCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getInstructionCoverage()) <= deltaHealthReport.getDeltaInstruction()) &&
                 ( deltaCoverageResultSummary.getBranchCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getBranchCoverage()) <= deltaHealthReport.getDeltaBranch()) &&
