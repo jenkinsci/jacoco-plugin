@@ -25,8 +25,6 @@ public class JacocoDeltaCoverageResultSummary {
 
     private float classCoverage;
 
-    private boolean coverageBetterThanPrevious=false;
-
     public JacocoDeltaCoverageResultSummary() {
     }
 
@@ -43,16 +41,6 @@ public class JacocoDeltaCoverageResultSummary {
         jacocoDeltaCoverageResultSummary.lineCoverage = currentBuildCoverage.getLineCoverage() - lastBuildCoverage.getLineCoverage();
         jacocoDeltaCoverageResultSummary.methodCoverage = currentBuildCoverage.getMethodCoverage() - lastBuildCoverage.getMethodCoverage();
         jacocoDeltaCoverageResultSummary.classCoverage = currentBuildCoverage.getClassCoverage() - lastBuildCoverage.getClassCoverage();
-
-        if(currentBuildCoverage.getInstructionCoverage() >= lastBuildCoverage.getInstructionCoverage()
-                && currentBuildCoverage.getBranchCoverage() >= lastBuildCoverage.getBranchCoverage()
-                && currentBuildCoverage.getComplexityScore() >= lastBuildCoverage.getComplexityScore()
-                && currentBuildCoverage.getLineCoverage() >= lastBuildCoverage.getLineCoverage()
-                && currentBuildCoverage.getMethodCoverage() >= lastBuildCoverage.getMethodCoverage()
-                && currentBuildCoverage.getClassCoverage() >= lastBuildCoverage.getClassCoverage())
-            // Since delta coverage is the absolute difference by definition,
-            // use this flag to mark if the current coverage is bigger than the coverage of last successful build
-            jacocoDeltaCoverageResultSummary.coverageBetterThanPrevious = true;
 
         return jacocoDeltaCoverageResultSummary;
     }
@@ -81,10 +69,6 @@ public class JacocoDeltaCoverageResultSummary {
         return classCoverage;
     }
 
-    public boolean isCoverageBetterThanPrevious() {
-        return coverageBetterThanPrevious;
-    }
-
     public void setInstructionCoverage(float instructionCoverage) {
         this.instructionCoverage = instructionCoverage;
     }
@@ -109,10 +93,6 @@ public class JacocoDeltaCoverageResultSummary {
         this.classCoverage = classCoverage;
     }
 
-    public void setCoverageBetterThanPrevious(boolean coverageBetterThanPrevious) {
-        this.coverageBetterThanPrevious = coverageBetterThanPrevious;
-    }
-
     @Override
     public String toString() {
         return "JacocoDeltaCoverageResultSummary [" +
@@ -122,7 +102,6 @@ public class JacocoDeltaCoverageResultSummary {
                 ", lineCoverage=" + lineCoverage +
                 ", methodCoverage=" + methodCoverage +
                 ", classCoverage=" + classCoverage +
-                ", coverageBetterThanPrevious=" + coverageBetterThanPrevious +
                 ']';
     }
 }

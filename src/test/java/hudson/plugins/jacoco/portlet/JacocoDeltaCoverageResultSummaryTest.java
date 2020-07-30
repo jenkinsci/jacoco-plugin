@@ -85,7 +85,6 @@ public class JacocoDeltaCoverageResultSummaryTest {
                 currentBuildwithMoreCoverage.getMethodCoverage() - lastSuccessfulBuildCoverage.getMethodCoverage(), deltaCoverageSummary.getMethodCoverage(), 0.00001);
         assertEquals("Absolute difference in class coverage",
                 currentBuildwithMoreCoverage.getClassCoverage() - lastSuccessfulBuildCoverage.getClassCoverage(), deltaCoverageSummary.getClassCoverage(), 0.00001);
-        assertTrue(deltaCoverageSummary.isCoverageBetterThanPrevious());
     }
 
     // Test delta coverage summary when current build has worse coverage than previous successful build
@@ -118,6 +117,5 @@ public class JacocoDeltaCoverageResultSummaryTest {
                 currentBuildWithLesserCoverage.getMethodCoverage() - lastSuccessfulBuildCoverage.getMethodCoverage(), deltaCoverageSummary.getMethodCoverage(), 0.00001);
         assertEquals("Absolute difference in class coverage",
                 currentBuildWithLesserCoverage.getClassCoverage() - lastSuccessfulBuildCoverage.getClassCoverage(), deltaCoverageSummary.getClassCoverage(), 0.00001);
-        assertFalse(deltaCoverageSummary.isCoverageBetterThanPrevious());
     }
 }
