@@ -776,14 +776,18 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                 + ", instruction: " + deltaCoverageResultSummary.getInstructionCoverage()
                 + ", complexity: " + deltaCoverageResultSummary.getComplexityCoverage());
 
-        if(Math.abs(deltaCoverageResultSummary.getInstructionCoverage()) <= deltaHealthReport.getDeltaInstruction() &&
-                Math.abs(deltaCoverageResultSummary.getBranchCoverage()) <= deltaHealthReport.getDeltaBranch() &&
-                Math.abs(deltaCoverageResultSummary.getComplexityCoverage()) <= deltaHealthReport.getDeltaComplexity() &&
-                Math.abs(deltaCoverageResultSummary.getLineCoverage()) <= deltaHealthReport.getDeltaLine() &&
-                Math.abs(deltaCoverageResultSummary.getMethodCoverage()) <= deltaHealthReport.getDeltaMethod() &&
-                Math.abs(deltaCoverageResultSummary.getClassCoverage()) <= deltaHealthReport.getDeltaClass())
-            return Result.SUCCESS;
-        else if(deltaCoverageResultSummary.isCoverageBetterThanPrevious())
+        /**
+         * If the coverage for a particular parameter has increased we are not checking it against the configured thresholds.
+         * If the coverage for a particular parameter is less than zero we check the value against the configured threshold
+         * In case all the parameter coverage has increased then thresholds will not be checked.
+         * [JENKINS-58184] - This fix will ensure that check will never fail in case the coverage is increasing beyond threshold
+         */
+        if((deltaCoverageResultSummary.getInstructionCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getInstructionCoverage()) <= deltaHealthReport.getDeltaInstruction()) &&
+                ( deltaCoverageResultSummary.getBranchCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getBranchCoverage()) <= deltaHealthReport.getDeltaBranch()) &&
+                ( deltaCoverageResultSummary.getComplexityCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getComplexityCoverage()) <= deltaHealthReport.getDeltaComplexity()) &&
+                ( deltaCoverageResultSummary.getLineCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getLineCoverage()) <= deltaHealthReport.getDeltaLine()) &&
+                ( deltaCoverageResultSummary.getMethodCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getMethodCoverage()) <= deltaHealthReport.getDeltaMethod()) &&
+                ( deltaCoverageResultSummary.getClassCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getClassCoverage()) <= deltaHealthReport.getDeltaClass()))
             return Result.SUCCESS;
         else
             return Result.FAILURE;
