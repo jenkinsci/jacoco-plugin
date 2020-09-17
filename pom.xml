@@ -42,7 +42,7 @@ THE SOFTWARE.
     <properties>
         <java.level>8</java.level>
         <jacoco.version>0.8.5</jacoco.version>
-        <jenkins.version>2.150.3</jenkins.version>
+        <jenkins.version>2.164.3</jenkins.version>
         <maven.version>3.5.2</maven.version>
         <powermock.version>2.0.7</powermock.version>
         <!-- Do not fail if tests are run without argLine -->
@@ -118,7 +118,7 @@ THE SOFTWARE.
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.5</version>
+                <version>2.6</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ant</groupId>
