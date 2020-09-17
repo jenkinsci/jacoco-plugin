@@ -203,6 +203,12 @@ See
 
 -   N/A
 
+#### Version 3.0.8 (Sep 17, 2020)
+
+- Add LICENSE file
+- JENKINS-58184 - Do not check coverage increase against the configured threshold
+- Bump Ant to 1.9.15
+
 #### Version 3.0.7 (Jun 22, 2020)
 
 - Do not fail if tests are run without argLine
