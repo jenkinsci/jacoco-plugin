@@ -260,10 +260,6 @@ THE SOFTWARE.
                     <artifactId>*</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>backport-util-concurrent</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.codehaus.plexus</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
