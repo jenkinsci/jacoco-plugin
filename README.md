@@ -69,8 +69,52 @@ How to build and test
 
 See https://jenkinsci.github.io/maven-hpi-plugin/ for details.
 
+### How to release a new version
 
-###### Basic information
+Rolling a release requires you to set up a few additional things:
+
+* Run with Java 8 to not push code compiled with a newer version of Java
+* Github authentication should work via SSH, Username used should bet "git", 
+it should use one of the local private SSH keys which should be uploaded to 
+Github, see https://github.com/settings/keys, test via
+ 
+  `ssh -vT git@github.com`
+ 
+* Jenkins-CI authentication should work via settings in 
+`~/.m2/settings.xml`, see http://maven.apache.org/guides/mini/guide-encryption.html 
+for details
+* The mvn-calls below should not require "username" and "password"
+* Check that all tests pass ("mvn findbugs:check" and "mvn checkstyle::check" report 
+violations but are not blocking releases for now...)
+
+  `mvn clean package && mvn validate`
+
+* Manually test the plugin 
+
+  `mvn hpi:run`
+
+  Go to http://localhost:8080/jenkins/ and perform some testing
+
+* Prepare the release 
+  
+  `mvn release:prepare -DskipTests`
+
+* Roll the release 
+  
+  `mvn release:perform -DskipTests -Darguments="-DskipTests"`
+
+* Update release notes at https://github.com/jenkinsci/jacoco-plugin/releases
+
+* Release should be visible immediately at 
+https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/jacoco/
+* Release is published after some time at 
+https://mvnrepository.com/artifact/org.jenkins-ci.plugins/jacoco?repo=jenkins-releases
+ 
+See also
+* https://wiki.jenkins.io/display/JENKINS/Hosting+Plugins#HostingPlugins-Requestuploadpermissions
+* https://wiki.jenkins.io/display/JENKINS/Hosting+Plugins#HostingPlugins-Releasingtojenkins-ci.org
+
+## Basic information
 
 -   Repository address: <https://github.com/jenkinsci/jacoco-plugin/>
 -   Mailing list:
@@ -179,8 +223,8 @@ following points:
 
 ## Open Tickets (bugs and feature requests)
 
-See
-<https://issues.jenkins-ci.org/browse/JENKINS-42420?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened%2C%20%22In%20Review%22)%20AND%20component%20%3D%20jacoco-plugin>
+See the 
+[Jenkins JIRA](https://issues.jenkins-ci.org/browse/JENKINS-42420?jql=project%20%3D%20JENKINS%20AND%20status%20in%20(Open%2C%20%22In%20Progress%22%2C%20Reopened%2C%20%22In%20Review%22)%20AND%20component%20%3D%20jacoco-plugin)
 
 ## Build Status
 
@@ -201,7 +245,9 @@ See
 
 #### Version 3.1-SNAPSHOT (unreleased)
 
--   N/A
+- Update to JaCoco 0.8.6 to add support for JDK 15
+- Require minimum Jenkins version 2.164.3
+- Update some other third-party dependencies
 
 #### Version 3.0.8 (Sep 17, 2020)
 
