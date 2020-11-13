@@ -110,9 +110,12 @@ https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/jacoco/
 * Release is published after some time at 
 https://mvnrepository.com/artifact/org.jenkins-ci.plugins/jacoco?repo=jenkins-releases
  
-See also
-* https://wiki.jenkins.io/display/JENKINS/Hosting+Plugins#HostingPlugins-Requestuploadpermissions
-* https://wiki.jenkins.io/display/JENKINS/Hosting+Plugins#HostingPlugins-Releasingtojenkins-ci.org
+See also general documentation about releasing Jenkins plugins:
+* Current documentation: https://www.jenkins.io/doc/developer/publishing/requesting-hosting/
+* Maven Release Plugin: http://maven.apache.org/maven-release/maven-release-plugin/usage.html
+* The following are slightly outdated, but still contain some useful information
+  - https://wiki.jenkins.io/display/JENKINS/Hosting+Plugins#HostingPlugins-Requestuploadpermissions
+  - https://wiki.jenkins.io/display/JENKINS/Hosting+Plugins#HostingPlugins-Releasingtojenkins-ci.org
 
 ## Basic information
 
