@@ -246,7 +246,11 @@ See the
 
 ## Change Log
 
-#### Version 3.1-SNAPSHOT (unreleased)
+#### Version 3.1.1-SNAPSHOT (unreleased)
+
+- ...
+
+#### Version 3.1-SNAPSHOT (Nov 13, 2020)
 
 - Update to JaCoco 0.8.6 to add support for JDK 15
 - Require minimum Jenkins version 2.164.3
