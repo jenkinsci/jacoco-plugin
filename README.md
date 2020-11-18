@@ -138,8 +138,7 @@ report.
 ## Getting Started
 
 The plugin provides two things, a build-publisher to record and display
-coverage data as part of builds as well as a new  
-column-type for dashboard views which can display coverage data in
+coverage data as part of builds as well as a new column-type for dashboard views which can display coverage data in
 Dashboards.
 
 ### Recording coverage for builds
