@@ -684,12 +684,12 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             logger.println("[JaCoCo plugin] Could not parse coverage results. Setting Build to failure.");
             run.setResult(Result.FAILURE);
         } else {
-            logger.println("[JaCoCo plugin] Overall coverage: class: " + result.getClassCoverage().getPercentage()
-                    + ", method: " + result.getMethodCoverage().getPercentage()
-                    + ", line: " + result.getLineCoverage().getPercentage()
-                    + ", branch: " + result.getBranchCoverage().getPercentage()
-                    + ", instruction: " + result.getInstructionCoverage().getPercentage()
-                    + ", complexity: " + result.getComplexityScore().getPercentage());
+            logger.println("[JaCoCo plugin] Overall coverage: class: " + result.getClassCoverage().getPercentageFloat()
+                    + ", method: " + result.getMethodCoverage().getPercentageFloat()
+                    + ", line: " + result.getLineCoverage().getPercentageFloat()
+                    + ", branch: " + result.getBranchCoverage().getPercentageFloat()
+                    + ", instruction: " + result.getInstructionCoverage().getPercentageFloat()
+                    + ", complexity: " + result.getComplexityScore().getPercentageFloat());
             result.setThresholds(healthReports);
 
             // Calculate final result of the current build according to the state of two flags: changeBuildStatus and buildOverBuild
