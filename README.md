@@ -102,13 +102,13 @@ violations but are not blocking releases for now...)
   
   `mvn release:prepare -DskipTests`
 
-This will ask for the release numbers and the tag in the source control system.
+  This will ask for the release numbers and the tag in the source control system.
 
 * Roll the release 
   
   `mvn release:perform -DskipTests -Darguments="-DskipTests"`
 
-This should perform the actual uploads of the resulting binary packages.
+  This should perform the actual uploads of the resulting binary packages.
 
 * Update release notes at https://github.com/jenkinsci/jacoco-plugin/releases
 
