@@ -74,16 +74,19 @@ See https://jenkinsci.github.io/maven-hpi-plugin/ for details.
 Rolling a release requires you to set up a few additional things:
 
 * Run with Java 8 to not push code compiled with a newer version of Java
-* Github authentication should work via SSH, Username used should bet "git", 
+* Github authentication should work via SSH, username used should bet "git",
 it should use one of the local private SSH keys which should be uploaded to 
 Github, see https://github.com/settings/keys, test via
  
-  `ssh -vT git@github.com`
+  `ssh -T git@github.com`
+
+You should get back a line containing `You've successfully authenticated`
  
 * Jenkins-CI authentication should work via settings in 
 `~/.m2/settings.xml`, see http://maven.apache.org/guides/mini/guide-encryption.html 
 for details
-* The mvn-calls below should not require "username" and "password"
+* The mvn-calls below should not require "username" or "password", if they
+do ask for it, then some setup is incorrect
 * Check that all tests pass ("mvn findbugs:check" and "mvn checkstyle::check" report 
 violations but are not blocking releases for now...)
 
@@ -99,9 +102,13 @@ violations but are not blocking releases for now...)
   
   `mvn release:prepare -DskipTests`
 
+This will ask for the release numbers and the tag in the source control system.
+
 * Roll the release 
   
   `mvn release:perform -DskipTests -Darguments="-DskipTests"`
+
+This should perform the actual uploads of the resulting binary packages.
 
 * Update release notes at https://github.com/jenkinsci/jacoco-plugin/releases
 
@@ -245,9 +252,13 @@ See the
 
 ## Change Log
 
-#### Version 3.1.1-SNAPSHOT (unreleased)
+#### Version 3.1.2-SNAPSHOT (unreleased)
 
 - ...
+
+#### Version 3.1.1 (Jan 23, 2021)
+
+- Updated the overall coverage reporting also as a float percentage
 
 #### Version 3.1.0 (Nov 13, 2020)
 
