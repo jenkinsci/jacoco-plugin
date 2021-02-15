@@ -296,7 +296,7 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.1.0</version>
+            <version>3.3.0</version>
         </dependency>
         <!-- Somehow we need org.w3c.dom.ElementTraversal, but do not get it from any of the dependencies
         do not update to 2.x as it will not contain the class any more! -->
