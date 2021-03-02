@@ -133,7 +133,7 @@ THE SOFTWARE.
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.12</version>
+                <version>4.5.13</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.maven</groupId>
@@ -313,7 +313,7 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
-            <version>1.10</version>
+            <version>1.22</version>
         </dependency>
     </dependencies>
 
