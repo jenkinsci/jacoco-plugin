@@ -43,7 +43,7 @@ THE SOFTWARE.
         <java.level>8</java.level>
         <jacoco.version>0.8.7</jacoco.version>
         <jenkins.version>2.164.3</jenkins.version>
-        <maven.version>3.5.2</maven.version>
+        <maven.version>3.8.1</maven.version>
         <powermock.version>2.0.7</powermock.version>
         <!-- Do not fail if tests are run without argLine -->
         <argLine />
@@ -173,7 +173,7 @@ THE SOFTWARE.
             <dependency>
                 <groupId>org.apache.maven.shared</groupId>
                 <artifactId>maven-shared-utils</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.1</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.plexus</groupId>
@@ -209,6 +209,16 @@ THE SOFTWARE.
                 <groupId>org.jenkins-ci.main</groupId>
                 <artifactId>maven-plugin</artifactId>
                 <version>3.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.inject</groupId>
+                <artifactId>guice</artifactId>
+                <version>4.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>1.7.30</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -296,7 +306,7 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.1.0</version>
+            <version>3.2.1</version>
         </dependency>
         <!-- Somehow we need org.w3c.dom.ElementTraversal, but do not get it from any of the dependencies
         do not update to 2.x as it will not contain the class any more! -->
