@@ -29,7 +29,7 @@ THE SOFTWARE.
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>3.57</version>
+        <version>4.18</version>
     </parent>
 
     <artifactId>jacoco</artifactId>
@@ -42,7 +42,7 @@ THE SOFTWARE.
     <properties>
         <java.level>8</java.level>
         <jacoco.version>0.8.7</jacoco.version>
-        <jenkins.version>2.164.3</jenkins.version>
+        <jenkins.version>2.263.4</jenkins.version>
         <maven.version>3.8.1</maven.version>
         <powermock.version>2.0.7</powermock.version>
         <!-- Do not fail if tests are run without argLine -->
@@ -219,11 +219,6 @@ THE SOFTWARE.
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>30.1-jre</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.30</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
