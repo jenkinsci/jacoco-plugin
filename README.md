@@ -74,7 +74,7 @@ See https://jenkinsci.github.io/maven-hpi-plugin/ for details.
 Rolling a release requires you to set up a few additional things:
 
 * Run with Java 8 to not push code compiled with a newer version of Java
-* Github authentication should work via SSH, username used should bet "git",
+* Github authentication should work via SSH, username used should be "git",
 it should use one of the local private SSH keys which should be uploaded to 
 Github, see https://github.com/settings/keys, test via
  
@@ -252,9 +252,16 @@ See the
 
 ## Change Log
 
-#### Version 3.1.2-SNAPSHOT (unreleased)
+#### Version 3.2.1-SNAPSHOT (unreleased)
 
-- ...
+-
+
+#### Version 3.2.0 (2021-05-13)
+
+- Update to JaCoCo 0.8.7, this should add support for Java 16 (and preliminary support for Java 17) and Kotlin 1.5 (#146)
+- Require at least Jenkins LTS 2.263.4 (#148)
+- Update to Maven 3.8.1 (#148), Ant 1.10.9, httpclient 4.5.13 (#143), commons-lang3 to 3.12.0 (#142) 
+- Add pipeline help (#141) 
 
 #### Version 3.1.1 (Jan 23, 2021)
 
