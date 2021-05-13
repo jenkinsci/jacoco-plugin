@@ -25,12 +25,12 @@ public class JacocoHealthReportDeltaThresholds {
 
     // Constructor used for bounding user-configured string threshold values to corresponding big decimal thresholds
     public JacocoHealthReportDeltaThresholds(String deltaInstruction, String deltaBranch, String deltaComplexity, String deltaLine, String deltaMethod, String deltaClass){
-        this.deltaInstruction = deltaInstruction!=null ? Float.valueOf(deltaInstruction) : 0f;
-        this.deltaBranch = deltaBranch!=null ? Float.valueOf(deltaBranch) : 0f;
-        this.deltaComplexity = deltaComplexity!=null ? Float.valueOf(deltaComplexity) : 0f;
-        this.deltaLine = deltaLine!=null ? Float.valueOf(deltaLine) : 0f;
-        this.deltaMethod = deltaMethod!=null ? Float.valueOf(deltaMethod) : 0f;
-        this.deltaClass = deltaClass!=null ? Float.valueOf(deltaClass): 0f;
+        this.deltaInstruction = deltaInstruction!=null ? Float.parseFloat(deltaInstruction) : 0f;
+        this.deltaBranch = deltaBranch!=null ? Float.parseFloat(deltaBranch) : 0f;
+        this.deltaComplexity = deltaComplexity!=null ? Float.parseFloat(deltaComplexity) : 0f;
+        this.deltaLine = deltaLine!=null ? Float.parseFloat(deltaLine) : 0f;
+        this.deltaMethod = deltaMethod!=null ? Float.parseFloat(deltaMethod) : 0f;
+        this.deltaClass = deltaClass!=null ? Float.parseFloat(deltaClass): 0f;
         this.ensureValid(); // Validate threshold values while creating new object to encapsulate these
     }
 
