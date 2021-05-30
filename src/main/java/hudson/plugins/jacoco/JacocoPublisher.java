@@ -4,7 +4,6 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.Util;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -26,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import jenkins.MasterToSlaveFileCallable;
 import jenkins.model.Jenkins;
@@ -625,7 +625,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         logger.println("[JaCoCo plugin] Number of found exec files for pattern " + execPattern + ": " + matchedExecFiles.size());
         logger.print("[JaCoCo plugin] Saving matched execfiles: ");
         reportDir.addExecFiles(matchedExecFiles);
-        logger.print(" " + Util.join(matchedExecFiles," "));
+        logger.print(" " + matchedExecFiles.stream().map(Object::toString).collect(Collectors.joining(" ")));
         FilePath[] matchedClassDirs = resolveDirPaths(filePath, taskListener, classPattern);
         logger.print("\n[JaCoCo plugin] Saving matched class directories for class-pattern: " + classPattern + ": ");
         final String warning = "\n[JaCoCo plugin] WARNING: You are using directory patterns with trailing /, /* or /** . This will most likely" +
