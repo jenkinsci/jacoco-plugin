@@ -19,6 +19,7 @@ import org.jacoco.core.analysis.IMethodCoverage;
 import org.jacoco.core.analysis.IPackageCoverage;
 import org.jacoco.core.data.ExecutionDataWriter;
 import org.jacoco.core.tools.ExecFileLoader;
+import org.jacoco.report.xml.XMLFormatter;
 import org.kohsuke.stapler.HttpResponse;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
@@ -250,6 +251,21 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
         }
     }
 
+    @WebMethod(name="jacoco.xml")
+    public HttpResponse doJacocoXml() throws IOException {
+        ExecutionFileLoader loader = action.getExecutionFileLoader();
+        if (loader.isEmpty()) {
+            return HttpResponses.error(404, "No jacoco.exec file recorded");
+        }
+        return new HttpResponse() {
+            @Override
+            public void generateResponse(StaplerRequest req, StaplerResponse rsp, Object node) throws IOException, ServletException {
+                rsp.setContentType("text/xml");
+                rsp.setHeader("Content-Disposition", "attachment; filename=\"jacoco.xml\"");
+                loader.read(new XMLFormatter().createVisitor(rsp.getOutputStream()), getName());
+            }
+        };
+    }
 
 	public void setThresholds(JacocoHealthReportThresholds healthReports) {
 		this.healthReports = healthReports;
