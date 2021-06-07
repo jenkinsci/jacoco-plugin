@@ -211,16 +211,6 @@ THE SOFTWARE.
                 <artifactId>maven-plugin</artifactId>
                 <version>3.7</version>
             </dependency>
-            <dependency>
-                <groupId>com.google.inject</groupId>
-                <artifactId>guice</artifactId>
-                <version>4.2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>30.1-jre</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -257,51 +247,6 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>2.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jacoco</groupId>
-            <artifactId>jacoco-maven-plugin</artifactId>
-            <version>${jacoco.version}</version>
-            <!-- Exclude a few unused transitive dependencies of things that are not needed here to avoid clashes with other plugins -->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.maven.doxia</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.codehaus.plexus</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.sonatype.plexus</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-plugin-api</artifactId>
-            <version>${maven.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-artifact</artifactId>
-            <version>${maven.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-model</artifactId>
-            <version>${maven.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-settings</artifactId>
-            <version>${maven.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

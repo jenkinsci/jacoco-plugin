@@ -19,7 +19,6 @@ import org.jacoco.core.analysis.IBundleCoverage;
 import org.jacoco.core.data.ExecutionDataReader;
 import org.jacoco.core.data.ExecutionDataStore;
 import org.jacoco.core.data.SessionInfoStore;
-import org.jacoco.maven.FileFilter;
 
 
 public class ExecutionFileLoader implements Serializable {
@@ -122,9 +121,8 @@ public class ExecutionFileLoader implements Serializable {
 				excludes = ITEM_ZERO;
 			}
 
-			final FileFilter fileFilter = new FileFilter(Arrays.asList(includes), Arrays.asList(excludes));
 			try {
-				final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, fileFilter.getIncludes(), fileFilter.getExcludes());
+				final List<File> filesToAnalyze = FileUtils.getFiles(classDirectory, String.join(",", includes), String.join(",", excludes));
 				for (final File file : filesToAnalyze) {
 					analyzer.analyzeAll(file);
 				}
