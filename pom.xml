@@ -254,13 +254,6 @@ THE SOFTWARE.
             <artifactId>plexus-utils</artifactId>
             <version>3.2.1</version>
         </dependency>
-        <!-- Somehow we need org.w3c.dom.ElementTraversal, but do not get it from any of the dependencies
-        do not update to 2.x as it will not contain the class any more! -->
-        <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.4.01</version>
-        </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>structs</artifactId>
