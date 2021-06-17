@@ -43,7 +43,7 @@ THE SOFTWARE.
         <java.level>8</java.level>
         <jacoco.version>0.8.7</jacoco.version>
         <!-- see https://www.jenkins.io/changelog-stable/ for changelog of the LTS releases -->
-        <jenkins.version>2.263.4</jenkins.version>
+        <jenkins.version>2.277.1</jenkins.version>
         <!--  until the plugin-pom picks up a newer version -->
         <jenkins-test-harness.version>1589.vc23fca066d5c</jenkins-test-harness.version>
         <!-- Do not fail if tests are run without argLine -->
