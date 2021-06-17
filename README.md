@@ -24,6 +24,11 @@ Looking for ways to contribute?
 When looking for things to work at there are [pull requests](https://github.com/jenkinsci/jacoco-plugin/pulls) and a 
 list of [Jenkins Issues](https://issues.jenkins-ci.org/issues/?jql=project%20%3D%20JENKINS%20AND%20status%20not%20in%20(Closed%2C%20Resolved%2C%20%22Fixed%20but%20Unreleased%22)%20AND%20component%20%3D%20jacoco-plugin%20ORDER%20BY%20key%20DESC).
 
+In general the plugin is currently in "minimal maintenance" mode, i.e. no 
+larger development is done due to the small number of active contributors and general time constraints. 
+
+Please speak up if you are interested in helping to maintain this plugin!
+
 Discussion list
 ===============
 
@@ -252,9 +257,15 @@ See the
 
 ## Change Log
 
-#### Version 3.2.1-SNAPSHOT (unreleased)
+#### Version 3.3.1-SNAPSHOT (unreleased)
 
 -
+
+#### Version 3.3.0 (2021-06-17)
+
+- Bump dashboard-view from 2.13 to 2.17 (#153)
+- [JENKINS-65757](https://issues.jenkins-ci.org/browse/JENKINS-65757): Remove some unused dependencies to avoid jar-hell in Jenkins itself (#151)
+- Stop using deprecated Util#join (#150) 
 
 #### Version 3.2.0 (2021-05-13)
 
