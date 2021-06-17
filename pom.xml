@@ -33,7 +33,7 @@ THE SOFTWARE.
     </parent>
 
     <artifactId>jacoco</artifactId>
-    <version>3.2.1-SNAPSHOT</version>
+    <version>3.3.0</version>
     <packaging>hpi</packaging>
 
     <name>Jenkins JaCoCo plugin</name>
@@ -103,7 +103,7 @@ THE SOFTWARE.
         <connection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/jacoco-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/jacoco-plugin</url>
-        <tag>HEAD</tag>
+        <tag>jacoco-3.3.0</tag>
     </scm>
 
     <distributionManagement>
