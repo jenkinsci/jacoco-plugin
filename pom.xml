@@ -157,6 +157,11 @@ THE SOFTWARE.
             <artifactId>structs</artifactId>
             <version>1.20</version>
         </dependency>
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm</artifactId>
+            <version>9.1</version>
+        </dependency>
     </dependencies>
 
     <repositories>
