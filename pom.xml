@@ -272,7 +272,7 @@ THE SOFTWARE.
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
-			<parallel>all</parallel>
+			<parallel>classes</parallel>
 			<useUnlimitedThreads>true</useUnlimitedThreads>
                         <argLine>@{argLine} ${argLine}</argLine>
                     </configuration>
