@@ -5,7 +5,7 @@
     <l:main-panel>
       <h2>${%JaCoCo Coverage Report}</h2>
       <div>
-        <img src="${imagesURL}/24x24/save.png" />
+        <l:icon class="icon-save icon-md" />
 
         <a href="jacoco.exec">Download <tt>jacoco.exec</tt> binary coverage file</a>
       </div>
