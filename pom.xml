@@ -45,7 +45,7 @@ THE SOFTWARE.
 
     <properties>
         <java.level>8</java.level>
-        <jacoco.version>0.8.7</jacoco.version>
+        <jacoco.version>0.8.8</jacoco.version>
         <!-- see https://www.jenkins.io/changelog-stable/ for changelog of the LTS releases -->
         <jenkins.version>2.277.1</jenkins.version>
         <!--  until the plugin-pom picks up a newer version -->
