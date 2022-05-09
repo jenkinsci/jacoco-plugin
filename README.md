@@ -257,9 +257,9 @@ See the
 
 ## Change Log
 
-#### Version 3.3.1-SNAPSHOT (unreleased)
+#### Newer versions
 
--
+For newer newer versions see the changelog in the release-area at https://github.com/jenkinsci/jacoco-plugin/releases
 
 #### Version 3.3.0 (2021-06-17)
 
