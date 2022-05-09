@@ -38,17 +38,17 @@ public class E2ETest {
             FreeStyleProject project = r.createFreeStyleProject();
             project.getBuildersList().addAll(createJacocoProjectBuilders());
             project.getPublishersList().add(new JacocoPublisher());
-            
+
             FreeStyleBuild build = r.buildAndAssertSuccess(project);
 
             assertThat("plugin collected data", build.getLog(), containsString("Collecting JaCoCo coverage data"));
 
             JacocoBuildAction action = build.getAction(JacocoBuildAction.class);
             assertThat("Build has the Jacoco Action", action, notNullValue());
-            
-            assertThat("incorrect branch coverage reported", action.getBranchCoverage(), withCoverage(0, 621, 621));
+
+            assertThat("incorrect branch coverage reported", action.getBranchCoverage(), withCoverage(0, 617, 617));
             assertThat("incorrect class coverage reported", action.getClassCoverage(), withCoverage(7, 59, 66));
-            assertThat("incorrect complexity coverage reported", action.getComplexityScore(), withCoverage(19, 835, 854));
+            assertThat("incorrect complexity coverage reported", action.getComplexityScore(), withCoverage(19, 833, 852));
             // different compilers can generate different instructions (e.g. java8 vs java 11.
             // so just skip this for now as it seems brittle
             // assertThat("incorrect instruction coverage reported", action.getInstructionCoverage(), withCoverage(229, 9013, 9242)); /* java 8* /
@@ -73,7 +73,7 @@ public class E2ETest {
         }
         return builders;
     }
-    
+
     public static class CoverageMatcher extends TypeSafeDiagnosingMatcher<Coverage> {
 
         private final int covered;
@@ -90,7 +90,7 @@ public class E2ETest {
             description.appendText(" with covered="+ covered);
             description.appendText(" and missed="+ missed);
             description.appendText(" and total="+ total);
-            
+
         }
 
         @Override
@@ -99,11 +99,11 @@ public class E2ETest {
             mismatchDescription.appendText(" and missed="+ coverage.getMissed());
             mismatchDescription.appendText(" and total="+ coverage.getTotal());
 
-            return coverage.getCovered() == covered && 
+            return coverage.getCovered() == covered &&
                     coverage.getMissed() == missed &&
                     coverage.getTotal() == total;
         }
-    
+
         public static CoverageMatcher withCoverage(int covered, int missed, int total) {
             return new CoverageMatcher(covered, missed, total);
         }
