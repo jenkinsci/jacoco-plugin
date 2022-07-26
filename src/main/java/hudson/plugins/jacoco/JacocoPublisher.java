@@ -772,9 +772,9 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
                 + ", instruction: " + deltaCoverageResultSummary.getInstructionCoverage()
                 + ", complexity: " + deltaCoverageResultSummary.getComplexityCoverage());
 
-        /**
+        /*
          * Coverage thresholds will not be checked for any parameter for which the coverage has increased.
-         * Only if the coverage for a particular parameter has decreased, we will check the the configured threshold for that parameter.
+         * Only if the coverage for a particular parameter has decreased, we will check the configured threshold for that parameter.
          * [JENKINS-58184] - This fix ensures that build will never fail in case coverage reduction is within the threshold limits.
          */
         if((deltaCoverageResultSummary.getInstructionCoverage() > 0 || Math.abs(deltaCoverageResultSummary.getInstructionCoverage()) <= deltaHealthReport.getDeltaInstruction()) &&
@@ -821,7 +821,6 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         }
 
 		@Override
-        @SuppressWarnings("rawtypes")
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
@@ -870,7 +869,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
             this.input = input;
         }
 
-        public FilePath[] invoke(File f, VirtualChannel channel) throws IOException {
+        public FilePath[] invoke(File f, VirtualChannel channel) {
             FilePath base = new FilePath(f);
             ArrayList<FilePath> localDirectoryPaths= new ArrayList<>();
             String[] includes = input.split(DIR_SEP);
