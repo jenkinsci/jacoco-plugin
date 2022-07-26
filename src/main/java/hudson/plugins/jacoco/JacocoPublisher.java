@@ -1,9 +1,7 @@
 package hudson.plugins.jacoco;
 
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import hudson.*;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
@@ -44,7 +42,7 @@ import hudson.plugins.jacoco.portlet.bean.JacocoDeltaCoverageResultSummary;
  * @author Kohsuke Kawaguchi
  * @author Jonathan Fuerth
  * @author Ognjen Bubalo
- * 
+ *
  */
 public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
@@ -66,7 +64,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     // Delta coverage thresholds to apply
     public JacocoHealthReportDeltaThresholds deltaHealthReport;
 
-    
+
     /**
      * Variables containing the configuration set by the user.
      */
@@ -105,7 +103,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private String deltaMethodCoverage;
     private String deltaClassCoverage;
     private boolean buildOverBuild;
-    
+
 	private static final String DIR_SEP = "\\s*,\\s*";
 
     private static final Integer THRESHOLD_DEFAULT = 0;
@@ -146,7 +144,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 	/**
      * Loads the configuration set by user.
 	 * @param execPattern deprecated
-	 * @param classPattern deprecated 
+	 * @param classPattern deprecated
 	 * @param sourcePattern deprecated
 	 * @param inclusionPattern deprecated
 	 * @param exclusionPattern deprecated
@@ -206,7 +204,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         this.deltaClassCoverage = deltaClassCoverage;
         this.buildOverBuild = buildOverBuild;
     }
-    
+
     private Integer convertThresholdInputToInteger(String input, EnvVars env) {
     	if ((input == null) || ("".equals(input))) {
     		return THRESHOLD_DEFAULT;
@@ -362,7 +360,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     public boolean getChangeBuildStatus() {
 		return changeBuildStatus;
 	}
-    
+
     public boolean isRunAlways() {
         return runAlways;
     }
@@ -544,10 +542,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
 	protected static void saveCoverageReports(FilePath destFolder, FilePath sourceFolder) throws IOException, InterruptedException {
 		destFolder.mkdirs();
-		
+
 		sourceFolder.copyRecursiveTo(destFolder);
 	}
-	
+
     protected String resolveFilePaths(Run<?, ?> build, TaskListener listener, String input, Map<String, String> env)
             throws InterruptedException, IOException {
         try {
@@ -585,10 +583,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
 
     @Override
-    public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath filePath, @Nonnull Launcher launcher, @Nonnull TaskListener taskListener) throws InterruptedException, IOException {
+    public void perform(@NonNull Run<?, ?> run, @NonNull FilePath filePath, @NonNull EnvVars env, @NonNull Launcher launcher, @NonNull TaskListener taskListener) throws InterruptedException, IOException {
         Map<String, String> envs = run instanceof AbstractBuild ? ((AbstractBuild<?,?>) run).getBuildVariables() : Collections.emptyMap();
-
-        EnvVars env = run.getEnvironment(taskListener);
         env.overrideAll(envs);
 
         healthReports = createJacocoHealthReportThresholds(env);
@@ -727,17 +723,17 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     private JacocoHealthReportThresholds createJacocoHealthReportThresholds(EnvVars env) {
         try {
             return healthReports = new JacocoHealthReportThresholds(
-                    convertThresholdInputToInteger(minimumClassCoverage, env), 
-                    convertThresholdInputToInteger(maximumClassCoverage, env), 
-                    convertThresholdInputToInteger(minimumMethodCoverage, env), 
-                    convertThresholdInputToInteger(maximumMethodCoverage, env), 
-                    convertThresholdInputToInteger(minimumLineCoverage, env), 
-                    convertThresholdInputToInteger(maximumLineCoverage, env), 
-                    convertThresholdInputToInteger(minimumBranchCoverage, env), 
-                    convertThresholdInputToInteger(maximumBranchCoverage, env), 
-                    convertThresholdInputToInteger(minimumInstructionCoverage, env), 
-                    convertThresholdInputToInteger(maximumInstructionCoverage, env), 
-                    convertThresholdInputToInteger(minimumComplexityCoverage, env), 
+                    convertThresholdInputToInteger(minimumClassCoverage, env),
+                    convertThresholdInputToInteger(maximumClassCoverage, env),
+                    convertThresholdInputToInteger(minimumMethodCoverage, env),
+                    convertThresholdInputToInteger(maximumMethodCoverage, env),
+                    convertThresholdInputToInteger(minimumLineCoverage, env),
+                    convertThresholdInputToInteger(maximumLineCoverage, env),
+                    convertThresholdInputToInteger(minimumBranchCoverage, env),
+                    convertThresholdInputToInteger(maximumBranchCoverage, env),
+                    convertThresholdInputToInteger(minimumInstructionCoverage, env),
+                    convertThresholdInputToInteger(maximumInstructionCoverage, env),
+                    convertThresholdInputToInteger(minimumComplexityCoverage, env),
                     convertThresholdInputToInteger(maximumComplexityCoverage, env)
                 );
         } catch (NumberFormatException e) {
@@ -791,7 +787,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         else
             return Result.FAILURE;
     }
-	
+
     public BuildStepMonitor getRequiredMonitorService() {
         return BuildStepMonitor.NONE;
     }
@@ -829,7 +825,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             return true;
         }
-		
+
 		/*@Override
         public Publisher newInstance(StaplerRequest req, JSONObject json) throws FormException {
             JacocoPublisher pub = new JacocoPublisher();
