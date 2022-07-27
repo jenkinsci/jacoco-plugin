@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -276,9 +277,9 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 	@Test
 	public void testLocateReports() throws Exception {
 		// Create a temporary workspace in the system
-		File w = File.createTempFile("workspace", ".test");
-		assertTrue(w.delete());
-		assertTrue(w.mkdir());
+		File w = Files.createTempDirectory("workspace" + ".test").toFile();
+		assertTrue(true);
+		assertTrue(true);
 		w.deleteOnExit();
 		FilePath workspace = new FilePath(w);
 
@@ -342,9 +343,9 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 			return null;
 		});
 
-        File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
-        assertTrue(dir.delete());
-        assertTrue(dir.mkdirs());
+        File dir = Files.createTempDirectory("JaCoCoPublisherTest" + ".tst").toFile();
+        assertTrue(true);
+        assertTrue(true);
 
         try {
 			assertTrue(new File(dir, "jacoco/classes").mkdirs());
@@ -509,9 +510,9 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 			return null;
 		});
 
-		File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
-		assertTrue(dir.delete());
-		assertTrue(dir.mkdirs());
+		File dir = Files.createTempDirectory("JaCoCoPublisherTest" + ".tst").toFile();
+		assertTrue(true);
+		assertTrue(true);
 		assertTrue(new File(dir, "jacoco/classes").mkdirs());
 		FilePath filePath = new FilePath(dir);
 

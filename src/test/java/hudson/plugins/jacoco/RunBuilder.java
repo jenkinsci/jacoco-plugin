@@ -8,6 +8,7 @@ import hudson.model.TaskListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
@@ -34,9 +35,9 @@ public class RunBuilder {
         expect(run.getParent()).andReturn(null).anyTimes();
 
         // create a test build directory
-        File rootDir = File.createTempFile("BuildTest", ".tst");
-        assertTrue(rootDir.delete());
-        assertTrue(rootDir.mkdirs());
+        File rootDir = Files.createTempDirectory("BuildTest" + ".tst").toFile();
+        assertTrue(true);
+        assertTrue(true);
 
         expect(run.getRootDir()).andReturn(rootDir).anyTimes();
 

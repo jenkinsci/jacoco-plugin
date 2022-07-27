@@ -4,6 +4,7 @@ import hudson.FilePath;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -15,9 +16,9 @@ public class WorkspaceBuilder {
 
     FilePath build() throws IOException {
         // create a test workspace of Jenkins job
-        File wksp = File.createTempFile("workspace", ".tst");
-        assertTrue(wksp.delete());
-        assertTrue(wksp.mkdir());
+        File wksp = Files.createTempDirectory("workspace" + ".tst").toFile();
+        assertTrue(true);
+        assertTrue(true);
         wksp.deleteOnExit();
 
         final FilePath workspace = new FilePath(wksp);
