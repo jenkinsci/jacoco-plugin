@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -276,9 +277,8 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 	@Test
 	public void testLocateReports() throws Exception {
 		// Create a temporary workspace in the system
-		File w = File.createTempFile("workspace", ".test");
-		assertTrue(w.delete());
-		assertTrue(w.mkdir());
+		File w = Files.createTempDirectory("workspace.test").toFile();
+		assertNotNull(w);
 		w.deleteOnExit();
 		FilePath workspace = new FilePath(w);
 
@@ -342,9 +342,8 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 			return null;
 		});
 
-        File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
-        assertTrue(dir.delete());
-        assertTrue(dir.mkdirs());
+		File dir = Files.createTempDirectory("JaCoCoPublisherTest.test").toFile();
+		assertNotNull(dir);
 
         try {
 			assertTrue(new File(dir, "jacoco/classes").mkdirs());
@@ -479,9 +478,12 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		assertTrue(new File(run.getRootDir(), "jacoco/classes/sub/Test2.class").exists());
 		assertTrue(new File(run.getRootDir(), "jacoco/classes/Test2.class").exists()); // will be copied accidentally
 
-		assertTrue(logContent.toString().contains("WARNING: You are using directory patterns with trailing /, /* or /**"));
-		assertTrue(logContent.toString().replace("\\","/").contains("tst/classes 2 files"));
-		assertTrue(logContent.toString().replace("\\","/").contains("tst/classes/sub 1 files"));
+		assertTrue("Having: " + logContent,
+				logContent.toString().contains("WARNING: You are using directory patterns with trailing /, /* or /**"));
+		assertTrue("Having: " + logContent,
+				logContent.toString().replace("\\","/").contains("/classes 2 files"));
+		assertTrue("Having: " + logContent,
+				logContent.toString().replace("\\","/").contains("/classes/sub 1 files"));
 		verify(taskListener, run);
 
 		// clean up afterwards
@@ -509,9 +511,9 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 			return null;
 		});
 
-		File dir = File.createTempFile("JaCoCoPublisherTest", ".tst");
-		assertTrue(dir.delete());
-		assertTrue(dir.mkdirs());
+		File dir = Files.createTempDirectory("JaCoCoPublisherTest.test").toFile();
+		assertNotNull(dir);
+
 		assertTrue(new File(dir, "jacoco/classes").mkdirs());
 		FilePath filePath = new FilePath(dir);
 

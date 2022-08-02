@@ -8,6 +8,7 @@ import hudson.model.TaskListener;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
@@ -20,6 +21,7 @@ import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.mock;
 import static org.easymock.EasyMock.niceMock;
 import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class RunBuilder {
@@ -34,9 +36,8 @@ public class RunBuilder {
         expect(run.getParent()).andReturn(null).anyTimes();
 
         // create a test build directory
-        File rootDir = File.createTempFile("BuildTest", ".tst");
-        assertTrue(rootDir.delete());
-        assertTrue(rootDir.mkdirs());
+		File rootDir = Files.createTempDirectory("BuildTest.test").toFile();
+		assertNotNull(rootDir);
 
         expect(run.getRootDir()).andReturn(rootDir).anyTimes();
 
