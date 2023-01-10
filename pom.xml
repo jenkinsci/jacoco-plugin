@@ -121,7 +121,7 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>dashboard-view</artifactId>
-            <version>2.18.1</version>
+            <version>2.466.vdfefd95a_b_f8d</version>
             <optional>true</optional>
         </dependency>
         <dependency>
