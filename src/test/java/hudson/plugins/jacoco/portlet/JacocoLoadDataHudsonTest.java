@@ -18,12 +18,6 @@ import java.io.InputStream;
  * @author Robert Sandell &lt;robert.sandell@sonyericsson.com&gt;
  * @author Mauro Durante Junior (Mauro.Durantejunior@sonyericsson.com)
  */
-// See e.g. https://issues.jenkins-ci.org/browse/JENKINS-55179
-@org.powermock.core.classloader.annotations.PowerMockIgnore({
-        "com.sun.org.apache.xerces.*",
-        "javax.xml.*",
-        "org.xml.*",
-        "javax.management.*"})
 public class JacocoLoadDataHudsonTest extends HudsonTestCase {
 
     /**
