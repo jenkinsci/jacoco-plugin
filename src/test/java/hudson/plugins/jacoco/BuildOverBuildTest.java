@@ -6,31 +6,21 @@ import hudson.plugins.jacoco.portlet.bean.JacocoDeltaCoverageResultSummary;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.MockedStatic;
 
 import java.io.PrintStream;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(JacocoDeltaCoverageResultSummary.class)
-// See e.g. https://issues.jenkins-ci.org/browse/JENKINS-55179
-@org.powermock.core.classloader.annotations.PowerMockIgnore({
-        "com.sun.org.apache.xerces.*",
-        "javax.xml.*",
-        "org.xml.*",
-        "javax.management.*"})
 public class BuildOverBuildTest {
 
     private JacocoDeltaCoverageResultSummary jacocoDeltaCoverageResultSummary_1, jacocoDeltaCoverageResultSummary_2;
     private JacocoHealthReportDeltaThresholds deltaHealthThresholds;
     //private JacocoHealthReportThresholds healthThresholds;
 
-    private Run run = PowerMock.createNiceMock(Run.class);
+    private Run run = mock(Run.class);
     private final PrintStream logger = System.out;
 
     @Before
@@ -64,19 +54,18 @@ public class BuildOverBuildTest {
     @Test
     public void shouldPassIfNegativeMetricIsWithinThresholdAndOtherMetricesArePositiveAndAboveThreshold(){
 
-        PowerMock.mockStatic(JacocoDeltaCoverageResultSummary.class);
-        //noinspection ConstantConditions
-        expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_1);
+        try (MockedStatic<JacocoDeltaCoverageResultSummary> staticJacocoDeltaCoverageResultSummary =
+                mockStatic(JacocoDeltaCoverageResultSummary.class)) {
+            staticJacocoDeltaCoverageResultSummary
+                    .when(() -> JacocoDeltaCoverageResultSummary.build(any()))
+                    .thenReturn(jacocoDeltaCoverageResultSummary_1);
 
-        PowerMock.replay(JacocoDeltaCoverageResultSummary.class);
+            JacocoPublisher jacocoPublisher = new JacocoPublisher();
+            jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
+            Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger);
 
-        JacocoPublisher jacocoPublisher = new JacocoPublisher();
-        jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
-        Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger);
-
-        PowerMock.verify(JacocoDeltaCoverageResultSummary.class);
-
-        Assert.assertEquals("Delta coverage drop is lesser than delta health threshold values", Result.SUCCESS, result);
+            Assert.assertEquals("Delta coverage drop is lesser than delta health threshold values", Result.SUCCESS, result);
+        }
 
     }
 
@@ -84,24 +73,20 @@ public class BuildOverBuildTest {
     @Test
     public void checkBuildOverBuildSuccessTest(){
 
-        PowerMock.mockStatic(JacocoDeltaCoverageResultSummary.class);
-        //noinspection ConstantConditions
-        expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_2);
-        //noinspection ConstantConditions
-        expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary_1);
+        try (MockedStatic<JacocoDeltaCoverageResultSummary> staticJacocoDeltaCoverageResultSummary = mockStatic(JacocoDeltaCoverageResultSummary.class)) {
+            staticJacocoDeltaCoverageResultSummary
+                    .when(() -> JacocoDeltaCoverageResultSummary.build(any()))
+                    .thenReturn(jacocoDeltaCoverageResultSummary_2)
+                    .thenReturn(jacocoDeltaCoverageResultSummary_1);
+            JacocoPublisher jacocoPublisher = new JacocoPublisher();
+            jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
+            Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger); // check for first test case: delta coverage < delta threshold
 
-        PowerMock.replay(JacocoDeltaCoverageResultSummary.class);
+            Assert.assertEquals("Delta coverage is lesser than delta health threshold values", Result.SUCCESS, result);
 
-        JacocoPublisher jacocoPublisher = new JacocoPublisher();
-        jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
-        Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger); // check for first test case: delta coverage < delta threshold
-
-        Assert.assertEquals("Delta coverage is lesser than delta health threshold values", Result.SUCCESS, result);
-
-        result = jacocoPublisher.checkBuildOverBuildResult(run, logger); // check for second test case: delta coverage > delta threshold but overall coverage better than last successful build
-        Assert.assertEquals("Delta coverage is greater than delta health threshold values but overall coverage is better than last successful build's coverage", Result.SUCCESS, result);
-
-        PowerMock.verify(JacocoDeltaCoverageResultSummary.class);
+            result = jacocoPublisher.checkBuildOverBuildResult(run, logger); // check for second test case: delta coverage > delta threshold but overall coverage better than last successful build
+            Assert.assertEquals("Delta coverage is greater than delta health threshold values but overall coverage is better than last successful build's coverage", Result.SUCCESS, result);
+        }
 
     }
 
@@ -120,18 +105,16 @@ public class BuildOverBuildTest {
         jacocoDeltaCoverageResultSummary.setBranchCoverage(0f);
         jacocoDeltaCoverageResultSummary.setComplexityCoverage(-2.678f);
 
-        PowerMock.mockStatic(JacocoDeltaCoverageResultSummary.class);
-        //noinspection ConstantConditions
-        expect(JacocoDeltaCoverageResultSummary.build(anyObject(Run.class))).andReturn(jacocoDeltaCoverageResultSummary);
+        try (MockedStatic<JacocoDeltaCoverageResultSummary> staticJacocoDeltaCoverageResultSummary = mockStatic(JacocoDeltaCoverageResultSummary.class)) {
+            staticJacocoDeltaCoverageResultSummary
+                    .when(() -> JacocoDeltaCoverageResultSummary.build(any()))
+                    .thenReturn(jacocoDeltaCoverageResultSummary);
 
-        PowerMock.replay(JacocoDeltaCoverageResultSummary.class);
+            JacocoPublisher jacocoPublisher = new JacocoPublisher();
+            jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
+            Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger);
 
-        JacocoPublisher jacocoPublisher = new JacocoPublisher();
-        jacocoPublisher.deltaHealthReport = deltaHealthThresholds;
-        Result result = jacocoPublisher.checkBuildOverBuildResult(run, logger);
-
-        PowerMock.verify(JacocoDeltaCoverageResultSummary.class);
-        Assert.assertEquals("Delta coverage drop is greater than delta health threshold values", Result.FAILURE, result);
-
+            Assert.assertEquals("Delta coverage drop is greater than delta health threshold values", Result.FAILURE, result);
+        }
     }
 }

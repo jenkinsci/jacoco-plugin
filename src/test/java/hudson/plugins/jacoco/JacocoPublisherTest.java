@@ -29,10 +29,6 @@ import org.jacoco.core.internal.analysis.ClassCoverageImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.easymock.PowerMock;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -49,14 +45,6 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(JacocoPublisher.class)
-// See e.g. https://issues.jenkins-ci.org/browse/JENKINS-55179
-@org.powermock.core.classloader.annotations.PowerMockIgnore({
-		"com.sun.org.apache.xerces.*",
-		"javax.xml.*",
-		"org.xml.*",
-		"javax.management.*"})
 public class JacocoPublisherTest extends AbstractJacocoTestBase {
     private final TaskListener taskListener = niceMock(TaskListener.class);
     private final Launcher launcher = niceMock(Launcher.class);
@@ -496,8 +484,8 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 	public void testPerformWithBuildOverBuild() throws IOException, InterruptedException {
 
 		// expect
-		final Run run = PowerMock.createNiceMock(Run.class);
-		final Job job = PowerMock.createNiceMock(Job.class);
+		final Run run = niceMock(Run.class);
+		final Job job = niceMock(Job.class);
 
 		expect(run.getResult()).andReturn(Result.SUCCESS).anyTimes();
 		expect(run.getEnvironment(taskListener)).andReturn(new EnvVars()).anyTimes();
@@ -522,7 +510,7 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 			expect(run.getParent()).andReturn(job).anyTimes();
 			expect(job.getLastSuccessfulBuild()).andReturn(run).anyTimes();
 
-			PowerMock.replay(taskListener, run, job);
+			replay(taskListener, run, job);
 
 			// execute
 			//noinspection deprecation
@@ -540,6 +528,6 @@ public class JacocoPublisherTest extends AbstractJacocoTestBase {
 		}
 
 		// verify
-		PowerMock.verify(taskListener, run, job);
+		verify(taskListener, run, job);
 	}
 }

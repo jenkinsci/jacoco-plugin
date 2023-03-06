@@ -6,7 +6,7 @@ import org.kohsuke.stapler.export.Exported;
 import org.kohsuke.stapler.export.ExportedBean;
 
 /**
- * Represents <tt>x/y</tt> where x={@link #missed} and y={@link #covered}.
+ * Represents {@code x/y} where x={@link #missed} and y={@link #covered}.
  * 
  * @author Kohsuke Kawaguchi
  * @author Jonathan Fuerth

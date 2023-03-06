@@ -33,23 +33,24 @@ THE SOFTWARE.
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.19</version>
+        <version>4.55</version>
+        <relativePath />
     </parent>
 
     <artifactId>jacoco</artifactId>
-    <version>3.3.3-SNAPSHOT</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
 
     <name>Jenkins JaCoCo plugin</name>
-    <url>https://github.com/jenkinsci/jacoco-plugin</url>
+    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
     <properties>
-        <java.level>8</java.level>
+        <revision>3.3.3</revision>
+        <changelist>-SNAPSHOT</changelist>
         <jacoco.version>0.8.8</jacoco.version>
         <!-- see https://www.jenkins.io/changelog-stable/ for changelog of the LTS releases -->
-        <jenkins.version>2.277.1</jenkins.version>
-        <!--  until the plugin-pom picks up a newer version -->
-        <jenkins-test-harness.version>1589.vc23fca066d5c</jenkins-test-harness.version>
+        <jenkins.version>2.361.4</jenkins.version>
+        <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <!-- Do not fail if tests are run without argLine -->
         <argLine />
     </properties>
@@ -104,10 +105,10 @@ THE SOFTWARE.
     </developers>
 
     <scm>
-        <connection>scm:git:https://github.com/jenkinsci/jacoco-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:jenkinsci/jacoco-plugin.git</developerConnection>
-        <url>https://github.com/jenkinsci/jacoco-plugin</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+        <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+        <url>https://github.com/${gitHubRepo}</url>
+        <tag>${scmTag}</tag>
     </scm>
 
     <distributionManagement>
@@ -117,11 +118,22 @@ THE SOFTWARE.
         </repository>
     </distributionManagement>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>io.jenkins.tools.bom</groupId>
+                <artifactId>bom-2.361.x</artifactId>
+                <version>1836.vfe602c266c05</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
             <artifactId>dashboard-view</artifactId>
-            <version>2.18.1</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -132,25 +144,19 @@ THE SOFTWARE.
         <dependency>
             <groupId>org.easymock</groupId>
             <artifactId>easymock</artifactId>
-            <version>4.3</version>
+            <version>5.1.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-easymock</artifactId>
-            <version>${powermock.version}</version>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
             <scope>test</scope>
         </dependency>
         
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-utils</artifactId>
-            <version>3.2.1</version>
+            <version>3.5.1</version>
         </dependency>
         
     </dependencies>
@@ -323,21 +329,6 @@ THE SOFTWARE.
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.jenkins-ci.tools</groupId>
-                <artifactId>maven-hpi-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>hpi</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <maskClasses>org.objectweb.asm.</maskClasses>
-                </configuration>
             </plugin>
         </plugins>
     </build>
