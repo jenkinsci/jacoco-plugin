@@ -11,10 +11,10 @@ public class AggregatedReportTest {
     public void testSetFailed() throws Exception {
         AggregatedReport<PackageReport,ClassReport,MethodReport> report = new AggregatedReport<PackageReport,ClassReport,MethodReport>() {
         };
-        
+
         assertEquals(0, report.getChildren().size());
         assertFalse(report.hasChildren());
-        
+
         MethodReport child = new MethodReport();
         child.setName("testmethod");
         report.add(child);
@@ -22,25 +22,29 @@ public class AggregatedReportTest {
         assertTrue(report.hasChildren());
         assertFalse(report.hasChildrenClassCoverage());
         assertFalse(report.hasChildrenLineCoverage());
-        
+
         report.setParent(new PackageReport());
         assertNotNull(report.getParent());
-        
+
         assertNull(report.getDynamic("test", null, null));
         assertNotNull(report.getDynamic("testmethod", null, null));
-        
+
         report.setFailed();
-        
+
         child.getLineCoverage().accumulate(0, 3);
         assertTrue(report.hasChildrenLineCoverage());
 
         child.getClassCoverage().accumulate(0, 3);
         assertFalse("For method children it's always false", report.hasChildrenClassCoverage());
+
+        report.setName("myname/&:<>2%;");
+        assertEquals("myname/____2__", report.getName());
+        assertEquals("myname/____2__", report.getDisplayName());
     }
-    
+
     @Test
     public void testClassCoverage() {
-        AggregatedReport<CoverageReport,PackageReport,ClassReport> packageReport = 
+        AggregatedReport<CoverageReport,PackageReport,ClassReport> packageReport =
                 new AggregatedReport<CoverageReport, PackageReport, ClassReport>() {
                 };
 
@@ -52,8 +56,13 @@ public class AggregatedReportTest {
         assertFalse(packageReport.hasChildrenLineCoverage());
 
         classChild.getClassCoverage().accumulate(0, 3);
-        
+
         assertTrue(packageReport.hasChildrenClassCoverage());
         assertFalse(packageReport.hasChildrenLineCoverage());
+
+        classChild = new ClassReport();
+        classChild.setName("testclass/pkg");
+        packageReport.add(classChild);
+        assertEquals("testclass.pkg", classChild.getName());
     }
 }

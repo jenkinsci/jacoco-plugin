@@ -13,9 +13,9 @@ import org.jacoco.core.analysis.IMethodCoverage;
  */
 //AggregatedReport<PackageReport,ClassReport,MethodReport>  -  AbstractReport<ClassReport,MethodReport>
 public final class MethodReport extends AggregatedReport<ClassReport,MethodReport, SourceFileReport> {
-	
+
 	private IMethodCoverage methodCov;
-	
+
 	@Override
 	public String printFourCoverageColumns() {
         StringBuilder buf = new StringBuilder();
@@ -32,10 +32,10 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
         //logger.log(Level.INFO, "Printing Ratio cells within MethodReport.");
 		return buf.toString();
 	}
-	
+
 	@Override
 	public void add(SourceFileReport child) {
-    	String newChildName = child.getName().replaceAll(this.getName() + ".", ""); 
+    	String newChildName = child.getName().replace(this.getName() + ".", "");
     	child.setName(newChildName);
         getChildren().put(child.getName(), child);
         //logger.log(Level.INFO, "SourceFileReport");
@@ -45,11 +45,11 @@ public final class MethodReport extends AggregatedReport<ClassReport,MethodRepor
     public boolean hasClassCoverage() {
         return false;
     }
-	
+
 	public void setSrcFileInfo(IMethodCoverage methodCov) {
 		this.methodCov = methodCov;
 	}
-	
+
     public void printHighlightedSrcFile(Writer output) {
         new SourceAnnotator(getParent().getSourceFilePath()).printHighlightedSrcFile(methodCov,output);
    	}

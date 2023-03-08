@@ -17,7 +17,7 @@ public class AbstractReportTest {
             // abstract class but not abstract method to override
         };
         assertNotNull(report);
-        
+
         report.setParent(new ClassReport());
         report.getParent().setParent(new PackageReport());
 
@@ -33,7 +33,11 @@ public class AbstractReportTest {
         report.setName("testname");
         assertEquals("testname", report.getName());
         assertEquals("testname", report.getDisplayName());
-        
+
+        report.setName("myname/&:<>2%;");
+        assertEquals("myname/____2__", report.getName());
+        assertEquals("myname/____2__", report.getDisplayName());
+
         // TODO: cause NPEs, did not find out how to test this without a full jenkins-test
         //assertNull(report.getPreviousResult());
         //CoverageElement cv = new CoverageElement();
