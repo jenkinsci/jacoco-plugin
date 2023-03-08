@@ -31,7 +31,18 @@ public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = sanitizeName(name);
+    }
+
+    protected static String sanitizeName(String name) {
+        // sanitize names contained in .class files
+        return name
+                .replace(':', '_')
+                .replace(';', '_')
+                .replace('&', '_')
+                .replace('%', '_')
+                .replace('<', '_')
+                .replace('>', '_');
     }
 
     public String getDisplayName() {
@@ -72,5 +83,5 @@ public abstract class AbstractReport<PARENT extends AggregatedReport<?,PARENT,?>
     public Run<?,?> getBuild() {
     	return parent.getBuild();
     }
-    
+
 }
