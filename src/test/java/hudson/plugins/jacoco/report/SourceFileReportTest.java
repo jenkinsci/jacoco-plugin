@@ -12,5 +12,10 @@ public class SourceFileReportTest {
         SourceFileReport report = new SourceFileReport();
         report.setName("myname");
         assertEquals("myname", report.getName());
+        report.setName("myname/2");
+        assertEquals("myname.2", report.getName());
+        report.setName("myname/&:<>2%;");
+        assertEquals("myname.____2__", report.getName());
+        assertEquals("myname.____2__", report.getDisplayName());
     }
 }
