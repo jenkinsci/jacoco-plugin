@@ -79,7 +79,7 @@ See https://jenkinsci.github.io/maven-hpi-plugin/ for details.
 
 Rolling a release requires you to set up a few additional things:
 
-* Run with Java 8 to not push code compiled with a newer version of Java
+* Run with Java 11 to not push code compiled with a newer version of Java
 * Github authentication should work via SSH, username used should be "git",
 it should use one of the local private SSH keys which should be uploaded to 
 Github, see https://github.com/settings/keys, test via
@@ -93,6 +93,7 @@ You should get back a line containing `You've successfully authenticated`
 for details
 * The mvn-calls below should not require "username" or "password", if they
 do ask for it, then some setup is incorrect
+* Apache Maven 3.8.1 or newer is required
 * Check that all tests pass ("mvn findbugs:check" and "mvn checkstyle::check" report 
 violations but are not blocking releases for now...)
 
@@ -120,6 +121,7 @@ violations but are not blocking releases for now...)
 
 * Release should be visible immediately at 
 https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/jacoco/
+
 * Release is published after some time at 
 https://mvnrepository.com/artifact/org.jenkins-ci.plugins/jacoco?repo=jenkins-releases
  
