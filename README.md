@@ -18,6 +18,25 @@ More information can be found on the Wiki page https://wiki.jenkins-ci.org/displ
 Note: Version 2.0.0 and higher requires using JaCoCo 0.7.5 or newer, if your projects still use JaCoCo 0.7.4, 
 the plugin will not display any code-coverage numbers any more! In this case please use version 1.0.19 until you can update jacoco in your codebase.
 
+Using as part of a pipeline via Jenkinsfile
+===========================================
+
+The following is an example snippet that can be used in a `Jenkinsfile`
+
+```
+    post {
+        success {
+            jacoco(
+                execPattern: '**/build/jacoco/*.exec',
+                classPattern: '**/build/classes/java/main',
+                sourcePattern: '**/src/main'
+            )
+        }
+    }
+```
+
+See https://www.jenkins.io/doc/pipeline/steps/jacoco/ for the list of available options.
+
 Looking for ways to contribute?
 ===============================
 
