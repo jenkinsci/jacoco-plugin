@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import javax.servlet.ServletException;
 
 import hudson.model.Run;
@@ -59,7 +59,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 	 * @param action Jacoco build action
 	 * @param executionFileLoader execution file loader owning bundle coverage
 	 */
-	public CoverageReport(JacocoBuildAction action, @Nonnull ExecutionFileLoader executionFileLoader ) {
+	public CoverageReport(JacocoBuildAction action, @NonNull ExecutionFileLoader executionFileLoader ) {
 		this(action);
 		action.getLogger().println("[JaCoCo plugin] Loading packages..");
 
