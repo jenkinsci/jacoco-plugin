@@ -11,7 +11,7 @@ import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 
 /**
  * View column that shows the code line coverage percentage
@@ -40,7 +40,7 @@ public class JaCoCoColumn extends AbstractJaCoCoCoverageColumn {
 	private static class DescriptorImpl extends ListViewColumnDescriptor {
 		@Override
 		public ListViewColumn newInstance(final StaplerRequest req,
-										  @Nonnull final JSONObject formData) {
+										  @NonNull final JSONObject formData) {
 			return new JaCoCoColumn();
 		}
 
@@ -49,7 +49,7 @@ public class JaCoCoColumn extends AbstractJaCoCoCoverageColumn {
 			return false;
 		}
 
-		@Nonnull
+		@NonNull
 		@Override
 		public String getDisplayName() {
 			return "JaCoCo Line Coverage";
