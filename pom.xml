@@ -47,7 +47,7 @@ THE SOFTWARE.
     <properties>
         <revision>3.3.4</revision>
         <changelist>-SNAPSHOT</changelist>
-        <jacoco.version>0.8.8</jacoco.version>
+        <jacoco.version>0.8.10</jacoco.version>
         <!-- see https://www.jenkins.io/changelog-stable/ for changelog of the LTS releases -->
         <jenkins.version>2.361.4</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
