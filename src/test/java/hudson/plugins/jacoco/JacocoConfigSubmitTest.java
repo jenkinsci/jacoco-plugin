@@ -36,7 +36,7 @@ public class JacocoConfigSubmitTest /*extends HudsonTestCase*/ {
         HtmlForm f = p.getFormByName("config");
 
         f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
-        f.getInputByName("jacoco.includes").setValueAttribute("***");
+        f.getInputByName("jacoco.includes").setValue("***");
         submit(f);
 
         JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
@@ -54,12 +54,12 @@ public class JacocoConfigSubmitTest /*extends HudsonTestCase*/ {
         HtmlForm f = p.getFormByName("config");
 
         f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
-        f.getInputByName("jacocoHealthReports.maxClass").setValueAttribute("");
-        f.getInputByName("jacocoHealthReports.maxMethod").setValueAttribute("");
-        f.getInputByName("jacocoHealthReports.maxLine").setValueAttribute("");
-        f.getInputByName("jacocoHealthReports.maxBranch").setValueAttribute("");
-        f.getInputByName("jacocoHealthReports.maxInstruction").setValueAttribute("");
-        f.getInputByName("jacocoHealthReports.maxComplexity").setValueAttribute("");
+        f.getInputByName("jacocoHealthReports.maxClass").setValue("");
+        f.getInputByName("jacocoHealthReports.maxMethod").setValue("");
+        f.getInputByName("jacocoHealthReports.maxLine").setValue("");
+        f.getInputByName("jacocoHealthReports.maxBranch").setValue("");
+        f.getInputByName("jacocoHealthReports.maxInstruction").setValue("");
+        f.getInputByName("jacocoHealthReports.maxComplexity").setValue("");
         submit(f);
 
         JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
@@ -83,12 +83,12 @@ public class JacocoConfigSubmitTest /*extends HudsonTestCase*/ {
         HtmlForm f = p.getFormByName("config");
 
         f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
-        f.getInputByName("jacocoHealthReports.maxClass").setValueAttribute("8");
-        f.getInputByName("jacocoHealthReports.maxMethod").setValueAttribute("9");
-        f.getInputByName("jacocoHealthReports.maxLine").setValueAttribute("10");
-        f.getInputByName("jacocoHealthReports.maxBranch").setValueAttribute("11");
-        f.getInputByName("jacocoHealthReports.maxInstruction").setValueAttribute("12");
-        f.getInputByName("jacocoHealthReports.maxComplexity").setValueAttribute("13");
+        f.getInputByName("jacocoHealthReports.maxClass").setValue("8");
+        f.getInputByName("jacocoHealthReports.maxMethod").setValue("9");
+        f.getInputByName("jacocoHealthReports.maxLine").setValue("10");
+        f.getInputByName("jacocoHealthReports.maxBranch").setValue("11");
+        f.getInputByName("jacocoHealthReports.maxInstruction").setValue("12");
+        f.getInputByName("jacocoHealthReports.maxComplexity").setValue("13");
         submit(f);
 
         JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
@@ -112,12 +112,12 @@ public class JacocoConfigSubmitTest /*extends HudsonTestCase*/ {
         HtmlForm f = p.getFormByName("config");
 
         f.getInputByName("hudson-plugins-jacoco-JacocoPublisher").setChecked(true);
-        f.getInputByName("jacocoHealthReports.minClass").setValueAttribute("1");
-        f.getInputByName("jacocoHealthReports.minMethod").setValueAttribute("2");
-        f.getInputByName("jacocoHealthReports.minLine").setValueAttribute("3");
-        f.getInputByName("jacocoHealthReports.minBranch").setValueAttribute("11");
-        f.getInputByName("jacocoHealthReports.minInstruction").setValueAttribute("12");
-        f.getInputByName("jacocoHealthReports.minComplexity").setValueAttribute("13");
+        f.getInputByName("jacocoHealthReports.minClass").setValue("1");
+        f.getInputByName("jacocoHealthReports.minMethod").setValue("2");
+        f.getInputByName("jacocoHealthReports.minLine").setValue("3");
+        f.getInputByName("jacocoHealthReports.minBranch").setValue("11");
+        f.getInputByName("jacocoHealthReports.minInstruction").setValue("12");
+        f.getInputByName("jacocoHealthReports.minComplexity").setValue("13");
         submit(f);
 
         JacocoPublisher publisher = (JacocoPublisher) fp.getPublisher(JacocoPublisher.DESCRIPTOR);
