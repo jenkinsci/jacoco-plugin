@@ -40,6 +40,7 @@ public class BranchCoverageColumnTest {
 		EasyMock.replay(context);
 
 		final Job<?, ?> mockJob = new MyJob("externaljob") {
+			@SuppressWarnings("deprecation") // avoid TransientActionFactory
 			@Override
 			@Exported
 			@QuickSilver
@@ -49,7 +50,7 @@ public class BranchCoverageColumnTest {
 					Map<CoverageElement.Type, Coverage> ratios = new HashMap<>();
 					ratios.put(Type.BRANCH, new Coverage(100, 200));
 					newBuild.addAction(new JacocoBuildAction(ratios, null, StreamTaskListener.fromStdout(), null, null));
-					assertEquals(1, newBuild.getAllActions().size());
+					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
 				} catch (IOException e) {
 					throw new IllegalStateException(e);

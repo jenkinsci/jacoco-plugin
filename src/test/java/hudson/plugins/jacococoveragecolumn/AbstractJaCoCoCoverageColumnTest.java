@@ -1,5 +1,6 @@
 package hudson.plugins.jacococoveragecolumn;
 
+import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.Descriptor.FormException;
 import hudson.model.Job;
@@ -73,6 +74,7 @@ public class AbstractJaCoCoCoverageColumnTest {
 		EasyMock.replay(context);
 
 		final Job<?, ?> mockJob = new MyJob("externaljob") {
+			@SuppressWarnings("deprecation") // avoid TransientActionFactory
 			@Override
 			@Exported
 			@QuickSilver
@@ -80,7 +82,7 @@ public class AbstractJaCoCoCoverageColumnTest {
 				try {
 				    MyRun newBuild = newBuild();
 					newBuild.addAction(new JacocoBuildAction(null, null, StreamTaskListener.fromStdout(), null, null));
-					assertEquals(1, newBuild.getAllActions().size());
+					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
 				} catch (IOException e) {
 					throw new IllegalStateException(e);
@@ -249,6 +251,17 @@ public class AbstractJaCoCoCoverageColumnTest {
 
         public MyRun(MyJob job) throws IOException {
             super(job);
+        }
+
+        @SuppressWarnings("deprecation") // avoid TransientActionFactory
+        @Override
+        public <T extends Action> T getAction(Class<T> type) {
+            for (Action a : getActions()) {
+                if (type.isInstance(a)) {
+                    return type.cast(a);
+                }
+            }
+            return null;
         }
 	}
 }
