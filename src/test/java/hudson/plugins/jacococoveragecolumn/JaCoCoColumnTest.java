@@ -42,13 +42,14 @@ public class JaCoCoColumnTest {
 			@Override
 			@Exported
 			@QuickSilver
+			@SuppressWarnings("deprecation") // avoid TransientActionFactory
 			public MyRun getLastSuccessfulBuild() {
 				try {
 				    MyRun newBuild = newBuild();
 					Map<Type, Coverage> ratios = new HashMap<>();
 					ratios.put(Type.LINE, new Coverage(200, 100));
 					newBuild.addAction(new JacocoBuildAction(ratios, null, StreamTaskListener.fromStdout(), null, null));
-					assertEquals(1, newBuild.getAllActions().size());
+					assertEquals(1, newBuild.getActions().size());
 					return newBuild;
 				} catch (IOException e) {
 					throw new IllegalStateException(e);
