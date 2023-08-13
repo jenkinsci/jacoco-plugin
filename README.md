@@ -128,13 +128,13 @@ violations but are not blocking releases for now...)
 
 * Prepare the release 
   
-  `mvn release:prepare -DskipTests`
+  `mvn release:prepare -DskipTests -Dmaven.test.skip=true`
 
   This will ask for the release numbers and the tag in the source control system.
 
 * Roll the release 
   
-  `mvn release:perform -DskipTests -Darguments="-DskipTests"`
+  `mvn release:perform -DskipTests -Darguments="-DskipTests" -Dmaven.test.skip=true`
 
   This should perform the actual uploads of the resulting binary packages.
 
