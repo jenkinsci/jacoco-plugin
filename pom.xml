@@ -49,7 +49,7 @@ THE SOFTWARE.
         <changelist>-SNAPSHOT</changelist>
         <jacoco.version>0.8.10</jacoco.version>
         <!-- see https://www.jenkins.io/changelog-stable/ for changelog of the LTS releases -->
-        <jenkins.version>2.361.4</jenkins.version>
+        <jenkins.version>2.401.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <!-- Do not fail if tests are run without argLine -->
         <argLine />
@@ -122,8 +122,8 @@ THE SOFTWARE.
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.361.x</artifactId>
-                <version>1836.vfe602c266c05</version>
+                <artifactId>bom-2.401.x</artifactId>
+                <version>2465.va_e76ed7b_3061</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -140,16 +140,6 @@ THE SOFTWARE.
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
             <version>${jacoco.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>9.5</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-tree</artifactId>
-            <version>9.5</version>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
