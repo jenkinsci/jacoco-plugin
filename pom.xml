@@ -38,14 +38,14 @@ THE SOFTWARE.
     </parent>
 
     <artifactId>jacoco</artifactId>
-    <version>3.3.5</version>
+    <version>${revision}${changelist}</version>
     <packaging>hpi</packaging>
 
     <name>Jenkins JaCoCo plugin</name>
     <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
 
     <properties>
-        <revision>3.3.5</revision>
+        <revision>3.3.6</revision>
         <changelist>-SNAPSHOT</changelist>
         <jacoco.version>0.8.10</jacoco.version>
         <!-- see https://www.jenkins.io/changelog-stable/ for changelog of the LTS releases -->
