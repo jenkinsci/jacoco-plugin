@@ -138,7 +138,7 @@ violations but are not blocking releases for now...)
 
   This should perform the actual uploads of the resulting binary packages.
 
-* Update release notes at https://github.com/jenkinsci/jacoco-plugin/releases
+* Update release notes at https://github.com/jenkinsci/jacoco-plugin/tags
 
 * Release should be visible immediately at 
 https://repo.jenkins-ci.org/releases/org/jenkins-ci/plugins/jacoco/
