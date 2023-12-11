@@ -598,6 +598,11 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
 
         final PrintStream logger = taskListener.getLogger();
         logger.println("[JaCoCo plugin] Collecting JaCoCo coverage data...");
+        logger.println("Class: " + org.objectweb.asm.Type.class);
+        logger.println("Loader: " + org.objectweb.asm.Type.class.getClassLoader());
+        logger.println("URL: " + org.objectweb.asm.Type.class.getClassLoader().getResource("org.objectweb.asm.Type.class"));
+        logger.println("Opcodes: " + org.objectweb.asm.Opcodes.V22);
+
         Jenkins instance = Jenkins.getInstanceOrNull();
         if (instance != null) {
             Plugin plugin = instance.getPlugin("jacoco");
