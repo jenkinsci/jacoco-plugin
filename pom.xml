@@ -49,7 +49,7 @@ THE SOFTWARE.
         <changelist>-SNAPSHOT</changelist>
         <jacoco.version>0.8.11</jacoco.version>
         <!-- see https://www.jenkins.io/changelog-stable/ for changelog of the LTS releases -->
-        <jenkins.version>2.401.3</jenkins.version>
+        <jenkins.version>2.426.3</jenkins.version>
         <gitHubRepo>jenkinsci/${project.artifactId}-plugin</gitHubRepo>
         <!-- Do not fail if tests are run without argLine -->
         <argLine />
@@ -108,7 +108,7 @@ THE SOFTWARE.
         <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
         <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
         <url>https://github.com/${gitHubRepo}</url>
-        <tag>jacoco-3.3.5</tag>
+        <tag>${scmTag}</tag>
     </scm>
 
     <distributionManagement>
@@ -122,8 +122,8 @@ THE SOFTWARE.
         <dependencies>
             <dependency>
                 <groupId>io.jenkins.tools.bom</groupId>
-                <artifactId>bom-2.401.x</artifactId>
-                <version>2465.va_e76ed7b_3061</version>
+                <artifactId>bom-2.426.x</artifactId>
+                <version>2884.vc36b_64ce114a_</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -140,21 +140,33 @@ THE SOFTWARE.
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.report</artifactId> <!-- we're done with ReportMojo now, so we don't need to depend on the maven plugin anymore -->
             <version>${jacoco.version}</version>
+            <exclusions>
+                <!-- Provided by asm-api plugin -->
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-analysis</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-commons</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-tree</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.ow2.asm</groupId>
+                    <artifactId>asm-util</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm</artifactId>
-            <version>9.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-commons</artifactId>
-            <version>9.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.ow2.asm</groupId>
-            <artifactId>asm-tree</artifactId>
-            <version>9.6</version>
+            <groupId>io.jenkins.plugins</groupId>
+            <artifactId>asm-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.easymock</groupId>
