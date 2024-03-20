@@ -10,8 +10,8 @@ jacoco-plugin
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/jacoco.svg?color=blue)](https://plugins.jenkins.io/jacoco)
 
 
-A plugin for Jenkins to capture and visualize code coverage testing results for projects using the 
-JaCoCo for code-coverage analysis.
+A plugin for Jenkins to capture and visualize code coverage testing results for projects using 
+[JaCoCo](https://www.eclemma.org/jacoco/) for code-coverage analysis.
 
 More information can be found on the Wiki page https://wiki.jenkins-ci.org/display/JENKINS/JaCoCo+Plugin
 
