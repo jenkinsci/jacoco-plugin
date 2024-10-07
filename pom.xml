@@ -33,7 +33,7 @@ THE SOFTWARE.
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>4.70</version>
+        <version>4.88</version>
         <relativePath />
     </parent>
 
@@ -347,5 +347,3 @@ THE SOFTWARE.
         </plugins>
     </build>
 </project>
-
-
