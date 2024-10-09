@@ -57,9 +57,10 @@ public class BranchCoverageColumnTest {
 				}
 			}
 
-			@Override
-			protected synchronized void saveNextBuildNumber() {
-			}
+            @Override
+            public int assignBuildNumber() throws IOException {
+                return nextBuildNumber++;
+            }
 		};
 		assertEquals("66.67", sut.getPercent(mockJob));
 

@@ -89,9 +89,10 @@ public class AbstractJaCoCoCoverageColumnTest {
 				}
 			}
 
-			@Override
-			protected synchronized void saveNextBuildNumber() {
-			}
+            @Override
+            public int assignBuildNumber() throws IOException {
+                return nextBuildNumber++;
+            }
 		};
 		assertTrue(abstractJaCoCoCoverageColumn.hasCoverage(mockJob));
 		assertEquals("66.67", abstractJaCoCoCoverageColumn.getPercent(mockJob));
@@ -218,8 +219,9 @@ public class AbstractJaCoCoCoverageColumnTest {
         }
 
         @Override
-		protected synchronized void saveNextBuildNumber() {
-		}
+        public int assignBuildNumber() throws IOException {
+            return nextBuildNumber++;
+        }
 	}
 	
 	private class MyJob extends Job<MyJob,MyRun> {
