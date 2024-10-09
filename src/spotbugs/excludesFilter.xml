@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <!--
+    Exclusions in this section have been triaged and determined to be
+    false positives.
+  -->
+  <Match>
+    <!-- These primitive attributes need to be public to preserve the API -->
+    <Bug pattern="PA_PUBLIC_PRIMITIVE_ATTRIBUTE" />
+    <Class name="hudson.plugins.jacoco.JacocoPublisher" />
+    <Or>
+      <Field name="DESCRIPTOR" />
+      <Field name="deltaHealthReport" />
+      <Field name="healthReports" />
+    </Or>
+  </Match>
+  <Match>
+    <!-- These primitive attributes need to be public to preserve the API -->
+    <Bug pattern="PA_PUBLIC_PRIMITIVE_ATTRIBUTE" />
+    <Class name="hudson.plugins.jacoco.model.CoverageObject" />
+    <Or>
+      <Field name="maxBranch" />
+      <Field name="maxClazz" />
+      <Field name="maxComplexity" />
+      <Field name="maxInstruction" />
+      <Field name="maxLine" />
+      <Field name="maxMethod" />
+    </Or>
+  </Match>
+  <Match>
+    <!-- This primitive attribute needs to be public to preserve the API -->
+    <Bug pattern="PA_PUBLIC_PRIMITIVE_ATTRIBUTE" />
+    <Class name="hudson.plugins.jacoco.report.CoverageReport" />
+    <Field name="healthReports" />
+  </Match>
+
+  <!--
+    Here lies technical debt. Exclusions in this section have not yet
+    been triaged. When working on this section, pick an exclusion to
+    triage, then:
+
+    - Add a @SuppressFBWarnings(value = "[...]", justification = "[...]")
+      annotation if it is a false positive.  Indicate the reason why
+      it is a false positive, then remove the exclusion from this
+      section.
+
+    - If it is not a false positive, fix the bug, then remove the
+      exclusion from this section.
+   -->
+</FindBugsFilter>
