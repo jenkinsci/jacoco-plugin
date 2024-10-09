@@ -1,6 +1,5 @@
 package hudson.plugins.jacoco;
 
-import edu.umd.cs.findbugs.annotations.NonNull;
 import hudson.*;
 import hudson.model.Result;
 import hudson.model.AbstractBuild;
@@ -51,7 +50,7 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
      * <p>
      * TODO: define a configuration mechanism.
      */
-    public Rule rule;
+    // public Rule rule;
     @Deprecated
     public transient String includes;
     @Deprecated
@@ -59,10 +58,10 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
     /**
      * {@link hudson.model.HealthReport} thresholds to apply.
      */
-    public JacocoHealthReportThresholds healthReports;
+    private JacocoHealthReportThresholds healthReports;
 
     // Delta coverage thresholds to apply
-    public JacocoHealthReportDeltaThresholds deltaHealthReport;
+    JacocoHealthReportDeltaThresholds deltaHealthReport;
 
 
     /**
@@ -799,27 +798,8 @@ public class JacocoPublisher extends Recorder implements SimpleBuildStep {
         return BuildStepMonitor.NONE;
     }
 
-    @Override
-    public BuildStepDescriptor<Publisher> getDescriptor() {
-        return (BuildStepDescriptor<Publisher>)super.getDescriptor();
-    }
-
-    /**
-     * @deprecated
-     *      use injection via {@link Jenkins#getInjector()}
-     */
-    public static /*final*/ BuildStepDescriptor<Publisher> DESCRIPTOR;
-
-    private static void setDescriptor(BuildStepDescriptor<Publisher> descriptor) {
-        DESCRIPTOR = descriptor;
-    }
-
     @Extension @Symbol("jacoco")
     public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
-        public DescriptorImpl() {
-            super(JacocoPublisher.class);
-            setDescriptor(this);
-        }
 
 		@NonNull
         @Override
