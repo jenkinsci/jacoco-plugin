@@ -51,7 +51,7 @@ public final class CoverageReport extends AggregatedReport<CoverageReport/*dummy
 //	private String complexityColor;
 //	private String lineColor;
 //	private String methodColor;
-	public JacocoHealthReportThresholds healthReports;
+	private JacocoHealthReportThresholds healthReports;
 
 	/**
 	 * Loads the exec files using JaCoCo API. Creates the reporting objects and the report tree.

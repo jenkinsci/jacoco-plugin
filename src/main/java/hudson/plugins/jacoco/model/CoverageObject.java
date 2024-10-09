@@ -66,12 +66,12 @@ public abstract class CoverageObject<SELF extends CoverageObject<SELF>> {
 	/**
 	 * Variables used to store which child has to highest coverage for each coverage type.
 	 */
-	public int maxClazz=1;
-	public int maxMethod=1;
-	public int maxLine=1;
-	public int maxComplexity=1;
-	public int maxInstruction=1;
-	public int maxBranch=1;
+	private int maxClazz=1;
+	private int maxMethod=1;
+	private int maxLine=1;
+	private int maxComplexity=1;
+	private int maxInstruction=1;
+	private int maxBranch=1;
 
 	private volatile boolean failed = false;
 
