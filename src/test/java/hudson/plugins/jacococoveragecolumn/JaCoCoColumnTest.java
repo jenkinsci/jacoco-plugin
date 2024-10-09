@@ -57,9 +57,10 @@ public class JaCoCoColumnTest {
 				}
 			}
 
-			@Override
-			protected synchronized void saveNextBuildNumber() {
-			}
+            @Override
+            public int assignBuildNumber() throws IOException {
+                return nextBuildNumber++;
+            }
 		};
 		assertTrue(jaCoCoColumn.hasCoverage(mockJob));
 		assertEquals("33.33", jaCoCoColumn.getPercent(mockJob));
