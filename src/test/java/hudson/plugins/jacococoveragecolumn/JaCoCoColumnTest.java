@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.SortedMap;
 
 import static org.junit.Assert.*;
+import org.kohsuke.stapler.StaplerRequest;
 
 public class JaCoCoColumnTest {
 	private JaCoCoColumn jaCoCoColumn;
@@ -71,7 +72,7 @@ public class JaCoCoColumnTest {
 	public void testDescriptor() throws FormException {
 		assertNotNull(jaCoCoColumn.getDescriptor());
 		assertNotNull(
-				jaCoCoColumn.getDescriptor().newInstance(null, JSONObject.fromObject("{\"key\":\"value\"}")));
+				jaCoCoColumn.getDescriptor().newInstance((StaplerRequest) null, JSONObject.fromObject("{\"key\":\"value\"}")));
 		assertNotNull(jaCoCoColumn.getDescriptor().getDisplayName());
 	}
 

@@ -23,6 +23,7 @@ import java.util.SortedMap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import org.kohsuke.stapler.StaplerRequest;
 
 public class BranchCoverageColumnTest {
 
@@ -69,7 +70,7 @@ public class BranchCoverageColumnTest {
 	@Test
 	public void testDescriptor() throws FormException {
 		assertNotNull(sut.getDescriptor());
-		assertNotNull(sut.getDescriptor().newInstance(null, JSONObject.fromObject("{\"key\":\"value\"}")));
+		assertNotNull(sut.getDescriptor().newInstance((StaplerRequest) null, JSONObject.fromObject("{\"key\":\"value\"}")));
 		assertNotNull(sut.getDescriptor().getDisplayName());
 	}
 
