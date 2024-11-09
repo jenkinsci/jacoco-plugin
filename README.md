@@ -10,6 +10,11 @@ jacoco-plugin
 [![Jenkins Plugin Installs](https://img.shields.io/jenkins/plugin/i/jacoco.svg?color=blue)](https://plugins.jenkins.io/jacoco)
 
 
+:warning::warning::rescue_worker_helmet:
+This plugin is up for adoption, the current maintainers are either gone MIA or do not use the plugin any more, thus soemone who actively uses the plugin is needed to do better decisions on bug reports, pull requests and feature work.
+:rescue_worker_helmet::warning::warning:
+
+
 A plugin for Jenkins to capture and visualize code coverage testing results for projects using 
 [JaCoCo](https://www.eclemma.org/jacoco/) for code-coverage analysis.
 
